@@ -1,0 +1,6 @@
+public: True
+clone: False
+input: 'file'
+output: 'file'
+image: shub://lsx1980/3D_model_traits_measurement
+commands: python /opt/code/pipeline.py -p $INPUT -m surface.ply
