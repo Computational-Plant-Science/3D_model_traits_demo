@@ -6,3 +6,4 @@ clone: False
 from: file
 to: file
 commands: python /opt/code/pipeline.py -p "$INPUT" -m surface.ply
+logo: root_logo.jpg
