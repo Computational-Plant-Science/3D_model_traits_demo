@@ -3,7 +3,7 @@ author: Suxing Liu
 image: shub://lsx1980/3D_model_traits_measurement
 public: True
 clone: False
-commands: python /opt/code/pipeline.py -p "$(dirname $InPUT)" -m "$INPUT"
+commands: python /opt/code/pipeline.py -p "$(dirname $INPUT)" -m "$INPUT"
 input:
   path:
   kind: file
