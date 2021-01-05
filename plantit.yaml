@@ -3,10 +3,10 @@ author: Suxing Liu
 image: shub://lsx1980/3D_model_traits_measurement
 public: True
 clone: False
-commands: python /opt/code/pipeline.py -p "$OUTPUT" -m "$INPUT"
+commands: python /opt/code/pipeline.py -p "$(dirname $InPUT)" -m "$INPUT"
 input:
   path:
-  kind: files
+  kind: file
   filetypes:
     - ply
 output:
