@@ -23,8 +23,16 @@ RUN pip install --upgrade pip && \
     scikit-learn \
     scikit-build \
     matplotlib \
+    mahotas \
     networkx \
     plyfile \
+    certifi \
+    pandas \
+    pytest \
+    coverage \
+    coveralls \
     open3d \
     opencv-python-headless \
-    openpyxl
+    openpyxl \
+    click \
+    PyYAML \
