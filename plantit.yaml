@@ -6,7 +6,7 @@ clone: False
 commands: python /opt/code/pipeline.py -p "$(dirname $INPUT)" -m "$INPUT"
 input:
   path:
-  kind: file
+  kind: files
   filetypes:
     - ply
 output:
