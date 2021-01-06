@@ -1,9 +1,9 @@
 name: DIRT\3D - Root Phenes from Point Clouds
 author: Suxing Liu
-image: shub://lsx1980/3D_model_traits_measurement
+image: docker://computationalplantscience/3d-model-traits
 public: True
 clone: False
-commands: python3 /opt/code/pipeline.py -p "$PWD/" -m "$INPUT"
+commands: python /opt/3D_model_reconstruction_demo/dirt3d.py "$INPUT"
 input:
   path:
   kind: files
