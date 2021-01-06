@@ -13,8 +13,11 @@ output:
   path:
   include:
     patterns:
-      - nvm
-      - ply
+      - png
+      - jpg
+      - txt
+      - csv
+      - xlsx
 logo: root_logo.jpg
 resources:
   time: "03:00:00"
