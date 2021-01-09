@@ -4,7 +4,7 @@ image: docker://computationalplantscience/3d-model-traits
 public: True
 clone: False
 branch: plantit
-commands: python /opt/3D_model_reconstruction_demo/dirt3d.py "$INPUT"
+commands: python /opt/3D_model_traits_demo/dirt3d.py "$INPUT"
 input:
   path:
   kind: files

@@ -1,4 +1,4 @@
-FROM python:3.7.9-buster
+FROM ubuntu:18.04
 
 LABEL maintainer='Suxing Liu'
 
@@ -7,6 +7,9 @@ COPY ./ /opt/3D_model_traits_demo
 RUN apt update
 RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt install -y \
     build-essential \
+    python3-setuptools \
+    python3-pip \
+    python3 \
     python3-tk \
     python3-numexpr \
     python3-pil.imagetk \
@@ -14,8 +17,8 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt install -y \
     libsm6 \
     libxext6
 
-RUN pip install --upgrade pip && \
-    pip install numpy \
+RUN pip3 install --upgrade pip && \
+    pip3 install numpy \
     Pillow \
     rdp \
     scipy \
@@ -36,3 +39,6 @@ RUN pip install --upgrade pip && \
     openpyxl \
     click \
     PyYAML \
+
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
