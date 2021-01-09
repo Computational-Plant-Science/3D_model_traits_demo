@@ -17,6 +17,9 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt install -y \
     libsm6 \
     libxext6
 
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
 RUN pip3 install --upgrade pip && \
     pip3 install numpy \
     Pillow \
@@ -38,7 +41,5 @@ RUN pip3 install --upgrade pip && \
     opencv-python-headless \
     openpyxl \
     click \
-    PyYAML \
+    PyYAML
 
-ENV LC_ALL=C.UTF-8
-ENV LANG=C.UTF-8
