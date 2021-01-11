@@ -1,4 +1,4 @@
-name: DIRT\3D - Root Phenes from Point Clouds
+name: DIRT3D Traits
 author: Suxing Liu
 image: docker://computationalplantscience/3d-model-traits
 public: True
