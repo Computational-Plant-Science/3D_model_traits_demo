@@ -21,35 +21,45 @@ From: ubuntu:18.04
   #----------------------------------------------------------
   # Install dependencies
   apt update
-  apt install -y \
+  
+  apt-get install -y tzdata 
+  
+ apt install -y \
     build-essential \
     python3-setuptools \
     python3-pip \
     python3-tk \
     python3-numexpr \
     python3-pil.imagetk \
+    python3-sklearn \
+    python3-sklearn-lib \
+    tzdata \
     libgl1-mesa-glx \
     libsm6 \
-    libxext6 
+    libxext6
+    
 
-    
-    
-  pip3 install numpy \
-                Pillow \
+  pip3 install open3d
+  
+  #pip3 install --upgrade pip 
+  
+  pip3 install --upgrade pip setuptools wheel
+  
+  #pip3 install numpy --upgrade --ignore-installed
+  
+  pip3 install  cmake \
                 rdp \
+                pandas \
                 scipy \
                 scikit-image \
                 matplotlib \
                 networkx \
                 plyfile \
-                open3d \
                 opencv-python \
                 openpyxl \
-                
-
-  pip3 install -U scikit-learn
+                numpy --upgrade --ignore-installed
   
-
+  
   mkdir /lscratch /db /work /scratch
   
   chmod -R a+rwx /opt/code/

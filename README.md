@@ -24,7 +24,7 @@ singularity exec model-scan.img python /opt/code/pipeline.py -p /$path_to_your_3
 singularity exec shub://lsx1980/3D_model_traits_measurement python /opt/code/pipeline.py -p /$path_to_your_3D_model/ -m surface.ply
 
 - Pre-requisite:  
-    - Python3.6.9  
+    - Python2.7  
     - Numpy  
     - SciPy  
     - Opencv 3.0 for Python - [Installation](http://www.pyimagesearch.com/2015/06/15/install-opencv-3-0-and-python-2-7-on-osx/)

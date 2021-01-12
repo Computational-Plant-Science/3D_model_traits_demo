@@ -165,15 +165,15 @@ if __name__ == '__main__':
     mkdir(mkpath)
     save_path_ac = mkpath + '/'
     
-    num_iters = 150
+    num_iters = 230
 
     
     
     for idx, image_file in enumerate(imgList):
-        '''
+        
         num_iters_update = num_iters + idx*0.5
         
-        
+        '''
         if idx < 100:
             num_iters_update = 80
         elif idx < 300:

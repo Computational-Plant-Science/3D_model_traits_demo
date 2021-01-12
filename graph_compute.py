@@ -91,8 +91,8 @@ def load_image(image_file):
     return (thresh/255)
         
 #get the color mapping
-def get_cmap(n, name = 'hsv'):
-    
+def get_cmap(n, name = 'BrBG'):
+    #'BrBG', 'hsv'
     #Returns a function that maps each index in 0, 1, ..., n-1 to a distinct 
     #RGB color; the keyword argument name must be a standard mpl colormap name
     

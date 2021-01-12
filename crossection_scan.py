@@ -190,7 +190,7 @@ def root_area_label(image_file):
     
     imgcolor_copy = imgcolor
     
-    imgcolor = ~imgcolor
+    #imgcolor = ~imgcolor
     
     #accquire image dimensions 
     height, width, channels = imgcolor.shape
@@ -289,15 +289,15 @@ def root_area_label(image_file):
     # assign image values
     image_background[:] = (0, 0, 0)
     
-    radius_scale = 2
+    radius_scale = 1
     
     for i in range(1, len(centroids)):
         
         (x, y) = centroids[i]
         
         #radius of each contour
-        r = int(math.sqrt(0.5*areas[i]/math.pi))
-        #r = 2
+        #r = int(math.sqrt(0.5*areas[i]/math.pi))
+        r = 5
         
         if r > 0:
             if i == largest_label:
@@ -893,7 +893,7 @@ if __name__ == '__main__':
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True,    help = "path to image file")
-    ap.add_argument("-ft", "--filetype", required = False, default = 'jpg',   help = "Image filetype")
+    ap.add_argument("-ft", "--filetype", required = False, default = 'png',   help = "Image filetype")
     ap.add_argument("-th", "--threshold", required = False, default = '2.35', type = float, help = "threshold to remove outliers")
     args = vars(ap.parse_args())
 

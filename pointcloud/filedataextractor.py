@@ -12,7 +12,6 @@ USAGE
 from pointcloud.filedataextractor import FileDataExtractor 
 
 """
-import sys
 
 from pointcloud.pointmap import PointMap
 
@@ -32,10 +31,7 @@ class FileDataExtractor:
         #f = open(self.fileName, "r")
         #f = open(self.fileName,  encoding="utf8", errors='ignore')
         
-        with open(self.fileName, encoding='utf-8') as f:
-        # with open(self.fileName, 'rb') as f:
-        # with open(self.fileName, encoding='ISO-8859-1') as f:
-        # with open(self.fileName, encoding='gbk') as f:
+        with open(self.fileName, encoding='utf8') as f:
         
             pointCount = self.getPointCount(f)
             

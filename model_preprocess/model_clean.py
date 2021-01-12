@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-python model_clean.py -p /home/suxingliu/model-scan/model-data/ -m bean.ply -c 10 -t 3
+python3 model_clean.py -p /home/suxingliu/model-scan/model-data/ -m bean.ply -c 10 -t 3
 
 
 argument:
@@ -62,6 +62,10 @@ from pyspark.ml.clustering import KMeans
 from pyspark.ml.feature import VectorAssembler
 from pyspark.sql import SQLContext
 
+import os
+os.environ["PYSPARK_PYTHON"]="/usr/bin/python3"
+
+
 
 def find_histogram(dfList, centers, n_top):
     """
@@ -90,7 +94,7 @@ def find_histogram(dfList, centers, n_top):
         color = center/255.0
         barlist[index].set_color(color)
     
-    plt.show()
+    #plt.show()
     plt.savefig('hist.png')
     plt.close(fig)
     
@@ -146,7 +150,7 @@ def spark_kmeans(extracted_data, n_cluster):
     #move it first (left)
     cols = list(pddf)
     cols.insert(0, cols.pop(cols.index('id')))
-    pddf = pddf.ix[:, cols]
+    pddf = pddf.loc[:, cols]
     
     #initialize sparkcontext dataframe 
     sc = SparkContext(appName = "Spark_KMeansApp")
@@ -246,7 +250,9 @@ if __name__ == '__main__':
     
     # visualize the colorspace
     #colorspace_show(extracted_data)
-        
+    
+    
+    
     #define number of cluster, can be optimized based on cost
     n_cluster = args["number_cluster"]
     

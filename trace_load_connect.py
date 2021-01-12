@@ -273,7 +273,7 @@ def trace_measure(fname, trace_rec, file_idx):
     # loop over individual trace point set
     for index in range(len(num_loc)-1):
         
-        # Extract the line data by devideing mark '#'
+        # Extract the line data by deviding mark '#'
         line_start = num_loc[index] - index -1
         line_end = line_start + (num_loc[index+1] - num_loc[index] -1) 
             
@@ -291,8 +291,8 @@ def trace_measure(fname, trace_rec, file_idx):
         
         (r_data, theta_data, phi_data) = trace_angle(x, y, z)
 
-        # compare the distance between pointset and the start point of new trace line,
-        # connect lines if under threhold, oherwise create and adding new trace lines
+        # compare distance between pointset and the start point of new trace line,
+        # connect lines if under threhold, otherwise create and adding new trace lines
         if file_idx > 0:
         
             #new_start_point =  data_array[0,[0,1,2]].reshape(1,3)

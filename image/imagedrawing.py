@@ -21,7 +21,7 @@ from graphic.circle import Circle
 
 class ImageDrawing:
     
-    FILE_EXTENSION = "JPEG"
+    FILE_EXTENSION = "PNG"
     
     DEFAULT_FILL_COLOR_BLACK = (0, 0, 0)
     
@@ -29,7 +29,9 @@ class ImageDrawing:
 
     def __init__(self, destination, width, height):
         
-        self.image = Image.new("RGB", (width, height), self.DEFAULT_BACKGROUND_COLOR_WHITE)
+        #self.image = Image.new("RGB", (width, height), self.DEFAULT_BACKGROUND_COLOR_WHITE)
+        
+        self.image = Image.new("RGB", (width, height), self.DEFAULT_FILL_COLOR_BLACK)
         
         self.draw = ImageDraw.Draw(self.image)
         
@@ -39,8 +41,12 @@ class ImageDrawing:
         
         fullFileName = str(self.destination) + str(fileName)
         
+        self.image = self.image.convert('L')
+        
         self.image.save(fullFileName, self.FILE_EXTENSION)
 
     def addPoint(self, circle: Circle):
         
-        self.draw.ellipse((circle.x0, circle.y0, circle.x1, circle.y1), self.DEFAULT_FILL_COLOR_BLACK)
+        #self.draw.ellipse((circle.x0, circle.y0, circle.x1, circle.y1), self.DEFAULT_FILL_COLOR_BLACK)
+        
+        self.draw.ellipse((circle.x0, circle.y0, circle.x1, circle.y1), self.DEFAULT_BACKGROUND_COLOR_WHITE)

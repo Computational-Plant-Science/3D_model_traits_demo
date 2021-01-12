@@ -33,9 +33,88 @@ from operator import itemgetter
 import argparse
 
 import os
+import sys
 import open3d as o3d
 
 
+def format_converter(current_path, model_name):
+    
+    model_file = current_path + model_name
+    
+    print("Converting file format for 3D point cloud model {}...\n".format(model_name))
+    
+    # load the model file
+    try:
+        with open(model_file, 'rb') as f:
+            plydata = PlyData.read(f)
+            num_vertex = plydata.elements[0].count
+            
+            print("Ply data structure: \n")
+            print(plydata)
+            print("Number of 3D points in current model: {0} \n".format(num_vertex))
+        
+    except:
+        print("Model file not exist!")
+        sys.exit(0)
+        
+    
+    #Parse the ply format file and Extract the data
+    Data_array_ori = np.zeros((num_vertex, 3))
+    
+    Data_array_ori[:,0] = plydata['vertex'].data['x']
+    Data_array_ori[:,1] = plydata['vertex'].data['y']
+    Data_array_ori[:,2] = plydata['vertex'].data['z']
+    
+    #sort point cloud data based on Z values
+    Data_array = np.asarray(sorted(Data_array_ori, key = itemgetter(2), reverse = False))
+   
+    '''
+    #accquire data range
+    min_x = Data_array[:, 0].min()
+    max_x = Data_array[:, 0].max()
+    min_y = Data_array[:, 1].min()
+    max_y = Data_array[:, 1].max()
+    min_z = Data_array[:, 2].min()
+    max_z = Data_array[:, 2].max()
+    
+    range_data_x = max_x - min_x
+    range_data_y = max_y - min_y
+    range_data_z = max_z - min_z
+    
+    print (range_data_x, range_data_y, range_data_z)
+    
+    print(min_x,max_x)
+    print(min_y,max_y)
+    print(min_z,max_z)
+    '''
+    
+    #Normalize data
+    #min_max_scaler = preprocessing.MinMaxScaler(feature_range = (0,1000000))
+    
+    min_max_scaler = preprocessing.MinMaxScaler(feature_range = (0,10000))
+
+    point_normalized = min_max_scaler.fit_transform(Data_array)
+    
+    #point_normalized_scale = [i * 1 for i in point_normalized]
+   
+    # Pass xyz to Open3D.o3d.geometry.PointCloud 
+    pcd = o3d.geometry.PointCloud()
+    
+    pcd.points = o3d.utility.Vector3dVector(point_normalized)
+    
+    #Save modelfilea as ascii format 
+    filename = current_path + 'converted.ply'
+    
+    o3d.io.write_point_cloud(filename, pcd, write_ascii = True)
+    
+    if os.path.exists(filename):
+        print("Converted 3d model was saved at {0}".format(filename))
+        return True
+    else:
+        return False
+        print("Model file converter failed !")
+        sys.exit(0)
+        
 
 if __name__ == '__main__':
     
@@ -64,58 +143,11 @@ if __name__ == '__main__':
             print("Ply data structure: \n")
             print(plydata)
             print("Number of 3D points in current model: {0} \n".format(num_vertex))
+            
+            format_converter(current_path, filename)
         
     except:
-        print("Model file not exist!")
+        print("Model file was not exist!")
         sys.exit(0)
         
-    
-    #Parse the ply format file and Extract the data
-    Data_array_ori = np.zeros((num_vertex, 3))
-    
-    Data_array_ori[:,0] = plydata['vertex'].data['x']
-    Data_array_ori[:,1] = plydata['vertex'].data['y']
-    Data_array_ori[:,2] = plydata['vertex'].data['z']
-    
-    Data_array = np.asarray(sorted(Data_array_ori, key = itemgetter(2), reverse = False))
-   
-    #accquire data range
-    min_x = Data_array[:, 0].min()
-    max_x = Data_array[:, 0].max()
-    min_y = Data_array[:, 1].min()
-    max_y = Data_array[:, 1].max()
-    min_z = Data_array[:, 2].min()
-    max_z = Data_array[:, 2].max()
-    
-    range_data_x = max_x - min_x
-    range_data_y = max_y - min_y
-    range_data_z = max_z - min_z
-    
-    
-    #print "range_data_x, range_data_y"
-    print (range_data_x, range_data_y, range_data_z)
-    
-    print(min_x,max_x)
-    print(min_y,max_y)
-    print(min_z,max_z)
-    
-    #Normalize data
-    
-    min_max_scaler = preprocessing.MinMaxScaler(feature_range = (0,1000))
-
-    point_normalized = min_max_scaler.fit_transform(Data_array)
-    
-    point_normalized_scale = [i * 1 for i in point_normalized]
-   
-    
-    # Pass xyz to Open3D.o3d.geometry.PointCloud and save it in ascii format ply file
-    pcd = o3d.geometry.PointCloud()
-    
-    pcd.points = o3d.utility.Vector3dVector(point_normalized_scale)
-    
-    #Save images as jpeg format
-    filename = current_path + 'converted.ply'
-    
-    o3d.io.write_point_cloud(filename, pcd, write_ascii = True)
-    
-    
+ 

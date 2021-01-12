@@ -139,8 +139,8 @@ class PointCloudGraphic:
         
         self.imageDrawingList = []
         
-        #print(minKey)
-        #print(maxKey)
+        #print("minkey".format(minKey))
+        #print("maxKey".format(maxKey))
 
         while minKey <= maxKey:
             
@@ -237,7 +237,7 @@ class PointCloudGraphic:
         
         #return self.FILE_NAME_PREFIX + str(self.csIteratorIndex)
         
-        return str('{:04}'.format(self.csIteratorIndex)) + ".jpg"
+        return str('{:04}'.format(self.csIteratorIndex)) + ".png"
         
 
 

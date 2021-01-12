@@ -45,7 +45,11 @@ def model_analysis_pipeline(current_path, filename):
     
     
     # step 1
-    model_point_scan = "python3 /opt/code/pt_scan_engine.py -p " + current_path + " -m " + filename + " -i " + str(interval) +  " -de " + str(direction) 
+    format_convert = "python3 /opt/code/format_converter.py -p " + current_path + " -m " + filename
+    
+    execute_script(format_convert)
+
+    model_point_scan = "python3 /opt/code/pt_scan_engine.py -p " + current_path + " -m converted.ply " + " -i " + str(interval) +  " -de " + str(direction) 
     
     print("Computing cross section image sequence from 3D model file...\n")
     
