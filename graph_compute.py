@@ -220,7 +220,8 @@ if __name__ == '__main__':
     
      # make the folder to store the results
     parent_path = os.path.abspath(os.path.join(file_path, os.pardir))
-    mkpath = parent_path + '/' + str('analysis_result')
+    #mkpath = parent_path + '/' + str('analysis_result')
+    mkpath = file_path + '/' + str('analysis_result')
     mkdir(mkpath)
     save_path_result = mkpath + '/'
     
@@ -310,7 +311,7 @@ if __name__ == '__main__':
     
     
     
-    skel = skel.astype(np.bool) #data needs to be bool
+    skel = skel.astype(bool) #data needs to be bool
     
     G = skel2graph(skel) #create graph
     
@@ -406,7 +407,7 @@ if __name__ == '__main__':
     import csv
 
     wb = load_workbook(trait_file)
-    sh = wb.get_active_sheet()
+    sh = wb.active
     
     #with open(trait_file_csv, 'wb') as f:
     with open(trait_file_csv, 'w', newline = "") as f:

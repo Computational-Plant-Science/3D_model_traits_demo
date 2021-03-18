@@ -36,9 +36,11 @@ From: ubuntu:18.04
     tzdata \
     libgl1-mesa-glx \
     libsm6 \
-    libxext6
+    libxext6 
     
-
+  python3 -m pip install dask 
+  python3 -m pip install dask distributed --upgrade
+  
   pip3 install open3d
   
   #pip3 install --upgrade pip 
@@ -46,7 +48,7 @@ From: ubuntu:18.04
   pip3 install --upgrade pip setuptools wheel
   
   #pip3 install numpy --upgrade --ignore-installed
-  
+    
   pip3 install  cmake \
                 rdp \
                 pandas \
@@ -57,6 +59,13 @@ From: ubuntu:18.04
                 plyfile \
                 opencv-python \
                 openpyxl \
+                ptvpy \
+                imagesize \
+                progressbar \
+                moviepy \
+                mayavi \
+                PyQt5 \
+                dask \
                 numpy --upgrade --ignore-installed
   
   

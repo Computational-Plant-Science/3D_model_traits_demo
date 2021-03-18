@@ -354,13 +354,13 @@ def trace_visualize(trace_array, array_index_rec, fit_linepts_rec, index_pair_re
         
         
         
-        snapshot = (save_path_result + directory_name + '.png')
+        #snapshot = (save_path_result + directory_name + '.png')
         
-        mlab.savefig(snapshot, sizesize = (720,1080))
+        #mlab.savefig(snapshot, sizesize = (720,1080))
         
-        #obj_file = (save_path_result + 'model.obj')
+        obj_file = (save_path_result + 'model.obj')
         
-        #mlab.savefig(obj_file)
+        mlab.savefig(obj_file)
        
         mlab.show()
         
@@ -1254,7 +1254,7 @@ if __name__ == '__main__':
     
     X_scale = 2.0
     Y_scale = 2.0
-    Z_scale = -2.5
+    Z_scale = -5.5
     
     text_size = 8
     

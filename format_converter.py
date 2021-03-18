@@ -9,15 +9,12 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 format_converter.py -p /home/suxingliu/model-scan/model-data/ -m surface.ply 
+python3 format_converter.py -p ~/example/ -m test.ply
 
 
 argument:
 ("-p", "--path", required=True,    help="path to *.ply model file")
 ("-m", "--model", required=True,    help="file name")
-("-i", "--interval", required=True,    type = int, help="intervals along sweeping plane")
-("-d", "--direction", required=True,    type = int, help="direction of sweeping plane, X=0, Y=1, Z=2")
-("-r", "--reverse", required=True,    type = int, help="Reverse model top_down, 1 for Ture, 0 for False")
 
 """
 #!/usr/bin/env python
@@ -35,6 +32,7 @@ import argparse
 import os
 import sys
 import open3d as o3d
+import copy
 
 
 def format_converter(current_path, model_name):
@@ -54,7 +52,7 @@ def format_converter(current_path, model_name):
             print("Number of 3D points in current model: {0} \n".format(num_vertex))
         
     except:
-        print("Model file not exist!")
+        print("Model file does not exist!")
         sys.exit(0)
         
     
@@ -101,12 +99,26 @@ def format_converter(current_path, model_name):
     pcd = o3d.geometry.PointCloud()
     
     pcd.points = o3d.utility.Vector3dVector(point_normalized)
+
+    # copy original point cloud for rotation
+    pcd_r = copy.deepcopy(pcd)
     
-    #Save modelfilea as ascii format 
+    # define rotation matrix
+    R = pcd.get_rotation_matrix_from_xyz((np.pi/2,0,np.pi/4))
+    
+    # Apply rotation transformation to copied point cloud data
+    pcd_r.rotate(R, center=(0,0,0))
+    
+    # Visualize rotated point cloud 
+    #o3d.visualization.draw_geometries([pcd, pcd_r])
+
+    #Save model file as ascii format 
     filename = current_path + 'converted.ply'
     
-    o3d.io.write_point_cloud(filename, pcd, write_ascii = True)
+    #write out point cloud file
+    o3d.io.write_point_cloud(filename, pcd_r, write_ascii = True)
     
+    # check saved file
     if os.path.exists(filename):
         print("Converted 3d model was saved at {0}".format(filename))
         return True
@@ -133,21 +145,6 @@ if __name__ == '__main__':
 
     print ("results_folder: " + current_path)
 
-    
-    # load the model file
-    try:
-        with open(file_path, 'rb') as f:
-            plydata = PlyData.read(f)
-            num_vertex = plydata.elements[0].count
-            
-            print("Ply data structure: \n")
-            print(plydata)
-            print("Number of 3D points in current model: {0} \n".format(num_vertex))
-            
-            format_converter(current_path, filename)
-        
-    except:
-        print("Model file was not exist!")
-        sys.exit(0)
-        
+    format_converter(current_path, filename)
+
  

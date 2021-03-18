@@ -137,7 +137,7 @@ nodevoxels (neighborhood >3) which are not seperated by edge voxels (neighborhoo
     try: #this might produce memory error
         inspacingavel = indnode.ravel()
         for idx, val in zip(np.arange(nodes.size, dtype=np.uint64), inspacingavel) :
-            stop
+            #stop
             if not val == 0:
                 node_inds_all[val].append(idx)
 
