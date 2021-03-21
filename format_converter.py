@@ -41,6 +41,9 @@ def format_converter(current_path, model_name):
     
     print("Converting file format for 3D point cloud model {}...\n".format(model_name))
     
+    model_name_base = os.path.splitext(model_file)[0]
+    
+    
     # load the model file
     try:
         with open(model_file, 'rb') as f:
@@ -104,19 +107,41 @@ def format_converter(current_path, model_name):
     pcd_r = copy.deepcopy(pcd)
     
     # define rotation matrix
-    R = pcd.get_rotation_matrix_from_xyz((np.pi/2,0,np.pi/4))
+    R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
+    #R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2, 0))
     
     # Apply rotation transformation to copied point cloud data
-    pcd_r.rotate(R, center=(0,0,0))
+    pcd_r.rotate(R, center = (0,0,0))
+    
+    # get the model center postion
+    model_center = pcd_r.get_center()
+    
+    # geometry points are translated directly to the model_center position
+    pcd_r.translate(-1*(model_center))
     
     # Visualize rotated point cloud 
     #o3d.visualization.draw_geometries([pcd, pcd_r])
-
-    #Save model file as ascii format 
+    
+    #Voxel downsampling uses a regular voxel grid to create a uniformly downsampled point cloud from an input point cloud
+    #print("Downsample the point cloud with a voxel of 0.05")
+    #downpcd = pcd_r.voxel_down_sample(voxel_size=0.5)
+    #o3d.visualization.draw_geometries([downpcd])
+    
+    #Save model file as ascii format in ply
     filename = current_path + 'converted.ply'
     
     #write out point cloud file
     o3d.io.write_point_cloud(filename, pcd_r, write_ascii = True)
+    
+    
+    #mesh = o3d.io.read_point_cloud(filename)
+    
+    #print(mesh)
+
+    #Save modelfilea as ascii format in xyz
+    filename = model_name_base + '.xyz'
+    o3d.io.write_point_cloud(filename, pcd_r, write_ascii = True)
+    
     
     # check saved file
     if os.path.exists(filename):
