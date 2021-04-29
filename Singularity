@@ -66,6 +66,8 @@ From: ubuntu:18.04
                 mayavi \
                 PyQt5 \
                 dask \
+                imagesize \
+                progressbar \
                 numpy --upgrade --ignore-installed
   
   

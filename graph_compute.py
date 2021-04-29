@@ -99,7 +99,7 @@ def get_cmap(n, name = 'BrBG'):
     return plt.cm.get_cmap(name, n)
 
 #visualize graph using mayavi
-def mayavi_visualize(graph,image_chunk):
+def mayavi_visualize(graph):
     
     mlab.figure(1, size = (500, 500))
     

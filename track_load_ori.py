@@ -1248,13 +1248,13 @@ if __name__ == '__main__':
     
    
     
-    length_thresh = 0.3
+    length_thresh = 0.4
     
     angle_connect_thresh = 30
     
     X_scale = 2.0
     Y_scale = 2.0
-    Z_scale = -5.5
+    Z_scale = -20.5
     
     text_size = 8
     
