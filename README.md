@@ -15,8 +15,11 @@ Example of structure vs. 3D root model
 
 ![Optional Text](../master/media/image3.png) ![Optional Text](../master/media/image2.gif)
 
+Example of connecting disconnected root path
 
-        
+![Optional Text](../master/media/image7.png) ![Optional Text](../master/media/image8.png)
+
+
 usage: 
 
 python pipeline.py -p /$path_to_your_3D_model/ -m 3D_model_name.ply
