@@ -13,7 +13,7 @@ Python Version    : 3.7
 
 Example of structure vs. 3D root model
 
-![Optional Text](../master/media/image3.png) ![Optional Text](../master/media/image2.gif)
+![Optional Text](../master/media/image3.png, width="400" height="600") ![Optional Text](../master/media/image2.gif)
 
 
         
