@@ -6,9 +6,15 @@ Author            : Suxing Liu
 
 Date created      : 04/04/2018
 
-Date last modified: 04/25/2019
+Date last modified: 04/25/2020
 
-Python Version    : 2.7
+Python Version    : 3.7
+
+
+Example of structure vs. 3D root model
+
+![Optional Text](../master/media/image3.png) ![Optional Text](../master/media/image2.gif)
+
 
         
 usage: 
@@ -24,7 +30,7 @@ singularity exec model-scan.img python /opt/code/pipeline.py -p /$path_to_your_3
 singularity exec shub://lsx1980/3D_model_traits_measurement python /opt/code/pipeline.py -p /$path_to_your_3D_model/ -m surface.ply
 
 - Pre-requisite:  
-    - Python2.7  
+    - Python3.7  
     - Numpy  
     - SciPy  
     - Opencv 3.0 for Python - [Installation](http://www.pyimagesearch.com/2015/06/15/install-opencv-3-0-and-python-2-7-on-osx/)
