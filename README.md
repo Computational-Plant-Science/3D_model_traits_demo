@@ -22,7 +22,7 @@ Example of connecting disconnected root path
 
 usage: 
 
-python pipeline.py -p /$path_to_your_3D_model/ -m 3D_model_name.ply
+python3 pipeline.py -p /$path_to_your_3D_model/ -m 3D_model_name.ply
 
 Singularity test:
 
