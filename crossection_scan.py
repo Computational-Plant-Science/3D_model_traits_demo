@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-python3 crossection_scan.py -p /home/suxingliu/ply_data/cross_section_scan/ -th 2.35
+python3 crossection_scan.py -p /home/suxing/ply_data/cross_section_scan/ -th 2.35
 
 
 argument:

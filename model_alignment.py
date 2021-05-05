@@ -56,7 +56,7 @@ def format_converter(current_path, model_name):
 
     pcd = o3d.io.read_point_cloud(model_file)
     
-    o3d.visualization.draw_geometries([pcd])
+    #o3d.visualization.draw_geometries([pcd])
     
     Data_array = np.asarray(pcd.points)
     

@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-python3 graph_compute.py -p /home/suxingliu/ply_data/CT_surface/ -ft png
+python3 graph_compute.py -p /home/suxing/ply_data/CT_surface/ -ft png
 
 
 argument:

@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-python3 crossection_scan_ptvpy.py -p /home/suxingliu/ply_data/test/
+python3 crossection_scan_ptvpy.py -p ~/ply_data/test/
 
 
 argument:
@@ -57,21 +57,45 @@ def execute_script(command):
         
         print("Failed ...!\n")
 
+
+def remove_file(filePath):
     
+    if os.path.exists(filePath):
+        os.remove(filePath)
+        print("Result file {} was updated\n".format(filePath))
+    else:
+        print("Creat new {}\n".format(filePath))
+
 
 def sequence_scan_pipeline(file_path, result_file):
     
+    #delete ptvpy.toml if exist
+    
+    print("Current working directory path {}\n".format(os.getcwd()))
+
+    filePath_ptvpy = os.getcwd() + "/ptvpy.toml"
+    remove_file(filePath_ptvpy)
+    
+    filePath_ptvpy = os.getcwd() + "/ptvpy.h5"
+    remove_file(filePath_ptvpy)
+    
+    
     #create a new profile file
+    print("Level set scan computating...\n")
     profile_file = "ptvpy profile create --data-files '" + file_path + "*" + ext + "'"
     execute_script(profile_file)
     
     #compute and tracking traces from image slices 
+    print("Tracking individual root particles...\n")
     track_trace = "ptvpy process"
     execute_script(track_trace)
     
     #print tracking results 
-    view_result = "ptvpy view summary --all"
-    execute_script(view_result)
+    #view_result = "ptvpy view summary --all"
+    #execute_script(view_result)
+    
+    #delete result file if exist
+    remove_file(result_file)
     
     export_result = "ptvpy export --type csv " + "'" + result_file + "'" 
     execute_script(export_result)

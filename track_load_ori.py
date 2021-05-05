@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-python3 track_load_ori.py -p /home/suxingliu/Ptvpy_test/ -f trace_result.csv -v True
+python3 track_load_ori.py -p ~/Ptvpy_test/ -f trace_result.csv -v True
 
 
 argument:
@@ -32,6 +32,7 @@ import fnmatch
 import os, os.path
 import math
 import sys
+#import shutil
 
 import matplotlib.pyplot as plt
 import argparse
@@ -93,6 +94,7 @@ def mkdir(path):
         os.makedirs(path)
         return True
     else:
+        #shutil.rmtree(dirpath)
         # if exists, return 
         #print path+' path exists!'
         return False
@@ -330,7 +332,7 @@ def trace_visualize(trace_array, array_index_rec, fit_linepts_rec, index_pair_re
         
         #cmap = get_cmap(len(X_rec))
         
-        fig_trace = mlab.figure(bgcolor = (1,1,1), fgcolor = (0.5, 0.5, 0.5), size = (720,1080))
+        fig_trace = mlab.figure('Root_structure', bgcolor = (1,1,1), fgcolor = (0.5, 0.5, 0.5), size = (720,1080))
         
         for idx, (x, y, z, diameter_rec_value, connect_label_rec_value, index_label_rec_value, color_rec_value) in enumerate(zip(X_rec, Y_rec, Z_rec, diameter_rec, connect_label_rec, index_label_rec, color_rec)):
             
@@ -358,20 +360,20 @@ def trace_visualize(trace_array, array_index_rec, fit_linepts_rec, index_pair_re
         
         #mlab.savefig(snapshot, sizesize = (720,1080))
         
-        obj_file = (save_path_result + 'model.obj')
+        #obj_file = (save_path_result + 'model.obj')
         
-        mlab.savefig(obj_file)
+        #mlab.savefig(obj_file)
        
         mlab.show()
         
         ############################################################################################################
         
-        '''
+        
         #############################################################################################################
         #animation display
         #fig_trace_animation = mlab.figure(bgcolor = (1,1,1), fgcolor = (0.5, 0.5, 0.5), size = (1920,1080))
         
-        fig_trace_animation = mlab.figure(bgcolor = (1,1,1), fgcolor = (0.5, 0.5, 0.5), size = (600,600))
+        fig_trace_animation = mlab.figure('Root_structure', bgcolor = (1,1,1), fgcolor = (0.5, 0.5, 0.5), size = (720,1080))
         
         # duration of the animation in seconds (it will loop)
         duration = len(X_rec)  
@@ -395,7 +397,7 @@ def trace_visualize(trace_array, array_index_rec, fit_linepts_rec, index_pair_re
 
             pts = mlab.text3d(X_rec[idx_t][len(X_rec[idx_t])-1], Y_rec[idx_t][len(X_rec[idx_t])-1], Z_rec[idx_t][len(X_rec[idx_t])-1], str(idx_t+1), scale = (text_size, text_size, text_size), color = (1, 0.0, 0.0))
             
-            #mlab.view(camera_azimuth, camera_elevation, camera_distance, camera_focalpoint)
+            mlab.view(camera_azimuth, camera_elevation, camera_distance, camera_focalpoint)
             
             print(mlab.view())
             
@@ -412,7 +414,7 @@ def trace_visualize(trace_array, array_index_rec, fit_linepts_rec, index_pair_re
         
         #show model
         mlab.show()
-        '''
+        
 
         ####################################################################Pipeline Visualiztion
         '''
@@ -554,7 +556,7 @@ def trace_visualize_simple(trace_array, array_index_rec, fit_linepts_rec, index_
         color_rec.append(color_rgb)
         
         #index_rec, length_rec, angle_rec, diameter_rec, projection_radius_rec, color_rec, index_label_rec, X_rec, Y_rec, Z_rec
-        
+    
     ##################################################visualize structure
     if args["visualize"]:
     
@@ -1254,20 +1256,22 @@ if __name__ == '__main__':
     
     X_scale = 2.0
     Y_scale = 2.0
-    Z_scale = -20.5
+    Z_scale = -2.5
     
-    text_size = 8
+    text_size = 6
     
-    tube_scale = 0.5
+    tube_scale = 0.8
     
     interpolation_range_factor = 0.55
     
+    
+    
     camera_azimuth = 45.0
     camera_elevation = 54.0
-    camera_distance = 315.0
-    camera_focalpoint = np.array([209.0, 227.0, -60.0]) 
+    camera_distance = 1148.0
+    camera_focalpoint = np.array([218.0, 216.0, -143.0]) 
     
-    #45.0, 54.73561031724535, 315.07889890453487, array([209.03103595, 227.88717853, -60.22928775]))
+    #45.00000000000001, 54.73561031724528, 1148.0687014896587, array([ 218.14042502,  216.51101153, -143.00329134]))
     
     '''
     #accquire slice image file list
