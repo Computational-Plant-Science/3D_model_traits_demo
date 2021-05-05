@@ -9,11 +9,12 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-python3 pipeline.py -p ~/ply_data/ -m model.ply
+python3 pipeline.py ~/example/sample_root_64/ -m root_64.ply
 
 parameter list:
 
-ap.add_argument('-n_frames', '-n', required = True, type = int, default = 1 , help = 'Number of new frames.')
+("-p", "--path", required = True, help = "path to *.ply model file")
+("-m", "--model", required = False, help = "model file name")
 
 
 """

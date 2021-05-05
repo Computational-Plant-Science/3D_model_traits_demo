@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 volume_render.py -p /home/suxingliu/cross_section_scan/
+python3 volume_render.py -p ~/example/sample_root_64/cross_section_scan/
 
 
 arguments:

@@ -1432,6 +1432,8 @@ if __name__ == '__main__':
     print(table + "\n")
     
     
+    print("Result file 'root_trace_measure.xlsx' was save~")
+    
     
     '''
     ##################################################################
