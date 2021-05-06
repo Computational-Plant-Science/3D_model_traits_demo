@@ -24,6 +24,18 @@ import sys
 import argparse
 
 
+def execute_script(command):
+    
+    try:
+        print(command)
+        print()
+        subprocess.run(command, shell = True)
+        
+    except OSError:
+        
+        print("Failed ...!\n")
+
+'''
 def execute_script(cmd_line):
     """execute script inside program"""
     try:
@@ -42,10 +54,7 @@ def execute_script(cmd_line):
     except OSError:
         
         print("Failed ...!\n")
-
-
-from time import sleep
-
+'''
 
 
 def model_analysis_pipeline(current_path, filename):
