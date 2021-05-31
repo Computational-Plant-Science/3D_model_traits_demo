@@ -56,15 +56,20 @@ def format_converter(current_path, model_name):
 
     pcd = o3d.io.read_point_cloud(model_file)
     
+    
+    print(np.asarray(pcd.points))
     #o3d.visualization.draw_geometries([pcd])
     
     Data_array = np.asarray(pcd.points)
     
+    
+    
+    
+                
+    
 
     #Normalize data
-    # to do
-    
-    #o3d.visualization.draw_geometries([pcd])
+
     
     # copy original point cloud for rotation
     pcd_r = copy.deepcopy(pcd)
@@ -121,7 +126,7 @@ def format_converter(current_path, model_name):
         return False
         print("Model file converter failed !")
         sys.exit(0)
-        
+    
 
 if __name__ == '__main__':
     

@@ -34,6 +34,10 @@ import sys
 import open3d as o3d
 import copy
 
+from mayavi import mlab
+
+import networkx as nx
+
 
 def format_converter(current_path, model_name):
     
@@ -52,6 +56,7 @@ def format_converter(current_path, model_name):
             
             print("Ply data structure: \n")
             print(plydata)
+            print("\n")
             print("Number of 3D points in current model: {0} \n".format(num_vertex))
         
     except:
@@ -68,7 +73,11 @@ def format_converter(current_path, model_name):
     
     #sort point cloud data based on Z values
     Data_array = np.asarray(sorted(Data_array_ori, key = itemgetter(2), reverse = False))
+    
+
    
+    
+
     '''
     #accquire data range
     min_x = Data_array[:, 0].min()
@@ -89,6 +98,7 @@ def format_converter(current_path, model_name):
     print(min_z,max_z)
     '''
     
+    
     #Normalize data
     #min_max_scaler = preprocessing.MinMaxScaler(feature_range = (0,1000000))
     
@@ -102,7 +112,12 @@ def format_converter(current_path, model_name):
     pcd = o3d.geometry.PointCloud()
     
     pcd.points = o3d.utility.Vector3dVector(point_normalized)
-
+    
+    o3d.visualization.draw_geometries([pcd])
+    
+     #Save modelfilea as ascii format in xyz
+    
+    '''
     # copy original point cloud for rotation
     pcd_r = copy.deepcopy(pcd)
     
@@ -151,8 +166,7 @@ def format_converter(current_path, model_name):
         return False
         print("Model file converter failed !")
         sys.exit(0)
-        
-
+    '''
 if __name__ == '__main__':
     
     
