@@ -50,3 +50,9 @@ Visualization requirement:
   
   python3 graph_compute.py -p /&path/active_component/
   
+
+Reference:
+
+Shenglan Du, Roderik Lindenbergh, Hugo Ledoux, Jantien Stoter, and Liangliang Nan.
+AdTree: Accurate, Detailed, and Automatic Modelling of Laser-Scanned Trees.
+Remote Sensing. 2019, 11(18), 2074.
