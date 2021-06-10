@@ -35,6 +35,7 @@ import open3d as o3d
 import copy
 
 from mayavi import mlab
+from tvtk.api import tvtk
 
 import networkx as nx
 
@@ -86,7 +87,30 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     Data_array_pcloud = np.asarray(pcd.points)
     
+    
+    if pcd.has_colors:
+        
+        print("Render colored point cloud")
+        
+        pcd_color = np.asarray(pcd.colors)
+        
+        pcd_color = np.rint(pcd_color * 255.0)
+        
+        #pcd_color = tuple(map(tuple, pcd_color))
+    else:
+        
+        print("Generate randdom color")
+        
+        pcd_color = np.random.randint(256, size = (len(Data_array_pcloud),3))
+        
     #print(Data_array_pcloud.shape)
+    
+    #print(len(Data_array_pcloud))
+    
+    #print(pcd_color.shape)
+    
+    #print(type(pcd_color))
+    
     
     
     #Parse the ply format file and Extract the data
@@ -118,8 +142,25 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #pts = mlab.points3d(X_skeleton, Y_skeleton, Z_skeleton, mode = 'point')
     
-    pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
+    #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
     
+    #visualize point cloud model with color
+    ############################
+    x, y, z = Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2] 
+    
+    pts = mlab.points3d(x,y,z, mode = 'point')
+    
+    sc = tvtk.UnsignedCharArray()
+    
+    sc.from_array(pcd_color)
+
+    pts.mlab_source.dataset.point_data.scalars = sc
+    
+    pts.mlab_source.dataset.modified()
+    
+
+    #visualize skeleton model, edge, nodes
+    ############################
     x = list()
     y = list()
     z = list()
@@ -184,10 +225,6 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     mlab.show()
     
     
-     
-
-
-
 
 
 if __name__ == '__main__':

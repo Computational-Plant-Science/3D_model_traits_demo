@@ -58,16 +58,12 @@ def format_converter(current_path, model_name):
     
     
     print(np.asarray(pcd.points))
-    #o3d.visualization.draw_geometries([pcd])
+    
+    o3d.visualization.draw_geometries([pcd])
     
     Data_array = np.asarray(pcd.points)
     
     
-    
-    
-                
-    
-
     #Normalize data
 
     
