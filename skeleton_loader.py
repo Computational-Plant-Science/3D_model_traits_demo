@@ -46,7 +46,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     print("Loading 3D skeleton file {}...\n".format(filename_skeleton))
     model_skeleton_name_base = os.path.splitext(model_skeleton)[0]
     
-    # load the model file
+    #load the ply format skeleton file 
     try:
         with open(model_skeleton, 'rb') as f:
             plydata_skeleton = PlyData.read(f)
@@ -64,56 +64,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         sys.exit(0)
     
     
-    model_pcloud = current_path + filename_pcloud
-    print("Loading 3D point cloud {}...\n".format(filename_pcloud))
-    model_pcloud_name_base = os.path.splitext(model_pcloud)[0]
-    
-    '''
-    # load the model file
-    try:
-        with open(model_pcloud, 'rb') as f:
-            plydata_pcloud = PlyData.read(f)
-            num_vertex_pcloud = plydata_pcloud.elements[0].count
-            
-            print("Ply data structure:")
-            #print(plydata_pcloud)
-            print("Number of 3D points in point cloud model: {0} \n".format(num_vertex_pcloud))
-        
-    except:
-        print("Model pcloud file does not exist!")
-        sys.exit(0)
-    '''
-    pcd = o3d.io.read_point_cloud(model_pcloud)
-    
-    Data_array_pcloud = np.asarray(pcd.points)
-    
-    
-    if pcd.has_colors:
-        
-        print("Render colored point cloud")
-        
-        pcd_color = np.asarray(pcd.colors)
-        
-        pcd_color = np.rint(pcd_color * 255.0)
-        
-        #pcd_color = tuple(map(tuple, pcd_color))
-    else:
-        
-        print("Generate randdom color")
-        
-        pcd_color = np.random.randint(256, size = (len(Data_array_pcloud),3))
-        
-    #print(Data_array_pcloud.shape)
-    
-    #print(len(Data_array_pcloud))
-    
-    #print(pcd_color.shape)
-    
-    #print(type(pcd_color))
-    
-    
-    
-    #Parse the ply format file and Extract the data
+    #Parse ply format skeleton file and Extract the data
     Data_array_skeleton = np.zeros((num_vertex_skeleton, 3))
     
     Data_array_skeleton[:,0] = plydata_skeleton['vertex'].data['x']
@@ -124,16 +75,50 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     Y_skeleton = Data_array_skeleton[:,1]
     Z_skeleton = Data_array_skeleton[:,2]
     
-    '''
-    #Parse the ply format file and Extract the data
-    Data_array_pcloud = np.zeros((num_vertex_pcloud, 3))
     
-    Data_array_pcloud[:,0] = plydata_pcloud['vertex'].data['x']
-    Data_array_pcloud[:,1] = plydata_pcloud['vertex'].data['y']
-    Data_array_pcloud[:,2] = plydata_pcloud['vertex'].data['z']
-    '''
+    #Load ply point cloud file
+    if not (filename_pcloud is None):
+        
+        model_pcloud = current_path + filename_pcloud
+        
+        print("Loading 3D point cloud {}...\n".format(filename_pcloud))
+        
+        model_pcloud_name_base = os.path.splitext(model_pcloud)[0]
+        
+        pcd = o3d.io.read_point_cloud(model_pcloud)
+        
+        Data_array_pcloud = np.asarray(pcd.points)
+        
+        
+        if pcd.has_colors():
+            
+            print("Render colored point cloud")
+            
+            pcd_color = np.asarray(pcd.colors)
+            
+            if len(pcd_color) > 0: 
+                
+                pcd_color = np.rint(pcd_color * 255.0)
+            
+            #pcd_color = tuple(map(tuple, pcd_color))
+        else:
+            
+            print("Generate randdom color")
+        
+            pcd_color = np.random.randint(256, size = (len(Data_array_pcloud),3))
+            
+        #print(Data_array_pcloud.shape)
+        
+        #print(len(Data_array_pcloud))
+        
+        #print(pcd_color.shape)
+        
+        #print(type(pcd_color))
     
     
+    
+    #Visualization pipeline
+    ####################################################################
     # The number of points per line
     N = 2
     
@@ -141,26 +126,28 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     mlab.clf()
     
     #pts = mlab.points3d(X_skeleton, Y_skeleton, Z_skeleton, mode = 'point')
-    
     #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
     
     #visualize point cloud model with color
-    ############################
-    x, y, z = Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2] 
+    ####################################################################
     
-    pts = mlab.points3d(x,y,z, mode = 'point')
-    
-    sc = tvtk.UnsignedCharArray()
-    
-    sc.from_array(pcd_color)
+    if not (filename_pcloud is None):
+        
+        x, y, z = Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2] 
+        
+        pts = mlab.points3d(x,y,z, mode = 'point')
+        
+        sc = tvtk.UnsignedCharArray()
+        
+        sc.from_array(pcd_color)
 
-    pts.mlab_source.dataset.point_data.scalars = sc
-    
-    pts.mlab_source.dataset.modified()
+        pts.mlab_source.dataset.point_data.scalars = sc
+        
+        pts.mlab_source.dataset.modified()
     
 
     #visualize skeleton model, edge, nodes
-    ############################
+    ####################################################################
     x = list()
     y = list()
     z = list()
@@ -217,7 +204,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     #lines = mlab.pipeline.stripper(src)
 
     # display the set of lines
-    mlab.pipeline.surface(src, colormap = 'Accent', line_width = 10, opacity = 0.8)
+    mlab.pipeline.surface(src, colormap = 'Accent', line_width = 5, opacity = 1.0)
 
     # And choose a nice view
     #mlab.view(33.6, 106, 5.5, [0, 0, .05])
@@ -234,14 +221,21 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
-    ap.add_argument("-m2", "--model_pcloud", required = True, help = "point cloud model file name")
+    ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name")
     args = vars(ap.parse_args())
 
 
     # setting path to model file 
     current_path = args["path"]
     filename_skeleton = args["model_skeleton"]
-    filename_pcloud = args["model_pcloud"]
+    
+    if args["model_pcloud"] is None:
+        
+        filename_pcloud = None
+        
+    else:
+        
+        filename_pcloud = args["model_pcloud"]
     
     #file_path = current_path + filename
 
