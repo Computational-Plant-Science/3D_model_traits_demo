@@ -71,9 +71,9 @@ def format_converter(current_path, model_name):
     pcd_r = copy.deepcopy(pcd)
     
     # define rotation matrix
-    R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
+    #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
     
-    #R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2, 0))
+    R = pcd.get_rotation_matrix_from_xyz((0, np.pi/4 + np.pi/2, 0))
     
     # Apply rotation transformation to copied point cloud data
     pcd_r.rotate(R, center = (0,0,0))
@@ -89,19 +89,20 @@ def format_converter(current_path, model_name):
     #std_ratio, which allows setting the threshold level based on the standard deviation of the average distances across the point cloud. 
     #The lower this number the more aggressive the filter will be.
 
+    
     print("Statistical oulier removal")
-    cl, ind = pcd_r.remove_statistical_outlier(nb_neighbors = 20, std_ratio = 0.1)
+    cl, ind = pcd_r.remove_statistical_outlier(nb_neighbors = 40, std_ratio = 0.001)
     display_inlier_outlier(pcd_r, ind)
-
+    
 
     # Visualize rotated point cloud 
     #o3d.visualization.draw_geometries([pcd, pcd_r])
     
     
     #Voxel downsampling uses a regular voxel grid to create a uniformly downsampled point cloud from an input point cloud
-    #print("Downsample the point cloud with a voxel of 0.05")
-    #downpcd = pcd_r.voxel_down_sample(voxel_size=0.5)
-    #o3d.visualization.draw_geometries([downpcd])
+    print("Downsample the point cloud with a voxel of 0.05")
+    downpcd = pcd_r.voxel_down_sample(voxel_size=0.5)
+    o3d.visualization.draw_geometries([downpcd])
     
     #Save model file as ascii format in ply
     filename = current_path + 'converted.ply'
