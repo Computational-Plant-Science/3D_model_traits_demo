@@ -23,5 +23,5 @@ logo: root_logo.jpg
 jobqueue:
   walltime: "03:00:00"
   memory: "40GB"
-  tasks: 1
+  processes: 1
   cores: 1
