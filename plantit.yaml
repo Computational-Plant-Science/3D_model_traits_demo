@@ -20,8 +20,8 @@ output:
       - csv
       - xlsx
 logo: root_logo.jpg
-resources:
-  time: "03:00:00"
-  mem: "40GB"
+jobqueue:
+  walltime: "03:00:00"
+  memory: "40GB"
   tasks: 1
   cores: 1
