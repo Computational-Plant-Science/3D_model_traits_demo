@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-python3 crossection_scan.py -p /home/suxing/ply_data/cross_section_scan/ -th 2.35
+python3 crossection_scan.py -p ~/ply_data/cross_section_scan/ -th 2.35
 
 
 argument:
@@ -160,10 +160,13 @@ def comp_external_contour(orig,thresh):
     #Measure properties 
     regions = regionprops(img_convexhull)
     
-    eccentricity = regions[0].eccentricity
+    #eccentricity = regions[0].eccentricity
+    
     
     d_major = regions[0].major_axis_length
     d_minor = regions[0].minor_axis_length
+    
+    eccentricity =  d_minor/d_major
     
     #eccentricity = 1
 
@@ -173,7 +176,7 @@ def comp_external_contour(orig,thresh):
     
     convexhull_diameter = regions[0].equivalent_diameter 
     
-    return img_convexhull,convexhull_diameter, y_cvh, x_cvh, eccentricity, d_major, d_minor
+    return img_convexhull, convexhull_diameter, y_cvh, x_cvh, eccentricity, d_major, d_minor
 
 
     
@@ -465,7 +468,7 @@ def CDF_visualization(result):
      #write measured parameters as excel file 
     # make the folder to store the results
     parent_path = os.path.abspath(os.path.join(file_path, os.pardir))
-    trait_file = (parent_path + '/CDF.xlsx')
+    trait_file = (save_path_excel + '/CDF.xlsx')
     
     
     if os.path.exists(trait_file):
@@ -602,7 +605,7 @@ def CDF_visualization(result):
     
     plt.legend(loc='best')
     
-    result_file_CDF = parent_path + '/'  + 'cdf.png'
+    result_file_CDF = save_path_excel + '/'  + 'cdf.png'
     #result_file_CDF = result_file_CDF.replace('.txt','_cdf.png')
     plt.savefig(result_file_CDF)
     plt.close()
@@ -628,7 +631,8 @@ def root_system_trait(image_file):
      # load the image and perform pyramid mean shift filtering to aid the thresholding step
     imgcolor = cv2.imread(image_file)
     
-    imgcolor = ~imgcolor
+    # if cross scan images are white background and black foreground
+    #imgcolor = ~imgcolor
     
     # accquire image dimensions 
     height, width, channels = imgcolor.shape
@@ -646,13 +650,13 @@ def root_system_trait(image_file):
     thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
     
     #Compute the gemetrical shape in convexhull
-    (img_convexhull,convexhull_diameter, y_cvh, x_cvh, eccentricity, d_major, d_minor) = comp_external_contour(imgcolor.copy(),thresh)
+    (img_convexhull, convexhull_diameter, y_cvh, x_cvh, eccentricity, d_major, d_minor) = comp_external_contour(imgcolor.copy(),thresh)
     
     #print("convexhull_diameter: {0} \n".format(convexhull_diameter))
     
    
     #define result path for labeled images
-    #result_img_path = save_path_convex + str(filename[0:-4]) + '_convex.png'
+    #result_img_path = save_path_excel + str(filename[0:-4]) + '_convex.png'
     
     # save results
     #cv2.imwrite(result_img_path,img_convexhull)
@@ -729,6 +733,8 @@ def root_system_trait(image_file):
 
 def parallel_root_system_trait(images):
     
+    
+    
     # parallel processing 
     agents = multiprocessing.cpu_count() - 2
     chunksize = 3
@@ -738,14 +744,7 @@ def parallel_root_system_trait(images):
         result = pool.map(root_system_trait, images, chunksize)
         
         pool.terminate()
-    '''
-     
-    #loop to all tracked trace files
-    for file_idx, fname in enumerate(images):
-
-        root_system_trait(file_idx)
-        
-    '''
+    
     base_name_rec = list(zip(*result))[0]
     convexhull_diameter_rec = list(zip(*result))[1]
     len_radius_rec = list(zip(*result))[2]
@@ -757,6 +756,13 @@ def parallel_root_system_trait(images):
     d_minor_rec = list(zip(*result))[8]
     radius_rec = list(zip(*result))[9]
     
+    '''
+    #loop to all tracked trace files
+    for file_idx, fname in enumerate(images):
+
+        (base_name_rec, convexhull_diameter_rec, len_radius_rec, num_primary_root_rec, num_lateral_root_rec, num_fine_root_rec, eccentricity_rec, d_major_rec, d_minor_rec, radius_rec) = root_system_trait(file_idx)
+        
+    '''
     eccentricity_avg = Average(eccentricity_rec)
     d_major_avg = Average(d_major_rec)
     d_minor_avg = Average(d_minor_rec)
@@ -794,7 +800,7 @@ def parallel_root_system_trait(images):
     # make the folder to store the results
     parent_path = os.path.abspath(os.path.join(file_path, os.pardir))
     #trait_file = (parent_path + '/system_traits_' + str(pattern_id) + '.xlsx')
-    trait_file = (parent_path + '/system_traits_detail.xlsx')
+    trait_file = (save_path_excel + '/system_traits_detail.xlsx')
     
    
     
@@ -838,7 +844,7 @@ def parallel_root_system_trait(images):
     # make the folder to store the results
     parent_path = os.path.abspath(os.path.join(file_path, os.pardir))
     #trait_file = (parent_path + '/system_traits_' + str(pattern_id) + '.xlsx')
-    trait_file = (parent_path + '/system_traits.xlsx')
+    trait_file = (save_path_excel + '/system_traits.xlsx')
     
     
     if os.path.exists(trait_file):
@@ -897,7 +903,7 @@ if __name__ == '__main__':
     ap.add_argument("-th", "--threshold", required = False, default = '2.35', type = float, help = "threshold to remove outliers")
     args = vars(ap.parse_args())
 
-    global file_path, save_path_ac, save_path_label, parent_path, pattern_id, count, whorl_dis_array, save_path_convex
+    global file_path, save_path_ac, save_path_label, parent_path, pattern_id, count, whorl_dis_array, save_path_excel, n_images
     
     # setting path to cross section image files
     file_path = args["path"]
@@ -912,6 +918,8 @@ if __name__ == '__main__':
     #accquire image file list
     imgList = sorted(glob.glob(image_file_path))
 
+    n_images = len(imgList)
+    
     # make the folder to store the results
     parent_path = os.path.abspath(os.path.join(file_path, os.pardir))
     mkpath = parent_path + '/' + str('active_component')
@@ -923,9 +931,9 @@ if __name__ == '__main__':
     save_path_label = mkpath + '/'
     
     
-    #mkpath = parent_path + '/' + str('convex')
-    #mkdir(mkpath)
-    #save_path_convex = mkpath + '/'
+    mkpath = parent_path + '/' + str('excel')
+    mkdir(mkpath)
+    save_path_excel = mkpath + '/'
 
     #print "results_folder: " + save_path_ac  
     
@@ -1034,11 +1042,12 @@ if __name__ == '__main__':
     
 
     
+    '''
     #convert excel to cvs file 
     
-    trait_file = (parent_path + '/system_traits.xlsx')
+    trait_file = (save_path_excel + '/system_traits.xlsx')
     
-    trait_file_csv = (parent_path + '/system_traits.csv')
+    trait_file_csv = (save_path_excel + '/system_traits.csv')
 
     wb = load_workbook(trait_file)
     sh = wb.active
@@ -1049,4 +1058,4 @@ if __name__ == '__main__':
         for r in sh.rows:
             c.writerow([cell.value for cell in r])
     
-    
+    '''

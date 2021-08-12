@@ -39,6 +39,8 @@ from tvtk.api import tvtk
 
 import networkx as nx
 
+import plotly.graph_objects as go
+
 
 def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
@@ -74,6 +76,131 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     X_skeleton = Data_array_skeleton[:,0]
     Y_skeleton = Data_array_skeleton[:,1]
     Z_skeleton = Data_array_skeleton[:,2]
+    
+    
+
+    
+    G = nx.Graph()
+    
+    #G.add_nodes_from()
+    
+    G.add_edges_from(array_edges_skeleton)
+    
+    #nx.draw(G, with_labels=True, font_weight='bold')
+    
+    #plt.show()  
+    
+    
+    #As before we use networkx to determine node positions. We want to do the same spring layout but in 3D
+    spring_3D = nx.spring_layout(G,dim=3, seed=18)
+    
+    
+    #we need to seperate the X,Y,Z coordinates for Plotly
+    #x_nodes = [spring_3D[i][0] for i in range(Num_nodes)]# x-coordinates of nodes
+    #y_nodes = [spring_3D[i][1] for i in range(Num_nodes)]# y-coordinates
+    #z_nodes = [spring_3D[i][2] for i in range(Num_nodes)]# z-coordinates
+
+
+    #We also need a list of edges to include in the plot
+    edge_list = G.edges()
+
+    #we  need to create lists that contain the starting and ending coordinates of each edge.
+    x_edges=[]
+    y_edges=[]
+    z_edges=[]
+
+    #need to fill these with all of the coordiates
+    for edge in edge_list:
+        #format: [beginning,ending,None]
+        x_coords = [spring_3D[edge[0]][0],spring_3D[edge[1]][0],None]
+        x_edges += x_coords
+
+        y_coords = [spring_3D[edge[0]][1],spring_3D[edge[1]][1],None]
+        y_edges += y_coords
+
+        z_coords = [spring_3D[edge[0]][2],spring_3D[edge[1]][2],None]
+        z_edges += z_coords
+
+    #create a trace for the edges
+    trace_edges = go.Scatter3d(x=x_edges,
+                        y=y_edges,
+                        z=z_edges,
+                        mode='lines',
+                        line=dict(color='black', width=2),
+                        hoverinfo='none')
+                    
+    '''
+    #create a trace for the nodes
+    trace_nodes = go.Scatter3d(x=x_nodes,
+                         y=y_nodes,
+                        z=z_nodes,
+                        mode='markers',
+                        marker=dict(symbol='circle',
+                                    size=10,
+                                    color='#6959CD', #color the nodes according to their community
+                                    colorscale=['lightgreen','magenta'], #either green or mageneta
+                                    line=dict(color='black', width=0.5)),
+                        text=club_labels,
+                        hoverinfo='text')
+    '''                    
+
+    #we need to set the axis for the plot 
+    axis = dict(showbackground=False,
+            showline=False,
+            zeroline=False,
+            showgrid=False,
+            showticklabels=False,
+            title='')
+            
+
+    #also need to create the layout for our plot
+    layout = go.Layout(title="Two Predicted Factions of Zachary's Karate Club",
+                width=650,
+                height=625,
+                showlegend=False,
+                scene=dict(xaxis=dict(axis),
+                        yaxis=dict(axis),
+                        zaxis=dict(axis),
+                        ),
+                margin=dict(t=100),
+                hovermode='closest')
+                
+    #Include the traces we want to plot and create a figure
+    data = [trace_edges]
+    fig = go.Figure(data=data, layout=layout)
+
+    fig.show()
+
+
+    '''
+    # reorder nodes from 0,len(G)-1
+    G_mayavi = nx.convert_node_labels_to_integers(G)
+    # 3d spring layout
+    pos = nx.spring_layout(G_mayavi, dim=3, seed=1001)
+    # numpy array of x,y,z positions in sorted node order
+    xyz = np.array([pos[v] for v in sorted(G_mayavi)])
+    # scalar colors
+    scalars = np.array(list(G_mayavi.nodes())) + 5
+
+    mlab.figure()
+
+    pts = mlab.points3d(
+    xyz[:, 0],
+    xyz[:, 1],
+    xyz[:, 2],
+    scalars,
+    scale_factor=0.1,
+    scale_mode="none",
+    colormap="Blues",
+    resolution=20,
+    )
+
+    pts.mlab_source.dataset.lines = np.array(list(G_mayavi.edges()))
+    tube = mlab.pipeline.tube(pts, tube_radius=0.01)
+    mlab.pipeline.surface(tube, color=(0.8, 0.8, 0.8))
+    mlab.orientation_axes()
+    mlab.show()
+    '''
     
     
     #Load ply point cloud file

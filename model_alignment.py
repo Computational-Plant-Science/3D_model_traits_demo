@@ -57,8 +57,9 @@ def format_converter(current_path, model_name):
     pcd = o3d.io.read_point_cloud(model_file)
     
     
-    print(np.asarray(pcd.points))
+    #print(np.asarray(pcd.points))
     
+    #visualize the original point cloud
     o3d.visualization.draw_geometries([pcd])
     
     Data_array = np.asarray(pcd.points)
@@ -89,14 +90,47 @@ def format_converter(current_path, model_name):
     #std_ratio, which allows setting the threshold level based on the standard deviation of the average distances across the point cloud. 
     #The lower this number the more aggressive the filter will be.
 
-    
+    # visualize the oulier removal point cloud
     print("Statistical oulier removal")
     cl, ind = pcd_r.remove_statistical_outlier(nb_neighbors = 40, std_ratio = 0.001)
     display_inlier_outlier(pcd_r, ind)
     
+    #builds a KDTree from point cloud
+    pcd_tree = o3d.geometry.KDTreeFlann(pcd_r)
+    
+    #paint the 1500th point red.
+    pcd_r.colors[1500] = [1, 0, 0]
+    
+    #Find its 200 nearest neighbors, and paint them blue.
+    [k, idx, _] = pcd_tree.search_knn_vector_3d(pcd_r.points[1500], 200)
+    np.asarray(pcd_r.colors)[idx[1:], :] = [0, 0, 1]
+    
+    print("Find its neighbors with distance less than 0.2, and paint them green.")
+    [k, idx, _] = pcd_tree.search_radius_vector_3d(pcd_r.points[1500], 0.2)
+    np.asarray(pcd_r.colors)[idx[1:], :] = [0, 1, 0]
+
 
     # Visualize rotated point cloud 
-    #o3d.visualization.draw_geometries([pcd, pcd_r])
+    o3d.visualization.draw_geometries([pcd_r])
+
+    # get convex hull of a point cloud is the smallest convex set that contains all points.
+    hull, _ = pcd_r.compute_convex_hull()
+    hull_ls = o3d.geometry.LineSet.create_from_triangle_mesh(hull)
+    hull_ls.paint_uniform_color((1, 0, 0))
+    #visualize the convex hull as a red LineSet
+    #o3d.visualization.draw_geometries([pcd_r, hull_ls])
+    
+    # get AxisAlignedBoundingBox
+    aabb = pcd_r.get_axis_aligned_bounding_box()
+    aabb.color = (0, 1, 0)
+    aabb_height = aabb.get_extent()
+    
+    print(aabb_height)
+    
+    # get OrientedBoundingBox
+    obb = pcd_r.get_oriented_bounding_box()
+    obb.color = (1, 0, 0)
+    o3d.visualization.draw_geometries([pcd_r, aabb, hull_ls])
     
     
     #Voxel downsampling uses a regular voxel grid to create a uniformly downsampled point cloud from an input point cloud

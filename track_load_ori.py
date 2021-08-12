@@ -368,7 +368,7 @@ def trace_visualize(trace_array, array_index_rec, fit_linepts_rec, index_pair_re
         
         ############################################################################################################
         
-        
+        '''
         #############################################################################################################
         #animation display
         #fig_trace_animation = mlab.figure(bgcolor = (1,1,1), fgcolor = (0.5, 0.5, 0.5), size = (1920,1080))
@@ -414,7 +414,7 @@ def trace_visualize(trace_array, array_index_rec, fit_linepts_rec, index_pair_re
         
         #show model
         mlab.show()
-        
+        '''
 
         ####################################################################Pipeline Visualiztion
         '''
@@ -1432,10 +1432,6 @@ if __name__ == '__main__':
     print(table + "\n")
     
     
-    print("Result file 'root_trace_measure.xlsx' was saved successfully~ \n")
-    
-    
-    '''
     ##################################################################
     #Start of writing measured parameters as excel file 
 
@@ -1470,7 +1466,7 @@ if __name__ == '__main__':
     
     sheet = wb.active
 
-    for row in zip(index_rec, length_rec, angle_rec, diameter_rec, projection_radius):
+    for row in zip(index_rec, length_rec, angle_rec, diameter_rec, projection_radius_rec):
         sheet.append(row)
     
     sheet.cell(row = 2, column = 6).value = trace_number
@@ -1482,6 +1478,8 @@ if __name__ == '__main__':
         
         print("Trait result was saved in: " + trait_file + "\n")
     
+    
+    '''
     import openpyxl
     import csv
 
@@ -1493,11 +1491,11 @@ if __name__ == '__main__':
         c = csv.writer(f)
         for r in sh.rows:
             c.writerow([cell.value for cell in r])
-    
+    '''
     
     ##################################################################
     #End of writing measured parameters as excel file 
-    '''
+    
     
    
 

@@ -9,9 +9,9 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 pt_scan_engine.py -p /home/suxingliu/ply_data/ -m surface.ply -i 5 -de X 
+python3 pt_scan_engine.py -p ~/ply_data/ -m surface.ply -i 5 -de X 
 
-python3 pt_scan_engine.py -p /home/suxingliu/ply_data/ -m converted.ply -i 5 -de Z
+python3 pt_scan_engine.py -p ~/ply_data/ -m converted.ply -i 5 -de Z
 
 
 arguments:

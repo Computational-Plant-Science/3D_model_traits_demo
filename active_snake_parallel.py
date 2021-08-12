@@ -6,7 +6,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 active_snake_parallel.py -p /home/suxingliu/ply_data/cross_section_scan/ 
+python3 active_snake_parallel.py -p ~/ply_data/cross_section_scan/ 
 
 
 """
@@ -30,9 +30,9 @@ from skimage.morphology import convex_hull_image
 import glob,os
 import cv2
 
-#import multiprocessing
-#from multiprocessing import Pool
-#from contextlib import closing
+import multiprocessing
+from multiprocessing import Pool
+from contextlib import closing
 
 def mkdir(path):
     # import module
@@ -76,7 +76,8 @@ def circle_levelset(shape, center, sqradius, scalerow=1.0):
     return u
 
 
-def active_snake(image_file, num_iters):
+def active_snake(image_file):
+    
     
     #Parse image path  and create result image path
     path, filename = os.path.split(image_file)
@@ -147,7 +148,7 @@ if __name__ == '__main__':
     #ap.add_argument("-m", "--mask", required = False,  type = int, default = 0, help = "1 for contour or 0 for component")
     args = vars(ap.parse_args())
     
-    global save_path_ac
+    global save_path_ac, num_iters
     # setting path to cross section image files
     file_path = args["path"]
     ext = args['filetype']
@@ -168,12 +169,12 @@ if __name__ == '__main__':
     num_iters = 230
 
     
-    
+    '''
     for idx, image_file in enumerate(imgList):
         
         num_iters_update = num_iters + idx*0.5
         
-        '''
+        
         if idx < 100:
             num_iters_update = 80
         elif idx < 300:
@@ -182,18 +183,18 @@ if __name__ == '__main__':
             num_iters_update = 150
         
         print(num_iters_update)
-        '''
+        
         
         active_snake(image_file, int(num_iters))
-    
     '''
+    
     # Run this with a pool of avaliable agents having a chunksize of 3 until finished
     agents = multiprocessing.cpu_count() - 2
     chunksize = 3
     with closing(Pool(processes = agents)) as pool:
         result = pool.map(active_snake, imgList, chunksize)
         pool.terminate()
-    '''
+    
     
      
 

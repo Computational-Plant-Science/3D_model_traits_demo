@@ -60,11 +60,13 @@ def execute_script(command):
 
 def remove_file(filePath):
     
+    #print(filePath)
+    
     if os.path.exists(filePath):
         os.remove(filePath)
-        print("Result file {} was updated\n".format(filePath))
+        print("File {} was updated\n".format(filePath))
     else:
-        print("Creat new {}\n".format(filePath))
+        print("Create new {}\n".format(filePath))
 
 
 def sequence_scan_pipeline(file_path, result_file):
@@ -83,7 +85,10 @@ def sequence_scan_pipeline(file_path, result_file):
     #create a new profile file
     print("Level set scan computating...\n")
     profile_file = "ptvpy profile create --data-files '" + file_path + "*" + ext + "'"
+    print(profile_file)
+    
     execute_script(profile_file)
+    
     
     #compute and tracking traces from image slices 
     print("Tracking individual root particles...\n")
@@ -103,7 +108,7 @@ def sequence_scan_pipeline(file_path, result_file):
 
 if __name__ == '__main__':
 
-    # construct the argument and parse the arguments
+    # construct and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True,    help = "path to image file")
     ap.add_argument("-ft", "--filetype", required = False, default = 'png',   help = "Image filetype")

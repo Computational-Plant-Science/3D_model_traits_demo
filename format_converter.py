@@ -1,7 +1,7 @@
 """
 Version: 1.5
 
-Summary: compute the cross section plane based on 3d model
+Summary: Align the center of the point cloud model and rotate it aligned with Z axis. 
 
 Author: suxing liu
 
@@ -34,7 +34,7 @@ import sys
 import open3d as o3d
 import copy
 
-from mayavi import mlab
+#from mayavi import mlab
 
 import networkx as nx
 
@@ -74,10 +74,6 @@ def format_converter(current_path, model_name):
     #sort point cloud data based on Z values
     Data_array = np.asarray(sorted(Data_array_ori, key = itemgetter(2), reverse = False))
     
-
-   
-    
-
     '''
     #accquire data range
     min_x = Data_array[:, 0].min()
@@ -107,17 +103,28 @@ def format_converter(current_path, model_name):
     point_normalized = min_max_scaler.fit_transform(Data_array)
     
     #point_normalized_scale = [i * 1 for i in point_normalized]
-   
     # Pass xyz to Open3D.o3d.geometry.PointCloud 
     pcd = o3d.geometry.PointCloud()
     
     pcd.points = o3d.utility.Vector3dVector(point_normalized)
     
-    o3d.visualization.draw_geometries([pcd])
+    #o3d.visualization.draw_geometries([pcd])
     
-     #Save modelfilea as ascii format in xyz
     
     '''
+    #load point cloud using open3d loader
+    pcd = o3d.io.read_point_cloud(model_file)
+    
+    
+    #print(np.asarray(pcd.points))
+    
+    #visualize the original point cloud
+    o3d.visualization.draw_geometries([pcd])
+    
+    Data_array = np.asarray(pcd.points)
+    '''
+    
+    
     # copy original point cloud for rotation
     pcd_r = copy.deepcopy(pcd)
     
@@ -137,10 +144,7 @@ def format_converter(current_path, model_name):
     # Visualize rotated point cloud 
     #o3d.visualization.draw_geometries([pcd, pcd_r])
     
-    #Voxel downsampling uses a regular voxel grid to create a uniformly downsampled point cloud from an input point cloud
-    #print("Downsample the point cloud with a voxel of 0.05")
-    #downpcd = pcd_r.voxel_down_sample(voxel_size=0.5)
-    #o3d.visualization.draw_geometries([downpcd])
+   
     
     #Save model file as ascii format in ply
     filename = current_path + 'converted.ply'
@@ -154,8 +158,8 @@ def format_converter(current_path, model_name):
     #print(mesh)
 
     #Save modelfilea as ascii format in xyz
-    filename = model_name_base + '.xyz'
-    o3d.io.write_point_cloud(filename, pcd_r, write_ascii = True)
+    #filename = model_name_base + '.xyz'
+    #o3d.io.write_point_cloud(filename, pcd_r, write_ascii = True)
     
     
     # check saved file
@@ -166,7 +170,7 @@ def format_converter(current_path, model_name):
         return False
         print("Model file converter failed !")
         sys.exit(0)
-    '''
+    
 if __name__ == '__main__':
     
     

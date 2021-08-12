@@ -6,7 +6,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python crossection_measure.py -p /home/suxingliu/MOF_track/test/ -ext png -t 1
+python3 crossection_measure.py -p ~/ -ext png -t 1
 
 
 """
@@ -70,7 +70,7 @@ def comp_external_contour(orig,thresh):
     
     img_height, img_width, img_channels = orig.shape
     
-     #Convert the mean shift image to grayscale, then apply Otsu's thresholding
+    #Convert image to grayscale, then apply Otsu's thresholding
     gray = cv2.cvtColor(orig, cv2.COLOR_BGR2GRAY)
     
     convexhull = convex_hull_image(thresh)
@@ -130,15 +130,13 @@ def root_area_label(image_file):
     thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
     
     #Compute the gemetrical shape in convexhull
-    (img_convexhull,convexhull_diameter, y_cvh, x_cvh) = comp_external_contour(imgcolor.copy(),thresh)
+    (img_convexhull, convexhull_diameter, y_cvh, x_cvh) = comp_external_contour(imgcolor.copy(),thresh)
     
     #print("convexhull_diameter: {0} \n".format(convexhull_diameter))
     
     
     #Obtain the threshold image using OTSU adaptive filter
     ret, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-    
-
     
     connectivity = 8
     
