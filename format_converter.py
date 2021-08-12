@@ -147,7 +147,7 @@ def format_converter(current_path, model_name):
    
     
     #Save model file as ascii format in ply
-    filename = current_path + 'converted.ply'
+    filename = current_path + 'aligned.ply'
     
     #write out point cloud file
     o3d.io.write_point_cloud(filename, pcd_r, write_ascii = True)

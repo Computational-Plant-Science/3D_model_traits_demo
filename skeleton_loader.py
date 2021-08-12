@@ -79,7 +79,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
 
-    
+    '''
     G = nx.Graph()
     
     #G.add_nodes_from()
@@ -129,20 +129,6 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
                         line=dict(color='black', width=2),
                         hoverinfo='none')
                     
-    '''
-    #create a trace for the nodes
-    trace_nodes = go.Scatter3d(x=x_nodes,
-                         y=y_nodes,
-                        z=z_nodes,
-                        mode='markers',
-                        marker=dict(symbol='circle',
-                                    size=10,
-                                    color='#6959CD', #color the nodes according to their community
-                                    colorscale=['lightgreen','magenta'], #either green or mageneta
-                                    line=dict(color='black', width=0.5)),
-                        text=club_labels,
-                        hoverinfo='text')
-    '''                    
 
     #we need to set the axis for the plot 
     axis = dict(showbackground=False,
@@ -170,6 +156,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     fig = go.Figure(data=data, layout=layout)
 
     fig.show()
+    
+    '''
 
 
     '''

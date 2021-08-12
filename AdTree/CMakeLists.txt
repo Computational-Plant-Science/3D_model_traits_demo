@@ -1,86 +1,63 @@
 cmake_minimum_required(VERSION 3.1)
 
+if (APPLE)
+        set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING "Minimum OS X deployment version" FORCE)
+        message(STATUS "Minimum OS X deployment version: ${CMAKE_OSX_DEPLOYMENT_TARGET}")
+endif ()
+
 get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(${PROJECT_NAME})
 
+set(default_build_type "Release")
 
-set(${PROJECT_NAME}_SOURCES
-        main.cpp
-        graph.h
-        tree_viewer.h
-        tree_viewer.cpp
-        skeleton.h
-        skeleton.cpp
-        cylinder.h
-        viewer_imgui.h
-        viewer_imgui.cpp
-        )
+################################################################################
 
-if (APPLE)
-    function(resource VAR SOURCE_PATH DESTINATION PATTERN)
-        file(GLOB_RECURSE _LIST CONFIGURE_DEPENDS ${SOURCE_PATH}/${PATTERN})
-        foreach (RESOURCE ${_LIST})
-            get_filename_component(_PARENT ${RESOURCE} DIRECTORY)
-            if (${_PARENT} STREQUAL ${SOURCE_PATH})
-                set(_DESTINATION ${DESTINATION})
-            else ()
-                file(RELATIVE_PATH _DESTINATION ${SOURCE_PATH} ${_PARENT})
-                set(_DESTINATION ${DESTINATION}/${_DESTINATION})
-            endif ()
-            set_property(SOURCE ${RESOURCE} PROPERTY MACOSX_PACKAGE_LOCATION ${_DESTINATION})
-        endforeach (RESOURCE)
-        set(${VAR} ${_LIST} PARENT_SCOPE)
-    endfunction()
+set (CMAKE_CXX_STANDARD 11)
 
-    resource(VERTEX_SHADERS ${ADTREE_ROOT}/resources/shaders Resources/shaders *.vert)
-    resource(FRAGMENT_SHADERS ${ADTREE_ROOT}/resources/shaders Resources/shaders *.frag)
+################################################################################
 
-    # This tells CMake where to find and install the ICON file
-    set(${PROJECT_NAME}_ICON ${ADTREE_ROOT}/resources/icons/adtree.icns)
+# Detects whether this is a top-level project
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+        set(ADTREE_TOPLEVEL_PROJECT ON)
+else()
+        set(ADTREE_TOPLEVEL_PROJECT OFF)
+endif()
 
-    #Append the new files to the resources file list
-    list(APPEND ${PROJECT_NAME}_SOURCES ${${PROJECT_NAME}_ICON} ${VERTEX_SHADERS} ${FRAGMENT_SHADERS})
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${${PROJECT_NAME}_ICON} ${${PROJECT_NAME}_SOURCES})
+################################################################################
 
-    set_source_files_properties(${${PROJECT_NAME}_ICON} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+### Configuration
+set(ADTREE_ROOT "${CMAKE_CURRENT_LIST_DIR}")
+set(ADTREE_INCLUDE_DIR "${ADTREE_ROOT}")
+set(ADTREE_SOURCE_DIR "${ADTREE_ROOT}")
+set(ADTREE_EXTERNAL "${ADTREE_ROOT}/3rd_party")
 
-    ## Note: On macOS, high-DPI support is enabled by settings in the Info.plist file. Make sure they are present.
-    ## For more information, see: http://doc.qt.io/qt-5/highdpi.html
-    ## Enable high DPI support by using my Info.plist file in which I added NSHighResolutionCapable to be true.
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-            INSTALL_RPATH "@executable_path/../Frameworks"
-            MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME}
-            MACOSX_BUNDLE TRUE
-            MACOSX_BUNDLE_INFO_PLIST "${ADTREE_ROOT}/resources/Mac/adtree.plist"
-            MACOSX_BUNDLE_ICON_FILE "adtree.icns"
-            MACOSX_BUNDLE_SHORT_VERSION_STRING "1.0"
-            MACOSX_BUNDLE_LONG_VERSION_STRING "1.0"
-            MACOSX_BUNDLE_BUNDLE_VERSION "1.0"
-            MACOSX_BUNDLE_GUI_IDENTIFIER "liangliang.nan@gmail.com"
-            )
-else ()
-    add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
-endif ()
+set(ADTREE_glew_INCLUDE_DIR "${ADTREE_EXTERNAL}/glew/include")
+set(ADTREE_glfw_INCLUDE_DIR "${ADTREE_EXTERNAL}/glfw/include")
+set(ADTREE_imgui_INCLUDE_DIR "${ADTREE_EXTERNAL}/imgui")
+set(ADTREE_tetgen_INCLUDE_DIR "${ADTREE_EXTERNAL}/tetgen")
+set(ADTREE_kd_tree_INCLUDE_DIR "${ADTREE_EXTERNAL}/kd_tree")
+set(ADTREE_cminpack_INCLUDE_DIR "${ADTREE_EXTERNAL}/cminpack")
+set(ADTREE_easy3d_INCLUDE_DIR "${ADTREE_EXTERNAL}" "${ADTREE_ROOT}")
+set(ADTREE_lm_INCLUDE_DIR "${ADTREE_EXTERNAL}/optimizer_lm")
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "AdTree")
+################################################################################
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${ADTREE_glew_INCLUDE_DIR})
-target_include_directories(${PROJECT_NAME} PRIVATE ${ADTREE_glfw_INCLUDE_DIR})
-target_include_directories(${PROJECT_NAME} PRIVATE ${ADTREE_easy3d_INCLUDE_DIR})
-target_include_directories(${PROJECT_NAME} PRIVATE ${ADTREE_tetgen_INCLUDE_DIR})
-target_include_directories(${PROJECT_NAME} PRIVATE ${ADTREE_kd_tree_INCLUDE_DIR})
-target_include_directories(${PROJECT_NAME} PRIVATE ${ADTREE_lm_INCLUDE_DIR})
+### conditionally compile certain modules depending on libraries found on the system
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_STATIC)
+################################################################################
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-#set (OpenGL_GL_PREFERENCE GLVND)
-find_package(OpenGL REQUIRED)
-message(STATUS "OpenGL libraries: ${OPENGL_LIBRARIES}")
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew glfw imgui core util fileio algo viewer tetgen kd_tree cminpack optimizer_lm)
+################################################################################
 
+add_subdirectory(3rd_party)
+add_subdirectory(AdTree)
 
-find_package(Boost REQUIRED) # It's "Boost", not "BOOST" or "boost". Case matters.
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
-target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIRS} ${Boost_headers_DIR})
+## Resources
+# Copy resources dirs into our shadow build directory
+file( COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
