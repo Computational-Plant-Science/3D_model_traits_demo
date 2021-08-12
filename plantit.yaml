@@ -20,8 +20,11 @@ output:
       - csv
       - xlsx
 logo: root_logo.jpg
-resources:
-  time: "03:00:00"
-  mem: "40GB"
-  tasks: 1
+env:
+  - LC_ALL=C.UTF-8
+  - LANG=C.UTF-8
+jobqueue:
+  walltime: "03:00:00"
+  memory: "40GB"
+  processes: 1
   cores: 1
