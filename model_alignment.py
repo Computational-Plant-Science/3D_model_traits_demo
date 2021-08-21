@@ -47,9 +47,16 @@ def format_converter(current_path, model_name):
     
     model_file = current_path + model_name
     
-    print("Converting file format for 3D point cloud model {}...\n".format(model_name))
+    if os.path.isfile(model_file):
+        print("Converting file format for 3D point cloud model {}...\n".format(model_name))
+    else:
+        print("File not exist")
+        sys.exit()
     
-    model_name_base = os.path.splitext(model_file)[0]
+        
+    abs_path = os.path.abspath(model_file)
+    filename, file_extension = os.path.splitext(abs_path)
+    base_name = os.path.splitext(os.path.basename(filename))[0]
     
      
     # Pass xyz to Open3D.o3d.geometry.PointCloud 
@@ -72,9 +79,11 @@ def format_converter(current_path, model_name):
     pcd_r = copy.deepcopy(pcd)
     
     # define rotation matrix
-    R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
+    #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
     
-    #R = pcd.get_rotation_matrix_from_xyz((0, np.pi/4 + np.pi/2, 0))
+    #R = pcd.get_rotation_matrix_from_xyz((0, np.pi/4, 0))
+    
+    R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2, 0))
     
     # Apply rotation transformation to copied point cloud data
     pcd_r.rotate(R, center = (0,0,0))
@@ -141,13 +150,13 @@ def format_converter(current_path, model_name):
     '''
     
     #Save model file as ascii format in ply
-    filename = current_path + 'aligned.ply'
+    filename = current_path + base_name + '_aligned.ply'
     
     #write out point cloud file
     o3d.io.write_point_cloud(filename, pcd_r, write_ascii = True)
     
     #Save modelfilea as ascii format in xyz
-    filename = model_name_base + '.xyz'
+    filename = current_path + base_name + '.xyz'
     o3d.io.write_point_cloud(filename, pcd_r, write_ascii = True)
     
     

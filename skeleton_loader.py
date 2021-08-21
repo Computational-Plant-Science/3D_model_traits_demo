@@ -218,7 +218,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
             #pcd_color = tuple(map(tuple, pcd_color))
         else:
             
-            print("Generate randdom color")
+            print("Generate random color")
         
             pcd_color = np.random.randint(256, size = (len(Data_array_pcloud),3))
             
