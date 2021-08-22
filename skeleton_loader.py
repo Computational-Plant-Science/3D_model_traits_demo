@@ -37,9 +37,20 @@ import copy
 from mayavi import mlab
 from tvtk.api import tvtk
 
-import networkx as nx
+#import networkx as nx
+
+#from graph_tool.all import *
+
+import graph_tool.all as gt
 
 import plotly.graph_objects as go
+
+
+def distance_pt(p0, p1):
+    
+    dist = np.linalg.norm(p0 - p1)
+    
+    return dist
 
 
 def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
@@ -78,6 +89,27 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     Z_skeleton = Data_array_skeleton[:,2]
     
     
+    #########################
+    '''
+    #for i in range(N_edges_skeleton):
+        
+        #print("Edges {0} has nodes {1}, {2}\n".format(i, array_edges_skeleton[i][0], array_edges_skeleton[i][1]))
+        
+        #print("Edges {0} has nodes {1}, {2}\n".format(i, X_skeleton[array_edges_skeleton[i][0]], Y_skeleton[array_edges_skeleton[i][0]], Z_skeleton[array_edges_skeleton[i][0]]))
+        
+        
+        x.append(X_skeleton[array_edges_skeleton[i][0]])
+        y.append(Y_skeleton[array_edges_skeleton[i][0]])
+        z.append(Z_skeleton[array_edges_skeleton[i][0]])
+        
+        print("Edges {0} has nodes {1}, {2}\n".format(i, array_edges_skeleton[i][0], array_edges_skeleton[i][1]))
+        
+        x.append(X_skeleton[array_edges_skeleton[i][1]])
+        y.append(Y_skeleton[array_edges_skeleton[i][1]])
+        z.append(Z_skeleton[array_edges_skeleton[i][1]])
+        
+        print("Edges {0} has nodes {1}, {2}\n".format(i, array_edges_skeleton[i][0], array_edges_skeleton[i][1]))
+    '''
 
     '''
     G = nx.Graph()
@@ -89,10 +121,33 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     #nx.draw(G, with_labels=True, font_weight='bold')
     
     #plt.show()  
+    '''
     
+    #g = Graph()
+    print((array_edges_skeleton))
     
+    list_edges_skeleton = array_edges_skeleton.tolist()
+    #g = gt.Graph()
+    
+    #g.add_edge_list(array_edges_skeleton)
+    
+
+    #edges = [(1, 6), (1, 7), (1, 5), (1, 12), (2, 4), (2, 9), (3, 13), (7, 0), (7, 2), (7, 3), (8, 1), (8, 10), (8, 11)]
+    
+    #print(type(edges))
+    
+    # Directed by default​
+    G = gt.Graph()
+    
+    #nodes = G.add_vertex(20)
+    G.add_edge_list(list_edges_skeleton) 
+    
+    gt.graph_draw(G, vertex_text = G.vertex_index, output = "two-nodes.pdf")
+     
+    
+    '''
     #As before we use networkx to determine node positions. We want to do the same spring layout but in 3D
-    spring_3D = nx.spring_layout(G,dim=3, seed=18)
+    spring_3D = nx.spring_layout(G, dim=3, seed=18)
     
     
     #we need to seperate the X,Y,Z coordinates for Plotly
@@ -156,8 +211,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     fig = go.Figure(data=data, layout=layout)
 
     fig.show()
-    
     '''
+    
 
 
     '''
@@ -232,7 +287,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
     
-    #Visualization pipeline
+    #Skeleton Visualization pipeline
     ####################################################################
     # The number of points per line
     N = 2
@@ -240,7 +295,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     mlab.figure(1, size=(800, 800), bgcolor=(0, 0, 0))
     mlab.clf()
     
-    #pts = mlab.points3d(X_skeleton, Y_skeleton, Z_skeleton, mode = 'point')
+    pts = mlab.points3d(X_skeleton, Y_skeleton, Z_skeleton, mode = 'point')
+    
     #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
     
     #visualize point cloud model with color
@@ -260,7 +316,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         pts.mlab_source.dataset.modified()
     
-
+    '''
     #visualize skeleton model, edge, nodes
     ####################################################################
     x = list()
@@ -272,10 +328,11 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     # The index of the current point in the total amount of points
     index = 0
     
+    # Create each line one after the other in a loop
     for i in range(N_edges_skeleton):
         
         #print("Edges {0} has nodes {1}, {2}\n".format(i, array_edges[i][0], array_edges[i][1]))
-        
+      
         x.append(X_skeleton[array_edges_skeleton[i][0]])
         y.append(Y_skeleton[array_edges_skeleton[i][0]])
         z.append(Z_skeleton[array_edges_skeleton[i][0]])
@@ -324,6 +381,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     # And choose a nice view
     #mlab.view(33.6, 106, 5.5, [0, 0, .05])
     #mlab.roll(125)
+    
+    '''
     mlab.show()
     
     
