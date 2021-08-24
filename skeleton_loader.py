@@ -45,8 +45,11 @@ import plotly.graph_objects as go
 
 #from matplotlib import pyplot as plt
 
+from math import sqrt
 
-# calculate length of 3D line
+
+
+# calculate length of a 3D path or curve
 def path_length(X, Y, Z):
 
     n = len(X)
@@ -57,12 +60,14 @@ def path_length(X, Y, Z):
     
     return L
 
+'''
+# distance between two points
 def distance_pt(p0, p1):
     
     dist = np.linalg.norm(p0 - p1)
     
     return dist
-
+'''
 
 def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
@@ -190,8 +195,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
     #define start and end vertex index
-    start_v = 222
-    end_v = 243
+    start_v = 0
+    end_v = 221
     
     # find shortest path in the graph between start and end vertices 
     vlist, elist = gt.shortest_path(G_unordered, G_unordered.vertex(start_v), G_unordered.vertex(end_v))
@@ -200,8 +205,13 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     elist_path = [str(e) for e in elist]
     
-    #print(vlist_path)
+    index_vlist_path = [int(i) for i in vlist_path]
     
+    print("vlist_path = {} \n".format(type(index_vlist_path[0])))
+    
+    curve_length = path_length(X_skeleton[index_vlist_path], Y_skeleton[index_vlist_path], Z_skeleton[index_vlist_path])
+    
+    print("curve_length = {} \n".format(curve_length))
     
     ###################################################################
 
