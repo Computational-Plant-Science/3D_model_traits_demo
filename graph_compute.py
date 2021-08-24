@@ -310,7 +310,6 @@ if __name__ == '__main__':
     #mayavi_visualize(graph, image_chunk)
     
     
-    
     skel = skel.astype(bool) #data needs to be bool
     
     G = skel2graph(skel) #create graph

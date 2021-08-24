@@ -141,13 +141,22 @@ def asSpherical(x, y, z):
     return r, elevation, azimuth
 
 
+
+    
+
 def Line_length(X, Y, Z):
+	
     """compute 3D line length """
+    n = len(X)
+    
+    lv = [sqrt((X[i]-X[i-1])**2 + (Y[i]-Y[i-1])**2 + (Z[i]-Z[i-1])) for i in range (1,n)]
+    
+    L = sum(lv)
     
     # calculate length of line
-    l = np.sqrt( np.diff(X)**2 + np.diff(Y)**2 + np.diff(Z)**2 )
+    #l = np.sqrt( np.diff(X)**2 + np.diff(Y)**2 + np.diff(Z)**2 )
     
-    return l
+    return L
 
 def Distance(x1, y1, x2, y2):
     """compute distance between two 2D points"""
