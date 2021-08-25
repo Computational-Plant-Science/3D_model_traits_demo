@@ -29,6 +29,8 @@ from sklearn.preprocessing import MinMaxScaler
 from operator import itemgetter
 import argparse
 
+from scipy.spatial import KDTree
+
 import os
 import sys
 import open3d as o3d
@@ -37,7 +39,7 @@ import copy
 from mayavi import mlab
 from tvtk.api import tvtk
 
-import networkx as nx
+#import networkx as nx
 
 import graph_tool.all as gt
 
@@ -68,6 +70,18 @@ def distance_pt(p0, p1):
     
     return dist
 '''
+#find the closest points from a points sets to a fix point using Kdtree, O(log n) 
+def closest_point(point_set, anchor_point):
+    
+    kdtree = KDTree(point_set)
+    
+    (d, i) = kdtree.query(anchor_point)
+    
+    #print("closest point:", point_set[i])
+    
+    return  i, point_set[i]
+
+    
 
 def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
@@ -190,13 +204,34 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
                 end_vlist_offset.append(v+1)
             
     print("end_vlist = {} \n".format(end_vlist))
-    
     print("end_vlist_offset = {} \n".format(end_vlist_offset))
+    
+    
+    if len(end_vlist) == len(end_vlist_offset):
+        
+        #for v1,v2 in zip(end_vlist, end_vlist_offset):
+        
+        G_unordered.add_edge(31, 222)
+    
+    '''
+    for v in G_unordered.iter_vertices():
+        
+        if G_unordered.vertex(v) == '222':
+        
+            #print("found!")
+            for w in G_unordered.vertex(v).out_neighbors():
+                
+                print(w)
+    '''
+
+    
     
     
     #define start and end vertex index
     start_v = 0
-    end_v = 221
+    end_v = 243
+    
+    print(X_skeleton[start_v], Y_skeleton[start_v], Z_skeleton[start_v])
     
     # find shortest path in the graph between start and end vertices 
     vlist, elist = gt.shortest_path(G_unordered, G_unordered.vertex(start_v), G_unordered.vertex(end_v))
@@ -205,14 +240,42 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     elist_path = [str(e) for e in elist]
     
-    index_vlist_path = [int(i) for i in vlist_path]
+    #change format form str to int
+    int_vlist_path = [int(i) for i in vlist_path]
     
-    print("vlist_path = {} \n".format(type(index_vlist_path[0])))
+    print(int_vlist_path)
     
-    curve_length = path_length(X_skeleton[index_vlist_path], Y_skeleton[index_vlist_path], Z_skeleton[index_vlist_path])
+    if len(vlist_path) > 0: 
+        
+        print("Shortest path found in graph! \n")
+        
+        print("vlist_path = {} \n".format(type(int_vlist_path)))
     
-    print("curve_length = {} \n".format(curve_length))
+        curve_length = path_length(X_skeleton[int_vlist_path], Y_skeleton[int_vlist_path], Z_skeleton[int_vlist_path])
     
+        print("curve_length = {} \n".format(curve_length))
+    else:
+        print("No shortest path found in graph...\n")
+    
+    '''
+    anchor_point = (X_skeleton[222], Y_skeleton[222], Z_skeleton[222])
+    
+    print(anchor_point)
+    
+    point_set = np.zeros((len(int_vlist_path), 3))
+    
+    point_set[:,0] = X_skeleton[int_vlist_path]
+    point_set[:,1] = Y_skeleton[int_vlist_path]
+    point_set[:,2] = Z_skeleton[int_vlist_path]
+    
+    
+    #print(point_set)
+    
+    (index_cp, value_cp) = closest_point(point_set, anchor_point)
+    
+    print("closest point index and value: {0}, {1}".format(index_cp, value_cp))
+    
+    '''
     ###################################################################
 
     
@@ -267,18 +330,22 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #pts = mlab.points3d(X_skeleton, Y_skeleton, Z_skeleton, mode = 'point', scale_factor = 0.5)
     
-    pts = mlab.points3d(X_skeleton[end_vlist], Y_skeleton[end_vlist], Z_skeleton[end_vlist], color=(0,0,1), mode = 'sphere', scale_factor = 0.05)
+    pts = mlab.points3d(X_skeleton[end_vlist], Y_skeleton[end_vlist], Z_skeleton[end_vlist], color = (0,0,1), mode = 'sphere', scale_factor = 0.10)
     
-    pts = mlab.points3d(X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset], color=(1,0,0), mode = 'sphere', scale_factor = 0.05)
+    #pts = mlab.points3d(X_skeleton[index_cp], Y_skeleton[index_cp], Z_skeleton[index_cp], color = (0,1,1), mode = 'sphere', scale_factor = 0.20)
+    
+    #pts = mlab.points3d(X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset], color=(1,0,0), mode = 'sphere', scale_factor = 0.02)
     
     for i, (end_val, x_e, y_e, z_e) in enumerate(zip(end_vlist, X_skeleton[end_vlist], Y_skeleton[end_vlist], Z_skeleton[end_vlist])):
         
-        mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.04, 0.04, 0.04))
+        mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.01, 0.01, 0.01))
     
+
     for i, (end_val, x_e, y_e, z_e) in enumerate(zip(end_vlist_offset, X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset])):
         
         mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.04, 0.04, 0.04))
-        
+    
+
     #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
     
     #visualize point cloud model with color
@@ -362,7 +429,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     # And choose a nice view
     #mlab.view(33.6, 106, 5.5, [0, 0, .05])
     #mlab.roll(125)
-    
+    #mlab.show()
     
     '''
     filepath = current_path + 'edges_skeleton_s.txt'
@@ -466,66 +533,68 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     # visualize path
     #visualize skeleton model, edge, nodes
     ####################################################################
-    x = list()
-    y = list()
-    z = list()
-    s = list()
-    connections = list()
+    if len(vlist_path) > 0:
     
-    # The index of the current point in the total amount of points
-    index = 0
-    
-    # Create each line one after the other in a loop
-    #for i in range(N_edges_skeleton):
-    for val in vlist_path:
+        x = list()
+        y = list()
+        z = list()
+        s = list()
+        connections = list()
         
-        i = int(val)
-        #print("Edges {0} has nodes {1}, {2}\n".format(i, array_edges[i][0], array_edges[i][1]))
-      
-        x.append(X_skeleton[array_edges_skeleton[i][0]])
-        y.append(Y_skeleton[array_edges_skeleton[i][0]])
-        z.append(Z_skeleton[array_edges_skeleton[i][0]])
+        # The index of the current point in the total amount of points
+        index = 0
         
-        x.append(X_skeleton[array_edges_skeleton[i][1]])
-        y.append(Y_skeleton[array_edges_skeleton[i][1]])
-        z.append(Z_skeleton[array_edges_skeleton[i][1]])
+        # Create each line one after the other in a loop
+        #for i in range(N_edges_skeleton):
+        for val in vlist_path:
+            
+            i = int(val)
+            #print("Edges {0} has nodes {1}, {2}\n".format(i, array_edges[i][0], array_edges[i][1]))
+          
+            x.append(X_skeleton[array_edges_skeleton[i][0]])
+            y.append(Y_skeleton[array_edges_skeleton[i][0]])
+            z.append(Z_skeleton[array_edges_skeleton[i][0]])
+            
+            x.append(X_skeleton[array_edges_skeleton[i][1]])
+            y.append(Y_skeleton[array_edges_skeleton[i][1]])
+            z.append(Z_skeleton[array_edges_skeleton[i][1]])
+            
+            # The scalar parameter for each line
+            s.append(array_edges_skeleton[1])
+            
+            # This is the tricky part: in a line, each point is connected
+            # to the one following it. We have to express this with the indices
+            # of the final set of points once all lines have been combined
+            # together, this is why we need to keep track of the total number of
+            # points already created (index)
+            #connections.append(np.vstack(array_edges[i]).T)
+            
+            connections.append(np.vstack(
+                           [np.arange(index,   index + N - 1.5),
+                            np.arange(index + 1, index + N - .5)]
+                                ).T)
+            index += 2
         
-        # The scalar parameter for each line
-        s.append(array_edges_skeleton[1])
         
-        # This is the tricky part: in a line, each point is connected
-        # to the one following it. We have to express this with the indices
-        # of the final set of points once all lines have been combined
-        # together, this is why we need to keep track of the total number of
-        # points already created (index)
-        #connections.append(np.vstack(array_edges[i]).T)
-        
-        connections.append(np.vstack(
-                       [np.arange(index,   index + N - 1.5),
-                        np.arange(index + 1, index + N - .5)]
-                            ).T)
-        index += 2
-    
-    
-    # Now collapse all positions, scalars and connections in big arrays
-    x = np.hstack(x)
-    y = np.hstack(y)
-    z = np.hstack(z)
-    s = np.hstack(s)
-    #connections = np.vstack(connections)
+        # Now collapse all positions, scalars and connections in big arrays
+        x = np.hstack(x)
+        y = np.hstack(y)
+        z = np.hstack(z)
+        s = np.hstack(s)
+        #connections = np.vstack(connections)
 
-    # Create the points
-    src = mlab.pipeline.scalar_scatter(x, y, z, s)
+        # Create the points
+        src = mlab.pipeline.scalar_scatter(x, y, z, s)
 
-    # Connect them
-    src.mlab_source.dataset.lines = connections
-    src.update()
+        # Connect them
+        src.mlab_source.dataset.lines = connections
+        src.update()
 
-    # The stripper filter cleans up connected lines
-    #lines = mlab.pipeline.stripper(src)
+        # The stripper filter cleans up connected lines
+        #lines = mlab.pipeline.stripper(src)
 
-    # display the set of lines
-    mlab.pipeline.surface(src, colormap = 'Accent', line_width = 10, opacity = 1.0)
+        # display the set of lines
+        mlab.pipeline.surface(src, colormap = 'winter', line_width = 10, opacity = 1.0)
 
     # And choose a nice view
     #mlab.view(33.6, 106, 5.5, [0, 0, .05])
@@ -534,11 +603,10 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #mlab.savefig('skeleton_graph.x3d')
     
-    
-    
-    
     mlab.show()
     
+    #end of path visualization
+    ##################################################################################
     
     
     '''

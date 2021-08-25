@@ -79,11 +79,11 @@ def format_converter(current_path, model_name):
     pcd_r = copy.deepcopy(pcd)
     
     # define rotation matrix
-    #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
+    R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
     
     #R = pcd.get_rotation_matrix_from_xyz((0, np.pi/4, 0))
     
-    R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2, 0))
+    #R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2, 0))
     
     # Apply rotation transformation to copied point cloud data
     pcd_r.rotate(R, center = (0,0,0))
