@@ -45,7 +45,7 @@ import graph_tool.all as gt
 
 import plotly.graph_objects as go
 
-#from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt
 
 from math import sqrt
 
@@ -81,7 +81,13 @@ def closest_point(point_set, anchor_point):
     
     return  i, point_set[i]
 
-    
+#colormap mapping
+def get_cmap(n, name = 'Spectral'):
+    """get the color mapping""" 
+    #viridis, BrBG, hsv, copper
+    #Returns a function that maps each index in 0, 1, ..., n-1 to a distinct 
+    #RGB color; the keyword argument name must be a standard mpl colormap name
+    return plt.cm.get_cmap(name,n+1)
 
 def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
@@ -206,6 +212,71 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     print("end_vlist = {} \n".format(end_vlist))
     print("end_vlist_offset = {} \n".format(end_vlist_offset))
     
+    sub_branch_list = []
+    
+    #if len(end_vlist) == len(end_vlist_offset):
+        
+    for idx, v_end in enumerate(end_vlist):
+        
+        #print(idx, v_end)
+
+        if idx == 0:
+            v_list = [*range(0, int(end_vlist[idx])+1)]
+        else:
+            v_list = [*range(int(end_vlist[idx-1])+1, int(end_vlist[idx])+1)]
+            
+        sub_branch_list.append(v_list)
+                
+    #print(len(sub_branch_list), len(end_vlist))
+    
+    
+    '''
+    closet_pts = []
+    
+    #find closest point set
+    for idx, (sub_branch, anchor_point) in enumerate(zip(sub_branch_list, end_vlist_offset)):
+        
+        anchor_point = (X_skeleton[end_vlist_offset[idx]], Y_skeleton[end_vlist_offset[idx]], Z_skeleton[end_vlist_offset[idx]])
+
+        point_set = np.zeros((len(sub_branch_list[0]), 3))
+        
+        point_set[:,0] = X_skeleton[sub_branch_list[0]]
+        point_set[:,1] = Y_skeleton[sub_branch_list[0]]
+        point_set[:,2] = Z_skeleton[sub_branch_list[0]]
+        
+        (index_cp, value_cp) = closest_point(point_set, anchor_point)
+        
+        #print("closest point index and value: {0}, {1}".format(index_cp, value_cp))
+        
+        closet_pts.append(index_cp)
+        
+    closet_pts_unique = list(set(closet_pts))
+    
+    print(closet_pts_unique)
+    
+    '''
+
+
+    '''
+    
+    anchor_point = (X_skeleton[222], Y_skeleton[222], Z_skeleton[222])
+    
+    print(anchor_point)
+    
+    point_set = np.zeros((len(sub_branch_list[0]), 3))
+    
+    point_set[:,0] = X_skeleton[sub_branch_list[0]]
+    point_set[:,1] = Y_skeleton[sub_branch_list[0]]
+    point_set[:,2] = Z_skeleton[sub_branch_list[0]]
+    
+    
+    #print(point_set)
+    
+    (index_cp, value_cp) = closest_point(point_set, anchor_point)
+    
+    print("closest point index and value: {0}, {1}".format(index_cp, value_cp))
+    '''
+    
     
     if len(end_vlist) == len(end_vlist_offset):
         
@@ -231,7 +302,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     start_v = 0
     end_v = 243
     
-    print(X_skeleton[start_v], Y_skeleton[start_v], Z_skeleton[start_v])
+    #print(X_skeleton[start_v], Y_skeleton[start_v], Z_skeleton[start_v])
     
     # find shortest path in the graph between start and end vertices 
     vlist, elist = gt.shortest_path(G_unordered, G_unordered.vertex(start_v), G_unordered.vertex(end_v))
@@ -257,25 +328,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     else:
         print("No shortest path found in graph...\n")
     
-    '''
-    anchor_point = (X_skeleton[222], Y_skeleton[222], Z_skeleton[222])
     
-    print(anchor_point)
-    
-    point_set = np.zeros((len(int_vlist_path), 3))
-    
-    point_set[:,0] = X_skeleton[int_vlist_path]
-    point_set[:,1] = Y_skeleton[int_vlist_path]
-    point_set[:,2] = Z_skeleton[int_vlist_path]
-    
-    
-    #print(point_set)
-    
-    (index_cp, value_cp) = closest_point(point_set, anchor_point)
-    
-    print("closest point index and value: {0}, {1}".format(index_cp, value_cp))
-    
-    '''
     ###################################################################
 
     
@@ -320,6 +373,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
     
+    
     #Skeleton Visualization pipeline
     ####################################################################
     # The number of points per line
@@ -330,11 +384,23 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #pts = mlab.points3d(X_skeleton, Y_skeleton, Z_skeleton, mode = 'point', scale_factor = 0.5)
     
-    pts = mlab.points3d(X_skeleton[end_vlist], Y_skeleton[end_vlist], Z_skeleton[end_vlist], color = (0,0,1), mode = 'sphere', scale_factor = 0.10)
+    pts = mlab.points3d(X_skeleton[end_vlist], Y_skeleton[end_vlist], Z_skeleton[end_vlist], color = (1,1,1), mode = 'sphere', scale_factor = 0.10)
     
-    #pts = mlab.points3d(X_skeleton[index_cp], Y_skeleton[index_cp], Z_skeleton[index_cp], color = (0,1,1), mode = 'sphere', scale_factor = 0.20)
+    #pts = mlab.points3d(X_skeleton[closet_pts_unique], Y_skeleton[closet_pts_unique], Z_skeleton[closet_pts_unique], color = (0,1,1), mode = 'sphere', scale_factor = 0.05)
     
-    #pts = mlab.points3d(X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset], color=(1,0,0), mode = 'sphere', scale_factor = 0.02)
+    #pts = mlab.points3d(X_skeleton[sub_branch_list[1]], Y_skeleton[sub_branch_list[1]], Z_skeleton[sub_branch_list[1]], color=(1,0,0), mode = 'sphere', scale_factor = 0.02)
+    
+    cmap = get_cmap(len(sub_branch_list))
+    
+    
+    for i, sub_branch in enumerate(sub_branch_list):
+        
+        color_rgb = cmap(i)[:len(cmap(i))-1]
+        
+        pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.05)
+        
+     
+   
     
     for i, (end_val, x_e, y_e, z_e) in enumerate(zip(end_vlist, X_skeleton[end_vlist], Y_skeleton[end_vlist], Z_skeleton[end_vlist])):
         
@@ -348,6 +414,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
     
+    
+    mlab.show()
     #visualize point cloud model with color
     ####################################################################
     
@@ -365,7 +433,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         pts.mlab_source.dataset.modified()
     
-    
+    '''
     #visualize skeleton model, edge, nodes
     ####################################################################
     x = list()
@@ -430,6 +498,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     #mlab.view(33.6, 106, 5.5, [0, 0, .05])
     #mlab.roll(125)
     #mlab.show()
+    '''
+    
     
     '''
     filepath = current_path + 'edges_skeleton_s.txt'
@@ -528,7 +598,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     '''
     
-    
+    '''
     ###################################################################
     # visualize path
     #visualize skeleton model, edge, nodes
@@ -607,7 +677,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #end of path visualization
     ##################################################################################
-    
+    '''
     
     '''
     #As before we use networkx to determine node positions. We want to do the same spring layout but in 3D
