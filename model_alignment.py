@@ -79,9 +79,9 @@ def format_converter(current_path, model_name):
     pcd_r = copy.deepcopy(pcd)
     
     # define rotation matrix
-    R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
+    #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
     
-    #R = pcd.get_rotation_matrix_from_xyz((0, np.pi/4, 0))
+    R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2 + np.pi/8, 0))
     
     #R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2, 0))
     
@@ -99,12 +99,12 @@ def format_converter(current_path, model_name):
     #std_ratio, which allows setting the threshold level based on the standard deviation of the average distances across the point cloud. 
     #The lower this number the more aggressive the filter will be.
     
-    '''
+    
     # visualize the oulier removal point cloud
     print("Statistical oulier removal")
-    cl, ind = pcd_r.remove_statistical_outlier(nb_neighbors = 40, std_ratio = 0.001)
+    cl, ind = pcd_r.remove_statistical_outlier(nb_neighbors = 40, std_ratio = 0.00001)
     display_inlier_outlier(pcd_r, ind)
-    
+    '''
     #builds a KDTree from point cloud
     pcd_tree = o3d.geometry.KDTreeFlann(pcd_r)
     

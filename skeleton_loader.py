@@ -212,6 +212,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     print("end_vlist = {} \n".format(end_vlist))
     print("end_vlist_offset = {} \n".format(end_vlist_offset))
     
+    
+    #obtain all the sub branches edgeds and vetices
     sub_branch_list = []
     
     #if len(end_vlist) == len(end_vlist_offset):
@@ -229,8 +231,10 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
                 
     #print(len(sub_branch_list), len(end_vlist))
     
+    #check individual children branches for each mian brach
+
     
-    '''
+    
     closet_pts = []
     
     #find closest point set
@@ -245,16 +249,27 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         point_set[:,2] = Z_skeleton[sub_branch_list[0]]
         
         (index_cp, value_cp) = closest_point(point_set, anchor_point)
+
+        v_closest_pair = [index_cp, end_vlist_offset[idx]]
+
+        dis_v_closest_pair = path_length(X_skeleton[v_closest_pair], Y_skeleton[v_closest_pair], Z_skeleton[v_closest_pair])
         
-        #print("closest point index and value: {0}, {1}".format(index_cp, value_cp))
-        
-        closet_pts.append(index_cp)
+        #small numer threshold indicating close pair vetices
+        if dis_v_closest_pair < 0.01:
+            
+            closet_pts.append(index_cp)
+            
+            #print("dis_v_closest_pair = {}".format(dis_v_closest_pair))
+            
+            print("closest point pair: {0}".format(v_closest_pair))
+            
+            G_unordered.add_edge(index_cp, end_vlist_offset[idx])
         
     closet_pts_unique = list(set(closet_pts))
     
     print(closet_pts_unique)
     
-    '''
+    
 
 
     '''
@@ -295,12 +310,18 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
                 print(w)
     '''
 
+    v_closest_pair = [31,222]
     
+    dis_v_closest_pair = path_length(X_skeleton[v_closest_pair], Y_skeleton[v_closest_pair], Z_skeleton[v_closest_pair])
     
+    print("dis_v_closest_pair = {} \n".format(dis_v_closest_pair))
+    
+    #dis_v_closest_pair = 0.4559722704614876
     
     #define start and end vertex index
     start_v = 0
-    end_v = 243
+    end_v = 800
+    
     
     #print(X_skeleton[start_v], Y_skeleton[start_v], Z_skeleton[start_v])
     
@@ -314,13 +335,13 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     #change format form str to int
     int_vlist_path = [int(i) for i in vlist_path]
     
-    print(int_vlist_path)
+    #print(int_vlist_path)
     
     if len(vlist_path) > 0: 
         
         print("Shortest path found in graph! \n")
         
-        print("vlist_path = {} \n".format(type(int_vlist_path)))
+        print("vlist_path = {} \n".format(int_vlist_path))
     
         curve_length = path_length(X_skeleton[int_vlist_path], Y_skeleton[int_vlist_path], Z_skeleton[int_vlist_path])
     
@@ -384,38 +405,42 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #pts = mlab.points3d(X_skeleton, Y_skeleton, Z_skeleton, mode = 'point', scale_factor = 0.5)
     
-    pts = mlab.points3d(X_skeleton[end_vlist], Y_skeleton[end_vlist], Z_skeleton[end_vlist], color = (1,1,1), mode = 'sphere', scale_factor = 0.10)
+    #pts = mlab.points3d(X_skeleton[end_vlist], Y_skeleton[end_vlist], Z_skeleton[end_vlist], color = (1,1,1), mode = 'sphere', scale_factor = 0.03)
     
-    #pts = mlab.points3d(X_skeleton[closet_pts_unique], Y_skeleton[closet_pts_unique], Z_skeleton[closet_pts_unique], color = (0,1,1), mode = 'sphere', scale_factor = 0.05)
+    pts = mlab.points3d(X_skeleton[closet_pts_unique], Y_skeleton[closet_pts_unique], Z_skeleton[closet_pts_unique], color = (0,1,1), mode = 'sphere', scale_factor = 0.05)
     
-    #pts = mlab.points3d(X_skeleton[sub_branch_list[1]], Y_skeleton[sub_branch_list[1]], Z_skeleton[sub_branch_list[1]], color=(1,0,0), mode = 'sphere', scale_factor = 0.02)
+    #pts = mlab.points3d(X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset], color=(1,0,0), mode = 'sphere', scale_factor = 0.05)
     
+    '''
     cmap = get_cmap(len(sub_branch_list))
     
-    
+    # loop draw all the sub branches
     for i, sub_branch in enumerate(sub_branch_list):
         
         color_rgb = cmap(i)[:len(cmap(i))-1]
         
         pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.05)
-        
+    '''
      
    
-    
+    '''
     for i, (end_val, x_e, y_e, z_e) in enumerate(zip(end_vlist, X_skeleton[end_vlist], Y_skeleton[end_vlist], Z_skeleton[end_vlist])):
         
-        mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.01, 0.01, 0.01))
-    
+        mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.04, 0.04, 0.04))
+    '''
 
     for i, (end_val, x_e, y_e, z_e) in enumerate(zip(end_vlist_offset, X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset])):
         
         mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.04, 0.04, 0.04))
-    
-
+    '''
+    for i, (end_val, x_e, y_e, z_e) in enumerate(zip(closet_pts_unique, X_skeleton[closet_pts_unique], Y_skeleton[closet_pts_unique], Z_skeleton[closet_pts_unique])):
+        
+        mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.04, 0.04, 0.04))
+    '''
     #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
     
     
-    mlab.show()
+    #mlab.show()
     #visualize point cloud model with color
     ####################################################################
     
@@ -433,7 +458,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         pts.mlab_source.dataset.modified()
     
-    '''
+    
     #visualize skeleton model, edge, nodes
     ####################################################################
     x = list()
@@ -497,106 +522,9 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     # And choose a nice view
     #mlab.view(33.6, 106, 5.5, [0, 0, .05])
     #mlab.roll(125)
-    #mlab.show()
-    '''
+    mlab.show()
     
-    
-    '''
-    filepath = current_path + 'edges_skeleton_s.txt'
-    with open(filepath, 'w') as file_handler:
-        for item in s:
-            file_handler.write("{}\n".format(item))
-    '''
-    
-   
-    
-    
-    #########################
-    '''
-    #netweorkx graph
-    G = nx.Graph()
-    
-    #G.add_nodes_from()
-    
-    G.add_edges_from(array_edges_skeleton)
-    
-    tree = nx.bfs_tree(G, 0)
-    
-    #nx.draw(G, with_labels=True, font_weight='bold')
-    
-    #plt.show()  
-    path_list = nx.shortest_path(G, source=0, target=221)
-    
-    print("path_list = {}".format(path_list))
-    '''
-    '''
-    filepath = current_path + 'edges_skeleton_connections.txt'
-    with open(filepath, 'w') as file_handler:
-        for item in connections:
-            file_handler.write("{}\n".format(item))
-    '''
-    '''
-    # Directed by default​
-    G = gt.Graph(directed = True)
-    
-    # assert directed graph
-    #print(G.is_directed())
-    
-    nodes = G.add_vertex(num_vertex_skeleton)
-    
-    
-    for i in range(N_edges_skeleton):
-        
-        G.add_edge(s[i], s[i+1])
-    
-    #gt.graph_draw(G, vertex_text = G.vertex_index, output = "graph_view.pdf")
-    
-    
-    # find all end vertex by fast iteration of all vertices
-    end_vlist = []
-    
-    for v in G.iter_vertices():
-        
-        #print(G.vertex(v).out_degree(), G.vertex(v).in_degree())
-        
-        if G.vertex(v).out_degree() == 2 and G.vertex(v).in_degree() == 1:
-        
-            end_vlist.append(v)
-            
-    print("end_vlist = {}".format(end_vlist))
-    
-    
-    start_v = 0
-    end_v = 221
-    '''
-    
-    '''    
-    for path in gt.all_paths(G, start_v, end_v):
 
-        print("path = {}".format(path))
-    '''
-    
-    '''
-    for path in gt.all_shortest_paths(G, 0, 243):
-
-        print(path)
-    
-    
-    # find shortest path in the graph between start and end vertices 
-    vlist, elist = gt.shortest_path(G, G.vertex(start_v), G.vertex(end_v))
-    
-    vlist_path = [str(v) for v in vlist]
-    
-    elist_path = [str(e) for e in elist]
-    
-    #print(vlist_path)
-     
-    
-    n_paths = gt.count_shortest_paths(G, G.vertex(start_v), G.vertex(end_v))
-    
-    print(n_paths)
-    
-    '''
     
     '''
     ###################################################################
@@ -777,6 +705,16 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     mlab.pipeline.surface(tube, color=(0.8, 0.8, 0.8))
     mlab.orientation_axes()
     mlab.show()
+    
+        
+    
+    
+    filepath = current_path + 'edges_skeleton_s.txt'
+    with open(filepath, 'w') as file_handler:
+        for item in s:
+            file_handler.write("{}\n".format(item))
+    
+    
     '''
 
 
