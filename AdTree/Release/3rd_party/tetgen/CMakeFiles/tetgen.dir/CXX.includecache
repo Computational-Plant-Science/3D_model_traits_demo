@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/predicates.cxx
+stdio.h
+-
+stdlib.h
+-
+math.h
+-
+float.h
+-
+fpu_control.h
+-
+tetgen.h
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/tetgen.h
+CGAL/Exact_predicates_inexact_constructions_kernel.h
+-
+
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/tetgen.cxx
+tetgen.h
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/tetgen.h
+
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/tetgen.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+math.h
+-
+time.h
+-
+stdint.h
+-
+

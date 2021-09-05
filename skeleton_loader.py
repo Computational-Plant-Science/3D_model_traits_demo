@@ -49,6 +49,8 @@ from matplotlib import pyplot as plt
 
 from math import sqrt
 
+import itertools
+
 
 
 # calculate length of a 3D path or curve
@@ -62,14 +64,24 @@ def path_length(X, Y, Z):
     
     return L
 
-'''
-# distance between two points
-def distance_pt(p0, p1):
+def mad_based_outlier(points, thresh=3.5):
     
-    dist = np.linalg.norm(p0 - p1)
+    if len(points.shape) == 1:
+        
+        points = points[:,None]
+        
+    median = np.median(points, axis=0)
     
-    return dist
-'''
+    diff = np.sum((points - median)**2, axis=-1)
+    
+    diff = np.sqrt(diff)
+    
+    med_abs_deviation = np.median(diff)
+
+    modified_z_score = 0.6745 * diff / med_abs_deviation
+
+    return modified_z_score > thresh
+    
 #find the closest points from a points sets to a fix point using Kdtree, O(log n) 
 def closest_point(point_set, anchor_point):
     
@@ -216,6 +228,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     #obtain all the sub branches edgeds and vetices
     sub_branch_list = []
     
+    sub_branch_length_rec = []
+    
     #if len(end_vlist) == len(end_vlist_offset):
         
     for idx, v_end in enumerate(end_vlist):
@@ -228,16 +242,58 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
             v_list = [*range(int(end_vlist[idx-1])+1, int(end_vlist[idx])+1)]
             
         sub_branch_list.append(v_list)
+        
+        int_v_list = [int(i) for i in v_list]
+        
+        sub_branch_length = path_length(X_skeleton[int_v_list], Y_skeleton[int_v_list], Z_skeleton[int_v_list])
+        
+        sub_branch_length_rec.append(sub_branch_length)
+        
+        #print("sub_branch_length = {}".format(sub_branch_length))
+        
+    
+    #print("sub_branch_length = {}".format(len(sub_branch_length_rec)))
+    
+    k = int(len(sub_branch_length_rec) * 0.7)
+    
+    print(k)
+
+    idx_dominant_branch = np.argsort(sub_branch_length_rec)[-k:]
+    
+    print(idx_dominant_branch)
+    
+    sub_branch_list_dominant = [sub_branch_list[index] for index in idx_dominant_branch] 
+    
+    
+    #print(len(sub_branch_list_dominant))
+    
+    vertex_dominant = sorted(list(itertools.chain(*sub_branch_list_dominant)))
+    
+    print(len(vertex_dominant))
+
+
+    '''
+    print("sub_branch_length = {}".format(len(sub_branch_length_rec)))
+    
+    index_outlier = mad_based_outlier(np.asarray(sub_branch_length_rec), 3.5)
+    
+    print("index_outlier = {}".format(index_outlier))
+    
+    arr = np.delete(sub_branch_length_rec, np.argwhere(index_outlier == True))
+    
+    print("sub_branch_length_array = {}".format(len(arr)))
+    '''
+        
                 
     #print(len(sub_branch_list), len(end_vlist))
     
-    #check individual children branches for each mian brach
+    #check individual child branches for each main branch
 
     
     
     closet_pts = []
     
-    #find closest point set
+    #find closest point set and connect graph edges
     for idx, (sub_branch, anchor_point) in enumerate(zip(sub_branch_list, end_vlist_offset)):
         
         anchor_point = (X_skeleton[end_vlist_offset[idx]], Y_skeleton[end_vlist_offset[idx]], Z_skeleton[end_vlist_offset[idx]])
@@ -270,57 +326,13 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     print(closet_pts_unique)
     
     
-
-
     '''
-    
-    anchor_point = (X_skeleton[222], Y_skeleton[222], Z_skeleton[222])
-    
-    print(anchor_point)
-    
-    point_set = np.zeros((len(sub_branch_list[0]), 3))
-    
-    point_set[:,0] = X_skeleton[sub_branch_list[0]]
-    point_set[:,1] = Y_skeleton[sub_branch_list[0]]
-    point_set[:,2] = Z_skeleton[sub_branch_list[0]]
-    
-    
-    #print(point_set)
-    
-    (index_cp, value_cp) = closest_point(point_set, anchor_point)
-    
-    print("closest point index and value: {0}, {1}".format(index_cp, value_cp))
-    '''
-    
-    
-    if len(end_vlist) == len(end_vlist_offset):
-        
-        #for v1,v2 in zip(end_vlist, end_vlist_offset):
-        
-        G_unordered.add_edge(31, 222)
-    
-    '''
-    for v in G_unordered.iter_vertices():
-        
-        if G_unordered.vertex(v) == '222':
-        
-            #print("found!")
-            for w in G_unordered.vertex(v).out_neighbors():
-                
-                print(w)
-    '''
-
-    v_closest_pair = [31,222]
-    
-    dis_v_closest_pair = path_length(X_skeleton[v_closest_pair], Y_skeleton[v_closest_pair], Z_skeleton[v_closest_pair])
-    
-    print("dis_v_closest_pair = {} \n".format(dis_v_closest_pair))
-    
+   
     #dis_v_closest_pair = 0.4559722704614876
     
     #define start and end vertex index
     start_v = 0
-    end_v = 800
+    end_v = 608
     
     
     #print(X_skeleton[start_v], Y_skeleton[start_v], Z_skeleton[start_v])
@@ -349,7 +361,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     else:
         print("No shortest path found in graph...\n")
     
-    
+    '''
     ###################################################################
 
     
@@ -407,11 +419,11 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #pts = mlab.points3d(X_skeleton[end_vlist], Y_skeleton[end_vlist], Z_skeleton[end_vlist], color = (1,1,1), mode = 'sphere', scale_factor = 0.03)
     
-    pts = mlab.points3d(X_skeleton[closet_pts_unique], Y_skeleton[closet_pts_unique], Z_skeleton[closet_pts_unique], color = (0,1,1), mode = 'sphere', scale_factor = 0.05)
+    #pts = mlab.points3d(X_skeleton[closet_pts_unique], Y_skeleton[closet_pts_unique], Z_skeleton[closet_pts_unique], color = (0,1,1), mode = 'sphere', scale_factor = 0.05)
     
     #pts = mlab.points3d(X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset], color=(1,0,0), mode = 'sphere', scale_factor = 0.05)
     
-    '''
+    
     cmap = get_cmap(len(sub_branch_list))
     
     # loop draw all the sub branches
@@ -419,8 +431,15 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         color_rgb = cmap(i)[:len(cmap(i))-1]
         
-        pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.05)
-    '''
+        if i in idx_dominant_branch:
+        
+            #print("short")
+            pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color=color_rgb, mode = 'sphere', scale_factor = 0.05)
+
+        else:
+            print("short")
+            #pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color=(0,1,1), mode = 'sphere', scale_factor = 0.05)
+    
      
    
     '''
@@ -428,10 +447,12 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.04, 0.04, 0.04))
     '''
-
+    '''
     for i, (end_val, x_e, y_e, z_e) in enumerate(zip(end_vlist_offset, X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset])):
         
         mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.04, 0.04, 0.04))
+        
+    '''
     '''
     for i, (end_val, x_e, y_e, z_e) in enumerate(zip(closet_pts_unique, X_skeleton[closet_pts_unique], Y_skeleton[closet_pts_unique], Z_skeleton[closet_pts_unique])):
         
@@ -473,33 +494,34 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     # Create each line one after the other in a loop
     for i in range(N_edges_skeleton):
     #for val in vlist_path:
-        
-        #i = int(val)
-        #print("Edges {0} has nodes {1}, {2}\n".format(i, array_edges[i][0], array_edges[i][1]))
-      
-        x.append(X_skeleton[array_edges_skeleton[i][0]])
-        y.append(Y_skeleton[array_edges_skeleton[i][0]])
-        z.append(Z_skeleton[array_edges_skeleton[i][0]])
-        
-        x.append(X_skeleton[array_edges_skeleton[i][1]])
-        y.append(Y_skeleton[array_edges_skeleton[i][1]])
-        z.append(Z_skeleton[array_edges_skeleton[i][1]])
-        
-        # The scalar parameter for each line
-        s.append(array_edges_skeleton[i])
-        
-        # This is the tricky part: in a line, each point is connected
-        # to the one following it. We have to express this with the indices
-        # of the final set of points once all lines have been combined
-        # together, this is why we need to keep track of the total number of
-        # points already created (index)
-        #connections.append(np.vstack(array_edges[i]).T)
-        
-        connections.append(np.vstack(
-                       [np.arange(index,   index + N - 1.5),
-                        np.arange(index + 1, index + N - .5)]
-                            ).T)
-        index += 2
+        #if i in vertex_dominant:
+        if True:
+            #i = int(val)
+            #print("Edges {0} has nodes {1}, {2}\n".format(i, array_edges[i][0], array_edges[i][1]))
+          
+            x.append(X_skeleton[array_edges_skeleton[i][0]])
+            y.append(Y_skeleton[array_edges_skeleton[i][0]])
+            z.append(Z_skeleton[array_edges_skeleton[i][0]])
+            
+            x.append(X_skeleton[array_edges_skeleton[i][1]])
+            y.append(Y_skeleton[array_edges_skeleton[i][1]])
+            z.append(Z_skeleton[array_edges_skeleton[i][1]])
+            
+            # The scalar parameter for each line
+            s.append(array_edges_skeleton[i])
+            
+            # This is the tricky part: in a line, each point is connected
+            # to the one following it. We have to express this with the indices
+            # of the final set of points once all lines have been combined
+            # together, this is why we need to keep track of the total number of
+            # points already created (index)
+            #connections.append(np.vstack(array_edges[i]).T)
+            
+            connections.append(np.vstack(
+                           [np.arange(index,   index + N - 1.5),
+                            np.arange(index + 1, index + N - .5)]
+                                ).T)
+            index += 2
     
     
     # Now collapse all positions, scalars and connections in big arrays
@@ -522,7 +544,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     # And choose a nice view
     #mlab.view(33.6, 106, 5.5, [0, 0, .05])
     #mlab.roll(125)
-    mlab.show()
+    #mlab.show()
     
 
     
@@ -607,6 +629,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     ##################################################################################
     '''
     
+    mlab.show()
+    
     '''
     #As before we use networkx to determine node positions. We want to do the same spring layout but in 3D
     spring_3D = nx.spring_layout(G, dim=3, seed=18)
@@ -676,39 +700,9 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     '''
     
 
-
+ 
+    
     '''
-    # reorder nodes from 0,len(G)-1
-    G_mayavi = nx.convert_node_labels_to_integers(G)
-    # 3d spring layout
-    pos = nx.spring_layout(G_mayavi, dim=3, seed=1001)
-    # numpy array of x,y,z positions in sorted node order
-    xyz = np.array([pos[v] for v in sorted(G_mayavi)])
-    # scalar colors
-    scalars = np.array(list(G_mayavi.nodes())) + 5
-
-    mlab.figure()
-
-    pts = mlab.points3d(
-    xyz[:, 0],
-    xyz[:, 1],
-    xyz[:, 2],
-    scalars,
-    scale_factor=0.1,
-    scale_mode="none",
-    colormap="Blues",
-    resolution=20,
-    )
-
-    pts.mlab_source.dataset.lines = np.array(list(G_mayavi.edges()))
-    tube = mlab.pipeline.tube(pts, tube_radius=0.01)
-    mlab.pipeline.surface(tube, color=(0.8, 0.8, 0.8))
-    mlab.orientation_axes()
-    mlab.show()
-    
-        
-    
-    
     filepath = current_path + 'edges_skeleton_s.txt'
     with open(filepath, 'w') as file_handler:
         for item in s:

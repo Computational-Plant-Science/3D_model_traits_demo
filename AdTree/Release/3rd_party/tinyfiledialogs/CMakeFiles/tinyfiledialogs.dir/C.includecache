@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+ctype.h
+-
+sys/stat.h
+-
+windows.h
+-
+commdlg.h
+-
+shlobj.h
+-
+conio.h
+-
+direct.h
+-
+limits.h
+-
+unistd.h
+-
+dirent.h
+-
+termios.h
+-
+sys/utsname.h
+-
+signal.h
+-
+tinyfiledialogs.h
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.h
+
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.h
+
