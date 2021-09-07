@@ -137,8 +137,10 @@ def mad_based_outlier(points, thresh=3.5):
     med_abs_deviation = np.median(diff)
 
     modified_z_score = 0.6745 * diff / med_abs_deviation
-
+    
     return modified_z_score > thresh
+    
+    
     
 #find the closest points from a points sets to a fix point using Kdtree, O(log n) 
 def closest_point(point_set, anchor_point):
@@ -198,67 +200,11 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     Y_skeleton = Data_array_skeleton[:,1]
     Z_skeleton = Data_array_skeleton[:,2]
     
+    
+
+    #build graph from skeleton data
     ####################################################################
-    #mesh = trimesh.load(model_skeleton)
-    
-    
-    
-    pcd = o3d.geometry.PointCloud()
-    
-    pcd.points = o3d.utility.Vector3dVector(Data_array_skeleton)
-    
-    pcd.paint_uniform_color([0.5, 0.5, 0.5])
-    
-    
-    # Build KDTree from point cloud for fast retrieval of nearest neighbors
-    pcd_tree = o3d.geometry.KDTreeFlann(pcd)
-    
-    #print("Paint the 00th point red.")
-    
-    pcd.colors[25] = [1, 0, 0]
-    
-    #print("Find its 50 nearest neighbors, paint blue.")
-    
-    [k, idx, _] = pcd_tree.search_knn_vector_3d(pcd.points[25], 50)
-    
-    print("50 nearest neighbors = {}\n".format(sorted(np.asarray(idx[1:]))))
-
-    #np.asarray(pcd.colors)[idx[1:], :] = [0, 0, 1]
-    
-    #print("Visualize the point cloud.")
-    
-    #vis = o3d.visualization.draw_geometries([pcd])
-    
-    #vis.close_all()
-    
-    
-    neighbors_idx = sorted(list(np.asarray(idx)))
-    
-    '''
-    #build octree, a tree data structure where each internal node has eight children.
-    # fit to unit cube
-    pcd.scale(1 / np.max(pcd.get_max_bound() - pcd.get_min_bound()), center=pcd.get_center())
-    pcd.colors = o3d.utility.Vector3dVector(np.random.uniform(0, 1, size=(num_vertex_skeleton, 3)))
-    o3d.visualization.draw_geometries([pcd])
-
-    print('octree division')
-    octree = o3d.geometry.Octree(max_depth=4)
-    octree.convert_from_point_cloud(pcd, size_expand=0.01)
-    o3d.visualization.draw_geometries([octree])
-
-    print(octree.locate_leaf_node(pcd.points[243]))
-    '''
-    
-    ####################################################################
-    '''
-    filepath = current_path + 'edges_skeleton.txt'
-    with open(filepath, 'w') as file_handler:
-        for item in array_edges_skeleton.tolist():
-            file_handler.write("{}\n".format(item))
-
-    '''
-    
-    
+   
     G_unordered = gt.Graph(directed = True)
     
     # assert directed graph
@@ -289,8 +235,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
             else:
                 end_vlist_offset.append(v+1)
             
-    print("end_vlist = {} \n".format(end_vlist))
-    print("end_vlist_offset = {} \n".format(end_vlist_offset))
+    #print("end_vlist = {} \n".format(end_vlist))
+    #print("end_vlist_offset = {} \n".format(end_vlist_offset))
     
     
     #test angle calculation
@@ -321,19 +267,23 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         else:
             v_list = [*range(int(end_vlist[idx-1])+1, int(end_vlist[idx])+1)]
             
-        sub_branch_list.append(v_list)
         
         int_v_list = [int(i) for i in v_list]
         
         sub_branch_length = path_length(X_skeleton[int_v_list], Y_skeleton[int_v_list], Z_skeleton[int_v_list])
         
-        sub_branch_length_rec.append(sub_branch_length)
         
         start_v = [X_skeleton[int_v_list[0]], Y_skeleton[int_v_list[0]], Z_skeleton[int_v_list[0]]]
         
         end_v = [X_skeleton[int_v_list[0]] - X_skeleton[int_v_list[len(int_v_list)-1]], Y_skeleton[int_v_list[0]] - Y_skeleton[int_v_list[len(int_v_list)-1]], Z_skeleton[int_v_list[0]] - Z_skeleton[int_v_list[len(int_v_list)-1]]]
         
+        
         angle_sub_branch = dot_product_angle(start_v, end_v)
+        
+        # save computed parameters for each branch
+        sub_branch_list.append(v_list)
+        
+        sub_branch_length_rec.append(sub_branch_length)
         
         sub_branch_angle_rec.append(angle_sub_branch)
         
@@ -344,7 +294,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         #print("angle_sub_branch = {}".format(angle_sub_branch))
         
     
-    print("sub_branch_start_rec = {}\n".format(sub_branch_start_rec))
+    #print("sub_branch_start_rec = {}\n".format(sub_branch_start_rec))
     
 
     ####################################################################
@@ -394,10 +344,61 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     closet_pts_unique_sorted = sorted(closet_pts_unique)
     
-    
-    ## find branches within near neighbors search range
-    ####################################################################
     print("closet_pts_unique_sorted = {}\n".format(closet_pts_unique_sorted))
+    
+    
+    
+    #convert skeleton data to KDTree uisng Open3D to search nearest neighbors
+    ####################################################################
+    pcd = o3d.geometry.PointCloud()
+    
+    pcd.points = o3d.utility.Vector3dVector(Data_array_skeleton)
+    
+    pcd.paint_uniform_color([0.5, 0.5, 0.5])
+    
+    
+    # Build KDTree from point cloud for fast retrieval of nearest neighbors
+    pcd_tree = o3d.geometry.KDTreeFlann(pcd)
+    
+    #print("Paint the 00th point red.")
+    
+    pcd.colors[25] = [1, 0, 0]
+    
+    #print("Find its 50 nearest neighbors, paint blue.")
+    
+    [k, idx, _] = pcd_tree.search_knn_vector_3d(pcd.points[25], 50)
+    
+    print("50 nearest neighbors = {}\n".format(sorted(np.asarray(idx[1:]))))
+
+    #np.asarray(pcd.colors)[idx[1:], :] = [0, 0, 1]
+    
+    #print("Visualize the point cloud.")
+    
+    #vis = o3d.visualization.draw_geometries([pcd])
+    
+    #vis.close_all()
+    
+    
+    neighbors_idx = sorted(list(np.asarray(idx)))
+    
+    '''
+    #build octree, a tree data structure where each internal node has eight children.
+    # fit to unit cube
+    pcd.scale(1 / np.max(pcd.get_max_bound() - pcd.get_min_bound()), center=pcd.get_center())
+    pcd.colors = o3d.utility.Vector3dVector(np.random.uniform(0, 1, size=(num_vertex_skeleton, 3)))
+    o3d.visualization.draw_geometries([pcd])
+
+    print('octree division')
+    octree = o3d.geometry.Octree(max_depth=4)
+    octree.convert_from_point_cloud(pcd, size_expand=0.01)
+    o3d.visualization.draw_geometries([octree])
+
+    print(octree.locate_leaf_node(pcd.points[243]))
+    '''
+    
+    # find branches within near neighbors search range
+    ####################################################################
+   
     
     print("neighbors_idx = {}\n".format(neighbors_idx))
     
@@ -415,10 +416,21 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     sub_branch_selected = [sub_branch_list[index] for index in sorted(neighbors_match_idx)]
     
-    print("neighbors_match_idx = {}\n".format(neighbors_match_idx))
+    #print("neighbors_match_idx = {}\n".format(neighbors_match_idx))
+    #print("sub_branch_selected = {}\n".format(len(sub_branch_selected)))
     
- 
-    # sorting and combine adjacent connecting vertices 
+    num_1_order = len(sub_branch_selected)
+    
+    angle_1_order = [sub_branch_angle_rec[index] for index in sorted(neighbors_match_idx)]
+    
+    length_1_order = [sub_branch_length_rec[index] for index in sorted(neighbors_match_idx)]
+    
+    
+    print("num_1_order = {0}\n  angle_1_order = {1}\n length_1_order = {2}\n".format(num_1_order, angle_1_order, length_1_order))
+    
+    
+    
+    # sort and combine adjacent connecting vertices in closet_pts  
     ####################################################################
     # compute distance between adjacent vertices in closet_pts_unique_sorted
     X = X_skeleton[closet_pts_unique_sorted]
@@ -427,7 +439,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     dis_closet_pts = [sqrt((X[i]-X[i-1])**2 + (Y[i]-Y[i-1])**2 + (Z[i]-Z[i-1])**2) for i in range (1, len(X))]
     
-    print("distance between closet_pts_unique = {}\n".format(dis_closet_pts))
+    #print("distance between closet_pts_unique = {}\n".format(dis_closet_pts))
 
     '''
     #find index of k smallest or biggest elements in list
@@ -460,19 +472,18 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     index_outlier_loc = [i for i, x in enumerate(index_outlier) if x]
     
-    print("index_outlier = {}".format(index_outlier_loc))
+    closet_pts_unique_sorted_combined = [closet_pts_unique_sorted[index] for index in index_outlier_loc]
     
-    closet_pts_unique_sorted_combined = [closet_pts_unique_sorted[index] for index in index_outlier_loc] 
+    print("index_outlier = {}".format(index_outlier_loc))
     
     print("closet_pts_unique_sorted[index_outlier_loc] = {}\n".format(closet_pts_unique_sorted_combined))
     
     
     v_closest_pair_rec_selected = [v_closest_pair_rec[index] for index in index_outlier_loc] 
     
+    v_closest_start_selected = [v_closest_pair_rec[index][1] for index in index_outlier_loc]
+    
     print("v_closest_pair_rec_selected = {}\n".format(v_closest_pair_rec_selected))
-    
-    
-    v_closest_start_selected = [v_closest_pair_rec[index][1] for index in index_outlier_loc] 
     
     print("v_closest_start_selected = {}\n".format(v_closest_start_selected))
     
@@ -492,7 +503,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             range_idx = range(index_level_selected[idx], index_level_selected[idx+1])
         
-            print([*range_idx])
+            #print([*range_idx])
             
             level_range_set.append([*range_idx])
 
@@ -526,7 +537,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     print("whorl_dis_1 pair = {0} ,distance = {1}\n  whorl_dis_2 pair = {2}, distance = {3}\n".format(whorl_loc1_idx, whorl_dis_1,whorl_loc2_idx, whorl_dis_2))
     
     
-    #find path along between start and end vertex
+    #find shortest path between start and end vertex
     ####################################################################
     '''
     #define start and end vertex index
@@ -622,7 +633,6 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     #pts = mlab.points3d(X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset], color = (1,1,1), mode = 'sphere', scale_factor = 0.03)
     
     #pts = mlab.points3d(X_skeleton[closet_pts_unique], Y_skeleton[closet_pts_unique], Z_skeleton[closet_pts_unique], color = (0,1,1), mode = 'sphere', scale_factor = 0.05)
-    
     
     
     
