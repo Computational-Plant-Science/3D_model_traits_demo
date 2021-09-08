@@ -284,6 +284,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     Y_skeleton = Data_array_skeleton[:,1]
     Z_skeleton = Data_array_skeleton[:,2]
     
+    # sort points according to z value increasing order
+    Sorted_Data_array_skeleton = np.asarray(sorted(Data_array_skeleton, key = itemgetter(2), reverse = True))
     
     #build graph from skeleton data
     ####################################################################
@@ -377,7 +379,32 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         #print("angle_sub_branch = {}".format(angle_sub_branch))
         
     
-    #print("sub_branch_start_rec = {}\n".format(sub_branch_start_rec))
+    
+    
+    
+    #sort branches according to the start vertex location(Z value)
+    Z_loc = [Z_skeleton[index] for index in sub_branch_start_rec]
+    
+    sorted_idx_Z_loc = np.argsort(Z_loc)
+    
+    print("Z_loc = {}\n".format(sorted_idx_Z_loc))
+    
+    #sorted_sub_branch_list = []
+    
+    sub_branch_list[:] = [sub_branch_list[i] for i in sorted_idx_Z_loc] 
+    
+    sub_branch_length_rec[:] = [sub_branch_length_rec[i] for i in sorted_idx_Z_loc]
+        
+    sub_branch_angle_rec[:] = [sub_branch_angle_rec[i] for i in sorted_idx_Z_loc]
+        
+    sub_branch_start_rec[:] = [sub_branch_start_rec[i] for i in sorted_idx_Z_loc]
+        
+    sub_branch_end_rec[:] = [sub_branch_end_rec[i] for i in sorted_idx_Z_loc]
+    
+    
+    
+    
+    
     
 
     ####################################################################
@@ -463,7 +490,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     ####################################################################
     search_radius = 150
     
-    neighbors_match_rec = []
+    neighbors_idx_rec = []
     
     # search neighbors of every vertex in closest_pts_unique_sorted_combined to find sub branches
     for idx, val in enumerate(closest_pts_unique_sorted_combined):
@@ -482,7 +509,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         print("Found {} matches, neighbors_match = {}\n".format(len(neighbors_match), neighbors_match))
         
-        neighbors_match_rec.append(neighbors_match)
+        neighbors_idx_rec.append(neighbors_match)
         
     ####################################################################
     
@@ -546,8 +573,9 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
     #convert skeleton data to KDTree using Open3D to search nearest neighbors
+    #find branches within near neighbors search range
     ####################################################################
-    
+    '''
     anchor_pt_idx = 30
     
     search_radius = 150
@@ -556,32 +584,18 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     neighbors_idx = sorted(list(np.asarray(idx)))
     
-    
-    #find branches within near neighbors search range
-    ####################################################################
-   
-    
     print("neighbors_idx = {}\n".format(neighbors_idx))
-    
-    #print("sub_branch_list[1] = {}\n".format(sub_branch_list[1]))
-    
     
     #find branches within near neighbors 
     neighbors_match = sorted(list(set(sub_branch_start_rec).intersection(set(neighbors_idx))))
     
     print("neighbors_match = {}\n".format(neighbors_match))
     
+    '''
     
+    level = 1
     
-    
-    #idx = get_neighbors(Data_array_skeleton, anchor_pt_idx, search_radius)
-    
-    #neighbors_idx = sorted(list(np.asarray(idx)))
-    
-    
-    
-    
-    neighbors_match_idx = [i for i, item in enumerate(sub_branch_start_rec) if item in neighbors_idx]
+    neighbors_match_idx = [i for i, item in enumerate(sub_branch_start_rec) if item in neighbors_idx_rec[level]]
     
     #neighbors_match_idx = [int(i) for i in neighbors_match_idx]
     
@@ -598,8 +612,6 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     print("num_1_order = {0}\n  angle_1_order = {1}\n length_1_order = {2}\n".format(num_1_order, angle_1_order, length_1_order))
     
-    
-  
 
     '''
     #find index of k smallest or biggest elements in list
@@ -727,7 +739,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     #pts = mlab.points3d(X_skeleton[closest_pts_unique], Y_skeleton[closest_pts_unique], Z_skeleton[closest_pts_unique], color = (0,1,1), mode = 'sphere', scale_factor = 0.05)
     
     
-    
+    '''
     cmap = get_cmap(len(sub_branch_list))
     
     #loop draw all the sub branches
@@ -735,8 +747,19 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         color_rgb = cmap(i)[:len(cmap(i))-1]
         
-        pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color=color_rgb, mode = 'sphere', scale_factor = 0.05)
+        pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.05)
     
+    '''
+    cmap = get_cmap(len(sub_branch_list))
+    
+    #loop draw all the sub branches
+    for i, sub_branch in enumerate(sub_branch_list):
+
+        if i < 20 and i > 0:
+             
+            color_rgb = cmap(i)[:len(cmap(i))-1]
+            
+            pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = (0,1,1), mode = 'sphere', scale_factor = 0.05)
     
     
      
