@@ -47,12 +47,9 @@ import graph_tool.all as gt
 import plotly.graph_objects as go
 
 from matplotlib import pyplot as plt
-
 import math
-
-#from math import sqrt
-
 import itertools
+from tabulate import tabulate
 
 
 
@@ -85,9 +82,9 @@ def dot_product_angle(v1,v2):
         
         if angle > 90:
             
-            return (angle - 45)
+            return (180 - angle)
         else:
-            return angle
+            return (90 - angle)
 
 
 #coordinates transformation from cartesian coords to sphere coord system
@@ -164,6 +161,8 @@ def mad_based_outlier(points, thresh=3.5):
     modified_z_score = 0.6745 * diff / med_abs_deviation
     
     return modified_z_score > thresh
+
+
 
 
 # compute nearest neighbors of the anchor_pt_idx in point cloud by building KDTree
@@ -283,6 +282,36 @@ def cluster_1D(list_array, n_clusters):
     
     return labels
 
+
+def outlier_remove(data_list):
+
+    #find index of k smallest or biggest elements in list
+    ####################################################
+    
+    k = int(len(data_list) * 0.8)
+    
+    #print(k)
+    
+    #k biggest
+    idx_dominant = np.argsort(data_list)[-k:]
+    
+    #k smallest
+    #idx_dominant_dis_closest_pts = np.argsort(dis_closest_pts)[:k]
+    
+    #print("idx_dominant_dis_closest_pts = {}".format(idx_dominant_dis_closest_pts))
+    
+    #print(idx_dominant_dis_closest_pts)
+    
+    outlier_remove_list = [data_list[index] for index in idx_dominant] 
+    
+    #print("outlier_remove_list = {}".format(outlier_remove_list))
+    
+    return outlier_remove_list, idx_dominant
+    ####################################################
+
+
+
+
 # Skeleton visualization
 def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
@@ -382,6 +411,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     sub_branch_end_rec = []
     
+    sub_branch_projection_rec = []
+    
     #if len(end_vlist) == len(end_vlist_offset):
         
     for idx, v_end in enumerate(end_vlist):
@@ -406,6 +437,13 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         angle_sub_branch = dot_product_angle(start_v, end_v)
         
+        
+        p0 = np.array([X_skeleton[int_v_list[0]], Y_skeleton[int_v_list[0]], Z_skeleton[int_v_list[0]]])
+        
+        p1 = np.array([X_skeleton[int_v_list[0]], Y_skeleton[int_v_list[0]], Z_skeleton[int_v_list[-1]]])
+        
+        projection_radius = np.linalg.norm(p0 - p1)
+        
         # save computed parameters for each branch
         sub_branch_list.append(v_list)
         
@@ -416,6 +454,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         sub_branch_start_rec.append(int_v_list[0])
         
         sub_branch_end_rec.append(int_v_list[len(int_v_list)-1])
+        
+        sub_branch_projection_rec.append(projection_radius)
         
         #print("angle_sub_branch = {}".format(angle_sub_branch))
         
@@ -448,7 +488,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
     # cluster sub_branch_length_rec find dominant sub branches with longer length and depth values 
-    ##############################################################################
+    ####################################################################
     labels_length_rec = cluster_1D(sub_branch_length_rec, n_clusters = 2)
     
     if labels_length_rec.tolist().index(0) == 0:
@@ -457,6 +497,35 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         dsf_length_divide_idx = labels_length_rec.tolist().index(0)
     
     print("divide_idx for sub_branch_length_rec = {}\n".format(dsf_length_divide_idx))
+    
+    
+    # Obtain all parametres for dominant sub branches by index 'dsf_length_divide_idx'
+    ####################################################################
+    brace_length_list = sub_branch_length_rec[0:dsf_length_divide_idx]
+    
+    print("brace_length_list = {}\n".format(brace_length_list))
+    
+    (outlier_remove_brace_length_list, idx_dominant) = outlier_remove(brace_length_list)
+    
+    #print("outlier_remove_brace_length_list = {}\n".format(idx_dominant))
+    
+    brace_angle_list = [sub_branch_angle_rec[index] for index in idx_dominant]
+    
+    projection_radius_list = [sub_branch_projection_rec[index] for index in idx_dominant]
+    
+    print("brace_angle_list = {}\n".format(brace_angle_list))
+    
+    avg_brace_length = round(np.mean(outlier_remove_brace_length_list),2)
+    
+    avg_brace_angle = round(np.mean(brace_angle_list),2)
+    
+    avg_projection_radius = round(np.mean(projection_radius_list),2)
+    
+    print("avg_brace_length = {}  avg_brace_angle = {}  avg_projection_radius = {}\n".format(avg_brace_length, avg_brace_angle,avg_projection_radius))
+    
+    num_brace = dsf_length_divide_idx
+    
+    
     
     
     
@@ -535,8 +604,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     print("closest_pts_unique_sorted = {}\n".format(closest_pts_unique_sorted))
 
-
-
+    
+    
 
     
     
@@ -568,6 +637,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     Z_range = (Z_skeleton[0], Z_skeleton[closest_pts_unique_sorted_combined[0]])
     
+    
+    '''
     ####################################################################
     search_radius = 150
     
@@ -632,19 +703,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     print("combined_level_range_set = {}\n".format(combined_level_range_set))
     
     #sub_branch_selected = [sub_branch_list[index] for index in combined_level_range_set]
-    
     '''
-    # compute whorl distance based on distance between combined close points
-    whorl_loc1_idx = [closest_pts_unique_sorted_combined[0], closest_pts_unique_sorted_combined[2]]
-    
-    whorl_dis_1 = path_length(X_skeleton[whorl_loc1_idx], Y_skeleton[whorl_loc1_idx], Z_skeleton[whorl_loc1_idx])
-    
-    whorl_loc2_idx = [closest_pts_unique_sorted_combined[2], closest_pts_unique_sorted_combined[4]]
-    
-    whorl_dis_2 = path_length(X_skeleton[whorl_loc2_idx], Y_skeleton[whorl_loc2_idx], Z_skeleton[whorl_loc2_idx])
-    
-    print("whorl_dis_1 pair = {0} ,distance = {1}\n  whorl_dis_2 pair = {2}, distance = {3}\n".format(whorl_loc1_idx, whorl_dis_1,whorl_loc2_idx, whorl_dis_2))
-    '''
+   
     
     #convert skeleton data to KDTree using Open3D to search nearest neighbors
     #find branches within near neighbors search range
@@ -665,7 +725,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     print("neighbors_match = {}\n".format(neighbors_match))
     
-    '''
+    
     
     level = 1
     
@@ -686,30 +746,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     print("num_1_order = {0}\n  angle_1_order = {1}\n length_1_order = {2}\n".format(num_1_order, angle_1_order, length_1_order))
     
-
     '''
-    #find index of k smallest or biggest elements in list
-    ####################################################
-    k = int(len(dis_closest_pts) * 0.8)
-    
-    #print(k)
-    
-    k biggest
-    idx_dominant_dis_closest_pts = np.argsort(dis_closest_pts)[-k:]
-    
-    #k smallest
-    #idx_dominant_dis_closest_pts = np.argsort(dis_closest_pts)[:k]
-    
-    #print("idx_dominant_dis_closest_pts = {}".format(idx_dominant_dis_closest_pts))
-    
-    #print(idx_dominant_dis_closest_pts)
-    
-    dis_closest_pts_dominant = [closest_pts_unique_sorted[index] for index in idx_dominant_dis_closest_pts] 
-    
-    print("dis_closest_pts_dominant pairs = {}".format(dis_closest_pts_dominant))
-    ####################################################
-    '''
-    
+        
 
     #find shortest path between start and end vertex
     ####################################################################
@@ -788,7 +826,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         pt_stem_diameter = (pt_stem_diameter_max + pt_stem_diameter_min)*0.5
         
-        
+        pt_eccentricity = pt_stem_diameter_min/pt_stem_diameter_max
         
         
         if pcd.has_colors():
@@ -1131,6 +1169,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
     '''
+    
+    return pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, pt_stem_diameter, num_brace, avg_brace_length, avg_brace_angle, avg_projection_radius, whorl_dis_1, whorl_dis_2
 
 
 if __name__ == '__main__':
@@ -1160,6 +1200,18 @@ if __name__ == '__main__':
 
     print ("results_folder: " + current_path)
 
-    visualize_skeleton(current_path, filename_skeleton, filename_pcloud)
+    (pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, pt_stem_diameter, num_brace, avg_brace_length, avg_brace_angle, avg_projection_radius, whorl_dis_1, whorl_dis_2) = visualize_skeleton(current_path, filename_skeleton, filename_pcloud)
 
- 
+    ########################################################################################
+    
+    #output in command window in a sum table
+    trait_sum = []
+
+    for row in zip(pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, pt_stem_diameter, num_brace, avg_brace_length, avg_brace_angle, avg_projection_radius, whorl_dis_1, whorl_dis_2):
+       
+       trait_sum.append(row)
+
+	table = tabulate(trait_sum, headers = ['root system diameter max', 'root system diameter min', 'root system diameter', 'root system eccentricity', 'stem root diameter' , 'number of brace roots', 'brace root length', 'brace root angle', 'root trace projection radius', 'whorl distance 1', 'whorl distance 2'], tablefmt = 'orgtbl')
+
+    print(table + "\n")
+    
