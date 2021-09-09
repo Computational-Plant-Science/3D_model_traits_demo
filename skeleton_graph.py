@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 skeleton_loader.py -p ~/example/ -m1 test_skeleton.ply -m2 test.ply
+python3 skeleton_graph.py -p ~/example/ -m1 test_skeleton.ply -m2 test.ply
 
 
 argument:
@@ -49,9 +49,11 @@ import plotly.graph_objects as go
 from matplotlib import pyplot as plt
 import math
 import itertools
+
 from tabulate import tabulate
 
-
+import openpyxl
+import csv
 
 #calculate length of a 3D path or curve
 def path_length(X, Y, Z):
@@ -1170,7 +1172,8 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     '''
     
-    return pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, pt_stem_diameter, num_brace, avg_brace_length, avg_brace_angle, avg_projection_radius, whorl_dis_1, whorl_dis_2
+    return pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, \
+        pt_stem_diameter, num_brace, avg_brace_length, avg_brace_angle, avg_projection_radius, whorl_dis_1, whorl_dis_2
 
 
 if __name__ == '__main__':
@@ -1200,18 +1203,51 @@ if __name__ == '__main__':
 
     print ("results_folder: " + current_path)
 
-    (pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, pt_stem_diameter, num_brace, avg_brace_length, avg_brace_angle, avg_projection_radius, whorl_dis_1, whorl_dis_2) = visualize_skeleton(current_path, filename_skeleton, filename_pcloud)
+    (pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, pt_stem_diameter, \
+        num_brace, avg_brace_length, avg_brace_angle, avg_projection_radius, whorl_dis_1, whorl_dis_2) = visualize_skeleton(current_path, filename_skeleton, filename_pcloud)
 
-    ########################################################################################
-    
-    #output in command window in a sum table
     trait_sum = []
-
-    for row in zip(pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, pt_stem_diameter, num_brace, avg_brace_length, avg_brace_angle, avg_projection_radius, whorl_dis_1, whorl_dis_2):
-       
-       trait_sum.append(row)
-
-	table = tabulate(trait_sum, headers = ['root system diameter max', 'root system diameter min', 'root system diameter', 'root system eccentricity', 'stem root diameter' , 'number of brace roots', 'brace root length', 'brace root angle', 'root trace projection radius', 'whorl distance 1', 'whorl distance 2'], tablefmt = 'orgtbl')
-
-    print(table + "\n")
     
+    trait_sum.append([pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, \
+        pt_stem_diameter, num_brace, avg_brace_length, avg_brace_angle, avg_projection_radius, whorl_dis_1, whorl_dis_2])
+    
+    #save reuslt file
+    ####################################################################
+    
+    trait_file = (current_path + 'trait.xlsx')
+    
+    trait_file_csv = (current_path + 'trait.csv')
+    
+    
+    if os.path.isfile(trait_file):
+        # update values
+        #Open an xlsx for reading
+        wb = openpyxl.load_workbook(trait_file)
+
+        #Get the current Active Sheet
+        sheet = wb.active
+        
+    else:
+        # Keep presets
+        wb = openpyxl.Workbook()
+        sheet = wb.active
+
+        sheet.cell(row = 1, column = 1).value = 'root system diameter max'
+        sheet.cell(row = 1, column = 2).value = 'root system diameter min'
+        sheet.cell(row = 1, column = 3).value = 'root system diameter'
+        sheet.cell(row = 1, column = 4).value = 'root system eccentricity'
+        sheet.cell(row = 1, column = 5).value = 'stem root diameter'
+        sheet.cell(row = 1, column = 6).value = 'number of brace roots'
+        sheet.cell(row = 1, column = 7).value = 'brace root length'
+        sheet.cell(row = 1, column = 8).value = 'brace root angle'
+        sheet.cell(row = 1, column = 9).value = 'root trace projection radius'
+        sheet.cell(row = 1, column = 10).value = 'whorl distance 1'
+        sheet.cell(row = 1, column = 11).value = 'whorl distance 2'
+              
+        
+    for row in trait_sum:
+        sheet.append(row)
+   
+   
+    #save the csv file
+    wb.save(trait_file)
