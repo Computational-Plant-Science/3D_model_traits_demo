@@ -787,7 +787,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     '''
     ###################################################################
-
+    pt_diameter_max = pt_diameter_min= pt_length = pt_eccentricity = pt_stem_diameter = 0
     
     #load ply point cloud file
     if not (filename_pcloud is None):
@@ -1205,7 +1205,11 @@ if __name__ == '__main__':
 
     (pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, pt_stem_diameter, \
         num_brace, avg_brace_length, avg_brace_angle, avg_projection_radius, whorl_dis_1, whorl_dis_2) = visualize_skeleton(current_path, filename_skeleton, filename_pcloud)
-
+    
+    
+    
+    '''
+    ###################################################################
     trait_sum = []
     
     trait_sum.append([pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, \
@@ -1251,3 +1255,4 @@ if __name__ == '__main__':
    
     #save the csv file
     wb.save(trait_file)
+    '''
