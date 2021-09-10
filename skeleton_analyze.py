@@ -283,6 +283,16 @@ def outlier_remove(data_list):
     ####################################################
 
 
+# save point cloud data from numpy array as ply file
+def write_ply(path, data_numpy_array):
+    
+    pcd = o3d.geometry.PointCloud()
+     
+    pcd.points = o3d.utility.Vector3dVector(data_numpy_array)
+     
+    o3d.io.write_point_cloud(path, pcd)
+
+
 # Skeleton analysis
 def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
@@ -472,7 +482,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     avg_projection_radius = round(np.mean(projection_radius_list),2)
     
-    print("avg_brace_length = {}  avg_brace_angle = {}  avg_projection_radius = {}\n".format(avg_brace_length, avg_brace_angle,avg_projection_radius))
+    print("num_brace = {} avg_brace_length = {}  avg_brace_angle = {}  avg_projection_radius = {}\n".format(num_brace, avg_brace_length, avg_brace_angle,avg_projection_radius))
     
     
     #find sub branch start vertices locations 
@@ -483,6 +493,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #print("sub_branch_start_rec_selected = {}\n".format(sub_branch_start_rec_selected))
     
     sub_branch_start_Z = Z_skeleton[sub_branch_start_rec_selected]
+    
+    sub_branch_end_Z = Z_skeleton[sub_branch_end_rec_selected]
     
     #print("sub_branch_start_Z = {}\n".format(sub_branch_start_Z))
     
@@ -598,9 +610,19 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     print("whorl_dis_1 = {}\n  whorl_dis_2 = {}\n".format(whorl_dis_1, whorl_dis_2))
     
     
-    Z_range_crown = (sub_branch_start_Z[0], sub_branch_start_Z[dsf_start_Z_divide_idx])
+    #Z_range_crown = (sub_branch_start_Z[0], sub_branch_start_Z[dsf_start_Z_divide_idx])
     
-    Z_range_brace = (sub_branch_start_Z[dsf_start_Z_divide_idx], sub_branch_start_Z[-1])
+    Z_range_crown = (Z_skeleton[closest_pts_unique_sorted_combined[0]], sub_branch_start_Z[-1])
+    
+    Z_range_brace = (sub_branch_start_Z[-1], sub_branch_end_Z[0])
+
+    Z_range_brace_skeleton = (sub_branch_start_Z[dsf_start_Z_divide_idx], sub_branch_start_Z[-1])
+    
+    idx_brace_skeleton = np.where(np.logical_and(Z_skeleton[sub_branch_start_rec] >= Z_range_brace_skeleton[0], Z_skeleton[sub_branch_start_rec] <= Z_range_brace_skeleton[1]))
+    
+    print("idx_brace_skeleton = {}\n".format(idx_brace_skeleton))
+    
+    print("Z_range_crown = {}\n  Z_range_brace = {}\n".format(Z_range_crown, Z_range_brace))
     
     
     #find sub branches within Z_range_crown
@@ -617,6 +639,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     print(idx_brace[0], idx_brace[0][0], idx_brace[0][-1])
     
     #find sub branches within Z_range_brace
+    
+    
+    #####################################################################
+   
+   
     
     '''
     #Search skeleton graph
@@ -791,9 +818,44 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         print("pt_diameter_max = {} pt_diameter_min = {} pt_length = {}\n".format(pt_diameter_max,pt_diameter_min,pt_length))
         
-        #print("Z_range = {}\n".format(Z_range))
         
         #print(Data_array_pcloud.shape)
+        
+        
+        
+        '''
+        ################################################################
+        
+        print(idx_brace[0][0], idx_brace[0][-1])
+        
+        anchor_pt = (X_skeleton[25], Y_skeleton[25], Z_skeleton[25])
+        
+        pcd = o3d.geometry.PointCloud()
+        
+        pcd.points = o3d.utility.Vector3dVector(Data_array_pcloud)
+        
+        pcd.paint_uniform_color([0.5, 0.5, 0.5])
+
+        
+        # Build KDTree from point cloud for fast retrieval of nearest neighbors
+        pcd_tree = o3d.geometry.KDTreeFlann(pcd)
+        
+        #print("Paint the 00th point red.")
+        
+        #pcd.colors[anchor_pt] = [1, 0, 0]
+        
+        search_radius = 150
+        #print("Find its 50 nearest neighbors, paint blue.")
+        
+        [k, idx, _] = pcd_tree.search_knn_vector_3d(anchor_pt, search_radius)
+        
+        #print("nearest neighbors = {}\n".format(sorted(np.asarray(idx[1:]))))
+        
+        np.asarray(pcd.colors)[idx[1:], :] = [0, 0, 1]
+        
+        #o3d.visualization.draw_geometries([pcd])
+        '''
+        ################################################################
         
         
         #extract stem part from point cloud model
@@ -801,7 +863,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         Data_array_pcloud_Z_range_stem = Data_array_pcloud[idx_pt_Z_range_stem]
         
-        
+
         idx_pt_Z_range_crown = np.where(np.logical_and(Data_array_pcloud[:,2] >= Z_range_crown[0], Data_array_pcloud[:,2] <= Z_range_crown[1]))
         
         Data_array_pcloud_Z_range_crown = Data_array_pcloud[idx_pt_Z_range_crown]
@@ -810,6 +872,18 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         idx_pt_Z_range_brace = np.where(np.logical_and(Data_array_pcloud[:,2] >= Z_range_brace[0], Data_array_pcloud[:,2] <= Z_range_brace[1]))
         
         Data_array_pcloud_Z_range_brace = Data_array_pcloud[idx_pt_Z_range_brace]
+        
+        
+        # save partital model for diameter measurement
+        model_stem = (current_path + 'stem.ply')
+        write_ply(model_stem, Data_array_pcloud_Z_range_stem)
+        
+        model_crown = (current_path + 'crown.ply')
+        write_ply(model_crown, Data_array_pcloud_Z_range_crown)
+        
+        model_brace = (current_path + 'brace.ply')
+        write_ply(model_brace, Data_array_pcloud_Z_range_brace)
+
         
         
         (pt_stem_diameter_max,pt_stem_diameter_min,pt_stem_length) = get_pt_parameter(Data_array_pcloud_Z_range_stem)
@@ -872,20 +946,19 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     cmap = get_cmap(dsf_length_divide_idx)
     
-    #loop draw all the sub branches
+    #draw all the sub branches in loop 
     for i, (sub_branch, sub_branch_start, sub_branch_angle) in enumerate(zip(sub_branch_list, sub_branch_start_rec, sub_branch_angle_rec)):
 
         #if i < dsf_length_divide_idx:
-         if i <= idx_brace[0][-1] and i >= idx_brace[0][0] :
+        if i <= idx_brace_skeleton[0][-1] and i >= idx_brace_skeleton[0][0] :
             
             color_rgb = cmap(i)[:len(cmap(i))-1]
             
             pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.05)
     
-            mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str(sub_branch_angle), color = color_rgb, scale = (0.04, 0.04, 0.04))
+            mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str(i), color = color_rgb, scale = (0.04, 0.04, 0.04))
      
-   
-
+    
     
     
     #for i, (end_val, x_e, y_e, z_e) in enumerate(zip(closest_pts_unique_sorted_combined, X_skeleton[closest_pts_unique_sorted_combined], Y_skeleton[closest_pts_unique_sorted_combined], Z_skeleton[closest_pts_unique_sorted_combined])):
@@ -901,7 +974,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     if not (filename_pcloud is None):
         
-        x, y, z = Data_array_pcloud_Z_range_brace[:,0], Data_array_pcloud_Z_range_brace[:,1], Data_array_pcloud_Z_range_brace[:,2] 
+        x, y, z = Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2] 
         
         pts = mlab.points3d(x,y,z, mode = 'point')
         
