@@ -30,7 +30,12 @@ from sklearn.cluster import KMeans
 from operator import itemgetter
 import argparse
 
+from skimage.segmentation import watershed
+from skimage.feature import peak_local_max
+
 from scipy.spatial import KDTree
+from scipy import ndimage
+
 import cv2
 
 import glob
@@ -38,6 +43,7 @@ import os
 import sys
 import open3d as o3d
 import copy
+import shutil
 
 from mayavi import mlab
 from tvtk.api import tvtk
@@ -56,6 +62,36 @@ from tabulate import tabulate
 
 import openpyxl
 import csv
+
+
+
+# generate foloder to store the output results
+def mkdir(path):
+    # import module
+    import os
+ 
+    # remove space at the beginning
+    path=path.strip()
+    # remove slash at the end
+    path=path.rstrip("\\")
+ 
+    # path exist?   # True  # False
+    isExists=os.path.exists(path)
+ 
+    # process
+    if not isExists:
+        # construct the path and folder
+        #print path + ' folder constructed!'
+        # make dir
+        os.makedirs(path)
+        return True
+    else:
+        # if exists, return 
+        #print path+' path exists!'
+        #shutil.rmtree(path)
+        #os.makedirs(path)
+        return False
+
 
 
 # save point cloud to open3d compatiable format
@@ -400,10 +436,37 @@ def write_ply(path, data_numpy_array):
         #sys.exit(0)
 
 
-# compute radius from area
+# compute diameter from area
 def area_radius(area_of_circle):
     radius = ((area_of_circle/ math.pi)** 0.5)
-    return radius 
+    
+    #note: return diameter instead of radius
+    return 2*radius 
+
+
+# segmentation of overlapping components 
+def watershed_seg(orig, thresh, min_distance_value):
+    
+    # compute the exact Euclidean distance from every binary
+    # pixel to the nearest zero pixel, then find peaks in this
+    # distance map
+    D = ndimage.distance_transform_edt(thresh)
+    
+    localMax = peak_local_max(D, indices = False, min_distance = min_distance_value,  labels = thresh)
+     
+    # perform a connected component analysis on the local peaks,
+    # using 8-connectivity, then appy the Watershed algorithm
+    markers = ndimage.label(localMax, structure = np.ones((3, 3)))[0]
+    
+    #print("markers")
+    #print(type(markers))
+    
+    labels = watershed(-D, markers, mask = thresh)
+    
+    #print("[INFO] {} unique segments found\n".format(len(np.unique(labels)) - 1))
+    
+    return labels
+    
 
 
 # analyze cross section paramters
@@ -439,11 +502,46 @@ def crosssection_analysis(image_file):
     #Obtain the threshold image using OTSU adaptive filter
     ret, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
     
-    connectivity = 3
+    
+    
+    #find contours and fill contours 
+    ####################################################################
+    #container version
+    contours, hier = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    #local version
+    #_, contours, hier = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    contours_img = []
+    
+    #define image morphology operation kernel
+    #kernel = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
+    
+    #draw all the filled contours
+    for c in contours:
+        
+        #fill the connected contours
+        contours_img = cv2.drawContours(binary, [c], -1, (255, 255, 255), cv2.FILLED)
+        
+        #contours_img = cv2.erode(contours_img, kernel, iterations = 5)
+
+    #Obtain the threshold image using OTSU adaptive filter
+    thresh_filled = cv2.threshold(contours_img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+    
+    #Obtain the threshold image using OTSU adaptive filter
+    ret, binary_filled = cv2.threshold(contours_img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+    
+    
+    
+    # process filled contour images to extract connected Components
+    ####################################################################
+    '''
+    #connectivity = 3
     
     # compute connected component parameters
-    num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(binary , connectivity , cv2.CV_32S)
+    #num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(binary_filled , connectivity , cv2.CV_32S)
    
+    
     largest_label = 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA]) 
     
     areas = [s[4] for s in stats]
@@ -461,8 +559,77 @@ def crosssection_analysis(image_file):
     radius = sorted([x for x in radius if x > min_radius])
     
     radius_avg = np.mean(radius)
-    
+    '''
     #print("The average radius is ", round(radius_avg,2))
+    
+    ###################################################################
+    # segment overlapping components
+    #make backup image
+    orig = imgcolor.copy()
+
+    min_distance_value = 5
+    
+    #watershed based segmentaiton 
+    labels = watershed_seg(contours_img, thresh_filled, min_distance_value)
+    
+    #Map component labels to hue val
+    label_hue = np.uint8(128*labels/np.max(labels))
+    #label_hue[labels == largest_label] = np.uint8(15)
+    blank_ch = 255*np.ones_like(label_hue)
+    labeled_img = cv2.merge([label_hue, blank_ch, blank_ch])
+
+    # cvt to BGR for display
+    labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_HSV2BGR)
+
+    # set background label to black
+    labeled_img[label_hue==0] = 0
+    
+    # save label results
+    result_file = (label_path + base_name + '_label.png')
+    
+    #print(result_file)
+
+    cv2.imwrite(result_file, labeled_img)
+
+    
+    ####################################################################
+    gray = cv2.cvtColor(orig, cv2.COLOR_BGR2GRAY)
+    
+    area_rec = []
+
+    # loop over the unique labels returned by the Watershed algorithm
+    for index, label in enumerate(np.unique(labels), start = 1):
+        # if the label is zero, we are examining the 'background'
+        # so simply ignore it
+        if label == 0:
+            continue
+     
+        # otherwise, allocate memory for the label region and draw
+        # it on the mask
+        mask = np.zeros(gray.shape, dtype = "uint8")
+        mask[labels == label] = 255
+        
+        # apply individual object mask
+        masked = cv2.bitwise_and(contours_img, contours_img, mask = mask)
+        
+        #define result path 
+        #result_img_path = (label_path + 'component_' + str(label) + '.png')
+        #cv2.imwrite(result_img_path, masked)
+        
+        # detect contours in the mask and grab the largest one
+        #cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+        contours, hierarchy = cv2.findContours(mask.copy(),cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        c = max(contours, key = cv2.contourArea)
+        
+        area_rec.append(cv2.contourArea(c))
+        
+        
+    radius_rec = [area_radius(area_val) for area_val in area_rec]
+    
+    #print(area_rec)
+    #print(radius_rec)
+    
+    radius_avg = np.mean(radius_rec)
     
     return radius_avg
 
@@ -481,7 +648,7 @@ def crosssection_analysis_range(start_idx, end_idx):
         
     #print(radius_avg_rec)
     
-    k = int(len(radius_avg_rec) * 0.3)
+    k = int(len(radius_avg_rec) * 0.6)
     
     #print(k)
     
@@ -490,7 +657,7 @@ def crosssection_analysis_range(start_idx, end_idx):
     
     outlier_remove_list = [radius_avg_rec[index] for index in idx_dominant] 
     
-    print(outlier_remove_list)
+    #print(outlier_remove_list)
     
     return np.mean(outlier_remove_list)
 
@@ -652,14 +819,73 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     # find dominant sub branches with longer length and depth values by clustering sub_branch_length_rec values
     ####################################################################
-    labels_length_rec = cluster_1D(sub_branch_length_rec, n_clusters = 2)
+    labels_length_rec = cluster_1D(sub_branch_length_rec, n_clusters = 5)
     
     if labels_length_rec.tolist().index(0) == 0:
         dsf_length_divide_idx = labels_length_rec.tolist().index(1)
     else:
-        dsf_length_divide_idx = labels_length_rec.tolist().index(0)
+        dsf_length_divide_idx = labels_length_rec.tolist().index(2)
     
-    print("divide_idx for sub_branch_length_rec = {}\n".format(dsf_length_divide_idx))
+    print("dsf_length_divide_idx = {}\n".format(dsf_length_divide_idx))
+    
+    print("index values = {} {} {}\n".format(labels_length_rec.tolist().index(0), labels_length_rec.tolist().index(1), labels_length_rec.tolist().index(2)))
+    
+    div_idx = labels_length_rec.tolist()
+   
+    # get clustered sub branches paramters    
+    indices_rec = []
+    avg_angle_rec = []
+    avg_len_rec = []
+    avg_projection_rec = []
+    
+    for val in range(5):
+        
+        indices = [i for i, x in enumerate(div_idx) if x == val]
+        
+        sub_branch_len = [sub_branch_length_rec[index] for index in indices]
+        
+        sub_branch_angle = [sub_branch_angle_rec[index] for index in indices]
+        
+        sub_branch_projection = [sub_branch_projection_rec[index] for index in indices]
+        
+        avg_len = np.mean(sub_branch_len)
+        avg_angle = np.mean(sub_branch_angle)
+        avg_projection = np.mean(sub_branch_projection)
+        
+        indices_rec.append(indices)
+        avg_angle_rec.append(avg_angle)
+        avg_len_rec.append(avg_len)
+        avg_projection_rec.append(avg_projection)
+        
+    
+    sorted_idx_avg_len = np.argsort(avg_len_rec)
+    
+    #sort list according to sorted_idx_Z_loc 
+    indices_rec[:] = [indices_rec[i] for i in sorted_idx_avg_len] 
+    avg_len_rec[:] = [avg_len_rec[i] for i in sorted_idx_avg_len]
+    avg_angle_rec[:] = [avg_angle_rec[i] for i in sorted_idx_avg_len]
+
+
+    sub_branch_crown = [sub_branch_list[index] for index in indices_rec[4]]
+    sub_branch_brace = [sub_branch_list[index] for index in indices_rec[3]]
+    
+    num_crown = len(indices_rec[4])
+    num_brace = len(indices_rec[3])
+    
+    avg_crown_length = avg_len_rec[4]
+    avg_brace_length = avg_len_rec[3]
+    
+    avg_crown_angle = avg_angle_rec[4]
+    avg_brace_angle = avg_angle_rec[3]
+    
+    avg_crown_projection = avg_projection_rec[4]
+    avg_brace_projection = avg_projection_rec[3]
+    
+    
+    print("num_brace = {} avg_brace_length = {}  avg_brace_angle = {}  avg_crown_projection = {}\n".format(num_brace, avg_brace_length, avg_brace_angle, avg_brace_projection))
+    
+    print("num_crown = {} avg_crown_length = {}  avg_crown_angle = {}  avg_crown_projection = {}\n".format(num_crown, avg_crown_length, avg_crown_angle, avg_crown_projection))
+
     
     
     #obtain parametres for dominant sub branches from index 'dsf_length_divide_idx'
@@ -677,15 +903,15 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     projection_radius_list = [sub_branch_projection_rec[index] for index in idx_dominant]
     
     #print("brace_angle_list = {}\n".format(brace_angle_list))
-    num_brace = dsf_length_divide_idx
-    
+       
+    '''
     avg_brace_length = round(np.mean(outlier_remove_brace_length_list),2)
     
     avg_brace_angle = round(np.mean(brace_angle_list),2)
     
     avg_projection_radius = round(np.mean(projection_radius_list),2)
-    
-    print("num_brace = {} avg_brace_length = {}  avg_brace_angle = {}  avg_projection_radius = {}\n".format(num_brace, avg_brace_length, avg_brace_angle,avg_projection_radius))
+    '''
+    #print("num_brace = {} avg_brace_length = {}  avg_brace_angle = {}  avg_projection_radius = {}\n".format(num_brace, avg_brace_length, avg_brace_angle,avg_projection_radius))
     
     
     #find sub branch start vertices locations 
@@ -709,6 +935,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         dsf_start_Z_divide_idx = labels_start_Z.tolist().index(1)
     else:
         dsf_start_Z_divide_idx = labels_start_Z.tolist().index(0)
+    
+    
     
     #print("dsf_start_Z_divide_idx for sub_branch_start_Z = {}\n".format(dsf_start_Z_divide_idx))
     
@@ -1087,13 +1315,15 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         
         
-        avg_radius_stem = crosssection_analysis_range(0, int(ratio_stem*len(imgList)))
+        avg_radius_stem = crosssection_analysis_range(0, int(ratio_stem*len(imgList)))*0.1
         
-        avg_radius_crown = crosssection_analysis_range(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))
+        avg_radius_crown = crosssection_analysis_range(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))*0.05
         
-        print(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))
+        avg_radius_brace = crosssection_analysis_range(int((ratio_stem + ratio_crown) * len(imgList)), len(imgList)-1)*0.05
         
-        print("avg_radius_stem = {} avg_radius_crown = {} \n".format(avg_radius_stem, avg_radius_crown))
+        #print(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))
+        
+        print("avg_radius_stem = {} avg_radius_crown = {} avg_radius_brace = {}\n".format(avg_radius_stem, avg_radius_crown, avg_radius_brace))
         
         
         
@@ -1162,19 +1392,19 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #pts = mlab.points3d(X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset], color = (1,1,1), mode = 'sphere', scale_factor = 0.03)
     
-    pts = mlab.points3d(X_skeleton[sub_branch_start_rec_selected], Y_skeleton[sub_branch_start_rec_selected], Z_skeleton[sub_branch_start_rec_selected], color = (1,0,0), mode = 'sphere', scale_factor = 0.08)
+    #pts = mlab.points3d(X_skeleton[sub_branch_start_rec_selected], Y_skeleton[sub_branch_start_rec_selected], Z_skeleton[sub_branch_start_rec_selected], color = (1,0,0), mode = 'sphere', scale_factor = 0.08)
     
     
    
     #cmap = get_cmap(len(sub_branch_list))
     
-    cmap = get_cmap(dsf_length_divide_idx)
+    cmap = get_cmap(len(sub_branch_brace))
     
     #draw all the sub branches in loop 
-    for i, (sub_branch, sub_branch_start, sub_branch_angle) in enumerate(zip(sub_branch_list, sub_branch_start_rec, sub_branch_angle_rec)):
+    for i, (sub_branch, sub_branch_start, sub_branch_angle) in enumerate(zip(sub_branch_brace, sub_branch_start_rec, sub_branch_angle_rec)):
 
         #if i < dsf_length_divide_idx:
-        if i <= idx_brace_skeleton[0][-1] and i >= idx_brace_skeleton[0][0] :
+        #if i <= idx_brace_skeleton[0][-1] and i >= idx_brace_skeleton[0][0] :
             
             color_rgb = cmap(i)[:len(cmap(i))-1]
             
@@ -1209,7 +1439,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         pts.mlab_source.dataset.point_data.scalars = sc
         
         pts.mlab_source.dataset.modified()
-    
+        
     
     #visualize skeleton model, edge, nodes
     ####################################################################
@@ -1278,8 +1508,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     mlab.show()
     
 
-    return pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, \
-        pt_stem_diameter, num_brace, avg_brace_length, avg_brace_angle, avg_projection_radius, whorl_dis_1, whorl_dis_2
+    return pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, avg_radius_stem, \
+        num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
+        num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
+        whorl_dis_1, whorl_dis_2
 
 
 if __name__ == '__main__':
@@ -1305,6 +1537,13 @@ if __name__ == '__main__':
     
     # analysis result path
     print ("results_folder: " + current_path + "\n")
+    
+    
+    #create label result file folder
+    mkpath = os.path.dirname(current_path) +'/label'
+    mkdir(mkpath)
+    label_path = mkpath + '/'
+    
 
     # slice image path
     filetype = '*.png'
@@ -1322,18 +1561,23 @@ if __name__ == '__main__':
     
     #loop all slices to obtain raidus results
     
-    #avg_radius = crosssection_analysis_range(0, 20)
-    
-    #print(avg_radius)
+    #print(avg_radius = crosssection_analysis_range(0, 97))
     
     
-    (pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, pt_stem_diameter, \
-        num_brace, avg_brace_length, avg_brace_angle, avg_projection_radius, whorl_dis_1, whorl_dis_2) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+    
+    
+    
+    (pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, avg_radius_stem, \
+        num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
+        num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
+        whorl_dis_1, whorl_dis_2) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
 
     trait_sum = []
     
-    trait_sum.append([pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, \
-        pt_stem_diameter, num_brace, avg_brace_length, avg_brace_angle, avg_projection_radius, whorl_dis_1, whorl_dis_2])
+    trait_sum.append([pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, avg_radius_stem, \
+        num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
+        num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
+        whorl_dis_1, whorl_dis_2])
     
     #save reuslt file
     ####################################################################
@@ -1361,12 +1605,18 @@ if __name__ == '__main__':
         sheet.cell(row = 1, column = 3).value = 'root system diameter'
         sheet.cell(row = 1, column = 4).value = 'root system eccentricity'
         sheet.cell(row = 1, column = 5).value = 'stem root diameter'
-        sheet.cell(row = 1, column = 6).value = 'number of brace roots'
-        sheet.cell(row = 1, column = 7).value = 'brace root length'
-        sheet.cell(row = 1, column = 8).value = 'brace root angle'
-        sheet.cell(row = 1, column = 9).value = 'root trace projection radius'
-        sheet.cell(row = 1, column = 10).value = 'whorl distance 1'
-        sheet.cell(row = 1, column = 11).value = 'whorl distance 2'
+        sheet.cell(row = 1, column = 6).value = 'number of crown roots'
+        sheet.cell(row = 1, column = 7).value = 'crown root length'
+        sheet.cell(row = 1, column = 8).value = 'crown root angle'
+        sheet.cell(row = 1, column = 9).value = 'crown root diameter'
+        sheet.cell(row = 1, column = 10).value = 'crown root projection radius'
+        sheet.cell(row = 1, column = 11).value = 'number of brace roots'
+        sheet.cell(row = 1, column = 12).value = 'brace root length'
+        sheet.cell(row = 1, column = 13).value = 'brace root angle'
+        sheet.cell(row = 1, column = 14).value = 'brace root diameter'
+        sheet.cell(row = 1, column = 15).value = 'brace root projection radius'
+        sheet.cell(row = 1, column = 16).value = 'whorl distance 1'
+        sheet.cell(row = 1, column = 17).value = 'whorl distance 2'
               
         
     for row in trait_sum:
