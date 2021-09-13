@@ -734,7 +734,6 @@ def root_system_trait(image_file):
 def parallel_root_system_trait(images):
     
     
-    
     # parallel processing 
     agents = multiprocessing.cpu_count() - 2
     chunksize = 3
@@ -836,7 +835,7 @@ def parallel_root_system_trait(images):
         sheet.append(row)
     
 
-    #save the csv file
+    #save the xlsx file
     wb.save(trait_file)
     
     
@@ -1038,6 +1037,7 @@ if __name__ == '__main__':
             pattern_id = 3
         
         print(pattern_id)
+        
         parallel_root_system_trait(list_part[i])
     
 

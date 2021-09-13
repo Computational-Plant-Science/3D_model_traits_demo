@@ -56,6 +56,92 @@ import openpyxl
 import csv
 
 
+# save point cloud to open3d compatiable format
+def format_converter(path, Data_array):
+    '''
+    model_file = current_path + model_name
+    
+    print("Converting file format for 3D point cloud model {}...\n".format(model_name))
+    
+    model_name_base = os.path.splitext(model_file)[0]
+    
+    
+    # load the model file
+    try:
+        with open(model_file, 'rb') as f:
+            plydata = PlyData.read(f)
+            num_vertex = plydata.elements[0].count
+            
+            print("Ply data structure: \n")
+            print(plydata)
+            print("\n")
+            print("Number of 3D points in current model: {0} \n".format(num_vertex))
+        
+    except:
+        print("Model file does not exist!")
+        sys.exit(0)
+        
+    
+    #Parse the ply format file and Extract the data
+    Data_array_ori = np.zeros((num_vertex, 3))
+    
+    Data_array_ori[:,0] = plydata['vertex'].data['x']
+    Data_array_ori[:,1] = plydata['vertex'].data['y']
+    Data_array_ori[:,2] = plydata['vertex'].data['z']
+    
+    #sort point cloud data based on Z values
+    Data_array = np.asarray(sorted(Data_array_ori, key = itemgetter(2), reverse = False))
+    '''
+    '''
+    #accquire data range
+    min_x = Data_array[:, 0].min()
+    max_x = Data_array[:, 0].max()
+    min_y = Data_array[:, 1].min()
+    max_y = Data_array[:, 1].max()
+    min_z = Data_array[:, 2].min()
+    max_z = Data_array[:, 2].max()
+    
+    range_data_x = max_x - min_x
+    range_data_y = max_y - min_y
+    range_data_z = max_z - min_z
+    
+    print (range_data_x, range_data_y, range_data_z)
+    
+    print(min_x,max_x)
+    print(min_y,max_y)
+    print(min_z,max_z)
+    '''
+    
+    
+    #Normalize data
+    #min_max_scaler = preprocessing.MinMaxScaler(feature_range = (0,1000000))
+    
+    min_max_scaler = preprocessing.MinMaxScaler(feature_range = (0,10000))
+
+    point_normalized = min_max_scaler.fit_transform(Data_array)
+    
+    #point_normalized_scale = [i * 1 for i in point_normalized]
+    # Pass xyz to Open3D.o3d.geometry.PointCloud 
+    pcd = o3d.geometry.PointCloud()
+    
+    pcd.points = o3d.utility.Vector3dVector(point_normalized)
+   
+    #Save model file as ascii format in ply
+    filename = path + 'converted.ply'
+    
+    #write out point cloud file
+    o3d.io.write_point_cloud(filename, pcd, write_ascii = True)
+    
+    '''
+    # check saved file
+    if os.path.exists(filename):
+        print("Converted 3d model was saved at {0}".format(filename))
+        return True
+    else:
+        return False
+        print("Model file converter failed !")
+        sys.exit(0)
+    '''
 
 #calculate length of a 3D path or curve
 def path_length(X, Y, Z):
@@ -283,15 +369,34 @@ def outlier_remove(data_list):
     ####################################################
 
 
-# save point cloud data from numpy array as ply file
+# save point cloud data from numpy array as ply file, open3d compatiable format
 def write_ply(path, data_numpy_array):
     
+    data_range = 10000
+    
+    #Normalize data range for generate cross section level set scan
+    min_max_scaler = preprocessing.MinMaxScaler(feature_range = (0, data_range))
+
+    point_normalized = min_max_scaler.fit_transform(data_numpy_array)
+    
+    #initialize pcd object for open3d 
     pcd = o3d.geometry.PointCloud()
      
-    pcd.points = o3d.utility.Vector3dVector(data_numpy_array)
-     
-    o3d.io.write_point_cloud(path, pcd)
-
+    pcd.points = o3d.utility.Vector3dVector(point_normalized)
+    
+    #write out point cloud file
+    o3d.io.write_point_cloud(path, pcd, write_ascii = True)
+    
+    
+    # check saved file
+    if os.path.exists(path):
+        print("Converted 3d model was saved at {0}".format(path))
+        return True
+    else:
+        return False
+        print("Model file converter failed !")
+        #sys.exit(0)
+    
 
 # Skeleton analysis
 def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
@@ -814,7 +919,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #Sorted_Data_array_pcloud = np.asarray(sorted(Data_array_pcloud, key = itemgetter(2), reverse = True))
         
         #compute dimensions of point cloud data
-        (pt_diameter_max,pt_diameter_min,pt_length) = get_pt_parameter(Data_array_pcloud)
+        (pt_diameter_max, pt_diameter_min, pt_length) = get_pt_parameter(Data_array_pcloud)
         
         print("pt_diameter_max = {} pt_diameter_min = {} pt_length = {}\n".format(pt_diameter_max,pt_diameter_min,pt_length))
         
@@ -872,6 +977,13 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         idx_pt_Z_range_brace = np.where(np.logical_and(Data_array_pcloud[:,2] >= Z_range_brace[0], Data_array_pcloud[:,2] <= Z_range_brace[1]))
         
         Data_array_pcloud_Z_range_brace = Data_array_pcloud[idx_pt_Z_range_brace]
+        
+        
+        ratio_stem = abs(Z_range_stem[0] - Z_range_stem[1])/pt_length
+        ratio_crown = abs(Z_range_crown[0] - Z_range_crown[1])/pt_length
+        ratio_brace = abs(Z_range_brace[0] - Z_range_brace[1])/pt_length
+        
+        print("ratio_stem = {} ratio_crown = {} ratio_brace = {}\n".format(ratio_stem,ratio_crown,ratio_brace))
         
         
         # save partital model for diameter measurement

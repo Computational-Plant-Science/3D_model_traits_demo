@@ -6,7 +6,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 crossection_measure.py -p ~/ -ext png -t 1
+python3 crossection_measure.py -p ~/example/ -ext png -t 1
 
 
 """
