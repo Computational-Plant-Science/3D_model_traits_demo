@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 skeleton_analyze.py -p ~/example/ -m1 test_skeleton.ply -m2 test.ply
+python3 skeleton_analyze.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/slices/
 
 
 argument:
@@ -31,7 +31,9 @@ from operator import itemgetter
 import argparse
 
 from scipy.spatial import KDTree
+import cv2
 
+import glob
 import os
 import sys
 import open3d as o3d
@@ -344,7 +346,7 @@ def cluster_1D(list_array, n_clusters):
 
 def outlier_remove(data_list):
 
-    #find index of k smallest or biggest elements in list
+    #find index of k biggest elements in list
     ####################################################
     
     k = int(len(data_list) * 0.8)
@@ -372,7 +374,7 @@ def outlier_remove(data_list):
 # save point cloud data from numpy array as ply file, open3d compatiable format
 def write_ply(path, data_numpy_array):
     
-    data_range = 10000
+    data_range = 100
     
     #Normalize data range for generate cross section level set scan
     min_max_scaler = preprocessing.MinMaxScaler(feature_range = (0, data_range))
@@ -396,7 +398,103 @@ def write_ply(path, data_numpy_array):
         return False
         print("Model file converter failed !")
         #sys.exit(0)
+
+
+# compute radius from area
+def area_radius(area_of_circle):
+    radius = ((area_of_circle/ math.pi)** 0.5)
+    return radius 
+
+
+# analyze cross section paramters
+def crosssection_analysis(image_file):
     
+    path, filename = os.path.split(image_file)
+    
+    base_name = os.path.splitext(os.path.basename(filename))[0]
+    
+    #print("processing image : {0} \n".format(str(filename)))
+    
+    # load the image 
+    imgcolor = cv2.imread(image_file)
+    
+    # if cross scan images are white background and black foreground
+    #imgcolor = ~imgcolor
+    
+    # accquire image dimensions 
+    height, width, channels = imgcolor.shape
+    #shifted = cv2.pyrMeanShiftFiltering(image, 5, 5)
+
+    #Image binarization by apltying otsu threshold
+    img = cv2.cvtColor(imgcolor, cv2.COLOR_BGR2GRAY)
+    
+    # Convert BGR to GRAY
+    img_lab = cv2.cvtColor(imgcolor, cv2.COLOR_BGR2LAB)
+    
+    gray = cv2.cvtColor(img_lab, cv2.COLOR_BGR2GRAY)
+    
+    #Obtain the threshold image using OTSU adaptive filter
+    thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+    
+    #Obtain the threshold image using OTSU adaptive filter
+    ret, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+    
+    connectivity = 3
+    
+    # compute connected component parameters
+    num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(binary , connectivity , cv2.CV_32S)
+   
+    largest_label = 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA]) 
+    
+    areas = [s[4] for s in stats]
+    
+    # remove center stem 
+    areas.remove(max(areas))
+    
+    #print(areas)
+    
+    # get radius from area
+    radius = [area_radius(x) for x in areas]
+    
+    min_radius = 1
+    
+    radius = sorted([x for x in radius if x > min_radius])
+    
+    radius_avg = np.mean(radius)
+    
+    #print("The average radius is ", round(radius_avg,2))
+    
+    return radius_avg
+
+
+
+# compute average 
+def crosssection_analysis_range(start_idx, end_idx):
+
+    radius_avg_rec = []
+    
+    for img in imgList[int(start_idx): int(end_idx)]:
+
+        radius_avg = crosssection_analysis(img)
+        
+        radius_avg_rec.append(radius_avg)
+        
+    #print(radius_avg_rec)
+    
+    k = int(len(radius_avg_rec) * 0.3)
+    
+    #print(k)
+    
+    #k smallest
+    idx_dominant = np.argsort(radius_avg_rec)[:k]
+    
+    outlier_remove_list = [radius_avg_rec[index] for index in idx_dominant] 
+    
+    print(outlier_remove_list)
+    
+    return np.mean(outlier_remove_list)
+
+
 
 # Skeleton analysis
 def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
@@ -746,6 +844,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #find sub branches within Z_range_brace
     
     
+   
+    
     #####################################################################
    
    
@@ -986,6 +1086,18 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         print("ratio_stem = {} ratio_crown = {} ratio_brace = {}\n".format(ratio_stem,ratio_crown,ratio_brace))
         
         
+        
+        avg_radius_stem = crosssection_analysis_range(0, int(ratio_stem*len(imgList)))
+        
+        avg_radius_crown = crosssection_analysis_range(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))
+        
+        print(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))
+        
+        print("avg_radius_stem = {} avg_radius_crown = {} \n".format(avg_radius_stem, avg_radius_crown))
+        
+        
+        
+        '''
         # save partital model for diameter measurement
         model_stem = (current_path + 'stem.ply')
         write_ply(model_stem, Data_array_pcloud_Z_range_stem)
@@ -995,7 +1107,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         model_brace = (current_path + 'brace.ply')
         write_ply(model_brace, Data_array_pcloud_Z_range_brace)
-
+        '''
         
         
         (pt_stem_diameter_max,pt_stem_diameter_min,pt_stem_length) = get_pt_parameter(Data_array_pcloud_Z_range_stem)
@@ -1177,7 +1289,8 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
-    ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name")
+    ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
+    ap.add_argument("-m3", "--slice_path", required = True, default = None, help = "Cross section/slices image folder path in ong format")
     args = vars(ap.parse_args())
 
 
@@ -1186,17 +1299,34 @@ if __name__ == '__main__':
     filename_skeleton = args["model_skeleton"]
     
     if args["model_pcloud"] is None:
-        
         filename_pcloud = None
-        
     else:
-        
         filename_pcloud = args["model_pcloud"]
     
-    #file_path = current_path + filename
+    # analysis result path
+    print ("results_folder: " + current_path + "\n")
 
-    print ("results_folder: " + current_path)
+    # slice image path
+    filetype = '*.png'
+    slice_image_path = args["slice_path"] + filetype
 
+
+    #global imgList, n_images
+    
+    # obtain image file list
+    imgList = sorted(glob.glob(slice_image_path))
+
+    n_images = len(imgList)
+    
+    print("Processing {} slices from cross section of the 3d model\n".format(n_images))
+    
+    #loop all slices to obtain raidus results
+    
+    #avg_radius = crosssection_analysis_range(0, 20)
+    
+    #print(avg_radius)
+    
+    
     (pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, pt_stem_diameter, \
         num_brace, avg_brace_length, avg_brace_angle, avg_projection_radius, whorl_dis_1, whorl_dis_2) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
 
@@ -1251,3 +1381,5 @@ if __name__ == '__main__':
         print("Result file was saved")
     else:
         print("Error saving Result file")
+
+    

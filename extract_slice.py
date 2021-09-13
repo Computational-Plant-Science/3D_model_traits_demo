@@ -158,7 +158,7 @@ def save_file(data_list, width, height, slice_name, xmin, ymin):
     
     result_file = (save_path + base_name + '.png')
 
-    print("Generating slice image {} ...\n".format(base_name))
+    print("Generating slice image '{}' ...\n".format(base_name))
     
     #svg_data = bytearray()
     
