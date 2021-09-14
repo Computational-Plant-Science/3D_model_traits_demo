@@ -15,6 +15,8 @@ Example of structure vs. 3D root model
 
 ![Optional Text](../master/media/image3.png) ![Optional Text](../master/media/image2.gif)
 
+![Optional Text](../master/media/image2_1.gif)
+
 Example of connecting disconnected root path
 
 ![Optional Text](../master/media/image7.png) ![Optional Text](../master/media/image8.png)
