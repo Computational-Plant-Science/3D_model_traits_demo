@@ -9,11 +9,8 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-python3 pipeline.py -p /home/suxingliu/ply_data/ -m surface.ply
+python3 pipeline.py -p ~/example/ -m test.ply -n 1000
 
-parameter list:
-
-ap.add_argument('-n_frames', '-n', required = True, type = int, default = 1 , help = 'Number of new frames.')
 
 
 """
@@ -23,62 +20,62 @@ import sys
 import argparse
 
 
+# execute script inside program
 def execute_script(cmd_line):
-    """execute script inside program"""
+    
     try:
-        print(cmd_line)
+        #print(cmd_line)
         #os.system(cmd_line)
+
+        process = subprocess.getoutput(cmd_line)
         
-        process = subprocess.Popen(cmd_line, shell=True, stdout=subprocess.PIPE)
+        print(process)
         
-        process.wait()
-        
-        #print process.returncode
+        #process = subprocess.Popen(cmd_line, shell = True, stdout = subprocess.PIPE)
+        #process.wait()
+        #print (process.communicate())
         
     except OSError:
         
         print("Failed ...!\n")
 
+# execute pipeline scripts in order
+def model_analysis_pipeline(file_path, filename, basename):
 
-def model_analysis_pipeline(current_path, filename):
-    """execute pipeline scripts in order"""
     
+    # step 1  python3 model_alignment.py -p ~/example/ -m test.ply
+    print("Transform point cloud to its rotation center and align its upright orientation with Z direction...\n")
     
-    # step 1
-    format_convert = "python3 /opt/code/format_converter.py -p " + current_path + " -m " + filename
+    format_convert = "python3 model_alignment.py -p " + file_path + " -m " + filename
     
     execute_script(format_convert)
 
-    model_point_scan = "python3 /opt/code/pt_scan_engine.py -p " + current_path + " -m converted.ply " + " -i " + str(interval) +  " -de " + str(direction) 
     
-    print("Computing cross section image sequence from 3D model file...\n")
+    # step 2 ./AdTree/Release/bin/AdTree ~/example/pt_cloud/test.xyz ~/example/pt_cloud/
+    print("Compute structure and skeleton from point cloud model ...\n")
     
-    execute_script(model_point_scan)
-   
-  
-    # step 3
-    #cross_section_scan = "python3 /opt/code/crossection_scan.py -p " + current_path + "interpolation_result/" + " -th " + str(thresh_value)
-    cross_section_scan = "python3 /opt/code/crossection_scan.py -p " + current_path + "cross_section_scan/" + " -th " + str(thresh_value)
+    skeleton_graph = "./AdTree/Release/bin/AdTree " + file_path + basename + ".xyz " + file_path
+    
+    execute_script(skeleton_graph)
+    
 
-    print("Analyzing cross section image sequence to generate labeled segmentation results...\n")
-    
+    # step 3  python3 extract_slice.py -p ~/example/pt_cloud/ -f test_branches.obj -n 100
+    print("Generate cross section sequence ...\n")
+   
+    cross_section_scan = "python3 extract_slice.py -p " + file_path + " -f " + basename + "_branches.obj " + "-n " + str(n_slices)
+
     execute_script(cross_section_scan)
     
     
-    # step 4
-    object_tracking = "python3 /opt/code/object_tracking.py -p " + current_path + "active_component/" + " -d " + str(dist_thresh) + " -mfs " + str(max_frames_to_skip) + " -mtl " + str(max_trace_length) + " -rmin " + str(radius_min) + " -rmax " + str(radius_max)   
-    
-    print("Analyzing root system traits by tracking individual root trace from each crosssection image...\n")
-    
-    execute_script(object_tracking)
-    
-    
-    # step 5
-    trace_analysis = "python3 /opt/code/trace_load_connect.py -p " + current_path + "trace_track/" + " -dt " + str(dis_tracking) + " -ma " + str(min_angle) + " -dr " + str(dist_ratio)
+    # step 4 python3 skeleton_analyze.py -p ~/example/pt_cloud/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/pt_cloud/slices/ 
+    print("Analyze skeleton&structure and compute traits...\n")
 
-    print("Analyzing tracked root system traits...\n")
+    traits_computation = "python3 skeleton_analyze.py -p " + file_path + " -m1 " + basename + "_skeleton.ply " + " -m2 " + basename + "_aligned.ply " + " -m3 " + file_path + "slices/ "  
     
-    execute_script(trace_analysis)
+    execute_script(traits_computation)
+    
+    
+   
     
     
 
@@ -88,10 +85,12 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m", "--model", required = False, help = "model file name")
+    ap.add_argument("-n", "--n_slices", required = False, type = int, default = 100 , help = 'Number of slices for 3d model.')
+    
+    '''
     ap.add_argument("-i", "--interval", required = False, default = '1',  type = int, help= "intervals along sweeping plane")
     ap.add_argument("-de", "--direction", required = False, default = 'X', help = "direction of sweeping plane, X, Y, Z")
-    #ap.add_argument("-r", "--reverse", required = False, default = '1', type = int, help = "Reverse model top_down, 1 for Ture, 0 for False")
-    ap.add_argument('-n_frames', '-n', required = False, type = int, default = 2 , help = 'Number of new frames.')
+    ap.add_argument('-frames', '-n_frames', required = False, type = int, default = 2 , help = 'Number of new frames.')
     ap.add_argument("-th", "--threshold", required = False, default = '2.35', type = float, help = "threshold to remove outliers")
     ap.add_argument('-d', '--dist_thresh', required = False, type = int, default = 10 , help = 'dist_thresh.')
     ap.add_argument('-mfs', '--max_frames_to_skip', required = False, type = int, default = 15 , help = 'max_frames_to_skip.')
@@ -101,18 +100,29 @@ if __name__ == '__main__':
     ap.add_argument("-dt", "--dis_tracking", required = False, type = float, default = 50.5, help = "dis_dis_tracking")
     ap.add_argument("-ma", "--min_angle", required = False, type = float, default = 0.1, help = "min_angle")
     ap.add_argument("-dr", "--dist_ratio", required = False, type = float, default = 4.8, help = "dist_ratio")
+    '''
     args = vars(ap.parse_args())
     
     
     #parameter sets
-    # point_cloud_scan
-    # setting path to model file 
-    current_path = args["path"]
+    # path to model file 
+    file_path = args["path"]
     filename = args["model"]
-    file_path = current_path + filename
+    file_full_path = file_path + filename
+    
+    #print(file_full_path)
+    
+    file_base_name = os.path.basename(file_full_path).split('.')[0]
+
+    print("Processing 3d model point cloud file '{}' ...\n".format(file_full_path))
+    
+    # number of slices for cross section 
+    n_slices = args["n_slices"]
+    
+    
+    '''
     interval = args["interval"]
     direction = args["direction"]
-    #flag_reverse = args["reverse"]
     
     #frame interpolation 
     n_frames = args["n_frames"]
@@ -131,9 +141,9 @@ if __name__ == '__main__':
     dis_tracking = args["dis_tracking"]
     min_angle = args["min_angle"]
     dist_ratio = args["dist_ratio"]
-    
+    '''
 
     
-    model_analysis_pipeline(current_path, filename)
+    model_analysis_pipeline(file_path, filename, file_base_name)
     
     

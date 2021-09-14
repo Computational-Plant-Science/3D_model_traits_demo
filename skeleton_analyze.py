@@ -24,6 +24,7 @@ argument:
 # import the necessary packages
 from plyfile import PlyData, PlyElement
 import numpy as np 
+
 from sklearn import preprocessing
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
@@ -58,11 +59,15 @@ from matplotlib import pyplot as plt
 import math
 import itertools
 
-from tabulate import tabulate
+#from tabulate import tabulate
 
 import openpyxl
 import csv
 
+# import warnings filter
+from warnings import simplefilter
+# ignore all future warnings
+simplefilter(action='ignore', category=FutureWarning)
 
 
 # generate foloder to store the output results
@@ -94,92 +99,6 @@ def mkdir(path):
 
 
 
-# save point cloud to open3d compatiable format
-def format_converter(path, Data_array):
-    '''
-    model_file = current_path + model_name
-    
-    print("Converting file format for 3D point cloud model {}...\n".format(model_name))
-    
-    model_name_base = os.path.splitext(model_file)[0]
-    
-    
-    # load the model file
-    try:
-        with open(model_file, 'rb') as f:
-            plydata = PlyData.read(f)
-            num_vertex = plydata.elements[0].count
-            
-            print("Ply data structure: \n")
-            print(plydata)
-            print("\n")
-            print("Number of 3D points in current model: {0} \n".format(num_vertex))
-        
-    except:
-        print("Model file does not exist!")
-        sys.exit(0)
-        
-    
-    #Parse the ply format file and Extract the data
-    Data_array_ori = np.zeros((num_vertex, 3))
-    
-    Data_array_ori[:,0] = plydata['vertex'].data['x']
-    Data_array_ori[:,1] = plydata['vertex'].data['y']
-    Data_array_ori[:,2] = plydata['vertex'].data['z']
-    
-    #sort point cloud data based on Z values
-    Data_array = np.asarray(sorted(Data_array_ori, key = itemgetter(2), reverse = False))
-    '''
-    '''
-    #accquire data range
-    min_x = Data_array[:, 0].min()
-    max_x = Data_array[:, 0].max()
-    min_y = Data_array[:, 1].min()
-    max_y = Data_array[:, 1].max()
-    min_z = Data_array[:, 2].min()
-    max_z = Data_array[:, 2].max()
-    
-    range_data_x = max_x - min_x
-    range_data_y = max_y - min_y
-    range_data_z = max_z - min_z
-    
-    print (range_data_x, range_data_y, range_data_z)
-    
-    print(min_x,max_x)
-    print(min_y,max_y)
-    print(min_z,max_z)
-    '''
-    
-    
-    #Normalize data
-    #min_max_scaler = preprocessing.MinMaxScaler(feature_range = (0,1000000))
-    
-    min_max_scaler = preprocessing.MinMaxScaler(feature_range = (0,10000))
-
-    point_normalized = min_max_scaler.fit_transform(Data_array)
-    
-    #point_normalized_scale = [i * 1 for i in point_normalized]
-    # Pass xyz to Open3D.o3d.geometry.PointCloud 
-    pcd = o3d.geometry.PointCloud()
-    
-    pcd.points = o3d.utility.Vector3dVector(point_normalized)
-   
-    #Save model file as ascii format in ply
-    filename = path + 'converted.ply'
-    
-    #write out point cloud file
-    o3d.io.write_point_cloud(filename, pcd, write_ascii = True)
-    
-    '''
-    # check saved file
-    if os.path.exists(filename):
-        print("Converted 3d model was saved at {0}".format(filename))
-        return True
-    else:
-        return False
-        print("Model file converter failed !")
-        sys.exit(0)
-    '''
 
 #calculate length of a 3D path or curve
 def path_length(X, Y, Z):
@@ -256,8 +175,6 @@ def mad_based_outlier(points, thresh=3.5):
     modified_z_score = 0.6745 * diff / med_abs_deviation
     
     return modified_z_score > thresh
-
-
 
 
 # compute nearest neighbors of the anchor_pt_idx in point cloud by building KDTree
@@ -379,7 +296,7 @@ def cluster_list(list_array, n_clusters):
     
     return labels
 
-
+#remove outliers
 def outlier_remove(data_list):
 
     #find index of k biggest elements in list
@@ -637,7 +554,7 @@ def crosssection_analysis(image_file):
 
 
 
-# compute average 
+# compute average from cross section scan
 def crosssection_analysis_range(start_idx, end_idx):
 
     radius_avg_rec = []
@@ -943,7 +860,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #print("sub_branch_start_Z = {}\n".format(sub_branch_start_Z))
       
 
-    
+    print("Converting skeleton to graph and connecting edges and vertices...\n")
     #find closest point pairs and connect close graph edges
     ####################################################################
     v_closest_pair_rec = []
@@ -1218,7 +1135,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #compute dimensions of point cloud data
         (pt_diameter_max, pt_diameter_min, pt_length) = get_pt_parameter(Data_array_pcloud)
         
-        print("pt_diameter_max = {} pt_diameter_min = {} pt_length = {}\n".format(pt_diameter_max,pt_diameter_min,pt_length))
+        print("pt_diameter_max = {} pt_diameter_min = {} pt_length = {}\n".format(pt_diameter_max, pt_diameter_min, pt_length))
         
         
         #print(Data_array_pcloud.shape)
@@ -1382,7 +1299,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
     
     
-
+    
     #visualize point cloud model with color
     ####################################################################
     
@@ -1588,8 +1505,8 @@ if __name__ == '__main__':
     
     if os.path.exists(trait_file):
         
-        print("Result file was saved")
+        print("Result file was saved at {}\n".format(trait_file))
     else:
-        print("Error saving Result file")
+        print("Error saving Result file\n")
 
     

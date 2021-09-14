@@ -72,17 +72,16 @@ def format_converter(current_path, model_name):
     Data_array = np.asarray(pcd.points)
     
     
-    #Normalize data
-
-    
     # copy original point cloud for rotation
     pcd_r = copy.deepcopy(pcd)
     
-    # define rotation matrix
-    #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
+    # define rotation matrix test setup
+    R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
     
-    R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2 + np.pi/8, 0))
+    # normal setup
+    #R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2 + np.pi/8, 0))
     
+    # test setup
     #R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2, 0))
     
     # Apply rotation transformation to copied point cloud data
@@ -101,9 +100,11 @@ def format_converter(current_path, model_name):
     
     
     # visualize the oulier removal point cloud
-    print("Statistical oulier removal")
+    print("Statistical oulier removal\n")
     cl, ind = pcd_r.remove_statistical_outlier(nb_neighbors = 40, std_ratio = 0.00001)
-    display_inlier_outlier(pcd_r, ind)
+    #display_inlier_outlier(pcd_r, ind)
+    
+    
     '''
     #builds a KDTree from point cloud
     pcd_tree = o3d.geometry.KDTreeFlann(pcd_r)
@@ -162,11 +163,11 @@ def format_converter(current_path, model_name):
     
     # check saved file
     if os.path.exists(filename):
-        print("Converted 3d model was saved at {0}".format(filename))
+        print("Converted 3d model was saved at {0}\n".format(filename))
         return True
     else:
         return False
-        print("Model file converter failed !")
+        print("Model file converter failed!\n")
         sys.exit(0)
     
 
@@ -185,7 +186,7 @@ if __name__ == '__main__':
     filename = args["model"]
     file_path = current_path + filename
 
-    print ("results_folder: " + current_path)
+    #print ("results_folder: " + current_path)
 
     format_converter(current_path, filename)
 
