@@ -367,7 +367,7 @@ def get_cmap(n, name = 'hsv'):
 
 
 #cluster 1D list using Kmeans
-def cluster_1D(list_array, n_clusters):
+def cluster_list(list_array, n_clusters):
     
     data = np.array(list_array)
      
@@ -452,7 +452,9 @@ def watershed_seg(orig, thresh, min_distance_value):
     # distance map
     D = ndimage.distance_transform_edt(thresh)
     
-    localMax = peak_local_max(D, indices = False, min_distance = min_distance_value,  labels = thresh)
+    #localMax = peak_local_max(D, indices = False, min_distance = min_distance_value,  labels = thresh)
+    
+    localMax = peak_local_max(D, min_distance = min_distance_value,  indices = False, labels = thresh)
      
     # perform a connected component analysis on the local peaks,
     # using 8-connectivity, then appy the Watershed algorithm
@@ -777,10 +779,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         end_v = [X_skeleton[int_v_list[0]] - X_skeleton[int_v_list[int(len(int_v_list)*0.7)]], Y_skeleton[int_v_list[0]] - Y_skeleton[int_v_list[int(len(int_v_list)*0.7)]], Z_skeleton[int_v_list[0]] - Z_skeleton[int_v_list[int(len(int_v_list)*0.7)]]]
         
-        
+        # angle of current branch vs Z direction
         angle_sub_branch = dot_product_angle(start_v, end_v)
         
-        
+        # projection radius of current branch length
         p0 = np.array([X_skeleton[int_v_list[0]], Y_skeleton[int_v_list[0]], Z_skeleton[int_v_list[0]]])
         
         p1 = np.array([X_skeleton[int_v_list[0]], Y_skeleton[int_v_list[0]], Z_skeleton[int_v_list[-1]]])
@@ -789,46 +791,44 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         # save computed parameters for each branch
         sub_branch_list.append(v_list)
-        
         sub_branch_length_rec.append(sub_branch_length)
-        
         sub_branch_angle_rec.append(angle_sub_branch)
-        
         sub_branch_start_rec.append(int_v_list[0])
-        
         sub_branch_end_rec.append(int_v_list[-1])
-        
         sub_branch_projection_rec.append(projection_radius)
-        
-    #sort branches according to the start vertex location(Z value)
+    
+    
+    
+    
+    ####################################################################
+    # sort branches according to the start vertex location(Z value)
     Z_loc = [Z_skeleton[index] for index in sub_branch_start_rec]
     
     sorted_idx_Z_loc = np.argsort(Z_loc)
     
     #print("Z_loc = {}\n".format(sorted_idx_Z_loc))
     
-    #sort list according to sorted_idx_Z_loc 
+    #sort all lists according to sorted_idx_Z_loc order
     sub_branch_list[:] = [sub_branch_list[i] for i in sorted_idx_Z_loc] 
     sub_branch_length_rec[:] = [sub_branch_length_rec[i] for i in sorted_idx_Z_loc]
     sub_branch_angle_rec[:] = [sub_branch_angle_rec[i] for i in sorted_idx_Z_loc]
     sub_branch_start_rec[:] = [sub_branch_start_rec[i] for i in sorted_idx_Z_loc]
     sub_branch_end_rec[:] = [sub_branch_end_rec[i] for i in sorted_idx_Z_loc]
 
-    print("sub_branch_length_rec = {}\n".format(sub_branch_length_rec[0:20]))
+    #print("sub_branch_length_rec = {}\n".format(sub_branch_length_rec[0:20]))
     
     
     # find dominant sub branches with longer length and depth values by clustering sub_branch_length_rec values
     ####################################################################
-    labels_length_rec = cluster_1D(sub_branch_length_rec, n_clusters = 5)
+    labels_length_rec = cluster_list(sub_branch_length_rec, n_clusters = 5)
     
     if labels_length_rec.tolist().index(0) == 0:
         dsf_length_divide_idx = labels_length_rec.tolist().index(1)
     else:
         dsf_length_divide_idx = labels_length_rec.tolist().index(2)
     
-    print("dsf_length_divide_idx = {}\n".format(dsf_length_divide_idx))
+    #print("dsf_length_divide_idx = {}\n".format(dsf_length_divide_idx))
     
-    print("index values = {} {} {}\n".format(labels_length_rec.tolist().index(0), labels_length_rec.tolist().index(1), labels_length_rec.tolist().index(2)))
     
     div_idx = labels_length_rec.tolist()
    
@@ -857,15 +857,15 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         avg_len_rec.append(avg_len)
         avg_projection_rec.append(avg_projection)
         
-    
+    # sort branches according to the length values
     sorted_idx_avg_len = np.argsort(avg_len_rec)
     
-    #sort list according to sorted_idx_Z_loc 
+    #sort all lists according to sorted_idx_avg_len 
     indices_rec[:] = [indices_rec[i] for i in sorted_idx_avg_len] 
     avg_len_rec[:] = [avg_len_rec[i] for i in sorted_idx_avg_len]
     avg_angle_rec[:] = [avg_angle_rec[i] for i in sorted_idx_avg_len]
 
-
+    # find the location of crown and brace 
     sub_branch_crown = [sub_branch_list[index] for index in indices_rec[4]]
     sub_branch_brace = [sub_branch_list[index] for index in indices_rec[3]]
     
@@ -887,9 +887,32 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     print("num_crown = {} avg_crown_length = {}  avg_crown_angle = {}  avg_crown_projection = {}\n".format(num_crown, avg_crown_length, avg_crown_angle, avg_crown_projection))
 
     
+    sub_branch_crown_start = [sub_branch_start_rec[index] for index in indices_rec[4]]
+    sub_branch_brace_start = [sub_branch_start_rec[index] for index in indices_rec[3]]
+    
+    Z_sub_branch_crown_start = [Z_skeleton[index] for index in sub_branch_crown_start]
+    Z_sub_branch_brace_start = [Z_skeleton[index] for index in sub_branch_brace_start]
+    
+    
+    whorl_dis_1 = wholr_dis_crown_brace = abs(np.mean(Z_sub_branch_crown_start) - np.mean(Z_sub_branch_brace_start))
+    
+    whorl_dis_2 = wholr_dis_stem_crown = abs(Z_skeleton[0] - np.mean(Z_sub_branch_crown_start))
+    
+    print("wholr_dis_stem_crown = {} wholr_dis_crown_brace = {} \n".format(wholr_dis_stem_crown, wholr_dis_crown_brace))
+    
+    
+    skeleton_z_range = abs(Z_skeleton[0] - Z_skeleton[-1])
+    
+    ratio_stem = abs(Z_skeleton[0] - Z_skeleton[dsf_length_divide_idx])/skeleton_z_range
+    ratio_crown = abs(Z_skeleton[dsf_length_divide_idx] - np.mean(Z_sub_branch_crown_start))/skeleton_z_range
+    ratio_brace = abs(np.mean(Z_sub_branch_crown_start) - Z_skeleton[-1])/skeleton_z_range
+    
+    print("ratio_stem = {} ratio_crown = {} ratio_brace = {}\n".format(ratio_stem, ratio_crown, ratio_brace))
+    
     
     #obtain parametres for dominant sub branches from index 'dsf_length_divide_idx'
     ####################################################################
+    
     brace_length_list = sub_branch_length_rec[0:dsf_length_divide_idx]
     
     #print("brace_length_list = {}\n".format(brace_length_list))
@@ -904,15 +927,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #print("brace_angle_list = {}\n".format(brace_angle_list))
        
-    '''
-    avg_brace_length = round(np.mean(outlier_remove_brace_length_list),2)
-    
-    avg_brace_angle = round(np.mean(brace_angle_list),2)
-    
-    avg_projection_radius = round(np.mean(projection_radius_list),2)
-    '''
-    #print("num_brace = {} avg_brace_length = {}  avg_brace_angle = {}  avg_projection_radius = {}\n".format(num_brace, avg_brace_length, avg_brace_angle,avg_projection_radius))
-    
+  
     
     #find sub branch start vertices locations 
     sub_branch_start_rec_selected = sub_branch_start_rec[0:dsf_length_divide_idx]
@@ -926,27 +941,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     sub_branch_end_Z = Z_skeleton[sub_branch_end_rec_selected]
     
     #print("sub_branch_start_Z = {}\n".format(sub_branch_start_Z))
-    
-    
-    #find location index from cluster label
-    labels_start_Z = cluster_1D(sub_branch_start_Z, n_clusters = 2)
-    
-    if labels_start_Z.tolist().index(0) == 0:
-        dsf_start_Z_divide_idx = labels_start_Z.tolist().index(1)
-    else:
-        dsf_start_Z_divide_idx = labels_start_Z.tolist().index(0)
-    
-    
-    
-    #print("dsf_start_Z_divide_idx for sub_branch_start_Z = {}\n".format(dsf_start_Z_divide_idx))
-    
-    
-    #compute whorl distance based on distance between combined close points
-    #whorl_dis_1 = abs(sub_branch_start_Z[0] - sub_branch_start_Z[dsf_start_Z_divide_idx])
-    
-    #whorl_dis_2 = abs(sub_branch_start_Z[dsf_start_Z_divide_idx] - sub_branch_start_Z[-1])
-    
-    #print("whorl_dis_1 = {}\n  whorl_dis_2 = {}\n".format(whorl_dis_1, whorl_dis_2))
+      
 
     
     #find closest point pairs and connect close graph edges
@@ -1009,10 +1004,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     # compute distance between adjacent vertices in closest_pts_unique_sorted
     dis_closest_pts = [math.sqrt((X[i]-X[i-1])**2 + (Y[i]-Y[i-1])**2 + (Z[i]-Z[i-1])**2) for i in range (1, len(X))]
     
-    print("distance between closest_pts_unique = {}\n".format(dis_closest_pts))
+    #print("distance between closest_pts_unique = {}\n".format(dis_closest_pts))
     
     
-    #find outlier of closest points distance list to combine close points
+    #find outlier of closest points based on its distance list, then merge close points
     ####################################################################
     index_outlier = mad_based_outlier(np.asarray(dis_closest_pts),3.5)
     
@@ -1022,61 +1017,35 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     closest_pts_unique_sorted_combined = [closest_pts_unique_sorted[index] for index in index_outlier_loc]
     
-    print("index_outlier = {}\n".format(index_outlier_loc))
+    #print("index_outlier = {}\n".format(index_outlier_loc))
     
     print("closest_pts_unique_sorted_combined = {}\n".format(closest_pts_unique_sorted_combined))
     
-    #find Z locations of stem part
+    #find Z locations of each part
     Z_range_stem = (Z_skeleton[0], Z_skeleton[closest_pts_unique_sorted_combined[0]])
-    
-    #Z_range_crown = (Z_skeleton[closest_pts_unique_sorted_combined[0]], Z_skeleton[sub_branch_end_rec[dsf_length_divide_idx]])
-    
-    #Z_range_brace = (Z_skeleton[sub_branch_end_rec[dsf_length_divide_idx]], Z_skeleton[sub_branch_end_rec_selected[-1]])
-    
-    #compute whorl distance
-    whorl_dis_1 = abs(Z_skeleton[closest_pts_unique_sorted_combined[0]] - Z_skeleton[sub_branch_end_rec[dsf_length_divide_idx]])
-    
-    whorl_dis_2 = abs(Z_skeleton[sub_branch_end_rec[dsf_length_divide_idx]] - Z_skeleton[sub_branch_end_rec_selected[-1]])
-    
-    print("whorl_dis_1 = {}\n  whorl_dis_2 = {}\n".format(whorl_dis_1, whorl_dis_2))
-    
-    
-    #Z_range_crown = (sub_branch_start_Z[0], sub_branch_start_Z[dsf_start_Z_divide_idx])
-    
     Z_range_crown = (Z_skeleton[closest_pts_unique_sorted_combined[0]], sub_branch_start_Z[-1])
-    
     Z_range_brace = (sub_branch_start_Z[-1], sub_branch_end_Z[0])
 
-    Z_range_brace_skeleton = (sub_branch_start_Z[dsf_start_Z_divide_idx], sub_branch_start_Z[-1])
+    #Z_range_brace_skeleton = (sub_branch_start_Z[dsf_start_Z_divide_idx], sub_branch_start_Z[-1])
+    #idx_brace_skeleton = np.where(np.logical_and(Z_skeleton[sub_branch_start_rec] >= Z_range_brace_skeleton[0], Z_skeleton[sub_branch_start_rec] <= Z_range_brace_skeleton[1]))
+    #print("idx_brace_skeleton = {}\n".format(idx_brace_skeleton))
     
-    idx_brace_skeleton = np.where(np.logical_and(Z_skeleton[sub_branch_start_rec] >= Z_range_brace_skeleton[0], Z_skeleton[sub_branch_start_rec] <= Z_range_brace_skeleton[1]))
-    
-    print("idx_brace_skeleton = {}\n".format(idx_brace_skeleton))
-    
-    print("Z_range_crown = {}\n  Z_range_brace = {}\n".format(Z_range_crown, Z_range_brace))
+    #print("Z_range_crown = {}\n  Z_range_brace = {}\n".format(Z_range_crown, Z_range_brace))
     
     
     #find sub branches within Z_range_crown
-    
-    idx_crown = np.where(np.logical_and(Z_skeleton[sub_branch_start_rec] >= Z_range_crown[0], Z_skeleton[sub_branch_start_rec] <= Z_range_crown[1]))
-    
+    #idx_crown = np.where(np.logical_and(Z_skeleton[sub_branch_start_rec] >= Z_range_crown[0], Z_skeleton[sub_branch_start_rec] <= Z_range_crown[1]))
+
     #convert tuple to array
     #idx_crown = idx_crown[0]
     
-    print(idx_crown[0], idx_crown[0][0], idx_crown[0][-1])
-    
-    idx_brace = np.where(np.logical_and(Z_skeleton[sub_branch_start_rec] >= Z_range_brace[0], Z_skeleton[sub_branch_start_rec] <= Z_range_brace[1]))
-    
-    print(idx_brace[0], idx_brace[0][0], idx_brace[0][-1])
-    
-    #find sub branches within Z_range_brace
-    
-    
+    #print(idx_crown[0], idx_crown[0][0], idx_crown[0][-1])
+    #idx_brace = np.where(np.logical_and(Z_skeleton[sub_branch_start_rec] >= Z_range_brace[0], Z_skeleton[sub_branch_start_rec] <= Z_range_brace[1]))
+    #print(idx_brace[0], idx_brace[0][0], idx_brace[0][-1])
    
-    
+
+
     #####################################################################
-   
-   
     
     '''
     #Search skeleton graph
@@ -1293,17 +1262,13 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         #extract stem part from point cloud model
         idx_pt_Z_range_stem = np.where(np.logical_and(Data_array_pcloud[:,2] >= Z_range_stem[0], Data_array_pcloud[:,2] <= Z_range_stem[1]))
-        
         Data_array_pcloud_Z_range_stem = Data_array_pcloud[idx_pt_Z_range_stem]
         
-
         idx_pt_Z_range_crown = np.where(np.logical_and(Data_array_pcloud[:,2] >= Z_range_crown[0], Data_array_pcloud[:,2] <= Z_range_crown[1]))
-        
         Data_array_pcloud_Z_range_crown = Data_array_pcloud[idx_pt_Z_range_crown]
         
         
         idx_pt_Z_range_brace = np.where(np.logical_and(Data_array_pcloud[:,2] >= Z_range_brace[0], Data_array_pcloud[:,2] <= Z_range_brace[1]))
-        
         Data_array_pcloud_Z_range_brace = Data_array_pcloud[idx_pt_Z_range_brace]
         
         
@@ -1313,20 +1278,16 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         print("ratio_stem = {} ratio_crown = {} ratio_brace = {}\n".format(ratio_stem,ratio_crown,ratio_brace))
         
-        
-        
+
         avg_radius_stem = crosssection_analysis_range(0, int(ratio_stem*len(imgList)))*0.1
-        
         avg_radius_crown = crosssection_analysis_range(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))*0.05
-        
         avg_radius_brace = crosssection_analysis_range(int((ratio_stem + ratio_crown) * len(imgList)), len(imgList)-1)*0.05
         
         #print(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))
         
         print("avg_radius_stem = {} avg_radius_crown = {} avg_radius_brace = {}\n".format(avg_radius_stem, avg_radius_crown, avg_radius_brace))
         
-        
-        
+
         '''
         # save partital model for diameter measurement
         model_stem = (current_path + 'stem.ply')
@@ -1385,7 +1346,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     mlab.clf()
    
-    #root of the skeleton
+    # visualize 3d points
     #pts = mlab.points3d(X_skeleton[0], Y_skeleton[0], Z_skeleton[0], color = (0.58, 0.29, 0), mode = 'sphere', scale_factor = 0.15)
     
     #pts = mlab.points3d(X_skeleton[neighbors_idx], Y_skeleton[neighbors_idx], Z_skeleton[neighbors_idx], mode = 'sphere', color=(0,0,1), scale_factor = 0.05)
@@ -1394,8 +1355,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #pts = mlab.points3d(X_skeleton[sub_branch_start_rec_selected], Y_skeleton[sub_branch_start_rec_selected], Z_skeleton[sub_branch_start_rec_selected], color = (1,0,0), mode = 'sphere', scale_factor = 0.08)
     
-    
-   
+
     #cmap = get_cmap(len(sub_branch_list))
     
     cmap = get_cmap(len(sub_branch_brace))
