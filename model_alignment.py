@@ -1,7 +1,7 @@
 """
 Version: 1.5
 
-Summary: compute the cross section plane based on 3d model
+Summary: alignment 3d model to Z axis and translate it to its center.
 
 Author: suxing liu
 
