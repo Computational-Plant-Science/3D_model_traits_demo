@@ -1,7 +1,7 @@
 """
 Version: 1.5
 
-Summary: compute the cross section plane based on 3d model
+Summary: align 3d models to its axis center and Z direction
 
 Author: suxing liu
 
@@ -15,6 +15,11 @@ python3 model_alignment.py -p ~/example/ -m test.ply
 argument:
 ("-p", "--path", required=True,    help="path to *.ply model file")
 ("-m", "--model", required=True,    help="file name")
+
+
+output:
+*.xyz: xyz format file only has 3D coordinates of points 
+*_aligned.ply: aligned model with only 3D coordinates of points 
 
 """
 #!/usr/bin/env python
@@ -40,6 +45,47 @@ def display_inlier_outlier(cloud, ind):
     outlier_cloud.paint_uniform_color([1, 0, 0])
     #inlier_cloud.paint_uniform_color([0.8, 0.8, 0.8])
     o3d.visualization.draw_geometries([inlier_cloud, outlier_cloud])
+
+
+#compute angle between two vectors(works for n-dimensional vector),
+def dot_product_angle(v1,v2):
+
+    if np.linalg.norm(v1) == 0 or np.linalg.norm(v2) == 0:
+        
+        print("Zero magnitude vector!")
+        
+        return 0
+        
+    else:
+        vector_dot_product = np.dot(v1,v2)
+        
+        arccos = np.arccos(vector_dot_product / (np.linalg.norm(v1) * np.linalg.norm(v2)))
+        
+        angle = np.degrees(arccos)
+        
+        if angle > 90:
+            
+            return (180 - angle)
+        else:
+            return (angle)
+            
+
+def rotation_matrix_from_vectors(vec1, vec2):
+    """ Find the rotation matrix that aligns vec1 to vec2
+    :param vec1: A 3d "source" vector
+    :param vec2: A 3d "destination" vector
+    :return mat: A transform matrix (3x3) which when applied to vec1, aligns it with vec2.
+    """
+    a, b = (vec1 / np.linalg.norm(vec1)).reshape(3), (vec2 / np.linalg.norm(vec2)).reshape(3)
+    v = np.cross(a, b)
+    if any(v): #if not all zeros then 
+        c = np.dot(a, b)
+        s = np.linalg.norm(v)
+        kmat = np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
+        return np.eye(3) + kmat + kmat.dot(kmat) * ((1 - c) / (s ** 2))
+
+    else:
+        return numpy.eye(3) #cross of all zeros only occurs on identical directions
 
 
 
@@ -75,11 +121,54 @@ def format_converter(current_path, model_name):
     # copy original point cloud for rotation
     pcd_r = copy.deepcopy(pcd)
     
+    
+    # get OrientedBoundingBox
+    obb = pcd_r.get_oriented_bounding_box()
+    obb.color = (0, 1, 0)
+    
+    #o3d.visualization.draw_geometries([pcd_r, obb])
+    
+    print("Oriented Bounding Box center is: {}\n".format(obb.center))
+    
+    
+    #compute convex hull of a point cloud, the smallest convex set that contains all points
+    
+    hull, _ = pcd_r.compute_convex_hull()
+    hull_ls = o3d.geometry.LineSet.create_from_triangle_mesh(hull)
+    hull_ls.paint_uniform_color((1, 0, 0))
+    o3d.visualization.draw_geometries([pcd_r, hull_ls])
+    
+    print(hull.get_volume())
+    
+    
+    
+    # define unit vector
+    v_x = [1,0,0]
+    v_y = [0,1,0]
+    v_z = [0,0,1]
+    
+    # compute rotation angle
+    angle_x = dot_product_angle(obb.center,v_x)
+    angle_y = dot_product_angle(obb.center,v_y)
+    angle_z = dot_product_angle(obb.center,v_z)
+    
+    #mat = rotation_matrix_from_vectors(obb.center, v_z)
+    
+    print(angle_x, angle_y, angle_z)
+    
+    # test setup
+    #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
     # define rotation matrix test setup
     R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
+
+    # define rotation matrix test setup
+    #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, np.pi*angle_z/90))
+    
+    
+    #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, -np.pi/2 + np.pi/8, 0))
     
     # normal setup
-    #R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2 + np.pi/8, 0))
+    #R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2 - 1*np.pi/8, 0))
     
     # test setup
     #R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2, 0))
@@ -92,6 +181,7 @@ def format_converter(current_path, model_name):
     
     # geometry points are translated directly to the model_center position
     pcd_r.translate(-1*(model_center))
+    
     
     # Statistical oulier removal
     #nb_neighbors, which specifies how many neighbors are taken into account in order to calculate the average distance for a given point.
@@ -178,6 +268,8 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m", "--model", required = True, help = "model file name")
+    #ap.add_argument("-a", "--angle", required = False, default = -np.pi/2, help = "rotation_angle")
+    #ap.add_argument("-a", "--angle", required = False, default = -3*np.pi/8, help = "rotation_angle")
     args = vars(ap.parse_args())
 
 
@@ -185,6 +277,8 @@ if __name__ == '__main__':
     current_path = args["path"]
     filename = args["model"]
     file_path = current_path + filename
+    
+    #rotation_angle = args["angle"]
 
     #print ("results_folder: " + current_path)
 

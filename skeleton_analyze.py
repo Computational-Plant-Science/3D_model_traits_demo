@@ -941,6 +941,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #find Z locations of each part
     Z_range_stem = (Z_skeleton[0], Z_skeleton[closest_pts_unique_sorted_combined[0]])
     Z_range_crown = (Z_skeleton[closest_pts_unique_sorted_combined[0]], sub_branch_start_Z[-1])
+    #Z_range_crown = (Z_skeleton[closest_pts_unique_sorted_combined[0]], sub_branch_start_Z[0])
     Z_range_brace = (sub_branch_start_Z[-1], sub_branch_end_Z[0])
 
     #Z_range_brace_skeleton = (sub_branch_start_Z[dsf_start_Z_divide_idx], sub_branch_start_Z[-1])
@@ -1204,6 +1205,13 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         print("avg_radius_stem = {} avg_radius_crown = {} avg_radius_brace = {}\n".format(avg_radius_stem, avg_radius_crown, avg_radius_brace))
         
+        
+        avg_volume = avg_radius_stem * abs(Z_range_stem[0] - Z_range_stem[1]) + \
+            num_brace * avg_brace_length * avg_radius_brace**2 * np.pi/ math.cos(avg_brace_angle) + \
+            num_crown * avg_crown_length * avg_radius_brace**2 * np.pi/ math.cos(avg_crown_angle) 
+            
+        
+        
 
         '''
         # save partital model for diameter measurement
@@ -1388,7 +1396,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     return pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, avg_radius_stem, \
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
-        whorl_dis_1, whorl_dis_2
+        whorl_dis_1, whorl_dis_2, avg_volume
 
 
 if __name__ == '__main__':
@@ -1447,14 +1455,14 @@ if __name__ == '__main__':
     (pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, avg_radius_stem, \
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
-        whorl_dis_1, whorl_dis_2) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+        whorl_dis_1, whorl_dis_2, avg_volume) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
 
     trait_sum = []
     
     trait_sum.append([pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, avg_radius_stem, \
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
-        whorl_dis_1, whorl_dis_2])
+        whorl_dis_1, whorl_dis_2, avg_volume])
     
     #save reuslt file
     ####################################################################
@@ -1494,6 +1502,7 @@ if __name__ == '__main__':
         sheet.cell(row = 1, column = 15).value = 'brace root projection radius'
         sheet.cell(row = 1, column = 16).value = 'whorl distance 1'
         sheet.cell(row = 1, column = 17).value = 'whorl distance 2'
+        sheet.cell(row = 1, column = 17).value = 'root system volume'
               
         
     for row in trait_sum:
