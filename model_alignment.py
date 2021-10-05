@@ -1,7 +1,11 @@
 """
 Version: 1.5
 
+<<<<<<< HEAD
 Summary: align 3d models to its axis center and Z direction
+=======
+Summary: alignment 3d model to Z axis and translate it to its center.
+>>>>>>> fb8049df1990fe801454c0b5794d4ea899533164
 
 Author: suxing liu
 
