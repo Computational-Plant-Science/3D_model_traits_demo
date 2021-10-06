@@ -140,7 +140,7 @@ def format_converter(current_path, model_name):
     hull, _ = pcd_r.compute_convex_hull()
     hull_ls = o3d.geometry.LineSet.create_from_triangle_mesh(hull)
     hull_ls.paint_uniform_color((1, 0, 0))
-    o3d.visualization.draw_geometries([pcd_r, hull_ls])
+    #o3d.visualization.draw_geometries([pcd_r, hull_ls])
     
     print(hull.get_volume())
     
@@ -163,13 +163,13 @@ def format_converter(current_path, model_name):
     # test setup
     #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
     # define rotation matrix test setup
-    R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
+    #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
 
     # define rotation matrix test setup
     #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, np.pi*angle_z/90))
     
     
-    #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, -np.pi/2 + np.pi/8, 0))
+    R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, -np.pi/2 + np.pi/8, 0))
     
     # normal setup
     #R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2 - 1*np.pi/8, 0))
