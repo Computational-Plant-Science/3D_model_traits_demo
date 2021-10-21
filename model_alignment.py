@@ -1,11 +1,7 @@
 """
 Version: 1.5
 
-<<<<<<< HEAD
-Summary: align 3d models to its axis center and Z direction
-=======
 Summary: alignment 3d model to Z axis and translate it to its center.
->>>>>>> fb8049df1990fe801454c0b5794d4ea899533164
 
 Author: suxing liu
 
@@ -125,7 +121,6 @@ def format_converter(current_path, model_name):
     # copy original point cloud for rotation
     pcd_r = copy.deepcopy(pcd)
     
-    
     # get OrientedBoundingBox
     obb = pcd_r.get_oriented_bounding_box()
     obb.color = (0, 1, 0)
@@ -142,7 +137,7 @@ def format_converter(current_path, model_name):
     hull_ls.paint_uniform_color((1, 0, 0))
     #o3d.visualization.draw_geometries([pcd_r, hull_ls])
     
-    print(hull.get_volume())
+    #print(hull.get_volume())
     
     
     
@@ -158,25 +153,24 @@ def format_converter(current_path, model_name):
     
     #mat = rotation_matrix_from_vectors(obb.center, v_z)
     
-    print(angle_x, angle_y, angle_z)
+    print("angle_x = {0} angle_y = {1} angle_z = {2}\n".format(angle_x, angle_y, angle_z))
     
     # test setup
     #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
-    # define rotation matrix test setup
-    #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
+
 
     # define rotation matrix test setup
     #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, np.pi*angle_z/90))
     
     
-    R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, -np.pi/2 + np.pi/8, 0))
+    #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, -np.pi/2 + np.pi/8, 0))
     
     # normal setup
     #R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2 - 1*np.pi/8, 0))
     
     # test setup
-    #R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2, 0))
-    
+    R = pcd.get_rotation_matrix_from_xyz((0, -np.pi* (-90 + angle_z)/180, 0))
+        
     # Apply rotation transformation to copied point cloud data
     pcd_r.rotate(R, center = (0,0,0))
     
@@ -272,8 +266,7 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m", "--model", required = True, help = "model file name")
-    #ap.add_argument("-a", "--angle", required = False, default = -np.pi/2, help = "rotation_angle")
-    #ap.add_argument("-a", "--angle", required = False, default = -3*np.pi/8, help = "rotation_angle")
+    ap.add_argument("-a", "--angle", required = False, default = -90, help = "rotation_angle")
     args = vars(ap.parse_args())
 
 

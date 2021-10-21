@@ -926,7 +926,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #find outlier of closest points based on its distance list, then merge close points
     ####################################################################
-    index_outlier = mad_based_outlier(np.asarray(dis_closest_pts),3.5)
+    index_outlier = mad_based_outlier(np.asarray(dis_closest_pts),1.5)
     
     #print("index_outlier = {}".format(index_outlier))
     
@@ -938,8 +938,13 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     print("closest_pts_unique_sorted_combined = {}\n".format(closest_pts_unique_sorted_combined))
     
+    if len(closest_pts_unique_sorted_combined) < 1:
+        
+        closest_pts_unique_sorted_combined = closest_pts_unique_sorted
+        
+    
     #find Z locations of each part
-    Z_range_stem = (Z_skeleton[0], Z_skeleton[closest_pts_unique_sorted_combined[0]])
+    Z_range_stem = (Z_skeleton[0], Z_skeleton[closest_pts_unique_sorted_combined[-1]])
     Z_range_crown = (Z_skeleton[closest_pts_unique_sorted_combined[0]], sub_branch_start_Z[-1])
     #Z_range_crown = (Z_skeleton[closest_pts_unique_sorted_combined[0]], sub_branch_start_Z[0])
     Z_range_brace = (sub_branch_start_Z[-1], sub_branch_end_Z[0])
@@ -1293,9 +1298,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             color_rgb = cmap(i)[:len(cmap(i))-1]
             
-            pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.05)
+            pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.03)
     
-            mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str(i), color = color_rgb, scale = (0.04, 0.04, 0.04))
+            mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str(i), color = color_rgb, scale = (0.03, 0.03, 0.03))
      
     
     

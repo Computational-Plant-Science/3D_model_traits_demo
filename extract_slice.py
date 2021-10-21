@@ -261,7 +261,7 @@ def slice_model(file_model, n_slices, save_path):
     
     planes = np.linspace(zmin + 1, zmax - 1, n_slices - 2)
     
-    '''
+    
     for index, plane_h in enumerate(planes):
         
         #slice_planes = extract_intersection.filter_data(data_points, plane_h)
@@ -271,9 +271,9 @@ def slice_model(file_model, n_slices, save_path):
         #save_file(data_slice_planes, max(xmax-xmin, ymax-ymin), max(xmax-xmin, ymax-ymin), save_path + "slice_" + str(index).zfill(3) + ".svg", xmin, ymin)
         
         data_slice_planes = get_slice_data(plane_h)
-    '''
-        
     
+        
+    '''
     # get cpu number for parallel processing
     agents = psutil.cpu_count()   
     #agents = multiprocessing.cpu_count() 
@@ -286,7 +286,7 @@ def slice_model(file_model, n_slices, save_path):
     with closing(Pool(processes = agents)) as pool:
         result_list = pool.map(get_slice_data, planes)
         pool.terminate()
-    
+    '''
 
         
 
