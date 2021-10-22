@@ -44,6 +44,7 @@ RUN pip3 install --upgrade pip && \
     opencv-python-headless \
     openpyxl \
     click \
-    PyYAML
+    PyYAML \
+    imutils
 
 
