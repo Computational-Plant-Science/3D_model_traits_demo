@@ -109,7 +109,7 @@ def foreground_substractor(image_file):
     
     cnts, hier = cv2.findContours(thresh.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    #finad the max contour 
+    #find the max contour 
     c = max(cnts, key = cv2.contourArea)
     
     '''
@@ -274,7 +274,7 @@ if __name__ == '__main__':
 
     # make the folder to store the results
     parent_path = os.path.abspath(os.path.join(file_path, os.pardir))
-    mkpath = parent_path + '/' + str('segmented')
+    mkpath = file_path + '/' + str('segmented')
     mkdir(mkpath)
     save_path = mkpath + '/'
 

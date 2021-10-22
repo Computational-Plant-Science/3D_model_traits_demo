@@ -124,7 +124,7 @@ if __name__ == '__main__':
    
     # make the folder to store the results
     parent_path = os.path.abspath(os.path.join(file_path, os.pardir))
-    mkpath = parent_path + '/' + str('blur_images')
+    mkpath = file_path + '/' + str('blur_images')
     mkdir(mkpath)
     save_path = mkpath + '/'
 
