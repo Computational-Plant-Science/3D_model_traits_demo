@@ -947,7 +947,6 @@ if __name__ == '__main__':
     
     #visualzie the CDF graph of first return value 
     list_thresh = sorted(CDF_visualization(result))
-
    
     #compute plateau in curve
     dis_array = [j-i for i, j in zip(list_thresh[:-1], list_thresh[1:])]
@@ -973,6 +972,8 @@ if __name__ == '__main__':
     #get whorld number count 
     
     count = len(index)
+    
+    print("number of whorls is: {0} \n".format(count))
     
     #compute whorl location
     whorl_dis = []

@@ -60,8 +60,11 @@ import math
 import itertools
 
 #from tabulate import tabulate
+from rdp import rdp
 
 import openpyxl
+from openpyxl import Workbook
+from openpyxl import load_workbook
 import csv
 
 # import warnings filter
@@ -454,32 +457,32 @@ def crosssection_analysis(image_file):
     
     # process filled contour images to extract connected Components
     ####################################################################
-    '''
-    #connectivity = 3
     
-    # compute connected component parameters
-    #num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(binary_filled , connectivity , cv2.CV_32S)
-   
+    contours, hier = cv2.findContours(binary_filled, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
+    #local version
+    #_, contours, hier = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    #draw all the filled contours
+    for c in contours:
+        
+        #fill the connected contours
+        contours_img = cv2.drawContours(binary, [c], -1, (255, 255, 255), cv2.FILLED)
+
+    # define kernel
+    connectivity = 8
+    
+    #find connected components 
+    num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(contours_img, connectivity , cv2.CV_32S)
+    
+    #find the component with largest area 
     largest_label = 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA]) 
     
+    #collection of all component area
     areas = [s[4] for s in stats]
     
-    # remove center stem 
-    areas.remove(max(areas))
-    
-    #print(areas)
-    
-    # get radius from area
-    radius = [area_radius(x) for x in areas]
-    
-    min_radius = 1
-    
-    radius = sorted([x for x in radius if x > min_radius])
-    
-    radius_avg = np.mean(radius)
-    '''
-    #print("The average radius is ", round(radius_avg,2))
+    # average of component area
+    area_avg = sum(areas)/len(np.unique(labels))
     
     ###################################################################
     # segment overlapping components
@@ -550,7 +553,222 @@ def crosssection_analysis(image_file):
     
     radius_avg = np.mean(radius_rec)
     
-    return radius_avg
+    return radius_avg, area_avg
+
+
+def angle(directions):
+    """Return the angle between vectors"""
+    vec2 = directions[1:]
+    vec1 = directions[:-1]
+
+    norm1 = np.sqrt((vec1 ** 2).sum(axis=1))
+    norm2 = np.sqrt((vec2 ** 2).sum(axis=1))
+    cos = (vec1 * vec2).sum(axis=1) / (norm1 * norm2)   
+    return np.arccos(cos)
+
+
+def first_derivative(x) :
+    """first derivative function"""
+    return x[2:] - x[0:-2]
+
+
+def second_derivative(x) :
+    """second derivative function"""
+    return x[2:] - 2 * x[1:-1] + x[:-2]
+
+
+def curvature(x, y) :
+    """compute curvature"""
+    x_1 = first_derivative(x)
+    x_2 = second_derivative(x)
+    y_1 = first_derivative(y)
+    y_2 = second_derivative(y)
+    return np.abs(x_1 * y_2 - y_1 * x_2) / np.sqrt((x_1**2 + y_1**2)**3)
+
+
+def turning_points(x, y, turning_points, smoothing_radius,cluster_radius):
+    """define angle computation for turing points detection"""
+    
+    if smoothing_radius:
+        weights = np.ones(2 * smoothing_radius + 1)
+        new_x = ndimage.convolve1d(x, weights, mode='constant', cval=0.0)
+        new_x = new_x[smoothing_radius:-smoothing_radius] / np.sum(weights)
+        new_y = ndimage.convolve1d(y, weights, mode='constant', cval=0.0)
+        new_y = new_y[smoothing_radius:-smoothing_radius] / np.sum(weights)
+    else :
+        new_x, new_y = x, y
+        
+    k = curvature(new_x, new_y)
+    turn_point_idx = np.argsort(k)[::-1]
+    t_points = []
+    
+    while len(t_points) < turning_points and len(turn_point_idx) > 0:
+        t_points += [turn_point_idx[0]]
+        idx = np.abs(turn_point_idx - turn_point_idx[0]) > cluster_radius
+        turn_point_idx = turn_point_idx[idx]
+        
+    t_points = np.array(t_points)
+    t_points += smoothing_radius + 1
+    
+    return t_points.astype(int)
+    
+
+
+
+def CDF_visualization(radius_avg_rec):
+    
+    trait_file = (label_path + '/CDF.xlsx')
+    
+    if os.path.exists(trait_file):
+        # update values
+        #Open an xlsx for reading
+        wb = load_workbook(trait_file, read_only = False)
+        sheet = wb.active
+
+    else:
+        # Keep presets
+        wb = Workbook()
+        sheet = wb.active
+    
+    for row in enumerate(radius_avg_rec):
+    
+        sheet.append(row)
+
+    #save the csv file
+    wb.save(trait_file)
+    
+    num_bins = 10
+    
+    #counts, bin_edges = np.histogram(list(zip(*result)[0]), bins = num_bins, normed = True)
+    counts, bin_edges = np.histogram(radius_avg_rec, bins = num_bins)
+    
+    # compute CDF curve
+    cdf = np.cumsum(counts)
+    
+    #cdf = cdf / cdf[-1] #normalize
+    
+    x = bin_edges[1:]
+    y = cdf
+    
+    # assembly points of CDF curve 
+    trajectory = np.vstack((x, y)).T
+
+    index_turning_pt = turning_points(x, y, turning_points = 4, smoothing_radius = 2, cluster_radius = 2)
+    
+
+    #Ramer-Douglas-Peucker Algorithm
+    #simplify points et using rdp library 
+    simplified_trajectory = rdp(trajectory, epsilon = 0.00200)
+    #simplified_trajectory = rdp(trajectory)
+    sx, sy = simplified_trajectory.T
+    
+    #print(sx)
+    #print(sy)
+
+    #compute plateau in curve
+    dis_sy = [j-i for i, j in zip(sy[:-1], sy[1:])]
+    
+    #get index of plateau location
+    index_sy = [i for i in range(len(dis_sy)) if dis_sy[i] <= 1.3]
+    
+    dis_index_sy = [j-i for i, j in zip(index_sy[:-1], index_sy[1:])]
+    
+    for idx, value in enumerate(dis_index_sy):
+        
+        if idx < len(index_sy)-2:
+        
+            if value == dis_index_sy[idx+1]:
+            
+                index_sy.remove(index_sy[idx+1])
+    
+    # Define a minimum angle to treat change in direction
+    # as significant (valuable turning point).
+    #min_angle = np.pi / 36.0
+    min_angle = np.pi / 180.0
+    #min_angle = np.pi /1800.0
+    
+    # Compute the direction vectors on the simplified_trajectory.
+    directions = np.diff(simplified_trajectory, axis = 0)
+    theta = angle(directions)
+
+    # Select the index of the points with the greatest theta.
+    # Large theta is associated with greatest change in direction.
+    idx = np.where(theta > min_angle)[0] + 1
+    
+    index_turning_pt = sorted(idx)
+    
+    Turing_points =  np.unique(sy[idx].astype(int))
+    
+    #max_idx = max(max_idx)
+    #print("Turing points: {0} \n".format(Turing_points))
+    
+    # plot CDF 
+    #fig = plt.plot(bin_edges[1:], cdf, '-r', label = 'CDF')
+    fig = plt.figure(1)
+    plt.grid(True)
+    plt.legend(loc = 'right')
+    plt.title('CDF curve')
+    plt.xlabel('Root area, unit:pixel')
+    plt.ylabel('Depth of level-set, unit:pixel')
+    
+    plt.plot(sx, sy, 'gx-', label = 'simplified trajectory')
+    plt.plot(bin_edges[1:], cdf, '-b', label = 'CDF')
+    #plt.plot(sx[idx], sy[idx], 'ro', markersize = 7, label='turning points')
+    
+    plt.plot(sx[index_sy], sy[index_sy], 'ro', markersize = 7, label = 'plateau points')
+    
+    #plt.plot(sx[index_turning_pt], sy[index_turning_pt], 'bo', markersize = 7, label='turning points')
+    #plt.vlines(sx[index_turning_pt], sy[index_turning_pt]-100, sy[index_turning_pt]+100, color='b', linewidth = 2, alpha = 0.3)
+    plt.legend(loc='best')
+    
+    result_file_CDF = label_path + '/'  + 'cdf.png'
+    plt.savefig(result_file_CDF)
+    plt.close()
+    
+    return sy
+
+
+def wholr_number_count(imgList):
+    
+    area_avg_rec = []
+    
+    for img in imgList:
+
+        #(area_avg, area_sum, n_unique_labels) = root_area_label(img)
+        
+        (radius_avg, area_avg) = crosssection_analysis(img)
+        
+        area_avg_rec.append(area_avg)
+    
+    #visualzie the CDF graph of first return value 
+    list_thresh = sorted(CDF_visualization(area_avg_rec))
+
+    #compute plateau in curve
+    dis_array = [j-i for i, j in zip(list_thresh[:-1], list_thresh[1:])]
+    
+    #get index of plateau location
+    index = [i for i in range(len(dis_array)) if dis_array[i] <= 1.3]
+    
+    dis_index = [j-i for i, j in zip(index[:-1], index[1:])]
+    
+    for idx, value in enumerate(dis_index):
+        
+        if idx < len(index)-2:
+        
+            if value == dis_index[idx+1]:
+            
+                index.remove(index[idx+1])
+    
+    
+    reverse_index = sorted(index, reverse = True)
+    
+    #count = sum(1 for x in dis_array if float(x) <= 1.3)
+    #get whorld number count 
+    
+    count_wholrs = len(index)
+    
+    
+    return count_wholrs
 
 
 
@@ -561,13 +779,13 @@ def crosssection_analysis_range(start_idx, end_idx):
     
     for img in imgList[int(start_idx): int(end_idx)]:
 
-        radius_avg = crosssection_analysis(img)
+        (radius_avg, area_avg) = crosssection_analysis(img)
         
         radius_avg_rec.append(radius_avg)
         
     #print(radius_avg_rec)
     
-    k = int(len(radius_avg_rec) * 0.6)
+    k = int(len(radius_avg_rec) * 0.8)
     
     #print(k)
     
@@ -579,7 +797,6 @@ def crosssection_analysis_range(start_idx, end_idx):
     #print(outlier_remove_list)
     
     return np.mean(outlier_remove_list)
-
 
 
 # Skeleton analysis
@@ -809,6 +1026,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     Z_sub_branch_crown_start = [Z_skeleton[index] for index in sub_branch_crown_start]
     Z_sub_branch_brace_start = [Z_skeleton[index] for index in sub_branch_brace_start]
+    
+    
+    count_wholrs = wholr_number_count(imgList)
+    
+    print("number of whorls is: {0} \n".format(count_wholrs))
     
     
     whorl_dis_1 = wholr_dis_crown_brace = abs(np.mean(Z_sub_branch_crown_start) - np.mean(Z_sub_branch_brace_start))
@@ -1217,7 +1439,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
         
         
-
         '''
         # save partital model for diameter measurement
         model_stem = (current_path + 'stem.ply')
@@ -1401,7 +1622,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     return pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, avg_radius_stem, \
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
-        whorl_dis_1, whorl_dis_2, avg_volume
+        count_wholrs, whorl_dis_1, whorl_dis_2, avg_volume
 
 
 if __name__ == '__main__':
@@ -1460,14 +1681,14 @@ if __name__ == '__main__':
     (pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, avg_radius_stem, \
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
-        whorl_dis_1, whorl_dis_2, avg_volume) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+        count_wholrs, whorl_dis_1, whorl_dis_2, avg_volume) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
 
     trait_sum = []
     
     trait_sum.append([pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, avg_radius_stem, \
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
-        whorl_dis_1, whorl_dis_2, avg_volume])
+        count_wholrs, whorl_dis_1, whorl_dis_2, avg_volume])
     
     #save reuslt file
     ####################################################################
@@ -1505,9 +1726,10 @@ if __name__ == '__main__':
         sheet.cell(row = 1, column = 13).value = 'brace root angle'
         sheet.cell(row = 1, column = 14).value = 'brace root diameter'
         sheet.cell(row = 1, column = 15).value = 'brace root projection radius'
-        sheet.cell(row = 1, column = 16).value = 'whorl distance 1'
-        sheet.cell(row = 1, column = 17).value = 'whorl distance 2'
-        sheet.cell(row = 1, column = 17).value = 'root system volume'
+        sheet.cell(row = 1, column = 16).value = 'number of whorls'
+        sheet.cell(row = 1, column = 17).value = 'whorl distance 1'
+        sheet.cell(row = 1, column = 18).value = 'whorl distance 2'
+        sheet.cell(row = 1, column = 19).value = 'root system volume'
               
         
     for row in trait_sum:
