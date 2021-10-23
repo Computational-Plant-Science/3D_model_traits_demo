@@ -161,7 +161,7 @@ def cart2sph(x, y, z):
 
 
 # median-absolute-deviation (MAD) based outlier detection
-def mad_based_outlier(points, thresh=3.5):
+def mad_based_outlier(points, thresh):
     
     if len(points.shape) == 1:
         
@@ -991,7 +991,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         avg_len_rec.append(avg_len)
         avg_projection_rec.append(avg_projection)
         
-    # sort branches according to the length values
+    #sort branches according to the length values
     sorted_idx_avg_len = np.argsort(avg_len_rec)
     
     #sort all lists according to sorted_idx_avg_len 
@@ -999,7 +999,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     avg_len_rec[:] = [avg_len_rec[i] for i in sorted_idx_avg_len]
     avg_angle_rec[:] = [avg_angle_rec[i] for i in sorted_idx_avg_len]
 
-    # find the location of crown and brace 
+    #find the location of crown and brace 
     sub_branch_crown = [sub_branch_list[index] for index in indices_rec[4]]
     sub_branch_brace = [sub_branch_list[index] for index in indices_rec[3]]
     
@@ -1143,7 +1143,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     # compute distance between adjacent vertices in closest_pts_unique_sorted
     dis_closest_pts = [math.sqrt((X[i]-X[i-1])**2 + (Y[i]-Y[i-1])**2 + (Z[i]-Z[i-1])**2) for i in range (1, len(X))]
     
-    #print("distance between closest_pts_unique = {}\n".format(dis_closest_pts))
+    print("distance between closest_pts_unique = {}\n".format(dis_closest_pts))
     
     
     #find outlier of closest points based on its distance list, then merge close points
@@ -1716,16 +1716,16 @@ if __name__ == '__main__':
         sheet.cell(row = 1, column = 3).value = 'root system diameter'
         sheet.cell(row = 1, column = 4).value = 'root system eccentricity'
         sheet.cell(row = 1, column = 5).value = 'stem root diameter'
-        sheet.cell(row = 1, column = 6).value = 'number of crown roots'
-        sheet.cell(row = 1, column = 7).value = 'crown root length'
-        sheet.cell(row = 1, column = 8).value = 'crown root angle'
-        sheet.cell(row = 1, column = 9).value = 'crown root diameter'
-        sheet.cell(row = 1, column = 10).value = 'crown root projection radius'
-        sheet.cell(row = 1, column = 11).value = 'number of brace roots'
-        sheet.cell(row = 1, column = 12).value = 'brace root length'
-        sheet.cell(row = 1, column = 13).value = 'brace root angle'
-        sheet.cell(row = 1, column = 14).value = 'brace root diameter'
-        sheet.cell(row = 1, column = 15).value = 'brace root projection radius'
+        sheet.cell(row = 1, column = 6).value = 'number of brace roots'
+        sheet.cell(row = 1, column = 7).value = 'brace root length'
+        sheet.cell(row = 1, column = 8).value = 'brace root angle'
+        sheet.cell(row = 1, column = 9).value = 'brace root diameter'
+        sheet.cell(row = 1, column = 10).value = 'brace root projection radius'
+        sheet.cell(row = 1, column = 11).value = 'number of crown roots'
+        sheet.cell(row = 1, column = 12).value = 'crown root length'
+        sheet.cell(row = 1, column = 13).value = 'crown root angle'
+        sheet.cell(row = 1, column = 14).value = 'crown root diameter'
+        sheet.cell(row = 1, column = 15).value = 'crown root projection radius'
         sheet.cell(row = 1, column = 16).value = 'number of whorls'
         sheet.cell(row = 1, column = 17).value = 'whorl distance 1'
         sheet.cell(row = 1, column = 18).value = 'whorl distance 2'
