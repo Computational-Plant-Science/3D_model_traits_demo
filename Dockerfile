@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 LABEL maintainer='Suxing Liu'
 
@@ -15,7 +15,15 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt install -y \
     python3-pil.imagetk \
     libgl1-mesa-glx \
     libsm6 \
-    libxext6
+    libxext6 \
+    cmake-gui \
+    libglu1-mesa-dev \
+    freeglut3-dev \
+    freeglut3 \
+    libopengl0 -y \
+    mesa-common-dev \
+    mesa-utils 
+    
 
 ENV PYTHONPATH=$PYTHONPATH:/opt/3D_model_traits_demo/
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/3D_model_traits_demo/
@@ -35,6 +43,8 @@ RUN pip3 install --upgrade pip && \
     mahotas \
     networkx \
     plyfile \
+    psutil \
+    cairosvg \
     certifi \
     pandas \
     pytest \

@@ -216,7 +216,7 @@ def root_area_label(image_file):
     # Convert BGR to GRAY
     #img_lab = cv2.cvtColor(erode, cv2.COLOR_BGR2LAB)
     
-    #gray = cv2.cvtColor(imgcolor, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(imgcolor, cv2.COLOR_BGR2GRAY)
     
 
     #Obtain the threshold image using OTSU adaptive filter
@@ -458,7 +458,13 @@ def turning_points(x, y, turning_points, smoothing_radius,cluster_radius):
     t_points += smoothing_radius + 1
     
     return t_points.astype(int)
-    
+
+
+def ecdf(a):
+    x, counts = np.unique(a, return_counts=True)
+    cusum = np.cumsum(counts)
+    return x, cusum / cusum[-1]
+
 
 def CDF_visualization(result):
     """visualize CDF"""
@@ -492,7 +498,21 @@ def CDF_visualization(result):
     wb.save(trait_file)
     ####################################################################
     
+    '''
+    x, y = ecdf(list(zip(*result))[0])
+    x = np.insert(x, 0, x[0])
+    y = np.insert(y, 0, 0.)
     
+    fig = plt.figure(1)
+    plt.plot(x, y, drawstyle='steps-post')
+    plt.grid(True)
+    plt.savefig('ecdf.png')
+
+    result_file_CDF = save_path_excel + '/'  + 'ecdf.png'
+    #result_file_CDF = result_file_CDF.replace('.txt','_cdf.png')
+    plt.savefig(result_file_CDF)
+    plt.close()
+    '''
     
     num_bins = 10
     
@@ -595,7 +615,7 @@ def CDF_visualization(result):
     plt.ylabel('Depth of level-set, unit:pixel')
     
     plt.plot(sx, sy, 'gx-', label='simplified trajectory')
-    plt.plot(bin_edges[1:], cdf, '-b', label = 'CDF')
+    plt.plot(x, y, '-b', label = 'CDF')
     #plt.plot(sx[idx], sy[idx], 'ro', markersize = 7, label='turning points')
     
     plt.plot(sx[index_sy], sy[index_sy], 'ro', markersize = 7, label='plateau points')

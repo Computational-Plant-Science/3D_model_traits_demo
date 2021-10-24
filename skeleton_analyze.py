@@ -364,6 +364,7 @@ def area_radius(area_of_circle):
     return 2*radius 
 
 
+
 # segmentation of overlapping components 
 def watershed_seg(orig, thresh, min_distance_value):
     
@@ -556,6 +557,7 @@ def crosssection_analysis(image_file):
     return radius_avg, area_avg
 
 
+#compute angle
 def angle(directions):
     """Return the angle between vectors"""
     vec2 = directions[1:]
@@ -567,18 +569,21 @@ def angle(directions):
     return np.arccos(cos)
 
 
+#first derivative function
 def first_derivative(x) :
-    """first derivative function"""
+
     return x[2:] - x[0:-2]
 
 
+#second derivative function
 def second_derivative(x) :
-    """second derivative function"""
+    
     return x[2:] - 2 * x[1:-1] + x[:-2]
 
 
+#compute curvature
 def curvature(x, y) :
-    """compute curvature"""
+
     x_1 = first_derivative(x)
     x_2 = second_derivative(x)
     y_1 = first_derivative(y)
@@ -586,8 +591,9 @@ def curvature(x, y) :
     return np.abs(x_1 * y_2 - y_1 * x_2) / np.sqrt((x_1**2 + y_1**2)**3)
 
 
+#define angle computation for turing points detection
 def turning_points(x, y, turning_points, smoothing_radius,cluster_radius):
-    """define angle computation for turing points detection"""
+
     
     if smoothing_radius:
         weights = np.ones(2 * smoothing_radius + 1)
@@ -613,8 +619,7 @@ def turning_points(x, y, turning_points, smoothing_radius,cluster_radius):
     return t_points.astype(int)
     
 
-
-
+# visualize CDF curve
 def CDF_visualization(radius_avg_rec):
     
     trait_file = (label_path + '/CDF.xlsx')
@@ -728,6 +733,7 @@ def CDF_visualization(radius_avg_rec):
     return sy
 
 
+# compute number of whorls
 def wholr_number_count(imgList):
     
     area_avg_rec = []
@@ -767,8 +773,29 @@ def wholr_number_count(imgList):
     
     count_wholrs = len(index)
     
+    #compute wholr location
+     #compute whorl location
+    whorl_dis = []
+    whorl_loc = []
     
-    return count_wholrs
+    for idx, value in enumerate(reverse_index, start=1):
+        
+        #dis_value = list_thresh[value+1] - list_thresh[value-1]
+        loc_value = int(len(imgList) - list_thresh[value+1])
+        whorl_loc.append(loc_value)
+        #print("adding value : {0} \n".format(str(loc_value)))
+    
+    
+    #compute whorl distance
+    whorl_dis_array = [j-i for i, j in zip(whorl_loc[:-1], whorl_loc[1:])]
+    whorl_loc.extend([0, len(imgList)])
+    whorl_loc = list(dict.fromkeys(whorl_loc))
+    whorl_loc_ex = sorted(whorl_loc)
+    
+    #print("list_thresh : {0} \n".format(str(list_thresh)))
+    
+    return count_wholrs, whorl_loc_ex
+
 
 
 
@@ -883,7 +910,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #print(cart2sph(0-math.sqrt(2)/2, 0-math.sqrt(2)/2, 1)) 
 
     
-    #obtain all the sub branches edgeds and vetices, start, end vetices
+    #obtain all the sub branches edges and vetices, start, end vetices
     sub_branch_list = []
     sub_branch_length_rec = []
     sub_branch_angle_rec = []
@@ -932,8 +959,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         sub_branch_projection_rec.append(projection_radius)
     
     
-    
-    
     ####################################################################
     # sort branches according to the start vertex location(Z value)
     Z_loc = [Z_skeleton[index] for index in sub_branch_start_rec]
@@ -950,6 +975,15 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     sub_branch_end_rec[:] = [sub_branch_end_rec[i] for i in sorted_idx_Z_loc]
 
     #print("sub_branch_length_rec = {}\n".format(sub_branch_length_rec[0:20]))
+    
+    
+    ####################################################################
+    (count_wholrs, whorl_loc_ex) = wholr_number_count(imgList)
+    
+    print("number of whorls is: {0} \n".format(count_wholrs))
+    
+    print("whorl_loc_ex : {0} \n".format(str(whorl_loc_ex)))
+    
     
     
     # find dominant sub branches with longer length and depth values by clustering sub_branch_length_rec values
@@ -1028,9 +1062,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     Z_sub_branch_brace_start = [Z_skeleton[index] for index in sub_branch_brace_start]
     
     
-    count_wholrs = wholr_number_count(imgList)
-    
-    print("number of whorls is: {0} \n".format(count_wholrs))
+   
     
     
     whorl_dis_1 = wholr_dis_crown_brace = abs(np.mean(Z_sub_branch_crown_start) - np.mean(Z_sub_branch_brace_start))
@@ -1148,7 +1180,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #find outlier of closest points based on its distance list, then merge close points
     ####################################################################
-    index_outlier = mad_based_outlier(np.asarray(dis_closest_pts),1.5)
+    index_outlier = mad_based_outlier(np.asarray(dis_closest_pts),3.5)
     
     #print("index_outlier = {}".format(index_outlier))
     
@@ -1404,7 +1436,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         '''
         ################################################################
         
-        
+        '''
         #extract stem part from point cloud model
         idx_pt_Z_range_stem = np.where(np.logical_and(Data_array_pcloud[:,2] >= Z_range_stem[0], Data_array_pcloud[:,2] <= Z_range_stem[1]))
         Data_array_pcloud_Z_range_stem = Data_array_pcloud[idx_pt_Z_range_stem]
@@ -1415,7 +1447,45 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         idx_pt_Z_range_brace = np.where(np.logical_and(Data_array_pcloud[:,2] >= Z_range_brace[0], Data_array_pcloud[:,2] <= Z_range_brace[1]))
         Data_array_pcloud_Z_range_brace = Data_array_pcloud[idx_pt_Z_range_brace]
+        '''
         
+        
+        #divide part of model
+        Data_array_pcloud_Z_sorted = Data_array_pcloud[:,2]
+        
+        Data_array_pcloud_Z_sorted = sorted(Data_array_pcloud_Z_sorted)
+        
+        ratio_Z = []
+        
+        for idx, val in enumerate(whorl_loc_ex):
+            
+            if(idx+1)<len(whorl_loc_ex):
+                
+                ratio_Z.append((whorl_loc_ex[idx+1] - val)/whorl_loc_ex[-1])
+        
+        print("ratio_Z = {} \n".format(ratio_Z))
+        
+        #print("Data_array_pcloud_Z_sorted = {} \n".format(Data_array_pcloud_Z_sorted))
+        
+        #len(Data_array_pcloud_Z_sorted)
+        
+        thresh_1 = Data_array_pcloud_Z_sorted[0]
+        thresh_2 = Data_array_pcloud_Z_sorted[int(len(Data_array_pcloud_Z_sorted)*ratio_Z[0])]
+        thresh_3 = Data_array_pcloud_Z_sorted[int(len(Data_array_pcloud_Z_sorted)*ratio_Z[1])]
+        thresh_4 = Data_array_pcloud_Z_sorted[int(len(Data_array_pcloud_Z_sorted)*ratio_Z[2])]
+        
+        print("thresh_1 = {} {} {} {}\n".format(thresh_1, thresh_2, thresh_3, thresh_4))
+        
+        idx_pt_Z_range_stem = np.where(np.logical_and(Data_array_pcloud[:,2] >= thresh_1, Data_array_pcloud[:,2] <= thresh_2))
+        Data_array_pcloud_Z_range_stem = Data_array_pcloud[idx_pt_Z_range_stem]
+        
+        idx_pt_Z_range_brace = np.where(np.logical_and(Data_array_pcloud[:,2] >= thresh_2, Data_array_pcloud[:,2] <= thresh_3))
+        Data_array_pcloud_Z_range_brace = Data_array_pcloud[idx_pt_Z_range_brace]
+        
+        idx_pt_Z_range_crown = np.where(np.logical_and(Data_array_pcloud[:,2] >= thresh_3, Data_array_pcloud[:,2] <= thresh_4))
+        Data_array_pcloud_Z_range_crown = Data_array_pcloud[idx_pt_Z_range_crown]
+        
+        print("idx_pt_Z_range = {} {} {}\n".format((idx_pt_Z_range_stem), (idx_pt_Z_range_brace), (idx_pt_Z_range_crown)))
         
         ratio_stem = abs(Z_range_stem[0] - Z_range_stem[1])/pt_length
         ratio_crown = abs(Z_range_crown[0] - Z_range_crown[1])/pt_length
@@ -1439,7 +1509,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
         
         
-        '''
+        
         # save partital model for diameter measurement
         model_stem = (current_path + 'stem.ply')
         write_ply(model_stem, Data_array_pcloud_Z_range_stem)
@@ -1449,7 +1519,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         model_brace = (current_path + 'brace.ply')
         write_ply(model_brace, Data_array_pcloud_Z_range_brace)
-        '''
+        
         
         
         (pt_stem_diameter_max,pt_stem_diameter_min,pt_stem_length) = get_pt_parameter(Data_array_pcloud_Z_range_stem)
@@ -1487,7 +1557,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #print(type(pcd_color))
     
     
-    
+    '''
     #Skeleton Visualization pipeline
     ####################################################################
     # The number of points per line
@@ -1617,12 +1687,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #mlab.view(33.6, 106, 5.5, [0, 0, .05])
     #mlab.roll(125)
     mlab.show()
-    
+    '''
 
     return pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, avg_radius_stem, \
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
         count_wholrs, whorl_dis_1, whorl_dis_2, avg_volume
+
+
 
 
 if __name__ == '__main__':
@@ -1673,11 +1745,7 @@ if __name__ == '__main__':
     #loop all slices to obtain raidus results
     
     #print(avg_radius = crosssection_analysis_range(0, 97))
-    
-    
-    
-    
-    
+
     (pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, avg_radius_stem, \
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
