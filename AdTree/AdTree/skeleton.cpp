@@ -181,7 +181,7 @@ bool Skeleton::simplify_skeleton()
 {
     if (!quiet_)
         std::cout << "step 1: eliminate unimportant small edges" << std::endl;
-    keep_main_skeleton(&MST_, 0.019*1);
+    keep_main_skeleton(&MST_, 0.019*3.5);
 
     if (!quiet_)
         std::cout << "step 2: iteratively merge collapsed edges" << std::endl;
