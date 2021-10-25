@@ -33,6 +33,8 @@ import argparse
 
 from skimage.segmentation import watershed
 from skimage.feature import peak_local_max
+from skimage.morphology import convex_hull_image
+from skimage.measure import regionprops
 
 from scipy.spatial import KDTree
 from scipy import ndimage
@@ -263,16 +265,18 @@ def get_pt_parameter(Data_array_pt):
     #visualize the convex hull as a red LineSet
     #o3d.visualization.draw_geometries([pcd, aabb, obb, hull_ls])
     
-    pt_diameter_max = max(aabb_extent[0], aabb_extent[1])
+    pt_diameter_max = max(aabb_extent[0], aabb_extent[1])*10
     
-    pt_diameter_min = max(aabb_extent_half[0], aabb_extent_half[1])
+    pt_diameter_min = max(aabb_extent_half[0], aabb_extent_half[1])*10
     
-    pt_length = aabb_extent[2]
+    pt_diameter = (pt_diameter_max + pt_diameter_min)*0.5
+    
+    pt_length = int(aabb_extent[2])*49
     
     pt_volume = np.pi * ((pt_diameter_max + pt_diameter_min)*0.5) ** 2 * pt_length
         
     
-    return pt_diameter_max, pt_diameter_min, pt_length, pt_volume
+    return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume
     
     
     
@@ -531,7 +535,39 @@ def crosssection_analysis(image_file):
 
     cv2.imwrite(result_file, labeled_img)
 
+    ####################################################################
+
+    #Convert the mean shift image to grayscale, then apply Otsu's thresholding
+    convexhull = convex_hull_image(gray)
     
+    img_convexhull = np.uint8(convexhull)*255
+    
+    #Obtain the threshold image using OTSU adaptive filter
+    thresh_hull = cv2.threshold(img_convexhull, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+    
+    #find contours and get the external one
+    #1ocal version
+    #image_result, contours, hier = cv2.findContours(img_convexhull, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    #container version
+    contours, hier = cv2.findContours(img_convexhull, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    #print("len(contours)")
+    #print(len(contours))
+    
+    #label image regions
+    #label_image_convexhull = label(convexhull)
+    
+    #Measure properties 
+    regions = regionprops(img_convexhull)
+    
+    if regions[0].area > 0:
+        
+        density = area_avg/regions[0].area
+    else:
+        density = sum(areas)/len((labels))
+    
+       
     ####################################################################
     gray = cv2.cvtColor(orig, cv2.COLOR_BGR2GRAY)
     
@@ -571,7 +607,7 @@ def crosssection_analysis(image_file):
     
     radius_avg = np.mean(radius_rec)
     
-    return radius_avg, area_avg
+    return radius_avg, area_avg, density
 
 
 #compute angle
@@ -755,13 +791,17 @@ def wholr_number_count(imgList):
     
     area_avg_rec = []
     
+    density_rec = []
+    
     for img in imgList:
 
         #(area_avg, area_sum, n_unique_labels) = root_area_label(img)
         
-        (radius_avg, area_avg) = crosssection_analysis(img)
+        (radius_avg, area_avg, density) = crosssection_analysis(img)
         
         area_avg_rec.append(area_avg)
+        
+        density_rec.append(density)
     
     #visualzie the CDF graph of first return value 
     list_thresh = sorted(CDF_visualization(area_avg_rec))
@@ -811,7 +851,7 @@ def wholr_number_count(imgList):
     
     #print("list_thresh : {0} \n".format(str(list_thresh)))
     
-    return count_wholrs, whorl_loc_ex
+    return count_wholrs, whorl_loc_ex, sum(density_rec)/len(density_rec)
 
 
 
@@ -823,7 +863,7 @@ def crosssection_analysis_range(start_idx, end_idx):
     
     for img in imgList[int(start_idx): int(end_idx)]:
 
-        (radius_avg, area_avg) = crosssection_analysis(img)
+        (radius_avg, area_avg, density) = crosssection_analysis(img)
         
         radius_avg_rec.append(radius_avg)
         
@@ -995,14 +1035,12 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
     ####################################################################
-    (count_wholrs, whorl_loc_ex) = wholr_number_count(imgList)
+    (count_wholrs, whorl_loc_ex, avg_density) = wholr_number_count(imgList)
     
-    print("number of whorls is: {0} \n".format(count_wholrs))
+    print("number of whorls is: {} whorl_loc_ex : {} avg_density = {}\n".format(count_wholrs, str(whorl_loc_ex), avg_density))
     
-    print("whorl_loc_ex : {0} \n".format(str(whorl_loc_ex)))
-    
-    
-    
+  
+   
     # find dominant sub branches with longer length and depth values by clustering sub_branch_length_rec values
     ####################################################################
     cluster_number = 7
@@ -1062,14 +1100,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     num_crown = len(indices_rec[id_crown])
     num_brace = len(indices_rec[id_brace])
     
-    avg_crown_length = avg_len_rec[id_crown]
-    avg_brace_length = avg_len_rec[id_brace]
+    avg_crown_length = avg_len_rec[id_crown]*10
+    avg_brace_length = avg_len_rec[id_brace]*10
     
     avg_crown_angle = avg_angle_rec[id_crown]
     avg_brace_angle = avg_angle_rec[id_brace]
     
-    avg_crown_projection = avg_projection_rec[id_crown]
-    avg_brace_projection = avg_projection_rec[id_brace]
+    avg_crown_projection = avg_projection_rec[id_crown]*10
+    avg_brace_projection = avg_projection_rec[id_brace]*10
     
     
     print("num_brace = {} avg_brace_length = {}  avg_brace_angle = {}  avg_brace_projection = {}\n".format(num_brace, avg_brace_length, avg_brace_angle, avg_brace_projection))
@@ -1084,9 +1122,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     Z_sub_branch_brace_start = [Z_skeleton[index] for index in sub_branch_brace_start]
     
     
-    whorl_dis_1 = wholr_dis_crown_brace = abs(np.mean(Z_sub_branch_crown_start) - np.mean(Z_sub_branch_brace_start))
+    whorl_dis_1 = wholr_dis_crown_brace = abs(np.mean(Z_sub_branch_crown_start) - np.mean(Z_sub_branch_brace_start))*10
     
-    whorl_dis_2 = wholr_dis_stem_crown = abs(Z_skeleton[0] - np.mean(Z_sub_branch_crown_start))
+    whorl_dis_2 = wholr_dis_stem_crown = abs(Z_skeleton[0] - np.mean(Z_sub_branch_crown_start))*10
     
     print("wholr_dis_stem_crown = {} wholr_dis_crown_brace = {} \n".format(wholr_dis_stem_crown, wholr_dis_crown_brace))
     
@@ -1130,7 +1168,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     sub_branch_end_Z = Z_skeleton[sub_branch_end_rec_selected]
     
-    #print("sub_branch_start_Z = {}\n".format(sub_branch_start_Z))
+    print("length of sub_branch_start_Z = {}  sub_branch_end_Z = {}\n".format(sub_branch_start_Z, sub_branch_end_Z))
       
 
     print("Converting skeleton to graph and connecting edges and vertices...\n")
@@ -1221,11 +1259,19 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         print("closest_pts_unique_sorted_combined = {}\n".format(closest_pts_unique_sorted_combined))
     
+    
+
     #find Z locations of each part
     Z_range_stem = (Z_skeleton[0], Z_skeleton[closest_pts_unique_sorted_combined[-1]])
-    Z_range_crown = (Z_skeleton[closest_pts_unique_sorted_combined[0]], sub_branch_start_Z[-1])
-    #Z_range_crown = (Z_skeleton[closest_pts_unique_sorted_combined[0]], sub_branch_start_Z[0])
-    Z_range_brace = (sub_branch_start_Z[-1], sub_branch_end_Z[0])
+    #Z_range_crown = (Z_skeleton[closest_pts_unique_sorted_combined[0]], sub_branch_start_Z[-1])
+    if len(sub_branch_start_Z) < 1:
+        Z_range_brace = (Z_skeleton[closest_pts_unique_sorted_combined[0]], sub_branch_start_Z[0])
+    else:
+        Z_range_brace = (sub_branch_start_Z[-1], sub_branch_start_Z[0])
+        
+    Z_range_crown = (sub_branch_start_Z[-1], sub_branch_end_Z[0])
+    
+
     #Z_range_brace = (Z_skeleton[closest_pts_unique_sorted_combined[0]], sub_branch_end_Z[0])
 
     #Z_range_brace_skeleton = (sub_branch_start_Z[dsf_start_Z_divide_idx], sub_branch_start_Z[-1])
@@ -1418,11 +1464,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #Sorted_Data_array_pcloud = np.asarray(sorted(Data_array_pcloud, key = itemgetter(2), reverse = True))
         
         #compute dimensions of point cloud data
-        (pt_diameter_max, pt_diameter_min, pt_length, pt_volume) = get_pt_parameter(Data_array_pcloud)
+        (pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume) = get_pt_parameter(Data_array_pcloud)
         
-        print("pt_diameter_max = {} pt_diameter_min = {} pt_length = {} pt_volume = {}\n".format(pt_diameter_max, pt_diameter_min, pt_length, pt_volume))
+        print("pt_diameter_max = {} pt_diameter_min = {} pt_diameter ={} pt_length = {} pt_volume = {}\n".format(pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume))
         
-        
+        pt_eccentricity = (pt_diameter_min/pt_diameter_max)*1.15
         #print(Data_array_pcloud.shape)
         
         
@@ -1550,16 +1596,17 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         ratio_crown = abs(Z_range_crown[0] - Z_range_crown[1])/pt_length
         ratio_brace = abs(Z_range_brace[0] - Z_range_brace[1])/pt_length
         
-        print("ratio_stem = {} ratio_crown = {} ratio_brace = {}\n".format(ratio_stem,ratio_crown,ratio_brace))
+        #print("ratio_stem = {} ratio_crown = {} ratio_brace = {}\n".format(ratio_stem,ratio_crown,ratio_brace))
         
 
-        avg_radius_stem = crosssection_analysis_range(0, int(ratio_stem*len(imgList)))*1
-        avg_radius_crown = crosssection_analysis_range(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))*1
-        avg_radius_brace = crosssection_analysis_range(int((ratio_brace + ratio_crown) * len(imgList)), len(imgList)-1)*1
+        avg_radius_stem = crosssection_analysis_range(0, int(ratio_stem*len(imgList)))*0.5
+        avg_radius_brace = crosssection_analysis_range(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))*0.2
+        avg_radius_crown = crosssection_analysis_range(int((ratio_brace + ratio_crown) * len(imgList)), len(imgList)-1)*0.05
+        avg_radius_lateral = crosssection_analysis_range(int((ratio_crown) * len(imgList)), len(imgList)-1)*0.15
         
         #print(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))
         
-        print("avg_radius_stem = {} avg_radius_crown = {} avg_radius_brace = {}\n".format(avg_radius_stem, avg_radius_crown, avg_radius_brace))
+        print("avg_radius_stem = {} avg_radius_crown = {} avg_radius_brace = {} avg_radius_lateral = {}\n".format(avg_radius_stem, avg_radius_crown, avg_radius_brace, avg_radius_lateral))
         
         '''
         avg_volume = avg_radius_stem * abs(Z_range_stem[0] - Z_range_stem[1]) + \
@@ -1581,13 +1628,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         '''
         
         
-        (pt_stem_diameter_max,pt_stem_diameter_min,pt_stem_length, pt_volume) = get_pt_parameter(Data_array_pcloud_Z_range_stem)
+        (pt_stem_diameter_max,pt_stem_diameter_min,pt_stem_diameter, pt_stem_length, pt_stem_volume) = get_pt_parameter(Data_array_pcloud_Z_range_stem)
         
-        print("pt_stem_diameter_max = {} pt_stem_diameter_min = {} pt_stem_length = {}\n".format(pt_stem_diameter_max,pt_stem_diameter_min,pt_stem_length))
+        print("pt_stem_diameter_max = {} pt_stem_diameter_min = {} pt_stem_diameter = {} pt_stem_length = {}\n".format(pt_stem_diameter_max,pt_stem_diameter_min,pt_stem_diameter,pt_stem_length))
         
-        pt_stem_diameter = (pt_stem_diameter_max + pt_stem_diameter_min)*0.5
         
-        pt_eccentricity = (pt_stem_diameter_min/pt_stem_diameter_max)
         
         
         if pcd.has_colors():
@@ -1747,11 +1792,15 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #mlab.roll(125)
     mlab.show()
     '''
-
-    return pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, avg_radius_stem, \
+    
+    
+    return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density, \
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
+        avg_radius_lateral, \
         count_wholrs, whorl_dis_1, whorl_dis_2, avg_volume
+    
+    
 
 
 
@@ -1805,16 +1854,18 @@ if __name__ == '__main__':
     
     #print(avg_radius = crosssection_analysis_range(0, 97))
 
-    (pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, avg_radius_stem, \
+    (pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density,\
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
+        avg_radius_lateral, \
         count_wholrs, whorl_dis_1, whorl_dis_2, avg_volume) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
 
     trait_sum = []
     
-    trait_sum.append([pt_diameter_max, pt_diameter_min, pt_length, pt_eccentricity, avg_radius_stem, \
+    trait_sum.append([pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density,\
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
+        avg_radius_lateral, \
         count_wholrs, whorl_dis_1, whorl_dis_2, avg_volume])
     
     #save reuslt file
@@ -1841,22 +1892,25 @@ if __name__ == '__main__':
         sheet.cell(row = 1, column = 1).value = 'root system diameter max'
         sheet.cell(row = 1, column = 2).value = 'root system diameter min'
         sheet.cell(row = 1, column = 3).value = 'root system diameter'
-        sheet.cell(row = 1, column = 4).value = 'root system eccentricity'
-        sheet.cell(row = 1, column = 5).value = 'stem root diameter'
-        sheet.cell(row = 1, column = 6).value = 'number of brace roots'
-        sheet.cell(row = 1, column = 7).value = 'brace root length'
-        sheet.cell(row = 1, column = 8).value = 'brace root angle'
-        sheet.cell(row = 1, column = 9).value = 'brace root diameter'
-        sheet.cell(row = 1, column = 10).value = 'brace root projection radius'
-        sheet.cell(row = 1, column = 11).value = 'number of crown roots'
-        sheet.cell(row = 1, column = 12).value = 'crown root length'
-        sheet.cell(row = 1, column = 13).value = 'crown root angle'
-        sheet.cell(row = 1, column = 14).value = 'crown root diameter'
-        sheet.cell(row = 1, column = 15).value = 'crown root projection radius'
-        sheet.cell(row = 1, column = 16).value = 'number of whorls'
-        sheet.cell(row = 1, column = 17).value = 'whorl distance 1'
-        sheet.cell(row = 1, column = 18).value = 'whorl distance 2'
-        sheet.cell(row = 1, column = 19).value = 'root system volume'
+        sheet.cell(row = 1, column = 4).value = 'root system length'
+        sheet.cell(row = 1, column = 5).value = 'root system eccentricity'
+        sheet.cell(row = 1, column = 6).value = 'stem root diameter'
+        sheet.cell(row = 1, column = 7).value = 'root system density'
+        sheet.cell(row = 1, column = 8).value = 'number of brace roots'
+        sheet.cell(row = 1, column = 9).value = 'brace root length'
+        sheet.cell(row = 1, column = 10).value = 'brace root angle'
+        sheet.cell(row = 1, column = 11).value = 'brace root diameter'
+        sheet.cell(row = 1, column = 12).value = 'brace root projection radius'
+        sheet.cell(row = 1, column = 13).value = 'number of crown roots'
+        sheet.cell(row = 1, column = 14).value = 'crown root length'
+        sheet.cell(row = 1, column = 15).value = 'crown root angle'
+        sheet.cell(row = 1, column = 16).value = 'crown root diameter'
+        sheet.cell(row = 1, column = 17).value = 'crown root projection radius'
+        sheet.cell(row = 1, column = 18).value = 'lateral root radius'
+        sheet.cell(row = 1, column = 19).value = 'number of whorls'
+        sheet.cell(row = 1, column = 20).value = 'whorl distance 1'
+        sheet.cell(row = 1, column = 21).value = 'whorl distance 2'
+        sheet.cell(row = 1, column = 22).value = 'root system volume'
               
         
     for row in trait_sum:
