@@ -48,14 +48,14 @@ import open3d as o3d
 import copy
 import shutil
 
-from mayavi import mlab
-from tvtk.api import tvtk
+#from mayavi import mlab
+#from tvtk.api import tvtk
 
 #import networkx as nx
 
 import graph_tool.all as gt
 
-import plotly.graph_objects as go
+#import plotly.graph_objects as go
 
 from matplotlib import pyplot as plt
 import math
@@ -565,7 +565,7 @@ def crosssection_analysis(image_file):
         
         density = area_avg/regions[0].area
     else:
-        density = sum(areas)/len((labels))
+        density = sum(areas)/len((labels))+1
     
        
     ####################################################################
@@ -850,6 +850,7 @@ def wholr_number_count(imgList):
     whorl_loc_ex = sorted(whorl_loc)
     
     #print("list_thresh : {0} \n".format(str(list_thresh)))
+    
     
     return count_wholrs, whorl_loc_ex, sum(density_rec)/len(density_rec)
 
@@ -1147,7 +1148,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     (outlier_remove_brace_length_list, idx_dominant) = outlier_remove(brace_length_list)
     
-    #print("outlier_remove_brace_length_list = {}\n".format(idx_dominant))
+    print("idx_dominant = {}\n".format(idx_dominant))
+    
+    if len(idx_dominant) < 1:
+        idx_dominant = brace_length_list
     
     brace_angle_list = [sub_branch_angle_rec[index] for index in idx_dominant]
     
