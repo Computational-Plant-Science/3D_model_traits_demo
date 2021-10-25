@@ -134,6 +134,8 @@ def dot_product_angle(v1,v2):
         if angle > 90:
             
             return (180 - angle)
+        elif angle < 45:
+            return (90- angle)
         else:
             return (angle)
 
@@ -1192,7 +1194,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     # compute distance between adjacent vertices in closest_pts_unique_sorted
     dis_closest_pts = [math.sqrt((X[i]-X[i-1])**2 + (Y[i]-Y[i-1])**2 + (Z[i]-Z[i-1])**2) for i in range (1, len(X))]
     
-    print("distance between closest_pts_unique = {}\n".format(dis_closest_pts))
+    #print("distance between closest_pts_unique = {}\n".format(dis_closest_pts))
     
     
     #find outlier of closest points based on its distance list, then merge close points
@@ -1207,13 +1209,17 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #print("index_outlier = {}\n".format(index_outlier_loc))
     
-    print("closest_pts_unique_sorted_combined = {}\n".format(closest_pts_unique_sorted_combined))
+    
     
     if len(closest_pts_unique_sorted_combined) < 1:
         
         closest_pts_unique_sorted_combined = list(set(closest_pts))
     
-    print("closest_pts_unique_sorted_combined = {}\n".format(closest_pts_unique_sorted_combined))
+        print("Adjusted closest_pts_unique_sorted_combined = {}\n".format(closest_pts_unique_sorted_combined))
+    
+    else:
+        
+        print("closest_pts_unique_sorted_combined = {}\n".format(closest_pts_unique_sorted_combined))
     
     #find Z locations of each part
     Z_range_stem = (Z_skeleton[0], Z_skeleton[closest_pts_unique_sorted_combined[-1]])
@@ -1537,7 +1543,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         idx_pt_Z_range_crown = np.where(np.logical_and(Data_array_pcloud[:,2] >= thresh_3, Data_array_pcloud[:,2] <= thresh_4))
         Data_array_pcloud_Z_range_crown = Data_array_pcloud[idx_pt_Z_range_crown]
         
-        print("idx_pt_Z_range = {} {} {}\n".format(len(Data_array_pcloud_Z_range_stem), len(Data_array_pcloud_Z_range_brace), len(Data_array_pcloud_Z_range_crown)))
+        #print("idx_pt_Z_range = {} {} {}\n".format(len(Data_array_pcloud_Z_range_stem), len(Data_array_pcloud_Z_range_brace), len(Data_array_pcloud_Z_range_crown)))
         
         
         ratio_stem = abs(Z_range_stem[0] - Z_range_stem[1])/pt_length
@@ -1609,8 +1615,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         #print(type(pcd_color))
     
-    '''
     
+    '''
     #Skeleton Visualization pipeline
     ####################################################################
     # The number of points per line
