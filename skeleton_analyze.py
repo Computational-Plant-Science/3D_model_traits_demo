@@ -48,8 +48,7 @@ import open3d as o3d
 import copy
 import shutil
 
-#from mayavi import mlab
-#from tvtk.api import tvtk
+
 
 #import networkx as nx
 
@@ -273,7 +272,10 @@ def get_pt_parameter(Data_array_pt):
     
     pt_length = int(aabb_extent[2])*49
     
+    
     pt_volume = np.pi * ((pt_diameter_max + pt_diameter_min)*0.5) ** 2 * pt_length
+    
+    #pt_volume = hull.get_volume()
         
     
     return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume
@@ -1665,10 +1667,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #print(type(pcd_color))
     
     
-    '''
+    
     #Skeleton Visualization pipeline
     ####################################################################
     # The number of points per line
+    
+    from mayavi import mlab
+    from tvtk.api import tvtk
+
     N = 2
     
     mlab.figure("Structure_graph", size = (800, 800), bgcolor = (0, 0, 0))
@@ -1795,7 +1801,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #mlab.view(33.6, 106, 5.5, [0, 0, .05])
     #mlab.roll(125)
     mlab.show()
-    '''
+    
     
     
     return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density, \

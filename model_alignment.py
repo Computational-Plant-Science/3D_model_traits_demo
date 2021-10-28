@@ -35,6 +35,9 @@ import sys
 import open3d as o3d
 import copy
 
+from scipy.spatial.transform import Rotation as Rot
+import math
+
 
 
 def display_inlier_outlier(cloud, ind):
@@ -61,14 +64,16 @@ def dot_product_angle(v1,v2):
         
         arccos = np.arccos(vector_dot_product / (np.linalg.norm(v1) * np.linalg.norm(v2)))
         
-        angle = np.degrees(arccos)
-        
-        if angle > 90:
+        if np.degrees(arccos) > 90:
             
-            return (180 - angle)
+            angle = np.degrees(arccos) - 90
         else:
-            return (angle)
             
+            angle = np.degrees(arccos)
+    
+    return angle
+        
+
 
 def rotation_matrix_from_vectors(vec1, vec2):
     """ Find the rotation matrix that aligns vec1 to vec2
@@ -85,8 +90,7 @@ def rotation_matrix_from_vectors(vec1, vec2):
         return np.eye(3) + kmat + kmat.dot(kmat) * ((1 - c) / (s ** 2))
 
     else:
-        return numpy.eye(3) #cross of all zeros only occurs on identical directions
-
+        return np.eye(3) #cross of all zeros only occurs on identical directions
 
 
 def format_converter(current_path, model_name):
@@ -121,13 +125,24 @@ def format_converter(current_path, model_name):
     # copy original point cloud for rotation
     pcd_r = copy.deepcopy(pcd)
     
+    
+    # get the model center postion
+    model_center = pcd_r.get_center()
+    
+    # geometry points are translated directly to the model_center position
+    pcd_r.translate(-1*(model_center))
+    
+    
+    aabb = pcd_r.get_axis_aligned_bounding_box()
+    aabb.color = (1, 0, 0)
+
     # get OrientedBoundingBox
     obb = pcd_r.get_oriented_bounding_box()
     obb.color = (0, 1, 0)
     
     #o3d.visualization.draw_geometries([pcd_r, obb])
     
-    print("Oriented Bounding Box center is: {}\n".format(obb.center))
+    #print("Oriented Bounding Box center is: {}\n".format(obb.center))
     
     
     #compute convex hull of a point cloud, the smallest convex set that contains all points
@@ -135,28 +150,112 @@ def format_converter(current_path, model_name):
     hull, _ = pcd_r.compute_convex_hull()
     hull_ls = o3d.geometry.LineSet.create_from_triangle_mesh(hull)
     hull_ls.paint_uniform_color((1, 0, 0))
-    #o3d.visualization.draw_geometries([pcd_r, hull_ls])
+    #o3d.visualization.draw_geometries([pcd_r, hull_ls, aabb, obb, o3d.geometry.TriangleMesh.create_coordinate_frame()])
     
     #print(hull.get_volume())
     
+    #obb.R @ np.array([1,0,0]).reshape(3,1)
+    original_rotation = copy.deepcopy(obb.R)
     
+    print("original_rotation is: {}\n".format(original_rotation))
     
-    # define unit vector
+    #from scipy.spatial.transform import Rotation as Rot
+
+    #q = R.from_matrix(original_rotation)
+    
+    #print(q)
+    
+    obb_x = obb.R @ np.array([1,0,0])
+    obb_y = obb.R @ np.array([0,1,0])
+    obb_z = obb.R @ np.array([0,0,1])
+
+    #print("obb_x, obb_y, obb_z is: {} {} {}\n".format(obb_x, obb_y, obb_z))
+    
+    '''
+    points = [[0, 0, 0] , obb_x, obb_y, obb_z]
+    
+    lines = [[0, 1],[0, 2], [0, 3]]
+    
+    colors = [[0, 0, 1] for i in range(len(lines))]
+    line_set = o3d.geometry.LineSet()
+    line_set.points = o3d.utility.Vector3dVector(points)
+    line_set.lines = o3d.utility.Vector2iVector(lines)
+    line_set.colors = o3d.utility.Vector3dVector(colors)
+    #o3d.visualization.draw_geometries([pcd_r, aabb, obb, line_set, o3d.geometry.TriangleMesh.create_coordinate_frame()])
+
+    '''
+    
+    #define unit vector
     v_x = [1,0,0]
     v_y = [0,1,0]
     v_z = [0,0,1]
     
-    # compute rotation angle
-    angle_x = dot_product_angle(obb.center,v_x)
-    angle_y = dot_product_angle(obb.center,v_y)
-    angle_z = dot_product_angle(obb.center,v_z)
     
-    #mat = rotation_matrix_from_vectors(obb.center, v_z)
+    #Find the rotation matrix that aligns vec1 to vec2
+    R_matrix = rotation_matrix_from_vectors(obb_z, v_z)
+    
+    
+    
+    #compute rotation angle
+    angle_x = dot_product_angle(obb_x, v_x)
+    angle_y = dot_product_angle(obb_y, v_y)
+    angle_z = dot_product_angle(obb_z, v_z)
     
     print("angle_x = {0} angle_y = {1} angle_z = {2}\n".format(angle_x, angle_y, angle_z))
     
     # test setup
-    #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
+    #R = pcd_r.get_rotation_matrix_from_xyz((-1* math.radians(angle_x), 0, 0))
+    
+    #R = pcd_r.get_rotation_matrix_from_xyz((0, 1* math.radians(angle_y), 0))
+    
+    # copy original point cloud for rotation
+    #pcd_r_ori = copy.deepcopy(pcd_r)
+    
+    #R = pcd_r.get_rotation_matrix_from_xyz((-1* math.radians(angle_x), -1* math.radians(angle_y), 0))
+    
+    
+   
+    
+    #r = Rot.from_euler('xyz', [-1*angle_x, -1*angle_y, -1*angle_z], degrees=True)
+    
+    # Apply rotation transformation to copied point cloud data
+    #print(r.as_quat())
+    
+    #R = pcd_r.get_rotation_matrix_from_quaternion((r.as_quat()))
+    
+    # Apply rotation transformation to copied point cloud data
+    #R_matrix = rotation_matrix_from_vectors(obb_x, v_x)
+    
+    pcd_r.rotate(R_matrix, center = (0,0,0))
+    
+
+    R = pcd.get_rotation_matrix_from_xyz((0, np.pi/2, 0))
+    
+    pcd_r.rotate(R, center = (0,0,0))
+    
+    '''
+    r = Rot.from_euler('xyz', [90, 0, 0], degrees=True)
+    
+    print(r.as_quat())
+    
+    mesh = o3d.geometry.TriangleMesh.create_coordinate_frame()
+    
+    mesh_r = copy.deepcopy(mesh)
+    
+    #R = mesh.get_rotation_matrix_from_xyz((np.pi/2, 0, np.pi/4))
+    
+    R = mesh.get_rotation_matrix_from_quaternion((r.as_quat()))
+    
+    mesh_r.rotate(R, center=(0,0,0))
+    
+    o3d.visualization.draw_geometries([mesh_r])
+    
+    #o3d.visualization.draw_geometries([pcd_r, o3d.geometry.TriangleMesh.create_coordinate_frame()])
+    '''
+    
+    
+    # test setup
+    #R = pcd.get_rotation_matrix_from_quaternion((-np.pi/2, 0, 0))
 
 
     # define rotation matrix test setup
@@ -167,7 +266,7 @@ def format_converter(current_path, model_name):
     
     # normal setup
     #R = pcd.get_rotation_matrix_from_xyz((0, -np.pi/2 - 1*np.pi/8, 0))
-    
+    '''
     # test setup
     R = pcd.get_rotation_matrix_from_xyz((0, -np.pi* (-90 + angle_z)/180, 0))
         
@@ -180,7 +279,7 @@ def format_converter(current_path, model_name):
     # geometry points are translated directly to the model_center position
     pcd_r.translate(-1*(model_center))
     
-    
+    '''
     # Statistical oulier removal
     #nb_neighbors, which specifies how many neighbors are taken into account in order to calculate the average distance for a given point.
     #std_ratio, which allows setting the threshold level based on the standard deviation of the average distances across the point cloud. 
@@ -188,8 +287,8 @@ def format_converter(current_path, model_name):
     
     
     # visualize the oulier removal point cloud
-    print("Statistical oulier removal\n")
-    cl, ind = pcd_r.remove_statistical_outlier(nb_neighbors = 40, std_ratio = 0.00001)
+    #print("Statistical oulier removal\n")
+    #cl, ind = pcd_r.remove_statistical_outlier(nb_neighbors = 40, std_ratio = 0.00001)
     #display_inlier_outlier(pcd_r, ind)
     
     
@@ -237,6 +336,8 @@ def format_converter(current_path, model_name):
     #downpcd = pcd_r.voxel_down_sample(voxel_size=0.5)
     #o3d.visualization.draw_geometries([downpcd])
     '''
+    
+    ####################################################################
     
     #Save model file as ascii format in ply
     filename = current_path + base_name + '_aligned.ply'
