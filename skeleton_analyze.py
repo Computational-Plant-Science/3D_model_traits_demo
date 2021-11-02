@@ -1667,7 +1667,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #print(type(pcd_color))
     
     
-    
+    '''
     #Skeleton Visualization pipeline
     ####################################################################
     # The number of points per line
@@ -1801,7 +1801,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #mlab.view(33.6, 106, 5.5, [0, 0, .05])
     #mlab.roll(125)
     mlab.show()
-    
+    '''
     
     
     return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density, \
