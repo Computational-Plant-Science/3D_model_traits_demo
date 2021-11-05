@@ -121,9 +121,27 @@ def format_converter(current_path, model_name):
     
     Data_array = np.asarray(pcd.points)
     
+    color_array = np.asarray(pcd.colors)
     
+    #print(color_array.shape)
+    
+    #color_array[:,2] = 0.24
+    
+    #pcd.colors = o3d.utility.Vector3dVector(color_array)
+    
+    #o3d.visualization.draw_geometries([pcd])
+    
+    #pcd.points = o3d.utility.Vector3dVector(points)
+
+    # threshold data
+
+    pcd_sel = pcd.select_by_index(np.where(color_array[:, 2] > 0.2)[0])
+    
+    #o3d.visualization.draw_geometries([pcd])
+    #o3d.visualization.draw_geometries([pcd_sel])
+
     # copy original point cloud for rotation
-    pcd_r = copy.deepcopy(pcd)
+    pcd_r = copy.deepcopy(pcd_sel)
     
     
     # get the model center postion
