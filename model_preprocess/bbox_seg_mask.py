@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-python3 bbox_seg_mask.py -p ~/example/images/ -ft jpg 
+python3 bbox_seg.py -p /home/suxingliu/frame-interpolation/test-image/ -ft jpg 
 
 
 argument:
@@ -77,7 +77,7 @@ def createMask(rows, cols, hull):
     cv2.drawContours(mask, [hull], 0, 255, -1)
     
     return mask
-
+    
 
 def foreground_substractor(image_file):
     
@@ -95,10 +95,10 @@ def foreground_substractor(image_file):
     
     if image is None:
         print(f"Could not load image {image_file}, skipping")
-    return
-    
+        return
+        
     #get size of image
-    (img_height, img_width) = image.shape[:2]
+    img_height, img_width = image.shape[:2]
     
     #scale_factor = 1
     
@@ -128,12 +128,7 @@ def foreground_substractor(image_file):
     c = max(cnts, key = cv2.contourArea)
     
     
-    ###################################################################
     linewidth = 10
-    
-    #hull_contours = cv2.convexHull(np.vstack(np.array(cnts)))
-    #hull = np.vstack(hull_contours)
-
     
     hull = cv2.convexHull(c)
     
@@ -141,7 +136,7 @@ def foreground_substractor(image_file):
     
     kernel = np.ones((10,10), np.uint8)
     
-    mask_hull_dilation = cv2.dilate(img, kernel, iterations=1)
+    mask_hull_dilation = cv2.dilate(mask_hull, kernel, iterations=1)
     
     # apply individual object mask
     masked = cv2.bitwise_and(image, image, mask = mask_hull_dilation)
@@ -179,9 +174,8 @@ def foreground_substractor(image_file):
     result_img_path = save_path + str(filename[0:-4]) + '_seg.' + ext
     
     cv2.imwrite(result_img_path, masked)
-    
-    
     '''
+    ##############################################################
     
     # find the bouding box of the max contour
     (x, y, w, h) = cv2.boundingRect(c)
@@ -199,9 +193,8 @@ def foreground_substractor(image_file):
     
     #return int(x/scale_factor),int(y/scale_factor),int(w/scale_factor),int(h/scale_factor), int(img_width), int(img_height)
     
-    #blank_image = np.zeros((img_height, img_width, 3), np.uint8)
 
-   
+    
     
     margin = 150
     
@@ -220,8 +213,6 @@ def foreground_substractor(image_file):
     result_img_path = save_path + str(filename[0:-4]) + '_seg.' + ext
     
     crop_img = masked[start_y:crop_height, start_x:crop_width]
-    
-    cv2.imwrite(result_img_path,crop_img)
     
     cv2.imwrite(result_img_path,crop_img)
     
