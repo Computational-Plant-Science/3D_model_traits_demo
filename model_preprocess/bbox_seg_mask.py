@@ -111,7 +111,7 @@ def foreground_substractor(image_file):
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
     
     #Obtain the threshold image using OTSU adaptive filter
-    ret, thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+    ret, thresh = cv2.threshold(blur, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
     
     #thresh = cv2.erode(thresh, None, iterations=2)
     
@@ -126,6 +126,10 @@ def foreground_substractor(image_file):
 
     #find the max contour 
     c = max(cnts, key = cv2.contourArea)
+    
+    mask_contour = createMask(img_height, img_width, c, 0)
+    
+    masked_fg_contour = cv2.bitwise_and(image, image, mask = mask_contour)
     
     
     linewidth = 10
@@ -245,7 +249,9 @@ def foreground_substractor(image_file):
     # construct the result file path
     result_img_path = save_path + str(filename[0:-4]) + '_seg.' + ext
     
-    crop_img = combined_fg_bk[start_y:crop_height, start_x:crop_width]
+    #crop_img = combined_fg_bk[start_y:crop_height, start_x:crop_width]
+    
+    crop_img = masked_fg_contour[start_y:crop_height, start_x:crop_width]
     
     cv2.imwrite(result_img_path, crop_img)
     
