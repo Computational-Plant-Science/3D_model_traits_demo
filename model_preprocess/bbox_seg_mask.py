@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-python3 bbox_seg.py -p /home/suxingliu/frame-interpolation/test-image/ -ft jpg 
+python3 bbox_seg.py -p ~/example/test/ -ft jpg 
 
 
 argument:
@@ -68,7 +68,7 @@ def mkdir(path):
         return False
 
 
-def createMask(rows, cols, hull):
+def createMask(rows, cols, hull, value):
     
     # black image
     mask = np.zeros((rows, cols), dtype=np.uint8)
@@ -132,15 +132,48 @@ def foreground_substractor(image_file):
     
     hull = cv2.convexHull(c)
     
-    mask_hull = createMask(img_height, img_width, hull)
+    mask_hull = createMask(img_height, img_width, hull, 0)
     
     kernel = np.ones((10,10), np.uint8)
     
     mask_hull_dilation = cv2.dilate(mask_hull, kernel, iterations=1)
     
     # apply individual object mask
-    masked = cv2.bitwise_and(image, image, mask = mask_hull_dilation)
+    masked_fg = cv2.bitwise_and(image, image, mask = mask_hull_dilation)
     
+    masked_bk = cv2.bitwise_and(image, image, mask = ~ mask_hull_dilation)
+    
+    masked_bk_gray = cv2.cvtColor(masked_bk, cv2.COLOR_BGR2GRAY)
+    
+    avg_color_per_row = np.average(masked_bk_gray, axis=0)
+    
+    avg_color = int(np.average(avg_color_per_row, axis=0))
+    
+    #print(avg_color)
+    
+    # black image
+    #mask_hull_avg = np.full((img_height, img_width), avg_color, dtype=np.uint8)
+    
+    # assign contours in white color
+    #cv2.drawContours(mask_hull_avg, [hull], 0, 255, -1)
+    
+    #masked_bk_avg = cv2.bitwise_and(mask_hull_avg, mask_hull_avg, mask = ~ mask_hull_dilation)
+    
+    
+    # replace background color with average color value
+    # load background (could be an image too)
+    bk = np.full(image.shape, avg_color, dtype=np.uint8)
+    
+    # get masked foreground
+    
+    fg_masked = cv2.bitwise_and(image, image, mask=mask_hull_dilation)
+    
+    # get masked background, mask must be inverted
+    
+    bk_masked = cv2.bitwise_and(bk, bk, mask=cv2.bitwise_not(mask_hull_dilation))
+    
+    # combine masked foreground and masked background
+    combined_fg_bk = cv2.bitwise_or(fg_masked, bk_masked)
     
     '''
     # draw it in red color
@@ -212,9 +245,9 @@ def foreground_substractor(image_file):
     # construct the result file path
     result_img_path = save_path + str(filename[0:-4]) + '_seg.' + ext
     
-    crop_img = masked[start_y:crop_height, start_x:crop_width]
+    crop_img = combined_fg_bk[start_y:crop_height, start_x:crop_width]
     
-    cv2.imwrite(result_img_path,crop_img)
+    cv2.imwrite(result_img_path, crop_img)
     
     
     #return int(x),int(y),int(w),int(h), int(img_width), int(img_height)
