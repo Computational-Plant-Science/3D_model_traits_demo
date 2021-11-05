@@ -150,7 +150,7 @@ def format_converter(current_path, model_name):
     hull, _ = pcd_r.compute_convex_hull()
     hull_ls = o3d.geometry.LineSet.create_from_triangle_mesh(hull)
     hull_ls.paint_uniform_color((1, 0, 0))
-    o3d.visualization.draw_geometries([pcd_r, hull_ls, aabb, obb, o3d.geometry.TriangleMesh.create_coordinate_frame()])
+    #o3d.visualization.draw_geometries([pcd_r, hull_ls, aabb, obb, o3d.geometry.TriangleMesh.create_coordinate_frame()])
     
     #print(hull.get_volume())
     
@@ -338,8 +338,8 @@ def format_converter(current_path, model_name):
     '''
     
     #print("Statistical oulier removal\n")
-    cl, ind = pcd_r.remove_statistical_outlier(nb_neighbors = 40, std_ratio = 0.00001)
-    display_inlier_outlier(pcd_r, ind)
+    #cl, ind = pcd_r.remove_statistical_outlier(nb_neighbors = 40, std_ratio = 0.00001)
+    #display_inlier_outlier(pcd_r, ind)
    
     
     ####################################################################
