@@ -1055,9 +1055,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     else:
         dsf_length_divide_idx = labels_length_rec.tolist().index(2)
     
-    #print("dsf_length_divide_idx = {}\n".format(dsf_length_divide_idx))
+    print("dsf_length_divide_idx = {}\n".format(dsf_length_divide_idx))
     
-    
+
     div_idx = labels_length_rec.tolist()
    
     # get clustered sub branches paramters    
@@ -1155,11 +1155,12 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     print("idx_dominant = {}\n".format(idx_dominant))
     
-    if len(idx_dominant)==0:
+    if len(idx_dominant) < 1:
+        #idx_dominant = brace_length_list
         
-        idx_dominant = brace_length_list
+        idx_dominant = [0]
         
-        print('the list is empty')
+    #idx_dominant = brace_length_list
     
     brace_angle_list = [sub_branch_angle_rec[index] for index in idx_dominant]
     
@@ -1167,7 +1168,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #print("brace_angle_list = {}\n".format(brace_angle_list))
        
-    #idx_dominant = brace_length_list
+    
     
     #find sub branch start vertices locations 
     sub_branch_start_rec_selected = sub_branch_start_rec[0:dsf_length_divide_idx]
@@ -1677,7 +1678,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #Skeleton Visualization pipeline
     ####################################################################
     # The number of points per line
-    
+    '''
     from mayavi import mlab
     from tvtk.api import tvtk
 
@@ -1807,10 +1808,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #mlab.view(33.6, 106, 5.5, [0, 0, .05])
     #mlab.roll(125)
     mlab.show()
+    '''
     
     
-    
-    return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density, \
+    return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, pt_stem_diameter, avg_density, \
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
         avg_radius_lateral, \
