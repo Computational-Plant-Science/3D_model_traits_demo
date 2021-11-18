@@ -135,10 +135,11 @@ def format_converter(current_path, model_name):
 
     # threshold data
 
-    pcd_sel = pcd.select_by_index(np.where(color_array[:, 2] > 0.2)[0])
+    pcd_sel = pcd.select_by_index(np.where(color_array[:, 2] > 0.1)[0])
     
     #o3d.visualization.draw_geometries([pcd])
     #o3d.visualization.draw_geometries([pcd_sel])
+
 
     # copy original point cloud for rotation
     pcd_r = copy.deepcopy(pcd_sel)
@@ -187,22 +188,9 @@ def format_converter(current_path, model_name):
     obb_y = obb.R @ np.array([0,1,0])
     obb_z = obb.R @ np.array([0,0,1])
 
+    
     #print("obb_x, obb_y, obb_z is: {} {} {}\n".format(obb_x, obb_y, obb_z))
-    
-    '''
-    points = [[0, 0, 0] , obb_x, obb_y, obb_z]
-    
-    lines = [[0, 1],[0, 2], [0, 3]]
-    
-    colors = [[0, 0, 1] for i in range(len(lines))]
-    line_set = o3d.geometry.LineSet()
-    line_set.points = o3d.utility.Vector3dVector(points)
-    line_set.lines = o3d.utility.Vector2iVector(lines)
-    line_set.colors = o3d.utility.Vector3dVector(colors)
-    #o3d.visualization.draw_geometries([pcd_r, aabb, obb, line_set, o3d.geometry.TriangleMesh.create_coordinate_frame()])
-
-    '''
-    
+   
     #define unit vector
     v_x = [1,0,0]
     v_y = [0,1,0]
@@ -250,6 +238,8 @@ def format_converter(current_path, model_name):
     R = pcd.get_rotation_matrix_from_xyz((0, np.pi/2, 0))
     
     pcd_r.rotate(R, center = (0,0,0))
+    
+    
     
     '''
     r = Rot.from_euler('xyz', [90, 0, 0], degrees=True)
@@ -306,7 +296,7 @@ def format_converter(current_path, model_name):
     
     # visualize the oulier removal point cloud
     #print("Statistical oulier removal\n")
-    #cl, ind = pcd_r.remove_statistical_outlier(nb_neighbors = 40, std_ratio = 0.00001)
+    #cl, ind = pcd_r.remove_statistical_outlier(nb_neighbors = 100, std_ratio = 0.00001)
     #display_inlier_outlier(pcd_r, ind)
     
     

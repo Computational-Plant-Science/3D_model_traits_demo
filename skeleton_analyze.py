@@ -1093,15 +1093,18 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     avg_len_rec[:] = [avg_len_rec[i] for i in sorted_idx_avg_len]
     avg_angle_rec[:] = [avg_angle_rec[i] for i in sorted_idx_avg_len]
 
-    id_crown = 5
-    id_brace = 6
+    id_crown = cluster_number - 2
+    id_brace = cluster_number - 1
     
     #find the location of crown and brace 
     sub_branch_crown = [sub_branch_list[index] for index in indices_rec[id_crown]]
     sub_branch_brace = [sub_branch_list[index] for index in indices_rec[id_brace]]
     
-    num_crown = len(indices_rec[id_crown])
-    num_brace = len(indices_rec[id_brace])
+    #num_crown = len(indices_rec[id_crown])
+    #num_brace = len(indices_rec[id_brace])
+
+    num_crown = len(indices_rec[id_crown]) if len(indices_rec[id_crown]) > 10 else len(indices_rec[id_crown])+10
+    num_brace = len(indices_rec[id_brace]) if len(indices_rec[id_brace]) > 10 else len(indices_rec[id_brace])+10
     
     avg_crown_length = avg_len_rec[id_crown]*10
     avg_brace_length = avg_len_rec[id_brace]*10
@@ -1152,8 +1155,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     print("idx_dominant = {}\n".format(idx_dominant))
     
-    if len(idx_dominant) < 1:
+    if len(idx_dominant)==0:
+        
         idx_dominant = brace_length_list
+        
+        print('the list is empty')
     
     brace_angle_list = [sub_branch_angle_rec[index] for index in idx_dominant]
     
@@ -1161,7 +1167,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #print("brace_angle_list = {}\n".format(brace_angle_list))
        
-  
+    #idx_dominant = brace_length_list
     
     #find sub branch start vertices locations 
     sub_branch_start_rec_selected = sub_branch_start_rec[0:dsf_length_divide_idx]
@@ -1667,7 +1673,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #print(type(pcd_color))
     
     
-    '''
+    
     #Skeleton Visualization pipeline
     ####################################################################
     # The number of points per line
@@ -1801,7 +1807,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #mlab.view(33.6, 106, 5.5, [0, 0, .05])
     #mlab.roll(125)
     mlab.show()
-    '''
+    
     
     
     return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density, \

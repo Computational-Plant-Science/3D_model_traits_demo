@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-python3 bbox_seg.py -p ~/example/test/ -ft jpg 
+python3 bbox_seg_mask.py -p ~/example/test/ -ft jpg 
 
 
 argument:
@@ -233,7 +233,7 @@ def foreground_substractor(image_file):
 
     
     
-    margin = 150
+    margin = 550
     
     # define crop region
     start_y = int((y - margin) if (y - margin )> 0 else 0)
