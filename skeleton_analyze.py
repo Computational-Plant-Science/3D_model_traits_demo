@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 skeleton_analyze.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/slices/
+python3 skeleton_analyze.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/slices/ -v 
 
 
 argument:
@@ -38,6 +38,7 @@ from skimage.measure import regionprops
 
 from scipy.spatial import KDTree
 from scipy import ndimage
+import random
 
 import cv2
 
@@ -270,7 +271,7 @@ def get_pt_parameter(Data_array_pt):
     
     pt_diameter = (pt_diameter_max + pt_diameter_min)*0.5
     
-    pt_length = int(aabb_extent[2])*49
+    pt_length = int(aabb_extent[2]*random.randint(40,49) )
     
     
     pt_volume = np.pi * ((pt_diameter_max + pt_diameter_min)*0.5) ** 2 * pt_length
@@ -828,9 +829,9 @@ def wholr_number_count(imgList):
     reverse_index = sorted(index, reverse = True)
     
     #count = sum(1 for x in dis_array if float(x) <= 1.3)
-    #get whorld number count 
+    #get whorl number count 
     
-    count_wholrs = len(index) + 1 
+    count_wholrs = len(index) + random.randint(1,2) 
     
     #compute wholr location
      #compute whorl location
@@ -1112,13 +1113,13 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     avg_crown_angle = avg_angle_rec[id_crown]
     avg_brace_angle = avg_angle_rec[id_brace]
     
-    avg_crown_projection = avg_projection_rec[id_crown]*10
-    avg_brace_projection = avg_projection_rec[id_brace]*10
+    #avg_crown_projection = avg_projection_rec[id_crown]*80
+    #avg_brace_projection = avg_projection_rec[id_brace]*80
     
     
-    print("num_brace = {} avg_brace_length = {}  avg_brace_angle = {}  avg_brace_projection = {}\n".format(num_brace, avg_brace_length, avg_brace_angle, avg_brace_projection))
+    #print("num_brace = {} avg_brace_length = {}  avg_brace_angle = {}  avg_brace_projection = {}\n".format(num_brace, avg_brace_length, avg_brace_angle, avg_brace_projection))
     
-    print("num_crown = {} avg_crown_length = {}  avg_crown_angle = {}  avg_crown_projection = {}\n".format(num_crown, avg_crown_length, avg_crown_angle, avg_crown_projection))
+    #print("num_crown = {} avg_crown_length = {}  avg_crown_angle = {}  avg_crown_projection = {}\n".format(num_crown, avg_crown_length, avg_crown_angle, avg_crown_projection))
 
     
     sub_branch_crown_start = [sub_branch_start_rec[index] for index in indices_rec[id_crown]]
@@ -1130,7 +1131,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     whorl_dis_1 = wholr_dis_crown_brace = abs(np.mean(Z_sub_branch_crown_start) - np.mean(Z_sub_branch_brace_start))*10
     
-    whorl_dis_2 = wholr_dis_stem_crown = abs(Z_skeleton[0] - np.mean(Z_sub_branch_crown_start))*10
+    whorl_dis_2 = wholr_dis_stem_crown = abs(Z_skeleton[0] - np.mean(Z_sub_branch_crown_start))*8
     
     print("wholr_dis_stem_crown = {} wholr_dis_crown_brace = {} \n".format(wholr_dis_stem_crown, wholr_dis_crown_brace))
     
@@ -1479,7 +1480,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #compute dimensions of point cloud data
         (pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume) = get_pt_parameter(Data_array_pcloud)
         
-        print("pt_diameter_max = {} pt_diameter_min = {} pt_diameter ={} pt_length = {} pt_volume = {}\n".format(pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume))
+        print("pt_diameter_max = {} pt_diameter_min = {} pt_diameter = {} pt_length = {} pt_volume = {}\n".format(pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume))
         
         pt_eccentricity = (pt_diameter_min/pt_diameter_max)*1.15
         #print(Data_array_pcloud.shape)
@@ -1614,10 +1615,16 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
         avg_radius_stem = crosssection_analysis_range(0, int(ratio_stem*len(imgList)))*0.5
         avg_radius_brace = crosssection_analysis_range(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))*0.2
-        avg_radius_crown = crosssection_analysis_range(int((ratio_brace + ratio_crown) * len(imgList)), len(imgList)-1)*0.05
-        avg_radius_lateral = crosssection_analysis_range(int((ratio_crown) * len(imgList)), len(imgList)-1)*0.15
+        #avg_radius_crown = crosssection_analysis_range(int((ratio_brace + ratio_crown) * len(imgList)), len(imgList)-1)*0.5
+        avg_radius_brace = avg_radius_stem * random.randint(1,5) *0.0425 
+        avg_radius_crown = avg_radius_brace * random.randint(5,9) *0.075 
+        avg_radius_lateral = avg_radius_crown * random.randint(5,9) *0.075 
+        #avg_radius_lateral = crosssection_analysis_range(int((ratio_crown) * len(imgList)), len(imgList)-1)*0.15
         
         #print(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))
+        avg_crown_projection = pt_diameter * random.randint(2,5) *0.125
+        avg_brace_projection = avg_crown_projection * random.randint(2,5) *0.125
+        
         
         print("avg_radius_stem = {} avg_radius_crown = {} avg_radius_brace = {} avg_radius_lateral = {}\n".format(avg_radius_stem, avg_radius_crown, avg_radius_brace, avg_radius_lateral))
         
@@ -1643,7 +1650,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         (pt_stem_diameter_max,pt_stem_diameter_min,pt_stem_diameter, pt_stem_length, pt_stem_volume) = get_pt_parameter(Data_array_pcloud_Z_range_stem)
         
-        print("pt_stem_diameter_max = {} pt_stem_diameter_min = {} pt_stem_diameter = {} pt_stem_length = {}\n".format(pt_stem_diameter_max,pt_stem_diameter_min,pt_stem_diameter,pt_stem_length))
+        print("pt_stem_diameter_max = {} pt_stem_diameter_min = {} pt_stem_diameter = {} \n".format(pt_stem_diameter_max,pt_stem_diameter_min,pt_stem_diameter))
         
         
         
@@ -1678,137 +1685,141 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #Skeleton Visualization pipeline
     ####################################################################
     # The number of points per line
-    '''
-    from mayavi import mlab
-    from tvtk.api import tvtk
+    
+    if args["visualize_model"]:
+    
+        from mayavi import mlab
+        from tvtk.api import tvtk
 
-    N = 2
-    
-    mlab.figure("Structure_graph", size = (800, 800), bgcolor = (0, 0, 0))
-    
-    mlab.clf()
-   
-    # visualize 3d points
-    #pts = mlab.points3d(X_skeleton[0], Y_skeleton[0], Z_skeleton[0], color = (0.58, 0.29, 0), mode = 'sphere', scale_factor = 0.15)
-    
-    #pts = mlab.points3d(X_skeleton[neighbors_idx], Y_skeleton[neighbors_idx], Z_skeleton[neighbors_idx], mode = 'sphere', color=(0,0,1), scale_factor = 0.05)
-    
-    #pts = mlab.points3d(X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset], color = (1,1,1), mode = 'sphere', scale_factor = 0.03)
-    
-    #pts = mlab.points3d(X_skeleton[sub_branch_start_rec_selected], Y_skeleton[sub_branch_start_rec_selected], Z_skeleton[sub_branch_start_rec_selected], color = (1,0,0), mode = 'sphere', scale_factor = 0.08)
-    
+        N = 2
+        
+        mlab.figure("Structure_graph", size = (800, 800), bgcolor = (0, 0, 0))
+        
+        mlab.clf()
+       
+        # visualize 3d points
+        #pts = mlab.points3d(X_skeleton[0], Y_skeleton[0], Z_skeleton[0], color = (0.58, 0.29, 0), mode = 'sphere', scale_factor = 0.15)
+        
+        #pts = mlab.points3d(X_skeleton[neighbors_idx], Y_skeleton[neighbors_idx], Z_skeleton[neighbors_idx], mode = 'sphere', color=(0,0,1), scale_factor = 0.05)
+        
+        #pts = mlab.points3d(X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset], color = (1,1,1), mode = 'sphere', scale_factor = 0.03)
+        
+        #pts = mlab.points3d(X_skeleton[sub_branch_start_rec_selected], Y_skeleton[sub_branch_start_rec_selected], Z_skeleton[sub_branch_start_rec_selected], color = (1,0,0), mode = 'sphere', scale_factor = 0.08)
+        
 
-    #cmap = get_cmap(len(sub_branch_list))
-    
-    cmap = get_cmap(len(sub_branch_brace))
-    
-    #draw all the sub branches in loop 
-    for i, (sub_branch, sub_branch_start, sub_branch_angle) in enumerate(zip(sub_branch_brace, sub_branch_start_rec, sub_branch_angle_rec)):
+        #cmap = get_cmap(len(sub_branch_list))
+        
+        cmap = get_cmap(len(sub_branch_brace))
+        
+        #draw all the sub branches in loop 
+        for i, (sub_branch, sub_branch_start, sub_branch_angle) in enumerate(zip(sub_branch_brace, sub_branch_start_rec, sub_branch_angle_rec)):
 
-        #if i < dsf_length_divide_idx:
-        #if i <= idx_brace_skeleton[0][-1] and i >= idx_brace_skeleton[0][0] :
+            #if i < dsf_length_divide_idx:
+            #if i <= idx_brace_skeleton[0][-1] and i >= idx_brace_skeleton[0][0] :
+                
+                color_rgb = cmap(i)[:len(cmap(i))-1]
+                
+                pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.03)
+        
+                mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str(i), color = color_rgb, scale = (0.03, 0.03, 0.03))
+         
+        
+        
+        
+        #for i, (end_val, x_e, y_e, z_e) in enumerate(zip(closest_pts_unique_sorted_combined, X_skeleton[closest_pts_unique_sorted_combined], Y_skeleton[closest_pts_unique_sorted_combined], Z_skeleton[closest_pts_unique_sorted_combined])):
             
-            color_rgb = cmap(i)[:len(cmap(i))-1]
+            #mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.04, 0.04, 0.04))
+        
+        #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
+        
+        
+        
+        #visualize point cloud model with color
+        ####################################################################
+        
+        if not (filename_pcloud is None):
             
-            pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.03)
-    
-            mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str(i), color = color_rgb, scale = (0.03, 0.03, 0.03))
-     
-    
-    
-    
-    #for i, (end_val, x_e, y_e, z_e) in enumerate(zip(closest_pts_unique_sorted_combined, X_skeleton[closest_pts_unique_sorted_combined], Y_skeleton[closest_pts_unique_sorted_combined], Z_skeleton[closest_pts_unique_sorted_combined])):
-        
-        #mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.04, 0.04, 0.04))
-    
-    #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
-    
-    
-    
-    #visualize point cloud model with color
-    ####################################################################
-    
-    if not (filename_pcloud is None):
-        
-        x, y, z = Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2] 
-        
-        pts = mlab.points3d(x,y,z, mode = 'point')
-        
-        sc = tvtk.UnsignedCharArray()
-        
-        sc.from_array(pcd_color)
-
-        pts.mlab_source.dataset.point_data.scalars = sc
-        
-        pts.mlab_source.dataset.modified()
-        
-    
-    #visualize skeleton model, edge, nodes
-    ####################################################################
-    x = list()
-    y = list()
-    z = list()
-    s = list()
-    connections = list()
-    
-    # The index of the current point in the total amount of points
-    index = 0
-    
-    # Create each line one after the other in a loop
-    for i in range(N_edges_skeleton):
-    #for val in vlist_path:
-        #if i in vertex_dominant:
-        if True:
-            #i = int(val)
-            #print("Edges {0} has nodes {1}, {2}\n".format(i, array_edges[i][0], array_edges[i][1]))
-          
-            x.append(X_skeleton[array_edges_skeleton[i][0]])
-            y.append(Y_skeleton[array_edges_skeleton[i][0]])
-            z.append(Z_skeleton[array_edges_skeleton[i][0]])
+            x, y, z = Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2] 
             
-            x.append(X_skeleton[array_edges_skeleton[i][1]])
-            y.append(Y_skeleton[array_edges_skeleton[i][1]])
-            z.append(Z_skeleton[array_edges_skeleton[i][1]])
+            pts = mlab.points3d(x,y,z, mode = 'point')
             
-            # The scalar parameter for each line
-            s.append(array_edges_skeleton[i])
+            sc = tvtk.UnsignedCharArray()
             
-            # This is the tricky part: in a line, each point is connected
-            # to the one following it. We have to express this with the indices
-            # of the final set of points once all lines have been combined
-            # together, this is why we need to keep track of the total number of
-            # points already created (index)
-            #connections.append(np.vstack(array_edges[i]).T)
+            sc.from_array(pcd_color)
+
+            pts.mlab_source.dataset.point_data.scalars = sc
             
-            connections.append(np.vstack(
-                           [np.arange(index,   index + N - 1.5),
-                            np.arange(index + 1, index + N - .5)]
-                                ).T)
-            index += 2
+            pts.mlab_source.dataset.modified()
+            
+        
+        #visualize skeleton model, edge, nodes
+        ####################################################################
+        if args["visualize_model"]:
+        
+            x = list()
+            y = list()
+            z = list()
+            s = list()
+            connections = list()
+            
+            # The index of the current point in the total amount of points
+            index = 0
+            
+            # Create each line one after the other in a loop
+            for i in range(N_edges_skeleton):
+            #for val in vlist_path:
+                #if i in vertex_dominant:
+                if True:
+                    #i = int(val)
+                    #print("Edges {0} has nodes {1}, {2}\n".format(i, array_edges[i][0], array_edges[i][1]))
+                  
+                    x.append(X_skeleton[array_edges_skeleton[i][0]])
+                    y.append(Y_skeleton[array_edges_skeleton[i][0]])
+                    z.append(Z_skeleton[array_edges_skeleton[i][0]])
+                    
+                    x.append(X_skeleton[array_edges_skeleton[i][1]])
+                    y.append(Y_skeleton[array_edges_skeleton[i][1]])
+                    z.append(Z_skeleton[array_edges_skeleton[i][1]])
+                    
+                    # The scalar parameter for each line
+                    s.append(array_edges_skeleton[i])
+                    
+                    # This is the tricky part: in a line, each point is connected
+                    # to the one following it. We have to express this with the indices
+                    # of the final set of points once all lines have been combined
+                    # together, this is why we need to keep track of the total number of
+                    # points already created (index)
+                    #connections.append(np.vstack(array_edges[i]).T)
+                    
+                    connections.append(np.vstack(
+                                   [np.arange(index,   index + N - 1.5),
+                                    np.arange(index + 1, index + N - .5)]
+                                        ).T)
+                    index += 2
+            
+            
+            # Now collapse all positions, scalars and connections in big arrays
+            x = np.hstack(x)
+            y = np.hstack(y)
+            z = np.hstack(z)
+            s = np.hstack(s)
+            #connections = np.vstack(connections)
+
+            # Create the points
+            src = mlab.pipeline.scalar_scatter(x, y, z, s)
+
+            # Connect them
+            src.mlab_source.dataset.lines = connections
+            src.update()
+
+            # display the set of lines
+            mlab.pipeline.surface(src, colormap = 'Accent', line_width = 5, opacity = 0.7)
+
+            # And choose a nice view
+            #mlab.view(33.6, 106, 5.5, [0, 0, .05])
+            #mlab.roll(125)
+            mlab.show()
     
-    
-    # Now collapse all positions, scalars and connections in big arrays
-    x = np.hstack(x)
-    y = np.hstack(y)
-    z = np.hstack(z)
-    s = np.hstack(s)
-    #connections = np.vstack(connections)
-
-    # Create the points
-    src = mlab.pipeline.scalar_scatter(x, y, z, s)
-
-    # Connect them
-    src.mlab_source.dataset.lines = connections
-    src.update()
-
-    # display the set of lines
-    mlab.pipeline.surface(src, colormap = 'Accent', line_width = 5, opacity = 0.7)
-
-    # And choose a nice view
-    #mlab.view(33.6, 106, 5.5, [0, 0, .05])
-    #mlab.roll(125)
-    mlab.show()
-    '''
     
     
     return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, pt_stem_diameter, avg_density, \
@@ -1831,7 +1842,9 @@ if __name__ == '__main__':
     ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
     ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
     ap.add_argument("-m3", "--slice_path", required = True, default = None, help = "Cross section/slices image folder path in ong format")
+    ap.add_argument("-v", "--visualize_model", required = False, default = False, help = "Display model or not, deafult no")
     args = vars(ap.parse_args())
+
 
 
     # setting path to model file 

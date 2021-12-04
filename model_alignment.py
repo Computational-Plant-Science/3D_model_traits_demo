@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 model_alignment.py -p ~/example/ -m test.ply
+python3 model_alignment.py -p ~/example/ -m test.ply -r 0.1
 
 
 argument:
@@ -135,7 +135,7 @@ def format_converter(current_path, model_name):
 
     # threshold data
 
-    pcd_sel = pcd.select_by_index(np.where(color_array[:, 2] > 0.1)[0])
+    pcd_sel = pcd.select_by_index(np.where(color_array[:, 2] > ratio)[0])
     
     #o3d.visualization.draw_geometries([pcd])
     #o3d.visualization.draw_geometries([pcd_sel])
@@ -381,12 +381,14 @@ if __name__ == '__main__':
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m", "--model", required = True, help = "model file name")
     ap.add_argument("-a", "--angle", required = False, default = -90, help = "rotation_angle")
+    ap.add_argument("-r", "--ratio", required = False, type = float, default = 0.1, help = "outlier remove ratio")
     args = vars(ap.parse_args())
 
 
     # setting path to model file 
     current_path = args["path"]
     filename = args["model"]
+    ratio = args["ratio"]
     file_path = current_path + filename
     
     #rotation_angle = args["angle"]

@@ -46,7 +46,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     # step 1  python3 model_alignment.py -p ~/example/ -m test.ply
     print("Transform point cloud to its rotation center and align its upright orientation with Z direction...\n")
     
-    format_convert = "python3 model_alignment.py -p " + file_path + " -m " + filename
+    format_convert = "python3 model_alignment.py -p " + file_path + " -m " + filename + " -r " + ratio
     
     execute_script(format_convert)
 
@@ -86,6 +86,7 @@ if __name__ == '__main__':
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m", "--model", required = False, help = "model file name")
     ap.add_argument("-n", "--n_slices", required = False, type = int, default = 100 , help = 'Number of slices for 3d model.')
+    ap.add_argument("-r", "--ratio", required = False, type = float, default = 0.1, help = "outlier remove ratio")
     
     '''
     ap.add_argument("-i", "--interval", required = False, default = '1',  type = int, help= "intervals along sweeping plane")
@@ -108,6 +109,7 @@ if __name__ == '__main__':
     # path to model file 
     file_path = args["path"]
     filename = args["model"]
+    ratio = args["ratio"]
     file_full_path = file_path + filename
     
     #print(file_full_path)
