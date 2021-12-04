@@ -114,6 +114,12 @@ def format_converter(current_path, model_name):
     pcd = o3d.io.read_point_cloud(model_file)
     
     
+    #filename = current_path + base_name + '_binary.ply'
+    
+    #o3d.io.write_point_cloud(filename, pcd)
+    
+    #pcd = o3d.io.read_point_cloud(filename)
+    
     #print(np.asarray(pcd.points))
     
     #visualize the original point cloud
@@ -123,7 +129,9 @@ def format_converter(current_path, model_name):
     
     color_array = np.asarray(pcd.colors)
     
-    #print(color_array.shape)
+    #print(len(color_array))
+    
+    
     
     #color_array[:,2] = 0.24
     
@@ -134,8 +142,12 @@ def format_converter(current_path, model_name):
     #pcd.points = o3d.utility.Vector3dVector(points)
 
     # threshold data
-
-    pcd_sel = pcd.select_by_index(np.where(color_array[:, 2] > ratio)[0])
+    
+    if len(color_array) == 0:
+        
+        pcd_sel = pcd
+    else:
+        pcd_sel = pcd.select_by_index(np.where(color_array[:, 2] > ratio)[0])
     
     #o3d.visualization.draw_geometries([pcd])
     #o3d.visualization.draw_geometries([pcd_sel])
