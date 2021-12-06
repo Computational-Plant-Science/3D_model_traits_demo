@@ -1603,6 +1603,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         idx_pt_Z_range_stem = np.where(np.logical_and(Data_array_pcloud[:,2] >= thresh_1, Data_array_pcloud[:,2] <= thresh_2*1.55))
         Data_array_pcloud_Z_range_stem = Data_array_pcloud[idx_pt_Z_range_stem]
         
+        
         if len(Data_array_pcloud_Z_range_stem) == 0:
             Data_array_pcloud_Z_range_stem = Data_array_pcloud[np.where(np.logical_and(Data_array_pcloud[:,2] >= thresh_1, Data_array_pcloud[:,2] <= int(len(Data_array_pcloud[:,2])*0.15)))]
         
@@ -1623,12 +1624,15 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
 
         avg_radius_stem = crosssection_analysis_range(0, int(ratio_stem*len(imgList)))*0.5
+        
         avg_radius_brace = crosssection_analysis_range(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))*0.2
         #avg_radius_crown = crosssection_analysis_range(int((ratio_brace + ratio_crown) * len(imgList)), len(imgList)-1)*0.5
         avg_radius_brace = avg_radius_stem * random.randint(1,5) *0.0425 
         avg_radius_crown = avg_radius_brace * random.randint(5,9) *0.075 
         avg_radius_lateral = avg_radius_crown * random.randint(5,9) *0.075 
         #avg_radius_lateral = crosssection_analysis_range(int((ratio_crown) * len(imgList)), len(imgList)-1)*0.15
+        if avg_radius_stem == 0:
+            avg_radius_stem = avg_radius_brace * 6.75
         
         #print(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))
         avg_crown_projection = pt_diameter * random.randint(2,5) *0.125
@@ -1657,9 +1661,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         '''
         
         
-        (pt_stem_diameter_max, pt_stem_diameter_min, pt_stem_diameter, pt_stem_length, pt_stem_volume) = get_pt_parameter(Data_array_pcloud_Z_range_stem)
+        #(pt_stem_diameter_max, pt_stem_diameter_min, pt_stem_diameter, pt_stem_length, pt_stem_volume) = get_pt_parameter(Data_array_pcloud_Z_range_stem)
         
-        print("pt_stem_diameter_max = {} pt_stem_diameter_min = {} pt_stem_diameter = {} \n".format(pt_stem_diameter_max,pt_stem_diameter_min,pt_stem_diameter))
+        #print("pt_stem_diameter_max = {} pt_stem_diameter_min = {} pt_stem_diameter = {} \n".format(pt_stem_diameter_max,pt_stem_diameter_min,pt_stem_diameter))
         
         
         
@@ -1831,7 +1835,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
     
-    return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, pt_stem_diameter, avg_density, \
+    return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density, \
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
         avg_radius_lateral, \
