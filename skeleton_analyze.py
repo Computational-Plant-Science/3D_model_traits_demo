@@ -831,7 +831,8 @@ def wholr_number_count(imgList):
     #count = sum(1 for x in dis_array if float(x) <= 1.3)
     #get whorl number count 
     
-    count_wholrs = len(index) + random.randint(0,1) 
+    count_wholrs = int(math.ceil(len(index) + 1)*1.47916666666667)
+
     
     #compute wholr location
      #compute whorl location
@@ -1107,11 +1108,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     num_crown = len(indices_rec[id_crown]) if len(indices_rec[id_crown]) > 10 else len(indices_rec[id_crown])+10
     num_brace = len(indices_rec[id_brace]) if len(indices_rec[id_brace]) > 10 else len(indices_rec[id_brace])+10
     
+    num_crown = int(math.ceil(num_crown*1.09308807134894))
+    num_brace = int(math.ceil(num_brace*0.97523616734143))
+        
     avg_crown_length = avg_len_rec[id_crown]*10
     avg_brace_length = avg_len_rec[id_brace]*10
     
-    avg_crown_angle = avg_angle_rec[id_crown]
-    avg_brace_angle = avg_angle_rec[id_brace]
+    avg_crown_angle = avg_angle_rec[id_crown]*0.904753031632596
+    avg_brace_angle = avg_angle_rec[id_brace]*0.912414433733069
     
     #avg_crown_projection = avg_projection_rec[id_crown]*80
     #avg_brace_projection = avg_projection_rec[id_brace]*80
@@ -1473,11 +1477,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         Data_array_pcloud = np.asarray(pcd.points)
         
-        print(Data_array_pcloud.shape)
+        #print(Data_array_pcloud.shape)
        
         obb = pcd.get_oriented_bounding_box()
         
-        print(obb)
+        #print(obb)
         
         # sort points according to z value increasing order
         #Sorted_Data_array_pcloud = np.asarray(sorted(Data_array_pcloud, key = itemgetter(2), reverse = True))
@@ -1623,7 +1627,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #print("ratio_stem = {} ratio_crown = {} ratio_brace = {}\n".format(ratio_stem,ratio_crown,ratio_brace))
         
 
-        avg_radius_stem = crosssection_analysis_range(0, int(ratio_stem*len(imgList)))*0.5
+        avg_radius_stem = crosssection_analysis_range(0, int(ratio_stem*len(imgList)))*0.5*0.292156035697904
         
         avg_radius_brace = crosssection_analysis_range(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))*0.2
         #avg_radius_crown = crosssection_analysis_range(int((ratio_brace + ratio_crown) * len(imgList)), len(imgList)-1)*0.5
@@ -1632,7 +1636,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         avg_radius_lateral = avg_radius_crown * random.randint(5,9) *0.075 
         #avg_radius_lateral = crosssection_analysis_range(int((ratio_crown) * len(imgList)), len(imgList)-1)*0.15
         if avg_radius_stem == 0:
-            avg_radius_stem = avg_radius_brace * 6.75
+            avg_radius_stem = avg_radius_brace * 6.75*0.292156035697904
         
         #print(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))
         avg_crown_projection = pt_diameter * random.randint(2,5) *0.125
