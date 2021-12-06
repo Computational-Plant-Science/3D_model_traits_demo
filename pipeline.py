@@ -46,7 +46,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     # step 1  python3 model_alignment.py -p ~/example/ -m test.ply
     print("Transform point cloud to its rotation center and align its upright orientation with Z direction...\n")
     
-    format_convert = "python3 model_alignment.py -p " + file_path + " -m " + filename + " -r " + ratio
+    format_convert = "python3 model_alignment.py -p " + file_path + " -m " + filename + " -r " + str(ratio)
     
     execute_script(format_convert)
 
@@ -120,6 +120,7 @@ if __name__ == '__main__':
     
     # number of slices for cross section 
     n_slices = args["n_slices"]
+    
     
     
     '''
