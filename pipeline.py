@@ -86,7 +86,7 @@ if __name__ == '__main__':
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m", "--model", required = False, help = "model file name")
     ap.add_argument("-n", "--n_slices", required = False, type = int, default = 100 , help = 'Number of slices for 3d model.')
-    ap.add_argument("-r", "--ratio", required = False, type = float, default = 0.1, help = "outlier remove ratio")
+    ap.add_argument("-r", "--ratio", required = False, type = float, default = 0.01, help = "outlier remove ratio")
     
     '''
     ap.add_argument("-i", "--interval", required = False, default = '1',  type = int, help= "intervals along sweeping plane")
