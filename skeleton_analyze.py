@@ -197,7 +197,7 @@ def get_neighbors(Data_array_pt, anchor_pt_idx, search_radius):
     
     pcd.points = o3d.utility.Vector3dVector(Data_array_pt)
     
-    pcd.paint_uniform_color([0.5, 0.5, 0.5])
+    #pcd.paint_uniform_color([0.5, 0.5, 0.5])
     
     #o3d.visualization.draw_geometries([pcd])
     
@@ -206,7 +206,7 @@ def get_neighbors(Data_array_pt, anchor_pt_idx, search_radius):
     
     #print("Paint the 00th point red.")
     
-    pcd.colors[anchor_pt_idx] = [1, 0, 0]
+    #pcd.colors[anchor_pt_idx] = [1, 0, 0]
     
     #print("Find its 50 nearest neighbors, paint blue.")
     
@@ -240,17 +240,17 @@ def get_pt_parameter(Data_array_pt):
     
     pcd.points = o3d.utility.Vector3dVector(Data_array_pt)
     
-    pcd.paint_uniform_color([0.5, 0.5, 0.5])
+    #pcd.paint_uniform_color([0.5, 0.5, 0.5])
     
    
     # get convex hull of a point cloud is the smallest convex set that contains all points.
-    hull, _ = pcd.compute_convex_hull()
-    hull_ls = o3d.geometry.LineSet.create_from_triangle_mesh(hull)
-    hull_ls.paint_uniform_color((1, 0, 0))
+    #hull, _ = pcd.compute_convex_hull()
+    #hull_ls = o3d.geometry.LineSet.create_from_triangle_mesh(hull)
+    #hull_ls.paint_uniform_color((1, 0, 0))
     
     # get AxisAlignedBoundingBox
     aabb = pcd.get_axis_aligned_bounding_box()
-    aabb.color = (0, 1, 0)
+    #aabb.color = (0, 1, 0)
     
     #Get the extent/length of the bounding box in x, y, and z dimension.
     aabb_extent = aabb.get_extent()
@@ -260,7 +260,7 @@ def get_pt_parameter(Data_array_pt):
     # get OrientedBoundingBox
     obb = pcd.get_oriented_bounding_box()
     
-    obb.color = (1, 0, 0)
+    #obb.color = (1, 0, 0)
     
     #visualize the convex hull as a red LineSet
     #o3d.visualization.draw_geometries([pcd, aabb, obb, hull_ls])
@@ -1472,7 +1472,12 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         pcd = o3d.io.read_point_cloud(model_pcloud)
         
         Data_array_pcloud = np.asarray(pcd.points)
+        
+        print(Data_array_pcloud.shape)
        
+        obb = pcd.get_oriented_bounding_box()
+        
+        print(obb)
         
         # sort points according to z value increasing order
         #Sorted_Data_array_pcloud = np.asarray(sorted(Data_array_pcloud, key = itemgetter(2), reverse = True))
@@ -1483,6 +1488,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         print("pt_diameter_max = {} pt_diameter_min = {} pt_diameter = {} pt_length = {} pt_volume = {}\n".format(pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume))
         
         pt_eccentricity = (pt_diameter_min/pt_diameter_max)*1.15
+        
         #print(Data_array_pcloud.shape)
         
         
@@ -1597,6 +1603,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         idx_pt_Z_range_stem = np.where(np.logical_and(Data_array_pcloud[:,2] >= thresh_1, Data_array_pcloud[:,2] <= thresh_2*1.55))
         Data_array_pcloud_Z_range_stem = Data_array_pcloud[idx_pt_Z_range_stem]
         
+        if len(Data_array_pcloud_Z_range_stem) == 0:
+            Data_array_pcloud_Z_range_stem = Data_array_pcloud[np.where(np.logical_and(Data_array_pcloud[:,2] >= thresh_1, Data_array_pcloud[:,2] <= int(len(Data_array_pcloud[:,2])*0.15)))]
+        
         idx_pt_Z_range_brace = np.where(np.logical_and(Data_array_pcloud[:,2] >= thresh_1*1.35, Data_array_pcloud[:,2] <= thresh_3))
         Data_array_pcloud_Z_range_brace = Data_array_pcloud[idx_pt_Z_range_brace]
         
@@ -1648,7 +1657,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         '''
         
         
-        (pt_stem_diameter_max,pt_stem_diameter_min,pt_stem_diameter, pt_stem_length, pt_stem_volume) = get_pt_parameter(Data_array_pcloud_Z_range_stem)
+        (pt_stem_diameter_max, pt_stem_diameter_min, pt_stem_diameter, pt_stem_length, pt_stem_volume) = get_pt_parameter(Data_array_pcloud_Z_range_stem)
         
         print("pt_stem_diameter_max = {} pt_stem_diameter_min = {} pt_stem_diameter = {} \n".format(pt_stem_diameter_max,pt_stem_diameter_min,pt_stem_diameter))
         
