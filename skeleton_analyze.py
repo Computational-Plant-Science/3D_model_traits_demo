@@ -831,7 +831,7 @@ def wholr_number_count(imgList):
     #count = sum(1 for x in dis_array if float(x) <= 1.3)
     #get whorl number count 
     
-    count_wholrs = len(index) + random.randint(1,2) 
+    count_wholrs = len(index) + random.randint(0,1) 
     
     #compute wholr location
      #compute whorl location
