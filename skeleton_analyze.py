@@ -1186,7 +1186,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     sub_branch_end_Z = Z_skeleton[sub_branch_end_rec_selected]
     
-    print("length of sub_branch_start_Z = {}  sub_branch_end_Z = {}\n".format(sub_branch_start_Z, sub_branch_end_Z))
+    print("length of sub_branch_start_Z = {}\n  sub_branch_end_Z = {}\n".format(sub_branch_start_Z, sub_branch_end_Z))
       
 
     print("Converting skeleton to graph and connecting edges and vertices...\n")
@@ -1624,7 +1624,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         ratio_crown = abs(Z_range_crown[0] - Z_range_crown[1])/pt_length
         ratio_brace = abs(Z_range_brace[0] - Z_range_brace[1])/pt_length
         
-        #print("ratio_stem = {} ratio_crown = {} ratio_brace = {}\n".format(ratio_stem,ratio_crown,ratio_brace))
+        print("ratio_stem = {} ratio_crown = {} ratio_brace = {}\n".format(ratio_stem,ratio_crown,ratio_brace))
         
 
         avg_radius_stem = crosssection_analysis_range(0, int(ratio_stem*len(imgList)))*0.5*0.292156035697904
@@ -1635,7 +1635,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         avg_radius_crown = avg_radius_brace * random.randint(5,9) *0.075 
         avg_radius_lateral = avg_radius_crown * random.randint(5,9) *0.075 
         #avg_radius_lateral = crosssection_analysis_range(int((ratio_crown) * len(imgList)), len(imgList)-1)*0.15
-        if avg_radius_stem == 0:
+        if avg_radius_stem == 0 :
             avg_radius_stem = avg_radius_brace * 6.75*0.292156035697904
         
         #print(int(ratio_stem*len(imgList)), int((ratio_stem + ratio_crown) * len(imgList)))
@@ -1894,6 +1894,10 @@ if __name__ == '__main__':
     imgList = sorted(glob.glob(slice_image_path))
 
     n_images = len(imgList)
+    
+    if n_images == 0:
+        print(f"Could not load image {slice_image_path}, skipping")
+        exit()
     
     print("Processing {} slices from cross section of the 3d model\n".format(n_images))
     

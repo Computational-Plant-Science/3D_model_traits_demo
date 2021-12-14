@@ -246,8 +246,14 @@ def format_converter(current_path, model_name):
     
     pcd_r.rotate(R_matrix, center = (0,0,0))
     
-
-    R = pcd.get_rotation_matrix_from_xyz((0, np.pi/2, 0))
+    if args["test"]:
+        
+        R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, np.pi/4))
+    else:
+        
+        R = pcd.get_rotation_matrix_from_xyz((0, rotation_angle, 0))
+    
+    #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
     
     pcd_r.rotate(R, center = (0,0,0))
     
@@ -392,8 +398,9 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m", "--model", required = True, help = "model file name")
-    ap.add_argument("-a", "--angle", required = False, default = -90, help = "rotation_angle")
+    ap.add_argument("-a", "--angle", required = False, type = int, default = 1, help = "rotation_angle")
     ap.add_argument("-r", "--ratio", required = False, type = float, default = 0.1, help = "outlier remove ratio")
+    ap.add_argument("-t", "--test", required = False, default = False, help = "if using test setup")
     args = vars(ap.parse_args())
 
 
@@ -401,6 +408,8 @@ if __name__ == '__main__':
     current_path = args["path"]
     filename = args["model"]
     ratio = args["ratio"]
+    rotation_angle = args["angle"]*np.pi/2
+    
     file_path = current_path + filename
     
     #rotation_angle = args["angle"]

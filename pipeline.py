@@ -11,6 +11,8 @@ USAGE:
 
 python3 pipeline.py -p ~/example/ -m test.ply -n 1000
 
+python3 pipeline.py -p ~/example/ -m test.ply -t True
+
 
 
 """
@@ -46,7 +48,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     # step 1  python3 model_alignment.py -p ~/example/ -m test.ply
     print("Transform point cloud to its rotation center and align its upright orientation with Z direction...\n")
     
-    format_convert = "python3 model_alignment.py -p " + file_path + " -m " + filename + " -r " + str(ratio)
+    format_convert = "python3 model_alignment.py -p " + file_path + " -m " + filename + " -r " + str(ratio) + " -t " + str(args["test"])
     
     execute_script(format_convert)
 
@@ -85,9 +87,9 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m", "--model", required = False, help = "model file name")
-    ap.add_argument("-n", "--n_slices", required = False, type = int, default = 100 , help = 'Number of slices for 3d model.')
+    ap.add_argument("-n", "--n_slices", required = False, type = int, default = 500 , help = 'Number of slices for 3d model.')
     ap.add_argument("-r", "--ratio", required = False, type = float, default = 0.01, help = "outlier remove ratio")
-    
+    ap.add_argument("-t", "--test", required = False, default = False, help = "if using test setup")
     '''
     ap.add_argument("-i", "--interval", required = False, default = '1',  type = int, help= "intervals along sweeping plane")
     ap.add_argument("-de", "--direction", required = False, default = 'X', help = "direction of sweeping plane, X, Y, Z")

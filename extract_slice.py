@@ -295,7 +295,7 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True,    help = "path to stl file")
     ap.add_argument("-f", "--filename", required = True,  help = "model file name, in obj format")
-    ap.add_argument('-n', '--num_slices', required = False, type = int, default = 10,  help = 'Number of slices')
+    ap.add_argument('-n', '--num_slices', required = False, type = int, default = 500,  help = 'Number of slices')
  
     args = vars(ap.parse_args())
     
