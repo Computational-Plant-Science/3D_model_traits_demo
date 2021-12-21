@@ -96,7 +96,10 @@ def foreground_substractor(image_file):
     if image is None:
         print(f"Could not load image {image_file}, skipping")
         return
-        
+    
+    
+    ori = image.copy()
+    
     #get size of image
     img_height, img_width = image.shape[:2]
     
@@ -108,10 +111,10 @@ def foreground_substractor(image_file):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     
     #blur = cv2.blur(gray, (3, 3)) # blur the image
-    blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    blur = cv2.GaussianBlur(gray, (25, 25), 0)
     
     #Obtain the threshold image using OTSU adaptive filter
-    ret, thresh = cv2.threshold(blur, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+    ret, thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
     
     #thresh = cv2.erode(thresh, None, iterations=2)
     
@@ -210,7 +213,7 @@ def foreground_substractor(image_file):
     # construct the result file path
     result_img_path = save_path + str(filename[0:-4]) + '_seg.' + ext
     
-    cv2.imwrite(result_img_path, masked)
+    cv2.imwrite(result_img_path, trait_img)
     '''
     ##############################################################
     
@@ -249,10 +252,14 @@ def foreground_substractor(image_file):
     # construct the result file path
     result_img_path = save_path + str(filename[0:-4]) + '_seg.' + ext
     
-    crop_img = combined_fg_bk[start_y:crop_height, start_x:crop_width]
+    #crop_img = combined_fg_bk[start_y:crop_height, start_x:crop_width]
     
     #crop_img = masked_fg_contour[start_y:crop_height, start_x:crop_width]
     
+    if args['bounding_box']:
+        crop_img = ori[start_y:crop_height, start_x:crop_width]
+    else:
+        crop_img = masked_fg_contour[start_y:crop_height, start_x:crop_width]
     cv2.imwrite(result_img_path, crop_img)
     
     
@@ -323,6 +330,7 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True,    help = "path to image file")
     ap.add_argument("-ft", "--filetype", required = False,  default = 'jpg' ,    help = "image filetype")
+    ap.add_argument("-b", "--bounding_box", required = False,  default = False ,    help = "using bounding box")
     args = vars(ap.parse_args())
 
     # setting path to model file

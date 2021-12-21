@@ -168,7 +168,7 @@ def foreground_substractor(image_file):
 
     
     
-    margin = 150
+    margin = 550
     
     # define crop region
     start_y = int((y - margin) if (y - margin )> 0 else 0)
