@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 skeleton_analyze.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/slices/ -v 
+python3 skeleton_analyze.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/slices/ -v True
 
 
 argument:
@@ -1045,7 +1045,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     print("number of whorls is: {} whorl_loc_ex : {} avg_density = {}\n".format(count_wholrs, str(whorl_loc_ex), avg_density))
     
   
-   
+    
     # find dominant sub branches with longer length and depth values by clustering sub_branch_length_rec values
     ####################################################################
     cluster_number = 7
@@ -1234,6 +1234,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #closest_pts_unique = list(set(closest_pts))
     
     #keep repeat values for correct indexing order
+    
+    print("closest_pts = {}\n".format(closest_pts))
+    
     closest_pts_unique = list((closest_pts))
     
     closest_pts_unique_sorted = sorted(closest_pts_unique)
@@ -1724,12 +1727,12 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #pts = mlab.points3d(X_skeleton[sub_branch_start_rec_selected], Y_skeleton[sub_branch_start_rec_selected], Z_skeleton[sub_branch_start_rec_selected], color = (1,0,0), mode = 'sphere', scale_factor = 0.08)
         
 
-        #cmap = get_cmap(len(sub_branch_list))
+        cmap = get_cmap(len(sub_branch_list))
         
-        cmap = get_cmap(len(sub_branch_brace))
+        #cmap = get_cmap(len(sub_branch_brace))
         
         #draw all the sub branches in loop 
-        for i, (sub_branch, sub_branch_start, sub_branch_angle) in enumerate(zip(sub_branch_brace, sub_branch_start_rec, sub_branch_angle_rec)):
+        for i, (sub_branch, sub_branch_start, sub_branch_angle) in enumerate(zip(sub_branch_list, sub_branch_start_rec, sub_branch_angle_rec)):
 
             #if i < dsf_length_divide_idx:
             #if i <= idx_brace_skeleton[0][-1] and i >= idx_brace_skeleton[0][0] :
@@ -1838,13 +1841,13 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             mlab.show()
     
     
-    
+    '''
     return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density, \
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
         avg_radius_lateral, \
         count_wholrs, whorl_dis_1, whorl_dis_2, avg_volume
-    
+    '''
     
 
 
@@ -1904,13 +1907,19 @@ if __name__ == '__main__':
     #loop all slices to obtain raidus results
     
     #print(avg_radius = crosssection_analysis_range(0, 97))
-
+    
+    
+    analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+    
+    '''
     (pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density,\
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
         avg_radius_lateral, \
         count_wholrs, whorl_dis_1, whorl_dis_2, avg_volume) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
-
+    
+    
+    
     trait_sum = []
     
     trait_sum.append([pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density,\
@@ -1977,4 +1986,4 @@ if __name__ == '__main__':
     else:
         print("Error saving Result file\n")
 
-    
+    '''

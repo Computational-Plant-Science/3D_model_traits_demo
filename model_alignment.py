@@ -246,10 +246,15 @@ def format_converter(current_path, model_name):
     
     pcd_r.rotate(R_matrix, center = (0,0,0))
     
-    if args["test"]:
+    if args["test"]==True:
+        
+        print("test mode was on: {}\n".format(args["test"]))
         
         R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, np.pi/4))
+        
     else:
+        
+        print("test mode was off: {}\n".format(args["test"]))
         
         R = pcd.get_rotation_matrix_from_xyz((0, rotation_angle, 0))
     
@@ -407,8 +412,11 @@ if __name__ == '__main__':
     # setting path to model file 
     current_path = args["path"]
     filename = args["model"]
-    ratio = args["ratio"]
     rotation_angle = args["angle"]*np.pi/2
+    ratio = args["ratio"]
+    
+    print(ratio)
+    
     
     file_path = current_path + filename
     
