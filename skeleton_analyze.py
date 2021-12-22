@@ -1841,13 +1841,13 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             mlab.show()
     
     
-    '''
+    
     return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density, \
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
         avg_radius_lateral, \
         count_wholrs, whorl_dis_1, whorl_dis_2, avg_volume
-    '''
+    
     
 
 
@@ -1911,7 +1911,7 @@ if __name__ == '__main__':
     
     analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
     
-    '''
+    
     (pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density,\
         num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
         num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
@@ -1986,4 +1986,4 @@ if __name__ == '__main__':
     else:
         print("Error saving Result file\n")
 
-    '''
+    
