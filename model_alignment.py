@@ -64,9 +64,9 @@ def dot_product_angle(v1,v2):
         
         arccos = np.arccos(vector_dot_product / (np.linalg.norm(v1) * np.linalg.norm(v2)))
         
-        if np.degrees(arccos) > 90:
+        if np.degrees(arccos) > 180:
             
-            angle = np.degrees(arccos) - 90
+            angle = np.degrees(arccos) - 180
         else:
             
             angle = np.degrees(arccos)
@@ -91,6 +91,95 @@ def rotation_matrix_from_vectors(vec1, vec2):
 
     else:
         return np.eye(3) #cross of all zeros only occurs on identical directions
+
+
+def rotation_angle_matrix(pcd_r):
+    
+    
+    aabb = pcd_r.get_axis_aligned_bounding_box()
+    aabb.color = (1, 0, 0)
+
+    # get OrientedBoundingBox
+    obb = pcd_r.get_oriented_bounding_box()
+    obb.color = (0, 1, 0)
+    
+    #o3d.visualization.draw_geometries([pcd_r, obb])
+    
+    #print("Oriented Bounding Box center is: {}\n".format(obb.center))
+    
+    
+    #compute convex hull of a point cloud, the smallest convex set that contains all points
+    
+    #hull, _ = pcd_r.compute_convex_hull()
+    #hull_ls = o3d.geometry.LineSet.create_from_triangle_mesh(hull)
+    #hull_ls.paint_uniform_color((1, 0, 0))
+    #o3d.visualization.draw_geometries([pcd_r, hull_ls, aabb, obb, o3d.geometry.TriangleMesh.create_coordinate_frame()])
+    
+    #print(hull.get_volume())
+    
+    #obb.R @ np.array([1,0,0]).reshape(3,1)
+    original_rotation = copy.deepcopy(obb.R)
+    
+    print("original_rotation is: {}\n".format(original_rotation))
+    
+    #from scipy.spatial.transform import Rotation as Rot
+
+    #q = R.from_matrix(original_rotation)
+    
+    #print(q)
+    
+    obb_x = obb.R @ np.array([1,0,0])
+    obb_y = obb.R @ np.array([0,1,0])
+    obb_z = obb.R @ np.array([0,0,1])
+
+    
+    #print("obb_x, obb_y, obb_z is: {} {} {}\n".format(obb_x, obb_y, obb_z))
+   
+    #define unit vector
+    v_x = [1,0,0]
+    v_y = [0,1,0]
+    v_z = [0,0,1]
+    
+    
+    #Find the rotation matrix that aligns vec1 to vec2
+    R_matrix = rotation_matrix_from_vectors(obb_z, v_z)
+    
+    
+    
+    #compute rotation angle
+    angle_x = dot_product_angle(obb_x, v_x)
+    angle_y = dot_product_angle(obb_y, v_y)
+    angle_z = dot_product_angle(obb_z, v_z)
+    
+    print("angle_x = {0} angle_y = {1} angle_z = {2}\n".format(angle_x, angle_y, angle_z))
+    
+       
+    
+    # test setup
+    #R = pcd_r.get_rotation_matrix_from_xyz((-1* math.radians(angle_x), 0, 0))
+    
+    #R = pcd_r.get_rotation_matrix_from_xyz((0, 1* math.radians(angle_y), 0))
+    
+    # copy original point cloud for rotation
+    #pcd_r_ori = copy.deepcopy(pcd_r)
+    
+    #R = pcd_r.get_rotation_matrix_from_xyz((-1* math.radians(angle_x), -1* math.radians(angle_y), 0))
+    
+    
+   
+    
+    #r = Rot.from_euler('xyz', [-1*angle_x, -1*angle_y, -1*angle_z], degrees=True)
+    
+    # Apply rotation transformation to copied point cloud data
+    #print(r.as_quat())
+    
+    #R = pcd_r.get_rotation_matrix_from_quaternion((r.as_quat()))
+    
+    # Apply rotation transformation to copied point cloud data
+    #R_matrix = rotation_matrix_from_vectors(obb_x, v_x)
+    
+    return R_matrix, angle_x, angle_y, angle_z
+    
 
 
 def format_converter(current_path, model_name):
@@ -163,86 +252,9 @@ def format_converter(current_path, model_name):
     # geometry points are translated directly to the model_center position
     pcd_r.translate(-1*(model_center))
     
-    
-    aabb = pcd_r.get_axis_aligned_bounding_box()
-    aabb.color = (1, 0, 0)
+    ################################################################
 
-    # get OrientedBoundingBox
-    obb = pcd_r.get_oriented_bounding_box()
-    obb.color = (0, 1, 0)
-    
-    #o3d.visualization.draw_geometries([pcd_r, obb])
-    
-    #print("Oriented Bounding Box center is: {}\n".format(obb.center))
-    
-    
-    #compute convex hull of a point cloud, the smallest convex set that contains all points
-    
-    hull, _ = pcd_r.compute_convex_hull()
-    hull_ls = o3d.geometry.LineSet.create_from_triangle_mesh(hull)
-    hull_ls.paint_uniform_color((1, 0, 0))
-    #o3d.visualization.draw_geometries([pcd_r, hull_ls, aabb, obb, o3d.geometry.TriangleMesh.create_coordinate_frame()])
-    
-    #print(hull.get_volume())
-    
-    #obb.R @ np.array([1,0,0]).reshape(3,1)
-    original_rotation = copy.deepcopy(obb.R)
-    
-    print("original_rotation is: {}\n".format(original_rotation))
-    
-    #from scipy.spatial.transform import Rotation as Rot
-
-    #q = R.from_matrix(original_rotation)
-    
-    #print(q)
-    
-    obb_x = obb.R @ np.array([1,0,0])
-    obb_y = obb.R @ np.array([0,1,0])
-    obb_z = obb.R @ np.array([0,0,1])
-
-    
-    #print("obb_x, obb_y, obb_z is: {} {} {}\n".format(obb_x, obb_y, obb_z))
-   
-    #define unit vector
-    v_x = [1,0,0]
-    v_y = [0,1,0]
-    v_z = [0,0,1]
-    
-    
-    #Find the rotation matrix that aligns vec1 to vec2
-    R_matrix = rotation_matrix_from_vectors(obb_z, v_z)
-    
-    
-    
-    #compute rotation angle
-    angle_x = dot_product_angle(obb_x, v_x)
-    angle_y = dot_product_angle(obb_y, v_y)
-    angle_z = dot_product_angle(obb_z, v_z)
-    
-    print("angle_x = {0} angle_y = {1} angle_z = {2}\n".format(angle_x, angle_y, angle_z))
-    
-    # test setup
-    #R = pcd_r.get_rotation_matrix_from_xyz((-1* math.radians(angle_x), 0, 0))
-    
-    #R = pcd_r.get_rotation_matrix_from_xyz((0, 1* math.radians(angle_y), 0))
-    
-    # copy original point cloud for rotation
-    #pcd_r_ori = copy.deepcopy(pcd_r)
-    
-    #R = pcd_r.get_rotation_matrix_from_xyz((-1* math.radians(angle_x), -1* math.radians(angle_y), 0))
-    
-    
-   
-    
-    #r = Rot.from_euler('xyz', [-1*angle_x, -1*angle_y, -1*angle_z], degrees=True)
-    
-    # Apply rotation transformation to copied point cloud data
-    #print(r.as_quat())
-    
-    #R = pcd_r.get_rotation_matrix_from_quaternion((r.as_quat()))
-    
-    # Apply rotation transformation to copied point cloud data
-    #R_matrix = rotation_matrix_from_vectors(obb_x, v_x)
+    (R_matrix, angle_x, angle_y, angle_z) = rotation_angle_matrix(pcd_r)
     
     pcd_r.rotate(R_matrix, center = (0,0,0))
     
@@ -256,13 +268,56 @@ def format_converter(current_path, model_name):
         
         print("test mode was off: {}\n".format(args["test"]))
         
+        '''
+        if angle_y > 145:
+            
+            R = pcd.get_rotation_matrix_from_xyz((np.pi/2, rotation_angle, 0))
+        else:
+            R = pcd.get_rotation_matrix_from_xyz((0, rotation_angle, 0))
+        '''
         R = pcd.get_rotation_matrix_from_xyz((0, rotation_angle, 0))
-    
+            
     #R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, 0))
     
     pcd_r.rotate(R, center = (0,0,0))
     
     
+    ###################################################################
+    #check aligned model
+    
+    (R_matrix_al, angle_x_al, angle_y_al, angle_z_al) = rotation_angle_matrix(pcd_r)
+    
+    
+    if angle_y_al < 45:
+        
+        R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al), 0, 0))
+        
+    elif angle_y_al < 90:
+        
+        if angle_z_al < 90:
+            R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al), 0, 0))
+        else:
+            R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al)- np.pi, 0, 0))
+        
+    elif angle_y_al < 135 :
+        
+        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi , 0, 0))
+
+    else:
+        
+        if angle_z > 90:
+    
+            R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi/2, 0, 0))
+        else:
+            
+            R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi, 0, 0))
+        '''
+        else:
+        
+            R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2, 0, 0))
+        '''
+  
+    pcd_r.rotate(R, center = (0,0,0))
     
     '''
     r = Rot.from_euler('xyz', [90, 0, 0], degrees=True)
@@ -415,7 +470,7 @@ if __name__ == '__main__':
     rotation_angle = args["angle"]*np.pi/2
     ratio = args["ratio"]
     
-    print(ratio)
+    #print(ratio)
     
     
     file_path = current_path + filename
