@@ -294,28 +294,41 @@ def format_converter(current_path, model_name):
         
     elif angle_y_al < 90:
         
-        if angle_z_al < 90:
-            R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al), 0, 0))
-        else:
-            R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al)- np.pi, 0, 0))
+        if abs(angle_y_al - 90) < abs(180 - angle_y_al):
+
+            if abs(angle_y_al - 45) < abs(90 - angle_y_al):
+                R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi, 0, 0))
+            else:
+                R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al), 0, 0))
+            
+            #R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi, 0, 0))
         
+        else:
+            R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) - np.pi, 0, 0))
+        
+     
     elif angle_y_al < 135 :
         
         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi , 0, 0))
 
     else:
+     
+        if abs(angle_y_al - 90) < abs(180 - angle_y_al):
         
-        if angle_z > 90:
-    
             R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi/2, 0, 0))
+        
         else:
             
-            R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi, 0, 0))
-        '''
-        else:
+            if abs(angle_z - 90) > abs(180 - angle_z):
+                
+                if abs(180 - angle_z) > 25:
+                    
+                    R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi, 0, 0))
+                else:
+                    R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi/2, 0, 0))
+            else:
+                R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi, 0, 0))
         
-            R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2, 0, 0))
-        '''
   
     pcd_r.rotate(R, center = (0,0,0))
     
@@ -459,7 +472,7 @@ if __name__ == '__main__':
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m", "--model", required = True, help = "model file name")
     ap.add_argument("-a", "--angle", required = False, type = int, default = 1, help = "rotation_angle")
-    ap.add_argument("-r", "--ratio", required = False, type = float, default = 0.1, help = "outlier remove ratio")
+    ap.add_argument("-r", "--ratio", required = False, type = float, default = 0.01, help = "outlier remove ratio")
     ap.add_argument("-t", "--test", required = False, default = False, help = "if using test setup")
     args = vars(ap.parse_args())
 
