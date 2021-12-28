@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 model_alignment.py -p ~/example/ -m test.ply -r 0.1
+python3 model_alignment.py -p ~/example/ -m test.ply
 
 
 argument:
@@ -259,7 +259,7 @@ def format_converter(current_path, model_name):
     pcd_r.rotate(R_matrix, center = (0,0,0))
     
     
-    if bool(args["test"]) ==True:
+    if bool(args["test"]) == True:
         
         print("test mode was on: {}\n".format(args["test"]))
         
@@ -270,9 +270,10 @@ def format_converter(current_path, model_name):
     else:
         
         print("test mode was off: {}\n".format(args["test"]))
-    
-    
+
         R = pcd.get_rotation_matrix_from_xyz((0, rotation_angle, 0))
+        
+        pcd_r.rotate(R, center = (0,0,0))
             
         ###################################################################
         #check aligned model
