@@ -9,11 +9,11 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-python3 pipeline.py -p ~/example/ -m test.ply -n 1000
-
+test
 python3 pipeline.py -p ~/example/ -m test.ply -t True
 
-
+normal
+python3 pipeline.py -p ~/example/ -m test.ply
 
 """
 
