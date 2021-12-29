@@ -151,10 +151,7 @@ def rotation_angle_matrix(pcd_r):
     angle_y = dot_product_angle(obb_y, v_y)
     angle_z = dot_product_angle(obb_z, v_z)
     
-    print("angle_x = {0} angle_y = {1} angle_z = {2}\n".format(angle_x, angle_y, angle_z))
-    
-       
-    
+
     # test setup
     #R = pcd_r.get_rotation_matrix_from_xyz((-1* math.radians(angle_x), 0, 0))
     
@@ -259,6 +256,26 @@ def format_converter(current_path, model_name):
     pcd_r.rotate(R_matrix, center = (0,0,0))
     
     
+    print("angle_x = {0} angle_y = {1} angle_z = {2}\n".format(angle_x, angle_y, angle_z))
+    
+    
+    '''
+    R = pcd.get_rotation_matrix_from_xyz((angle_x*np.pi/180, 0, 0))
+        
+    pcd_r.rotate(R, center = (0,0,0))
+    
+    
+    R = pcd.get_rotation_matrix_from_xyz((0, angle_y*np.pi/180 - np.pi/2, 0))
+        
+    pcd_r.rotate(R, center = (0,0,0))
+    
+    
+    R = pcd.get_rotation_matrix_from_xyz((0, 0, angle_z*np.pi/180 ))
+        
+    pcd_r.rotate(R, center = (0,0,0))
+    '''
+    
+    
     if bool(args["test"]) == True:
         
         print("test mode was on: {}\n".format(args["test"]))
@@ -281,49 +298,79 @@ def format_converter(current_path, model_name):
         (R_matrix_al, angle_x_al, angle_y_al, angle_z_al) = rotation_angle_matrix(pcd_r)
         
         
+        print("angle_x_al = {0} angle_y_al = {1} angle_z_al = {2}\n".format(angle_x_al, angle_y_al, angle_z_al))
+        
+        
         if angle_y_al < 45:
             
             R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al), 0, 0))
             
         elif angle_y_al < 90:
             
-            if abs(angle_y_al - 90) < abs(180 - angle_y_al):
+            #if abs(angle_y_al - 90) < abs(180 - angle_y_al):
 
-                if abs(angle_y_al - 45) < abs(90 - angle_y_al):
-                    R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi, 0, 0))
-                else:
-                    R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al), 0, 0))
+            if abs(angle_y_al - 45) < abs(90 - angle_y_al):
                 
-                #R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi, 0, 0))
-            
+                if abs(angle_z - 90) < abs(180 - angle_z):
+                    R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi, 0, 0))
+                else:
+                    R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi, 0, 0))
             else:
-                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) - np.pi, 0, 0))
+                if abs(angle_z - 90) < abs(180 - angle_z):
+                    R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al), 0, 0))
+                else:
+                    if abs(angle_z - 90) > 60 :
+                        R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) - np.pi, 0, 0))
+                    else:
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi, 0, 0))
             
          
         elif angle_y_al < 135 :
             
-            R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi , 0, 0))
+            if abs(angle_y_al - 90) < abs(180 - angle_y_al):
+                
+                if abs(angle_z - 90) < abs(180 - angle_z):
+                    R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi , 0, 0))
+                else:
+                    R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) , 0, 0))
+                    
+            else:
+                R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi , 0, 0))
 
         else:
-         
+            
             if abs(angle_y_al - 90) < abs(180 - angle_y_al):
             
-                R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi/2, 0, 0))
+                R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2, 0, 0))
             
             else:
                 
                 if abs(angle_z - 90) > abs(180 - angle_z):
                     
-                    if abs(180 - angle_z) > 25:
+                    print("abs(180 - angle_z) = {} \n".format(abs(180 - angle_z)))
+                    
+                    R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2, 0, 0))
+                    
+                    if abs(180 - angle_z) < 15:
                         
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi, 0, 0))
+                        print("abs(180 - angle_z) = {} \n".format(abs(180 - angle_z)))
+                    
+                    elif abs(180 - angle_z) < 25:
+                        
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi/2, 0, 0))
+                    
                     else:
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi/2, 0, 0))
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi, 0, 0))
                 else:
-                    R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)- np.pi, 0, 0))
-            
-      
+                    R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi, 0, 0))
+             
+       
         pcd_r.rotate(R, center = (0,0,0))
+        
+        
+    
+    ###################################################################
+    
     
     '''
     r = Rot.from_euler('xyz', [90, 0, 0], degrees=True)
