@@ -324,7 +324,6 @@ def format_converter(current_path, model_name):
                     else:
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi, 0, 0))
             
-         
         elif angle_y_al < 135 :
             
             if abs(angle_y_al - 90) < abs(180 - angle_y_al):
@@ -332,7 +331,11 @@ def format_converter(current_path, model_name):
                 if abs(angle_z - 90) < abs(180 - angle_z):
                     R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi , 0, 0))
                 else:
-                    R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi, 0, 0))
+                    print("Tested")
+                    if abs(angle_z - 90) > 55:
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi, 0, 0))
+                    else:
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al), 0, 0))
                     
             else:
                 R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi , 0, 0))
