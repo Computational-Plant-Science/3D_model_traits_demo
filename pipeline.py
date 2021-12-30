@@ -10,7 +10,7 @@ Author-email: suxingliu@gmail.com
 USAGE:
 
 test
-python3 pipeline.py -p ~/example/ -m test.ply -t True
+python3 pipeline.py -p ~/example/ -m test.ply -t 1
 
 normal
 python3 pipeline.py -p ~/example/ -m test.ply
@@ -91,7 +91,7 @@ if __name__ == '__main__':
     ap.add_argument("-m", "--model", required = False, help = "model file name")
     #ap.add_argument("-a", "--angle", required = False, type = int, default = 1, help = "rotation_angle")
     #ap.add_argument("-r", "--ratio", required = False, type = float, default = 0.01, help = "outlier remove ratio")
-    ap.add_argument("-t", "--test", required = False, default = False, help = "if using test setup")
+    ap.add_argument("-t", "--test", required = False, type = int, default = 0, help = "if using test setup")
     ap.add_argument("-n", "--n_slices", required = False, type = int, default = 500 , help = 'Number of slices for 3d model.')
     
     

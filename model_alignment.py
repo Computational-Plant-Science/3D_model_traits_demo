@@ -276,7 +276,7 @@ def format_converter(current_path, model_name):
     '''
     
     
-    if bool(args["test"]) == True:
+    if int(args["test"]) == 1:
         
         print("test mode was on: {}\n".format(args["test"]))
         
@@ -518,7 +518,7 @@ if __name__ == '__main__':
     ap.add_argument("-m", "--model", required = True, help = "model file name")
     ap.add_argument("-a", "--angle", required = False, type = int, default = 1, help = "rotation_angle")
     ap.add_argument("-r", "--ratio", required = False, type = float, default = 0.01, help = "outlier remove ratio")
-    ap.add_argument("-t", "--test", required = False, default = False, help = "if using test setup")
+    ap.add_argument("-t", "--test", required = False, type = int, default = 0, help = "if using test setup")
     args = vars(ap.parse_args())
 
 
