@@ -1053,11 +1053,12 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     labels_length_rec = cluster_list(sub_branch_length_rec, n_clusters = cluster_number)
     
     if labels_length_rec.tolist().index(0) == 0:
+        
         dsf_length_divide_idx = labels_length_rec.tolist().index(1)
     else:
         dsf_length_divide_idx = labels_length_rec.tolist().index(2)
     
-    print("dsf_length_divide_idx = {}\n".format(dsf_length_divide_idx))
+    print("dsf_length_divide_idx = {}\n".format(labels_length_rec))
     
 
     div_idx = labels_length_rec.tolist()
@@ -1161,9 +1162,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     print("idx_dominant = {}\n".format(idx_dominant))
     
     if len(idx_dominant) < 1:
-        #idx_dominant = brace_length_list
+        idx_dominant = brace_length_list
         
-        idx_dominant = [0]
+        #idx_dominant = [0]
         
     #idx_dominant = brace_length_list
     
