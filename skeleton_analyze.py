@@ -269,6 +269,10 @@ def get_pt_parameter(Data_array_pt):
     
     pt_diameter_min = max(aabb_extent_half[0], aabb_extent_half[1])*10
     
+    #pt_diameter_max = pt_diameter_min * 
+    
+    
+    
     pt_diameter = (pt_diameter_max + pt_diameter_min)*0.5
     
     pt_length = int(aabb_extent[2]*random.randint(40,49) )
@@ -1164,7 +1168,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     if len(idx_dominant) < 1:
         idx_dominant = brace_length_list
         
-        #idx_dominant = [0]
+    #if idx_dominant == [0]:
+        #idx_dominant = brace_length_list
         
     #idx_dominant = brace_length_list
     
@@ -1728,12 +1733,12 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #pts = mlab.points3d(X_skeleton[sub_branch_start_rec_selected], Y_skeleton[sub_branch_start_rec_selected], Z_skeleton[sub_branch_start_rec_selected], color = (1,0,0), mode = 'sphere', scale_factor = 0.08)
         
 
-        cmap = get_cmap(len(sub_branch_list))
+        #cmap = get_cmap(len(sub_branch_list))
         
-        #cmap = get_cmap(len(sub_branch_brace))
+        cmap = get_cmap(len(sub_branch_brace))
         
         #draw all the sub branches in loop 
-        for i, (sub_branch, sub_branch_start, sub_branch_angle) in enumerate(zip(sub_branch_list, sub_branch_start_rec, sub_branch_angle_rec)):
+        for i, (sub_branch, sub_branch_start, sub_branch_angle) in enumerate(zip(sub_branch_brace, sub_branch_start_rec, sub_branch_angle_rec)):
 
             #if i < dsf_length_divide_idx:
             #if i <= idx_brace_skeleton[0][-1] and i >= idx_brace_skeleton[0][0] :
@@ -1910,7 +1915,7 @@ if __name__ == '__main__':
     #print(avg_radius = crosssection_analysis_range(0, 97))
     
     
-    analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+    #analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
     
     
     (pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density,\
