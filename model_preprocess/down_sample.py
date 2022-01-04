@@ -97,9 +97,9 @@ if __name__ == '__main__':
         dst = (save_path + base_name + '.' + ext)
         
        
-        if i % ratio != 0:
+        if i % ratio == 0:
         
-            shutil.move(image_file, dst)
+            shutil.copy(image_file, dst)
             
         
         

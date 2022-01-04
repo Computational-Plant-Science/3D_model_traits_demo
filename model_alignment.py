@@ -280,7 +280,7 @@ def format_converter(current_path, model_name):
         
         print("test mode was on: {}\n".format(args["test"]))
         
-        R = pcd.get_rotation_matrix_from_xyz((-np.pi/2, 0, np.pi/4))
+        R = pcd.get_rotation_matrix_from_xyz((-np.pi/2 + np.pi/8, 0, 0))
         
         pcd_r.rotate(R, center = (0,0,0))
         

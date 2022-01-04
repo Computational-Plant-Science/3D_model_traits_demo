@@ -892,6 +892,49 @@ def crosssection_analysis_range(start_idx, end_idx):
     return np.mean(outlier_remove_list)
 
 
+
+def short_path_finder(G_unordered, start_v, end_v):
+    
+    #find shortest path between start and end vertex
+    ####################################################################
+    
+    #define start and end vertex index
+    #start_v = 0
+    #end_v = 1559
+    #end_v = 608
+    
+    
+    #print(X_skeleton[start_v], Y_skeleton[start_v], Z_skeleton[start_v])
+    
+    # find shortest path in the graph between start and end vertices 
+    vlist, elist = gt.shortest_path(G_unordered, G_unordered.vertex(start_v), G_unordered.vertex(end_v))
+    
+    vlist_path = [str(v) for v in vlist]
+    
+    elist_path = [str(e) for e in elist]
+    
+    #change format form str to int
+    int_vlist_path = [int(i) for i in vlist_path]
+    
+    #print(int_vlist_path)
+    '''
+    if len(vlist_path) > 0: 
+        
+        print("Shortest path found in graph! \n")
+        
+        print("vlist_path = {} \n".format(int_vlist_path))
+    
+        #curve_length = path_length(X_skeleton[int_vlist_path], Y_skeleton[int_vlist_path], Z_skeleton[int_vlist_path])
+    
+        #print("curve_length = {} \n".format(curve_length))
+        
+    else:
+        print("No shortest path found in graph...\n")
+    '''
+    return int_vlist_path
+
+
+
 # Skeleton analysis
 def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
@@ -1024,7 +1067,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         sub_branch_end_rec.append(int_v_list[-1])
         sub_branch_projection_rec.append(projection_radius)
     
-    
+    '''
     ####################################################################
     # sort branches according to the start vertex location(Z value)
     Z_loc = [Z_skeleton[index] for index in sub_branch_start_rec]
@@ -1041,8 +1084,46 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     sub_branch_end_rec[:] = [sub_branch_end_rec[i] for i in sorted_idx_Z_loc]
 
     #print("sub_branch_length_rec = {}\n".format(sub_branch_length_rec[0:20]))
+    '''
     
+    ####################################################################
+    # sort branches according to branch length descending order
     
+    sorted_idx_len = np.argsort(sub_branch_length_rec)
+    
+    sorted_idx_len_loc = sorted_idx_len[::-1]
+
+    #print("Z_loc = {}\n".format(sorted_idx_Z_loc))
+    
+    #sort all lists according to sorted_idx_Z_loc order
+    sub_branch_list[:] = [sub_branch_list[i] for i in sorted_idx_len_loc] 
+    sub_branch_length_rec[:] = [sub_branch_length_rec[i] for i in sorted_idx_len_loc]
+    sub_branch_angle_rec[:] = [sub_branch_angle_rec[i] for i in sorted_idx_len_loc]
+    sub_branch_start_rec[:] = [sub_branch_start_rec[i] for i in sorted_idx_len_loc]
+    sub_branch_end_rec[:] = [sub_branch_end_rec[i] for i in sorted_idx_len_loc]
+    
+    '''
+    data_his = []
+    
+    for i, (sub_branch_start) in enumerate(sub_branch_start_rec):
+    
+        if i<50:
+            data_his.append(Z_skeleton[sub_branch_start])
+            
+    
+    #data_his = sub_branch_length_rec[0:50]
+    
+    # fixed number of bins
+    bins = np.linspace(math.ceil(min(data_his)), math.floor(max(data_his)),  100) 
+
+    # the histogram of the data
+    plt.hist(data_his, bins=bins, alpha=0.5)
+    plt.title('Random Gaussian data (fixed number of bins)')
+    plt.xlabel('variable X (20 evenly spaced bins)')
+    plt.ylabel('count')
+
+    plt.show()
+    '''
     ####################################################################
     (count_wholrs, whorl_loc_ex, avg_density) = wholr_number_count(imgList)
     
@@ -1222,7 +1303,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         dis_v_closest_pair = path_length(X_skeleton[v_closest_pair], Y_skeleton[v_closest_pair], Z_skeleton[v_closest_pair])
         
         #small threshold indicating close pair vetices
-        if dis_v_closest_pair < 0.01:
+        if dis_v_closest_pair < 0.11:
             
             closest_pts.append(index_cp)
             
@@ -1436,42 +1517,33 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     #find shortest path between start and end vertex
     ####################################################################
-    '''
+    
     #define start and end vertex index
     start_v = 0
-    end_v = 608
+    #end_v = 1559
+    #end_v = 608
+    
+    int_vlist_path = short_path_finder(G_unordered, 0, 608)
     
     
-    #print(X_skeleton[start_v], Y_skeleton[start_v], Z_skeleton[start_v])
+    vlist_path_rec = []
     
-    # find shortest path in the graph between start and end vertices 
-    vlist, elist = gt.shortest_path(G_unordered, G_unordered.vertex(start_v), G_unordered.vertex(end_v))
-    
-    vlist_path = [str(v) for v in vlist]
-    
-    elist_path = [str(e) for e in elist]
-    
-    #change format form str to int
-    int_vlist_path = [int(i) for i in vlist_path]
-    
-    #print(int_vlist_path)
-    
-    if len(vlist_path) > 0: 
+    for idx, end_v in enumerate(sub_branch_end_rec[0:2000]):
         
-        print("Shortest path found in graph! \n")
+        #print("start_v = {} end_v = {} \n".format(start_v, end_v))
+   
+        vlist_path = short_path_finder(G_unordered, start_v, end_v)
         
-        print("vlist_path = {} \n".format(int_vlist_path))
+        if len(vlist_path) > 0:
+            
+            vlist_path_rec.append(vlist_path)
     
-        curve_length = path_length(X_skeleton[int_vlist_path], Y_skeleton[int_vlist_path], Z_skeleton[int_vlist_path])
+    print("Found {} shortest path \n".format(len(vlist_path_rec)))
     
-        print("curve_length = {} \n".format(curve_length))
-    else:
-        print("No shortest path found in graph...\n")
     
-    '''
     ###################################################################
     #initialize parameters
-    pt_diameter_max=pt_diameter_min=pt_length=pt_eccentricity=pt_stem_diameter=0
+    pt_diameter_max=pt_diameter_min=pt_length=pt_diameter=pt_eccentricity=pt_stem_diameter=0
         
     #load ply point cloud file
     if not (filename_pcloud is None):
@@ -1725,22 +1797,51 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
        
         # visualize 3d points
         #pts = mlab.points3d(X_skeleton[0], Y_skeleton[0], Z_skeleton[0], color = (0.58, 0.29, 0), mode = 'sphere', scale_factor = 0.15)
-        
         #pts = mlab.points3d(X_skeleton[neighbors_idx], Y_skeleton[neighbors_idx], Z_skeleton[neighbors_idx], mode = 'sphere', color=(0,0,1), scale_factor = 0.05)
-        
         #pts = mlab.points3d(X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset], color = (1,1,1), mode = 'sphere', scale_factor = 0.03)
-        
         #pts = mlab.points3d(X_skeleton[sub_branch_start_rec_selected], Y_skeleton[sub_branch_start_rec_selected], Z_skeleton[sub_branch_start_rec_selected], color = (1,0,0), mode = 'sphere', scale_factor = 0.08)
         
+        
+        '''
+        cmap = get_cmap(len(vlist_path_rec))
+
+        for i, vlist_path in enumerate(vlist_path_rec):
+
+            color_rgb = cmap(i)[:len(cmap(i))-1]
+
+            pts = mlab.points3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, mode = 'sphere', scale_factor = 0.05)
+        '''
+        
+        
+        N_sublist = 50
+
+        cmap = get_cmap(N_sublist)
 
         #cmap = get_cmap(len(sub_branch_list))
+
+        #draw all the sub branches in loop 
+        for i, (sub_branch, sub_branch_start, sub_branch_angle) in enumerate(zip(sub_branch_list, sub_branch_start_rec, sub_branch_angle_rec)):
+
+            if i < 50:
+            #if i <= dsf_length_divide_idx:
+                
+                color_rgb = cmap(i)[:len(cmap(i))-1]
+                
+                pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.05)
+
+                mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str(i), color = (0,1,0), scale = (0.04, 0.04, 0.04))
         
-        cmap = get_cmap(len(sub_branch_brace))
+                pts = mlab.points3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start], color = (1,1,1), mode = 'sphere', scale_factor = 0.06)
+        
+        '''
+        #cmap = get_cmap(len(sub_branch_list))
+        
+        cmap = get_cmap(20)
         
         #draw all the sub branches in loop 
-        for i, (sub_branch, sub_branch_start, sub_branch_angle) in enumerate(zip(sub_branch_brace, sub_branch_start_rec, sub_branch_angle_rec)):
+        for i, (sub_branch, sub_branch_start, sub_branch_angle) in enumerate(zip(sub_branch_list, sub_branch_end_rec, sub_branch_angle_rec)):
 
-            #if i < dsf_length_divide_idx:
+            if i < 20:
             #if i <= idx_brace_skeleton[0][-1] and i >= idx_brace_skeleton[0][0] :
                 
                 color_rgb = cmap(i)[:len(cmap(i))-1]
@@ -1748,17 +1849,17 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                 pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.03)
         
                 mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str(i), color = color_rgb, scale = (0.03, 0.03, 0.03))
-         
+        '''
         
         
-        
-        #for i, (end_val, x_e, y_e, z_e) in enumerate(zip(closest_pts_unique_sorted_combined, X_skeleton[closest_pts_unique_sorted_combined], Y_skeleton[closest_pts_unique_sorted_combined], Z_skeleton[closest_pts_unique_sorted_combined])):
+        '''
+        for i, (end_val, x_e, y_e, z_e) in enumerate(zip(closest_pts_unique_sorted_combined, X_skeleton[closest_pts_unique_sorted_combined], Y_skeleton[closest_pts_unique_sorted_combined], Z_skeleton[closest_pts_unique_sorted_combined])):
             
-            #mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.04, 0.04, 0.04))
-        
+            mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.04, 0.04, 0.04))
+        '''
         #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
         
-        
+        mlab.show()
         
         #visualize point cloud model with color
         ####################################################################
@@ -1766,6 +1867,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         if not (filename_pcloud is None):
             
             x, y, z = Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2] 
+            
             
             pts = mlab.points3d(x,y,z, mode = 'point')
             
@@ -1845,7 +1947,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             #mlab.view(33.6, 106, 5.5, [0, 0, .05])
             #mlab.roll(125)
             mlab.show()
-    
+        
     
     
     return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_eccentricity, avg_radius_stem, avg_density, \
