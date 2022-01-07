@@ -1108,7 +1108,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
     #data_his = Z_skeleton[sub_branch_start_rec]
-    
+    '''
    
     data_his = Z_skeleton[sub_branch_start_rec[0:50]]
     
@@ -1122,7 +1122,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     plt.ylabel('count')
 
     plt.show()
-    
+    '''
     ####################################################################
     (count_wholrs, whorl_loc_ex, avg_density) = wholr_number_count(imgList)
     

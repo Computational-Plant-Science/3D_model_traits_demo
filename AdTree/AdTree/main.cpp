@@ -119,7 +119,6 @@ int batch_reconstruct(std::vector<std::string>& point_cloud_files, const std::st
             std::cerr << "empty file name" << std::endl;
         
         // convert the boost graph to Graph (avoid modifying easy3d's GraphIO, or writing IO for boost graph)
-
         std::unordered_map<SGraphVertexDescriptor, easy3d::Graph::Vertex>  vvmap;
         easy3d::Graph g;
         
@@ -133,7 +132,6 @@ int batch_reconstruct(std::vector<std::string>& point_cloud_files, const std::st
         }
         
         count = 0;
-        
         auto egs = boost::edges(smoothed_skeleton);
         for (SGraphEdgeIterator iter = egs.first; iter != egs.second; ++iter) {
             SGraphVertexDescriptor s = boost::source(*iter, smoothed_skeleton);
@@ -141,7 +139,6 @@ int batch_reconstruct(std::vector<std::string>& point_cloud_files, const std::st
             g.add_edge(vvmap[s], vvmap[t]);
             ++count;
         }
-        
         std::cout << "number of smoothed_skeleton edges: " << count << std::endl;
 
         auto offset = cloud->get_model_property<dvec3>("translation");
