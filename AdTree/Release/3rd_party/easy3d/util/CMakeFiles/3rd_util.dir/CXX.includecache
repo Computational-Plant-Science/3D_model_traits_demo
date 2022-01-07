@@ -140,7 +140,7 @@ vector
 
 ../3rd_party/tinyfiledialogs/tinyfiledialogs.h
 
-/home/suxing/AdTree/3rd_party/easy3d/util/chrono_watch.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/util/chrono_watch.cpp
 easy3d/util/chrono_watch.h
 -
 cassert
@@ -154,7 +154,7 @@ iomanip
 easy3d/core/types.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/util/dialogs.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/util/dialogs.cpp
 easy3d/util/dialogs.h
 -
 cstring
@@ -162,7 +162,7 @@ cstring
 3rd_party/tinyfiledialogs/tinyfiledialogs.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/util/file_system.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/util/file_system.cpp
 easy3d/util/file_system.h
 -
 easy3d/util/string.h
@@ -206,7 +206,7 @@ libgen.h
 libproc.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/util/stop_watch.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/util/stop_watch.cpp
 easy3d/util/stop_watch.h
 -
 cmath
@@ -220,7 +220,7 @@ easy3d/core/types.h
 Windows.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/util/string.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/util/string.cpp
 easy3d/util/string.h
 -
 algorithm

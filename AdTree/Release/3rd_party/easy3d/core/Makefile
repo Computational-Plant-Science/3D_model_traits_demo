@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles /home/suxing/AdTree/Release/3rd_party/easy3d/core/CMakeFiles/progress.marks
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/core/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core/CMakeFiles/progress.marks
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/core/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/core/clean
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/core/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/core/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/core/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/core/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/core/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/rule:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/rule
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/rule
 .PHONY : 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ depend:
 
 # fast build rule for target.
 3rd_core/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build
 .PHONY : 3rd_core/fast
 
 graph.o: graph.cpp.o
@@ -131,7 +131,7 @@ graph.o: graph.cpp.o
 
 # target to build an object file
 graph.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/graph.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/graph.cpp.o
 .PHONY : graph.cpp.o
 
 graph.i: graph.cpp.i
@@ -140,7 +140,7 @@ graph.i: graph.cpp.i
 
 # target to preprocess a source file
 graph.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/graph.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/graph.cpp.i
 .PHONY : graph.cpp.i
 
 graph.s: graph.cpp.s
@@ -149,7 +149,7 @@ graph.s: graph.cpp.s
 
 # target to generate assembly for a file
 graph.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/graph.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/graph.cpp.s
 .PHONY : graph.cpp.s
 
 point_cloud.o: point_cloud.cpp.o
@@ -158,7 +158,7 @@ point_cloud.o: point_cloud.cpp.o
 
 # target to build an object file
 point_cloud.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/point_cloud.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/point_cloud.cpp.o
 .PHONY : point_cloud.cpp.o
 
 point_cloud.i: point_cloud.cpp.i
@@ -167,7 +167,7 @@ point_cloud.i: point_cloud.cpp.i
 
 # target to preprocess a source file
 point_cloud.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/point_cloud.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/point_cloud.cpp.i
 .PHONY : point_cloud.cpp.i
 
 point_cloud.s: point_cloud.cpp.s
@@ -176,7 +176,7 @@ point_cloud.s: point_cloud.cpp.s
 
 # target to generate assembly for a file
 point_cloud.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/point_cloud.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/point_cloud.cpp.s
 .PHONY : point_cloud.cpp.s
 
 surface_mesh.o: surface_mesh.cpp.o
@@ -185,7 +185,7 @@ surface_mesh.o: surface_mesh.cpp.o
 
 # target to build an object file
 surface_mesh.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/surface_mesh.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/surface_mesh.cpp.o
 .PHONY : surface_mesh.cpp.o
 
 surface_mesh.i: surface_mesh.cpp.i
@@ -194,7 +194,7 @@ surface_mesh.i: surface_mesh.cpp.i
 
 # target to preprocess a source file
 surface_mesh.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/surface_mesh.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/surface_mesh.cpp.i
 .PHONY : surface_mesh.cpp.i
 
 surface_mesh.s: surface_mesh.cpp.s
@@ -203,7 +203,7 @@ surface_mesh.s: surface_mesh.cpp.s
 
 # target to generate assembly for a file
 surface_mesh.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/surface_mesh.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/surface_mesh.cpp.s
 .PHONY : surface_mesh.cpp.s
 
 # Help Target
@@ -235,6 +235,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

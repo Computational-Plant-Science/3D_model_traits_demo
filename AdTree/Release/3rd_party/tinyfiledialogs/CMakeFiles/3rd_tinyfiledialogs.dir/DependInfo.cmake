@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/suxing/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.c" "/home/suxing/AdTree/Release/3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.o"
+  "/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.c" "/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

@@ -144,19 +144,19 @@ vector
 easy3d/core/types.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/core/graph.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/graph.cpp
 easy3d/core/graph.h
 -
 cmath
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/core/point_cloud.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/point_cloud.cpp
 easy3d/core/point_cloud.h
 -
 cmath
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/core/surface_mesh.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/surface_mesh.cpp
 easy3d/core/surface_mesh.h
 -
 cmath

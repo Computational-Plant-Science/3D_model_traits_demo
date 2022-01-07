@@ -122,24 +122,34 @@ int batch_reconstruct(std::vector<std::string>& point_cloud_files, const std::st
         std::unordered_map<SGraphVertexDescriptor, easy3d::Graph::Vertex>  vvmap;
         easy3d::Graph g;
         
+        const std::string &file_name_Radius = file_system::base_name(cloud->name()) + "_avr.txt";
+        const std::string file_output_Radius = output_folder + "/" + file_name_Radius;
+        
+        std::ofstream Radius_file;
+        Radius_file.open(file_output_Radius, std::ios_base::app);
+        
+        count = 0;
         auto vts = boost::vertices(smoothed_skeleton);
         for (SGraphVertexIterator iter = vts.first; iter != vts.second; ++iter) {
             SGraphVertexDescriptor vd = *iter;
             if (boost::degree(vd, smoothed_skeleton) != 0 ) { // ignore isolated vertices
                 const vec3& vp = smoothed_skeleton[vd].cVert;
                 vvmap[vd] = g.add_vertex(vp);
+                Radius_file << smoothed_skeleton[vd].radius << '\n';
+                ++count;
             }
         }
+        Radius_file.close();
+        std::cout << "number of smoothed_skeleton vertex: " << count << std::endl;
         
-        count = 0;
         auto egs = boost::edges(smoothed_skeleton);
         for (SGraphEdgeIterator iter = egs.first; iter != egs.second; ++iter) {
             SGraphVertexDescriptor s = boost::source(*iter, smoothed_skeleton);
             SGraphVertexDescriptor t = boost::target(*iter, smoothed_skeleton);
             g.add_edge(vvmap[s], vvmap[t]);
-            ++count;
         }
-        std::cout << "number of smoothed_skeleton edges: " << count << std::endl;
+        
+        
 
         auto offset = cloud->get_model_property<dvec3>("translation");
         if (offset) {
@@ -154,7 +164,7 @@ int batch_reconstruct(std::vector<std::string>& point_cloud_files, const std::st
         //////////////////////////////////////////////////////////////////////////////
         
         ///////////////////////////////////////////////////////////////
-        const ::Graph& simplified_skeleton = skeleton->get_simplified_skeleton();
+        /*const ::Graph& simplified_skeleton = skeleton->get_simplified_skeleton();
         
         const std::string &file_name_Radius = file_system::base_name(cloud->name()) + "_avr.txt";
         const std::string file_output_Radius = output_folder + "/" + file_name_Radius;
@@ -175,7 +185,7 @@ int batch_reconstruct(std::vector<std::string>& point_cloud_files, const std::st
         }
         std::cout << "number of simplified_skeleton edges: " << count << std::endl;
         Radius_file.close();
-       
+        */
         //////////////////////////////////////////////////////////////////////////////    
 
         // copy translation property from point_cloud to surface_mesh

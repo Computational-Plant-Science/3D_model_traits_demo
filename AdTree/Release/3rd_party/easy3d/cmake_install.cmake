@@ -1,4 +1,4 @@
-# Install script for directory: /home/suxing/AdTree/3rd_party/easy3d
+# Install script for directory: /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,11 +39,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/suxing/AdTree/Release/3rd_party/easy3d/core/cmake_install.cmake")
-  include("/home/suxing/AdTree/Release/3rd_party/easy3d/fileio/cmake_install.cmake")
-  include("/home/suxing/AdTree/Release/3rd_party/easy3d/util/cmake_install.cmake")
-  include("/home/suxing/AdTree/Release/3rd_party/easy3d/algo/cmake_install.cmake")
-  include("/home/suxing/AdTree/Release/3rd_party/easy3d/viewer/cmake_install.cmake")
+  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core/cmake_install.cmake")
+  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/fileio/cmake_install.cmake")
+  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/util/cmake_install.cmake")
+  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/algo/cmake_install.cmake")
+  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/viewer/cmake_install.cmake")
 
 endif()
 

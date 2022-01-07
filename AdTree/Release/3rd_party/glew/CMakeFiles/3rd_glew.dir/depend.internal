@@ -6,4 +6,4 @@
  ../3rd_party/glew/include/GL/glew.h
  ../3rd_party/glew/include/GL/glxew.h
  ../3rd_party/glew/include/GL/wglew.h
- /home/suxing/AdTree/3rd_party/glew/src/glew.c
+ /home/suxing/3D_model_traits_demo/AdTree/3rd_party/glew/src/glew.c

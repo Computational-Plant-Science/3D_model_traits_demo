@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/suxing/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.c
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.c
 stdio.h
 -
 stdlib.h
@@ -40,7 +40,7 @@ sys/utsname.h
 signal.h
 -
 tinyfiledialogs.h
-/home/suxing/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.h
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.h
 
-/home/suxing/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.h
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.h
 

@@ -190,7 +190,7 @@ easy3d/core/types.h
 
 ../3rd_party/rply/rply.h
 
-/home/suxing/AdTree/3rd_party/easy3d/fileio/graph_io.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/fileio/graph_io.cpp
 easy3d/fileio/graph_io.h
 -
 clocale
@@ -202,7 +202,7 @@ easy3d/util/file_system.h
 easy3d/util/stop_watch.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/fileio/graph_io_ply.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/fileio/graph_io_ply.cpp
 easy3d/fileio/graph_io.h
 -
 easy3d/fileio/ply_reader_writer.h
@@ -210,7 +210,7 @@ easy3d/fileio/ply_reader_writer.h
 easy3d/core/graph.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/fileio/ply_reader_writer.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/fileio/ply_reader_writer.cpp
 easy3d/fileio/ply_reader_writer.h
 -
 cstring
@@ -220,7 +220,7 @@ iostream
 3rd_party/rply/rply.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/fileio/point_cloud_io.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/fileio/point_cloud_io.cpp
 easy3d/fileio/point_cloud_io.h
 -
 clocale
@@ -234,7 +234,7 @@ easy3d/util/file_system.h
 easy3d/util/stop_watch.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/fileio/point_cloud_io_xyz.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/fileio/point_cloud_io_xyz.cpp
 easy3d/fileio/point_cloud_io.h
 -
 fstream
@@ -244,7 +244,7 @@ easy3d/core/point_cloud.h
 easy3d/util/line_stream.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/fileio/surface_mesh_io.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/fileio/surface_mesh_io.cpp
 easy3d/fileio/surface_mesh_io.h
 -
 clocale
@@ -256,7 +256,7 @@ easy3d/util/file_system.h
 easy3d/util/stop_watch.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/fileio/surface_mesh_io_obj.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/fileio/surface_mesh_io_obj.cpp
 easy3d/fileio/surface_mesh_io.h
 -
 cstdio

@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
 
 # Include any dependencies generated for this target.
 include 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/depend.make
@@ -59,29 +59,29 @@ include 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/flags.make
 
 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o: 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/flags.make
 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o: ../3rd_party/tetgen/tetgen.cxx
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o"
-	cd /home/suxing/AdTree/Release/3rd_party/tetgen && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o -c /home/suxing/AdTree/3rd_party/tetgen/tetgen.cxx
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o"
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o -c /home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/tetgen.cxx
 
 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/3rd_tetgen.dir/tetgen.cxx.i"
-	cd /home/suxing/AdTree/Release/3rd_party/tetgen && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/AdTree/3rd_party/tetgen/tetgen.cxx > CMakeFiles/3rd_tetgen.dir/tetgen.cxx.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/tetgen.cxx > CMakeFiles/3rd_tetgen.dir/tetgen.cxx.i
 
 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/3rd_tetgen.dir/tetgen.cxx.s"
-	cd /home/suxing/AdTree/Release/3rd_party/tetgen && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/AdTree/3rd_party/tetgen/tetgen.cxx -o CMakeFiles/3rd_tetgen.dir/tetgen.cxx.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/tetgen.cxx -o CMakeFiles/3rd_tetgen.dir/tetgen.cxx.s
 
 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.o: 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/flags.make
 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.o: ../3rd_party/tetgen/predicates.cxx
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.o"
-	cd /home/suxing/AdTree/Release/3rd_party/tetgen && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/3rd_tetgen.dir/predicates.cxx.o -c /home/suxing/AdTree/3rd_party/tetgen/predicates.cxx
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.o"
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/3rd_tetgen.dir/predicates.cxx.o -c /home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/predicates.cxx
 
 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/3rd_tetgen.dir/predicates.cxx.i"
-	cd /home/suxing/AdTree/Release/3rd_party/tetgen && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/AdTree/3rd_party/tetgen/predicates.cxx > CMakeFiles/3rd_tetgen.dir/predicates.cxx.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/predicates.cxx > CMakeFiles/3rd_tetgen.dir/predicates.cxx.i
 
 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/3rd_tetgen.dir/predicates.cxx.s"
-	cd /home/suxing/AdTree/Release/3rd_party/tetgen && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/AdTree/3rd_party/tetgen/predicates.cxx -o CMakeFiles/3rd_tetgen.dir/predicates.cxx.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/predicates.cxx -o CMakeFiles/3rd_tetgen.dir/predicates.cxx.s
 
 # Object files for target 3rd_tetgen
 3rd_tetgen_OBJECTS = \
@@ -95,9 +95,9 @@ lib/lib3rd_tetgen.a: 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o
 lib/lib3rd_tetgen.a: 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.o
 lib/lib3rd_tetgen.a: 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make
 lib/lib3rd_tetgen.a: 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/suxing/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX static library ../../lib/lib3rd_tetgen.a"
-	cd /home/suxing/AdTree/Release/3rd_party/tetgen && $(CMAKE_COMMAND) -P CMakeFiles/3rd_tetgen.dir/cmake_clean_target.cmake
-	cd /home/suxing/AdTree/Release/3rd_party/tetgen && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/3rd_tetgen.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX static library ../../lib/lib3rd_tetgen.a"
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen && $(CMAKE_COMMAND) -P CMakeFiles/3rd_tetgen.dir/cmake_clean_target.cmake
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/3rd_tetgen.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build: lib/lib3rd_tetgen.a
@@ -105,10 +105,10 @@ lib/lib3rd_tetgen.a: 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/link.txt
 .PHONY : 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build
 
 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/clean:
-	cd /home/suxing/AdTree/Release/3rd_party/tetgen && $(CMAKE_COMMAND) -P CMakeFiles/3rd_tetgen.dir/cmake_clean.cmake
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen && $(CMAKE_COMMAND) -P CMakeFiles/3rd_tetgen.dir/cmake_clean.cmake
 .PHONY : 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/clean
 
 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/depend:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/suxing/AdTree /home/suxing/AdTree/3rd_party/tetgen /home/suxing/AdTree/Release /home/suxing/AdTree/Release/3rd_party/tetgen /home/suxing/AdTree/Release/3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/suxing/3D_model_traits_demo/AdTree /home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen /home/suxing/3D_model_traits_demo/AdTree/Release /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/depend
 

@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles /home/suxing/AdTree/Release/3rd_party/rply/CMakeFiles/progress.marks
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/rply/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/rply/CMakeFiles/progress.marks
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/rply/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/rply/clean
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/rply/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/rply/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/rply/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/rply/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/rply/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 3rd_party/rply/CMakeFiles/3rd_rply.dir/rule:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/rply/CMakeFiles/3rd_rply.dir/rule
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/rply/CMakeFiles/3rd_rply.dir/rule
 .PHONY : 3rd_party/rply/CMakeFiles/3rd_rply.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ depend:
 
 # fast build rule for target.
 3rd_rply/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/rply/CMakeFiles/3rd_rply.dir/build.make 3rd_party/rply/CMakeFiles/3rd_rply.dir/build
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/rply/CMakeFiles/3rd_rply.dir/build.make 3rd_party/rply/CMakeFiles/3rd_rply.dir/build
 .PHONY : 3rd_rply/fast
 
 rply.o: rply.c.o
@@ -131,7 +131,7 @@ rply.o: rply.c.o
 
 # target to build an object file
 rply.c.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/rply/CMakeFiles/3rd_rply.dir/build.make 3rd_party/rply/CMakeFiles/3rd_rply.dir/rply.c.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/rply/CMakeFiles/3rd_rply.dir/build.make 3rd_party/rply/CMakeFiles/3rd_rply.dir/rply.c.o
 .PHONY : rply.c.o
 
 rply.i: rply.c.i
@@ -140,7 +140,7 @@ rply.i: rply.c.i
 
 # target to preprocess a source file
 rply.c.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/rply/CMakeFiles/3rd_rply.dir/build.make 3rd_party/rply/CMakeFiles/3rd_rply.dir/rply.c.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/rply/CMakeFiles/3rd_rply.dir/build.make 3rd_party/rply/CMakeFiles/3rd_rply.dir/rply.c.i
 .PHONY : rply.c.i
 
 rply.s: rply.c.s
@@ -149,7 +149,7 @@ rply.s: rply.c.s
 
 # target to generate assembly for a file
 rply.c.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/rply/CMakeFiles/3rd_rply.dir/build.make 3rd_party/rply/CMakeFiles/3rd_rply.dir/rply.c.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/rply/CMakeFiles/3rd_rply.dir/build.make 3rd_party/rply/CMakeFiles/3rd_rply.dir/rply.c.s
 .PHONY : rply.c.s
 
 # Help Target
@@ -175,6 +175,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

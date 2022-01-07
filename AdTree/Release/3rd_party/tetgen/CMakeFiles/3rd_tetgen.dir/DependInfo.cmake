@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/suxing/AdTree/3rd_party/tetgen/predicates.cxx" "/home/suxing/AdTree/Release/3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.o"
-  "/home/suxing/AdTree/3rd_party/tetgen/tetgen.cxx" "/home/suxing/AdTree/Release/3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o"
+  "/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/predicates.cxx" "/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.o"
+  "/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/tetgen.cxx" "/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

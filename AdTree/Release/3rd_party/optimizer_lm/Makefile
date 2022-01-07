@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles /home/suxing/AdTree/Release/3rd_party/optimizer_lm/CMakeFiles/progress.marks
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/optimizer_lm/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/optimizer_lm/CMakeFiles/progress.marks
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/optimizer_lm/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/optimizer_lm/clean
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/optimizer_lm/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/optimizer_lm/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/optimizer_lm/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/optimizer_lm/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/optimizer_lm/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/rule:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/rule
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/rule
 .PHONY : 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ depend:
 
 # fast build rule for target.
 3rd_optimizer_lm/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/build.make 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/build
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/build.make 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/build
 .PHONY : 3rd_optimizer_lm/fast
 
 optimizer_lm.o: optimizer_lm.cpp.o
@@ -131,7 +131,7 @@ optimizer_lm.o: optimizer_lm.cpp.o
 
 # target to build an object file
 optimizer_lm.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/build.make 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/optimizer_lm.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/build.make 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/optimizer_lm.cpp.o
 .PHONY : optimizer_lm.cpp.o
 
 optimizer_lm.i: optimizer_lm.cpp.i
@@ -140,7 +140,7 @@ optimizer_lm.i: optimizer_lm.cpp.i
 
 # target to preprocess a source file
 optimizer_lm.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/build.make 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/optimizer_lm.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/build.make 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/optimizer_lm.cpp.i
 .PHONY : optimizer_lm.cpp.i
 
 optimizer_lm.s: optimizer_lm.cpp.s
@@ -149,7 +149,7 @@ optimizer_lm.s: optimizer_lm.cpp.s
 
 # target to generate assembly for a file
 optimizer_lm.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/build.make 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/optimizer_lm.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/build.make 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/optimizer_lm.cpp.s
 .PHONY : optimizer_lm.cpp.s
 
 # Help Target
@@ -175,6 +175,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

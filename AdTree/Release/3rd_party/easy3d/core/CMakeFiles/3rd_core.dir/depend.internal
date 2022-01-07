@@ -15,7 +15,7 @@
  ../3rd_party/easy3d/core/types.h
  ../3rd_party/easy3d/core/vec.h
  ../3rd_party/easy3d/viewer/model.h
- /home/suxing/AdTree/3rd_party/easy3d/core/graph.cpp
+ /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/graph.cpp
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/point_cloud.cpp.o
  ../3rd_party/easy3d/core/box.h
  ../3rd_party/easy3d/core/constant.h
@@ -30,7 +30,7 @@
  ../3rd_party/easy3d/core/types.h
  ../3rd_party/easy3d/core/vec.h
  ../3rd_party/easy3d/viewer/model.h
- /home/suxing/AdTree/3rd_party/easy3d/core/point_cloud.cpp
+ /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/point_cloud.cpp
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/surface_mesh.cpp.o
  ../3rd_party/easy3d/core/box.h
  ../3rd_party/easy3d/core/constant.h
@@ -45,4 +45,4 @@
  ../3rd_party/easy3d/core/types.h
  ../3rd_party/easy3d/core/vec.h
  ../3rd_party/easy3d/viewer/model.h
- /home/suxing/AdTree/3rd_party/easy3d/core/surface_mesh.cpp
+ /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/surface_mesh.cpp

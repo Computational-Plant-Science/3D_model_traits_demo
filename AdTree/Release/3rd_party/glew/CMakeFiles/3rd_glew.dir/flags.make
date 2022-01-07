@@ -6,5 +6,5 @@ C_FLAGS = -O3 -DNDEBUG
 
 C_DEFINES = -DGLEW_STATIC
 
-C_INCLUDES = -I/home/suxing/AdTree/3rd_party/glew/include 
+C_INCLUDES = -I/home/suxing/3D_model_traits_demo/AdTree/3rd_party/glew/include 
 

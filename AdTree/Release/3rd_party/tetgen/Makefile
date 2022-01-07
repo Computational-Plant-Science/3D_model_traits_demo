@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles /home/suxing/AdTree/Release/3rd_party/tetgen/CMakeFiles/progress.marks
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tetgen/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen/CMakeFiles/progress.marks
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tetgen/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tetgen/clean
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tetgen/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tetgen/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tetgen/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tetgen/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tetgen/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/rule:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/rule
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/rule
 .PHONY : 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ depend:
 
 # fast build rule for target.
 3rd_tetgen/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build
 .PHONY : 3rd_tetgen/fast
 
 predicates.o: predicates.cxx.o
@@ -131,7 +131,7 @@ predicates.o: predicates.cxx.o
 
 # target to build an object file
 predicates.cxx.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.o
 .PHONY : predicates.cxx.o
 
 predicates.i: predicates.cxx.i
@@ -140,7 +140,7 @@ predicates.i: predicates.cxx.i
 
 # target to preprocess a source file
 predicates.cxx.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.i
 .PHONY : predicates.cxx.i
 
 predicates.s: predicates.cxx.s
@@ -149,7 +149,7 @@ predicates.s: predicates.cxx.s
 
 # target to generate assembly for a file
 predicates.cxx.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.s
 .PHONY : predicates.cxx.s
 
 tetgen.o: tetgen.cxx.o
@@ -158,7 +158,7 @@ tetgen.o: tetgen.cxx.o
 
 # target to build an object file
 tetgen.cxx.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o
 .PHONY : tetgen.cxx.o
 
 tetgen.i: tetgen.cxx.i
@@ -167,7 +167,7 @@ tetgen.i: tetgen.cxx.i
 
 # target to preprocess a source file
 tetgen.cxx.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.i
 .PHONY : tetgen.cxx.i
 
 tetgen.s: tetgen.cxx.s
@@ -176,7 +176,7 @@ tetgen.s: tetgen.cxx.s
 
 # target to generate assembly for a file
 tetgen.cxx.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.s
 .PHONY : tetgen.cxx.s
 
 # Help Target
@@ -205,6 +205,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

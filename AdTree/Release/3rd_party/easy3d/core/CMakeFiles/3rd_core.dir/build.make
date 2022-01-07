@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
 
 # Include any dependencies generated for this target.
 include 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/depend.make
@@ -59,42 +59,42 @@ include 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/flags.make
 
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/graph.cpp.o: 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/flags.make
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/graph.cpp.o: ../3rd_party/easy3d/core/graph.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/graph.cpp.o"
-	cd /home/suxing/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/3rd_core.dir/graph.cpp.o -c /home/suxing/AdTree/3rd_party/easy3d/core/graph.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/graph.cpp.o"
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/3rd_core.dir/graph.cpp.o -c /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/graph.cpp
 
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/graph.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/3rd_core.dir/graph.cpp.i"
-	cd /home/suxing/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/AdTree/3rd_party/easy3d/core/graph.cpp > CMakeFiles/3rd_core.dir/graph.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/graph.cpp > CMakeFiles/3rd_core.dir/graph.cpp.i
 
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/graph.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/3rd_core.dir/graph.cpp.s"
-	cd /home/suxing/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/AdTree/3rd_party/easy3d/core/graph.cpp -o CMakeFiles/3rd_core.dir/graph.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/graph.cpp -o CMakeFiles/3rd_core.dir/graph.cpp.s
 
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/point_cloud.cpp.o: 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/flags.make
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/point_cloud.cpp.o: ../3rd_party/easy3d/core/point_cloud.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/point_cloud.cpp.o"
-	cd /home/suxing/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/3rd_core.dir/point_cloud.cpp.o -c /home/suxing/AdTree/3rd_party/easy3d/core/point_cloud.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/point_cloud.cpp.o"
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/3rd_core.dir/point_cloud.cpp.o -c /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/point_cloud.cpp
 
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/point_cloud.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/3rd_core.dir/point_cloud.cpp.i"
-	cd /home/suxing/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/AdTree/3rd_party/easy3d/core/point_cloud.cpp > CMakeFiles/3rd_core.dir/point_cloud.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/point_cloud.cpp > CMakeFiles/3rd_core.dir/point_cloud.cpp.i
 
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/point_cloud.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/3rd_core.dir/point_cloud.cpp.s"
-	cd /home/suxing/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/AdTree/3rd_party/easy3d/core/point_cloud.cpp -o CMakeFiles/3rd_core.dir/point_cloud.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/point_cloud.cpp -o CMakeFiles/3rd_core.dir/point_cloud.cpp.s
 
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/surface_mesh.cpp.o: 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/flags.make
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/surface_mesh.cpp.o: ../3rd_party/easy3d/core/surface_mesh.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/surface_mesh.cpp.o"
-	cd /home/suxing/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/3rd_core.dir/surface_mesh.cpp.o -c /home/suxing/AdTree/3rd_party/easy3d/core/surface_mesh.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/surface_mesh.cpp.o"
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/3rd_core.dir/surface_mesh.cpp.o -c /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/surface_mesh.cpp
 
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/surface_mesh.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/3rd_core.dir/surface_mesh.cpp.i"
-	cd /home/suxing/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/AdTree/3rd_party/easy3d/core/surface_mesh.cpp > CMakeFiles/3rd_core.dir/surface_mesh.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/surface_mesh.cpp > CMakeFiles/3rd_core.dir/surface_mesh.cpp.i
 
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/surface_mesh.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/3rd_core.dir/surface_mesh.cpp.s"
-	cd /home/suxing/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/AdTree/3rd_party/easy3d/core/surface_mesh.cpp -o CMakeFiles/3rd_core.dir/surface_mesh.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core/surface_mesh.cpp -o CMakeFiles/3rd_core.dir/surface_mesh.cpp.s
 
 # Object files for target 3rd_core
 3rd_core_OBJECTS = \
@@ -110,9 +110,9 @@ lib/lib3rd_core.a: 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/point_cloud.cpp
 lib/lib3rd_core.a: 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/surface_mesh.cpp.o
 lib/lib3rd_core.a: 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make
 lib/lib3rd_core.a: 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/suxing/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library ../../../lib/lib3rd_core.a"
-	cd /home/suxing/AdTree/Release/3rd_party/easy3d/core && $(CMAKE_COMMAND) -P CMakeFiles/3rd_core.dir/cmake_clean_target.cmake
-	cd /home/suxing/AdTree/Release/3rd_party/easy3d/core && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/3rd_core.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library ../../../lib/lib3rd_core.a"
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core && $(CMAKE_COMMAND) -P CMakeFiles/3rd_core.dir/cmake_clean_target.cmake
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/3rd_core.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build: lib/lib3rd_core.a
@@ -120,10 +120,10 @@ lib/lib3rd_core.a: 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/link.txt
 .PHONY : 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build
 
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/clean:
-	cd /home/suxing/AdTree/Release/3rd_party/easy3d/core && $(CMAKE_COMMAND) -P CMakeFiles/3rd_core.dir/cmake_clean.cmake
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core && $(CMAKE_COMMAND) -P CMakeFiles/3rd_core.dir/cmake_clean.cmake
 .PHONY : 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/clean
 
 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/depend:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/suxing/AdTree /home/suxing/AdTree/3rd_party/easy3d/core /home/suxing/AdTree/Release /home/suxing/AdTree/Release/3rd_party/easy3d/core /home/suxing/AdTree/Release/3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/suxing/3D_model_traits_demo/AdTree /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/core /home/suxing/3D_model_traits_demo/AdTree/Release /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/depend
 

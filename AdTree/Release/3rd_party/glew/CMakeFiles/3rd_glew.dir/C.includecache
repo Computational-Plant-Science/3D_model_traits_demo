@@ -46,7 +46,7 @@ GL/glew.h
 windows.h
 -
 
-/home/suxing/AdTree/3rd_party/glew/src/glew.c
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/glew/src/glew.c
 GL/glew.h
 -
 GL/osmesa.h

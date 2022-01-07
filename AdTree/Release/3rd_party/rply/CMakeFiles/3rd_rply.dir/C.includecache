@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/suxing/AdTree/3rd_party/rply/rply.c
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/rply/rply.c
 stdio.h
 -
 ctype.h
@@ -26,9 +26,9 @@ stdlib.h
 stddef.h
 -
 rply.h
-/home/suxing/AdTree/3rd_party/rply/rply.h
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/rply/rply.h
 stdint.h
 -
 
-/home/suxing/AdTree/3rd_party/rply/rply.h
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/rply/rply.h
 

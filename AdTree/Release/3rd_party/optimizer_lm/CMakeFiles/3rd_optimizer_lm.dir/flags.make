@@ -6,5 +6,5 @@ CXX_FLAGS = -O3 -DNDEBUG   -std=gnu++11
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/suxing/AdTree/3rd_party/cminpack 
+CXX_INCLUDES = -I/home/suxing/3D_model_traits_demo/AdTree/3rd_party/cminpack 
 

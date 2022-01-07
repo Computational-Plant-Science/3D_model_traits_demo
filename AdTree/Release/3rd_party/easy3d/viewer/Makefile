@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles /home/suxing/AdTree/Release/3rd_party/easy3d/viewer/CMakeFiles/progress.marks
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/viewer/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/viewer/CMakeFiles/progress.marks
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/viewer/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/viewer/clean
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/viewer/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/viewer/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/viewer/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/viewer/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/viewer/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/rule:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/rule
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/rule
 .PHONY : 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ depend:
 
 # fast build rule for target.
 3rd_viewer/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build
 .PHONY : 3rd_viewer/fast
 
 ambient_occlusion.o: ambient_occlusion.cpp.o
@@ -131,7 +131,7 @@ ambient_occlusion.o: ambient_occlusion.cpp.o
 
 # target to build an object file
 ambient_occlusion.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/ambient_occlusion.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/ambient_occlusion.cpp.o
 .PHONY : ambient_occlusion.cpp.o
 
 ambient_occlusion.i: ambient_occlusion.cpp.i
@@ -140,7 +140,7 @@ ambient_occlusion.i: ambient_occlusion.cpp.i
 
 # target to preprocess a source file
 ambient_occlusion.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/ambient_occlusion.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/ambient_occlusion.cpp.i
 .PHONY : ambient_occlusion.cpp.i
 
 ambient_occlusion.s: ambient_occlusion.cpp.s
@@ -149,7 +149,7 @@ ambient_occlusion.s: ambient_occlusion.cpp.s
 
 # target to generate assembly for a file
 ambient_occlusion.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/ambient_occlusion.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/ambient_occlusion.cpp.s
 .PHONY : ambient_occlusion.cpp.s
 
 average_color_blending.o: average_color_blending.cpp.o
@@ -158,7 +158,7 @@ average_color_blending.o: average_color_blending.cpp.o
 
 # target to build an object file
 average_color_blending.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/average_color_blending.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/average_color_blending.cpp.o
 .PHONY : average_color_blending.cpp.o
 
 average_color_blending.i: average_color_blending.cpp.i
@@ -167,7 +167,7 @@ average_color_blending.i: average_color_blending.cpp.i
 
 # target to preprocess a source file
 average_color_blending.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/average_color_blending.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/average_color_blending.cpp.i
 .PHONY : average_color_blending.cpp.i
 
 average_color_blending.s: average_color_blending.cpp.s
@@ -176,7 +176,7 @@ average_color_blending.s: average_color_blending.cpp.s
 
 # target to generate assembly for a file
 average_color_blending.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/average_color_blending.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/average_color_blending.cpp.s
 .PHONY : average_color_blending.cpp.s
 
 camera.o: camera.cpp.o
@@ -185,7 +185,7 @@ camera.o: camera.cpp.o
 
 # target to build an object file
 camera.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/camera.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/camera.cpp.o
 .PHONY : camera.cpp.o
 
 camera.i: camera.cpp.i
@@ -194,7 +194,7 @@ camera.i: camera.cpp.i
 
 # target to preprocess a source file
 camera.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/camera.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/camera.cpp.i
 .PHONY : camera.cpp.i
 
 camera.s: camera.cpp.s
@@ -203,7 +203,7 @@ camera.s: camera.cpp.s
 
 # target to generate assembly for a file
 camera.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/camera.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/camera.cpp.s
 .PHONY : camera.cpp.s
 
 constraint.o: constraint.cpp.o
@@ -212,7 +212,7 @@ constraint.o: constraint.cpp.o
 
 # target to build an object file
 constraint.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/constraint.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/constraint.cpp.o
 .PHONY : constraint.cpp.o
 
 constraint.i: constraint.cpp.i
@@ -221,7 +221,7 @@ constraint.i: constraint.cpp.i
 
 # target to preprocess a source file
 constraint.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/constraint.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/constraint.cpp.i
 .PHONY : constraint.cpp.i
 
 constraint.s: constraint.cpp.s
@@ -230,7 +230,7 @@ constraint.s: constraint.cpp.s
 
 # target to generate assembly for a file
 constraint.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/constraint.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/constraint.cpp.s
 .PHONY : constraint.cpp.s
 
 drawable.o: drawable.cpp.o
@@ -239,7 +239,7 @@ drawable.o: drawable.cpp.o
 
 # target to build an object file
 drawable.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/drawable.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/drawable.cpp.o
 .PHONY : drawable.cpp.o
 
 drawable.i: drawable.cpp.i
@@ -248,7 +248,7 @@ drawable.i: drawable.cpp.i
 
 # target to preprocess a source file
 drawable.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/drawable.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/drawable.cpp.i
 .PHONY : drawable.cpp.i
 
 drawable.s: drawable.cpp.s
@@ -257,7 +257,7 @@ drawable.s: drawable.cpp.s
 
 # target to generate assembly for a file
 drawable.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/drawable.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/drawable.cpp.s
 .PHONY : drawable.cpp.s
 
 dual_depth_peeling.o: dual_depth_peeling.cpp.o
@@ -266,7 +266,7 @@ dual_depth_peeling.o: dual_depth_peeling.cpp.o
 
 # target to build an object file
 dual_depth_peeling.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/dual_depth_peeling.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/dual_depth_peeling.cpp.o
 .PHONY : dual_depth_peeling.cpp.o
 
 dual_depth_peeling.i: dual_depth_peeling.cpp.i
@@ -275,7 +275,7 @@ dual_depth_peeling.i: dual_depth_peeling.cpp.i
 
 # target to preprocess a source file
 dual_depth_peeling.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/dual_depth_peeling.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/dual_depth_peeling.cpp.i
 .PHONY : dual_depth_peeling.cpp.i
 
 dual_depth_peeling.s: dual_depth_peeling.cpp.s
@@ -284,7 +284,7 @@ dual_depth_peeling.s: dual_depth_peeling.cpp.s
 
 # target to generate assembly for a file
 dual_depth_peeling.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/dual_depth_peeling.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/dual_depth_peeling.cpp.s
 .PHONY : dual_depth_peeling.cpp.s
 
 eye_dome_lighting.o: eye_dome_lighting.cpp.o
@@ -293,7 +293,7 @@ eye_dome_lighting.o: eye_dome_lighting.cpp.o
 
 # target to build an object file
 eye_dome_lighting.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/eye_dome_lighting.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/eye_dome_lighting.cpp.o
 .PHONY : eye_dome_lighting.cpp.o
 
 eye_dome_lighting.i: eye_dome_lighting.cpp.i
@@ -302,7 +302,7 @@ eye_dome_lighting.i: eye_dome_lighting.cpp.i
 
 # target to preprocess a source file
 eye_dome_lighting.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/eye_dome_lighting.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/eye_dome_lighting.cpp.i
 .PHONY : eye_dome_lighting.cpp.i
 
 eye_dome_lighting.s: eye_dome_lighting.cpp.s
@@ -311,7 +311,7 @@ eye_dome_lighting.s: eye_dome_lighting.cpp.s
 
 # target to generate assembly for a file
 eye_dome_lighting.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/eye_dome_lighting.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/eye_dome_lighting.cpp.s
 .PHONY : eye_dome_lighting.cpp.s
 
 frame.o: frame.cpp.o
@@ -320,7 +320,7 @@ frame.o: frame.cpp.o
 
 # target to build an object file
 frame.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/frame.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/frame.cpp.o
 .PHONY : frame.cpp.o
 
 frame.i: frame.cpp.i
@@ -329,7 +329,7 @@ frame.i: frame.cpp.i
 
 # target to preprocess a source file
 frame.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/frame.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/frame.cpp.i
 .PHONY : frame.cpp.i
 
 frame.s: frame.cpp.s
@@ -338,7 +338,7 @@ frame.s: frame.cpp.s
 
 # target to generate assembly for a file
 frame.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/frame.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/frame.cpp.s
 .PHONY : frame.cpp.s
 
 framebuffer_object.o: framebuffer_object.cpp.o
@@ -347,7 +347,7 @@ framebuffer_object.o: framebuffer_object.cpp.o
 
 # target to build an object file
 framebuffer_object.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/framebuffer_object.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/framebuffer_object.cpp.o
 .PHONY : framebuffer_object.cpp.o
 
 framebuffer_object.i: framebuffer_object.cpp.i
@@ -356,7 +356,7 @@ framebuffer_object.i: framebuffer_object.cpp.i
 
 # target to preprocess a source file
 framebuffer_object.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/framebuffer_object.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/framebuffer_object.cpp.i
 .PHONY : framebuffer_object.cpp.i
 
 framebuffer_object.s: framebuffer_object.cpp.s
@@ -365,7 +365,7 @@ framebuffer_object.s: framebuffer_object.cpp.s
 
 # target to generate assembly for a file
 framebuffer_object.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/framebuffer_object.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/framebuffer_object.cpp.s
 .PHONY : framebuffer_object.cpp.s
 
 frustum.o: frustum.cpp.o
@@ -374,7 +374,7 @@ frustum.o: frustum.cpp.o
 
 # target to build an object file
 frustum.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/frustum.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/frustum.cpp.o
 .PHONY : frustum.cpp.o
 
 frustum.i: frustum.cpp.i
@@ -383,7 +383,7 @@ frustum.i: frustum.cpp.i
 
 # target to preprocess a source file
 frustum.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/frustum.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/frustum.cpp.i
 .PHONY : frustum.cpp.i
 
 frustum.s: frustum.cpp.s
@@ -392,7 +392,7 @@ frustum.s: frustum.cpp.s
 
 # target to generate assembly for a file
 frustum.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/frustum.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/frustum.cpp.s
 .PHONY : frustum.cpp.s
 
 manipulated_camera_frame.o: manipulated_camera_frame.cpp.o
@@ -401,7 +401,7 @@ manipulated_camera_frame.o: manipulated_camera_frame.cpp.o
 
 # target to build an object file
 manipulated_camera_frame.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/manipulated_camera_frame.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/manipulated_camera_frame.cpp.o
 .PHONY : manipulated_camera_frame.cpp.o
 
 manipulated_camera_frame.i: manipulated_camera_frame.cpp.i
@@ -410,7 +410,7 @@ manipulated_camera_frame.i: manipulated_camera_frame.cpp.i
 
 # target to preprocess a source file
 manipulated_camera_frame.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/manipulated_camera_frame.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/manipulated_camera_frame.cpp.i
 .PHONY : manipulated_camera_frame.cpp.i
 
 manipulated_camera_frame.s: manipulated_camera_frame.cpp.s
@@ -419,7 +419,7 @@ manipulated_camera_frame.s: manipulated_camera_frame.cpp.s
 
 # target to generate assembly for a file
 manipulated_camera_frame.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/manipulated_camera_frame.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/manipulated_camera_frame.cpp.s
 .PHONY : manipulated_camera_frame.cpp.s
 
 manipulated_frame.o: manipulated_frame.cpp.o
@@ -428,7 +428,7 @@ manipulated_frame.o: manipulated_frame.cpp.o
 
 # target to build an object file
 manipulated_frame.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/manipulated_frame.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/manipulated_frame.cpp.o
 .PHONY : manipulated_frame.cpp.o
 
 manipulated_frame.i: manipulated_frame.cpp.i
@@ -437,7 +437,7 @@ manipulated_frame.i: manipulated_frame.cpp.i
 
 # target to preprocess a source file
 manipulated_frame.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/manipulated_frame.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/manipulated_frame.cpp.i
 .PHONY : manipulated_frame.cpp.i
 
 manipulated_frame.s: manipulated_frame.cpp.s
@@ -446,7 +446,7 @@ manipulated_frame.s: manipulated_frame.cpp.s
 
 # target to generate assembly for a file
 manipulated_frame.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/manipulated_frame.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/manipulated_frame.cpp.s
 .PHONY : manipulated_frame.cpp.s
 
 model.o: model.cpp.o
@@ -455,7 +455,7 @@ model.o: model.cpp.o
 
 # target to build an object file
 model.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/model.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/model.cpp.o
 .PHONY : model.cpp.o
 
 model.i: model.cpp.i
@@ -464,7 +464,7 @@ model.i: model.cpp.i
 
 # target to preprocess a source file
 model.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/model.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/model.cpp.i
 .PHONY : model.cpp.i
 
 model.s: model.cpp.s
@@ -473,7 +473,7 @@ model.s: model.cpp.s
 
 # target to generate assembly for a file
 model.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/model.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/model.cpp.s
 .PHONY : model.cpp.s
 
 opengl_error.o: opengl_error.cpp.o
@@ -482,7 +482,7 @@ opengl_error.o: opengl_error.cpp.o
 
 # target to build an object file
 opengl_error.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_error.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_error.cpp.o
 .PHONY : opengl_error.cpp.o
 
 opengl_error.i: opengl_error.cpp.i
@@ -491,7 +491,7 @@ opengl_error.i: opengl_error.cpp.i
 
 # target to preprocess a source file
 opengl_error.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_error.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_error.cpp.i
 .PHONY : opengl_error.cpp.i
 
 opengl_error.s: opengl_error.cpp.s
@@ -500,7 +500,7 @@ opengl_error.s: opengl_error.cpp.s
 
 # target to generate assembly for a file
 opengl_error.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_error.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_error.cpp.s
 .PHONY : opengl_error.cpp.s
 
 opengl_info.o: opengl_info.cpp.o
@@ -509,7 +509,7 @@ opengl_info.o: opengl_info.cpp.o
 
 # target to build an object file
 opengl_info.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_info.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_info.cpp.o
 .PHONY : opengl_info.cpp.o
 
 opengl_info.i: opengl_info.cpp.i
@@ -518,7 +518,7 @@ opengl_info.i: opengl_info.cpp.i
 
 # target to preprocess a source file
 opengl_info.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_info.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_info.cpp.i
 .PHONY : opengl_info.cpp.i
 
 opengl_info.s: opengl_info.cpp.s
@@ -527,7 +527,7 @@ opengl_info.s: opengl_info.cpp.s
 
 # target to generate assembly for a file
 opengl_info.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_info.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_info.cpp.s
 .PHONY : opengl_info.cpp.s
 
 opengl_timer.o: opengl_timer.cpp.o
@@ -536,7 +536,7 @@ opengl_timer.o: opengl_timer.cpp.o
 
 # target to build an object file
 opengl_timer.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_timer.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_timer.cpp.o
 .PHONY : opengl_timer.cpp.o
 
 opengl_timer.i: opengl_timer.cpp.i
@@ -545,7 +545,7 @@ opengl_timer.i: opengl_timer.cpp.i
 
 # target to preprocess a source file
 opengl_timer.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_timer.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_timer.cpp.i
 .PHONY : opengl_timer.cpp.i
 
 opengl_timer.s: opengl_timer.cpp.s
@@ -554,7 +554,7 @@ opengl_timer.s: opengl_timer.cpp.s
 
 # target to generate assembly for a file
 opengl_timer.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_timer.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/opengl_timer.cpp.s
 .PHONY : opengl_timer.cpp.s
 
 primitives.o: primitives.cpp.o
@@ -563,7 +563,7 @@ primitives.o: primitives.cpp.o
 
 # target to build an object file
 primitives.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/primitives.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/primitives.cpp.o
 .PHONY : primitives.cpp.o
 
 primitives.i: primitives.cpp.i
@@ -572,7 +572,7 @@ primitives.i: primitives.cpp.i
 
 # target to preprocess a source file
 primitives.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/primitives.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/primitives.cpp.i
 .PHONY : primitives.cpp.i
 
 primitives.s: primitives.cpp.s
@@ -581,7 +581,7 @@ primitives.s: primitives.cpp.s
 
 # target to generate assembly for a file
 primitives.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/primitives.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/primitives.cpp.s
 .PHONY : primitives.cpp.s
 
 read_pixel.o: read_pixel.cpp.o
@@ -590,7 +590,7 @@ read_pixel.o: read_pixel.cpp.o
 
 # target to build an object file
 read_pixel.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/read_pixel.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/read_pixel.cpp.o
 .PHONY : read_pixel.cpp.o
 
 read_pixel.i: read_pixel.cpp.i
@@ -599,7 +599,7 @@ read_pixel.i: read_pixel.cpp.i
 
 # target to preprocess a source file
 read_pixel.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/read_pixel.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/read_pixel.cpp.i
 .PHONY : read_pixel.cpp.i
 
 read_pixel.s: read_pixel.cpp.s
@@ -608,7 +608,7 @@ read_pixel.s: read_pixel.cpp.s
 
 # target to generate assembly for a file
 read_pixel.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/read_pixel.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/read_pixel.cpp.s
 .PHONY : read_pixel.cpp.s
 
 setting.o: setting.cpp.o
@@ -617,7 +617,7 @@ setting.o: setting.cpp.o
 
 # target to build an object file
 setting.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/setting.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/setting.cpp.o
 .PHONY : setting.cpp.o
 
 setting.i: setting.cpp.i
@@ -626,7 +626,7 @@ setting.i: setting.cpp.i
 
 # target to preprocess a source file
 setting.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/setting.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/setting.cpp.i
 .PHONY : setting.cpp.i
 
 setting.s: setting.cpp.s
@@ -635,7 +635,7 @@ setting.s: setting.cpp.s
 
 # target to generate assembly for a file
 setting.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/setting.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/setting.cpp.s
 .PHONY : setting.cpp.s
 
 shader_manager.o: shader_manager.cpp.o
@@ -644,7 +644,7 @@ shader_manager.o: shader_manager.cpp.o
 
 # target to build an object file
 shader_manager.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shader_manager.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shader_manager.cpp.o
 .PHONY : shader_manager.cpp.o
 
 shader_manager.i: shader_manager.cpp.i
@@ -653,7 +653,7 @@ shader_manager.i: shader_manager.cpp.i
 
 # target to preprocess a source file
 shader_manager.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shader_manager.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shader_manager.cpp.i
 .PHONY : shader_manager.cpp.i
 
 shader_manager.s: shader_manager.cpp.s
@@ -662,7 +662,7 @@ shader_manager.s: shader_manager.cpp.s
 
 # target to generate assembly for a file
 shader_manager.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shader_manager.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shader_manager.cpp.s
 .PHONY : shader_manager.cpp.s
 
 shader_program.o: shader_program.cpp.o
@@ -671,7 +671,7 @@ shader_program.o: shader_program.cpp.o
 
 # target to build an object file
 shader_program.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shader_program.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shader_program.cpp.o
 .PHONY : shader_program.cpp.o
 
 shader_program.i: shader_program.cpp.i
@@ -680,7 +680,7 @@ shader_program.i: shader_program.cpp.i
 
 # target to preprocess a source file
 shader_program.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shader_program.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shader_program.cpp.i
 .PHONY : shader_program.cpp.i
 
 shader_program.s: shader_program.cpp.s
@@ -689,7 +689,7 @@ shader_program.s: shader_program.cpp.s
 
 # target to generate assembly for a file
 shader_program.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shader_program.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shader_program.cpp.s
 .PHONY : shader_program.cpp.s
 
 shadow.o: shadow.cpp.o
@@ -698,7 +698,7 @@ shadow.o: shadow.cpp.o
 
 # target to build an object file
 shadow.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shadow.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shadow.cpp.o
 .PHONY : shadow.cpp.o
 
 shadow.i: shadow.cpp.i
@@ -707,7 +707,7 @@ shadow.i: shadow.cpp.i
 
 # target to preprocess a source file
 shadow.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shadow.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shadow.cpp.i
 .PHONY : shadow.cpp.i
 
 shadow.s: shadow.cpp.s
@@ -716,7 +716,7 @@ shadow.s: shadow.cpp.s
 
 # target to generate assembly for a file
 shadow.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shadow.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/shadow.cpp.s
 .PHONY : shadow.cpp.s
 
 soft_shadow.o: soft_shadow.cpp.o
@@ -725,7 +725,7 @@ soft_shadow.o: soft_shadow.cpp.o
 
 # target to build an object file
 soft_shadow.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/soft_shadow.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/soft_shadow.cpp.o
 .PHONY : soft_shadow.cpp.o
 
 soft_shadow.i: soft_shadow.cpp.i
@@ -734,7 +734,7 @@ soft_shadow.i: soft_shadow.cpp.i
 
 # target to preprocess a source file
 soft_shadow.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/soft_shadow.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/soft_shadow.cpp.i
 .PHONY : soft_shadow.cpp.i
 
 soft_shadow.s: soft_shadow.cpp.s
@@ -743,7 +743,7 @@ soft_shadow.s: soft_shadow.cpp.s
 
 # target to generate assembly for a file
 soft_shadow.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/soft_shadow.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/soft_shadow.cpp.s
 .PHONY : soft_shadow.cpp.s
 
 transform.o: transform.cpp.o
@@ -752,7 +752,7 @@ transform.o: transform.cpp.o
 
 # target to build an object file
 transform.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/transform.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/transform.cpp.o
 .PHONY : transform.cpp.o
 
 transform.i: transform.cpp.i
@@ -761,7 +761,7 @@ transform.i: transform.cpp.i
 
 # target to preprocess a source file
 transform.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/transform.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/transform.cpp.i
 .PHONY : transform.cpp.i
 
 transform.s: transform.cpp.s
@@ -770,7 +770,7 @@ transform.s: transform.cpp.s
 
 # target to generate assembly for a file
 transform.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/transform.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/transform.cpp.s
 .PHONY : transform.cpp.s
 
 transform_decompose.o: transform_decompose.cpp.o
@@ -779,7 +779,7 @@ transform_decompose.o: transform_decompose.cpp.o
 
 # target to build an object file
 transform_decompose.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/transform_decompose.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/transform_decompose.cpp.o
 .PHONY : transform_decompose.cpp.o
 
 transform_decompose.i: transform_decompose.cpp.i
@@ -788,7 +788,7 @@ transform_decompose.i: transform_decompose.cpp.i
 
 # target to preprocess a source file
 transform_decompose.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/transform_decompose.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/transform_decompose.cpp.i
 .PHONY : transform_decompose.cpp.i
 
 transform_decompose.s: transform_decompose.cpp.s
@@ -797,7 +797,7 @@ transform_decompose.s: transform_decompose.cpp.s
 
 # target to generate assembly for a file
 transform_decompose.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/transform_decompose.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/transform_decompose.cpp.s
 .PHONY : transform_decompose.cpp.s
 
 vertex_array_object.o: vertex_array_object.cpp.o
@@ -806,7 +806,7 @@ vertex_array_object.o: vertex_array_object.cpp.o
 
 # target to build an object file
 vertex_array_object.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/vertex_array_object.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/vertex_array_object.cpp.o
 .PHONY : vertex_array_object.cpp.o
 
 vertex_array_object.i: vertex_array_object.cpp.i
@@ -815,7 +815,7 @@ vertex_array_object.i: vertex_array_object.cpp.i
 
 # target to preprocess a source file
 vertex_array_object.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/vertex_array_object.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/vertex_array_object.cpp.i
 .PHONY : vertex_array_object.cpp.i
 
 vertex_array_object.s: vertex_array_object.cpp.s
@@ -824,7 +824,7 @@ vertex_array_object.s: vertex_array_object.cpp.s
 
 # target to generate assembly for a file
 vertex_array_object.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/vertex_array_object.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/vertex_array_object.cpp.s
 .PHONY : vertex_array_object.cpp.s
 
 viewer.o: viewer.cpp.o
@@ -833,7 +833,7 @@ viewer.o: viewer.cpp.o
 
 # target to build an object file
 viewer.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/viewer.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/viewer.cpp.o
 .PHONY : viewer.cpp.o
 
 viewer.i: viewer.cpp.i
@@ -842,7 +842,7 @@ viewer.i: viewer.cpp.i
 
 # target to preprocess a source file
 viewer.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/viewer.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/viewer.cpp.i
 .PHONY : viewer.cpp.i
 
 viewer.s: viewer.cpp.s
@@ -851,7 +851,7 @@ viewer.s: viewer.cpp.s
 
 # target to generate assembly for a file
 viewer.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/viewer.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/viewer.cpp.s
 .PHONY : viewer.cpp.s
 
 # Help Target
@@ -955,6 +955,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/suxing/AdTree/3rd_party/easy3d/algo/remove_duplication.cpp" "/home/suxing/AdTree/Release/3rd_party/easy3d/algo/CMakeFiles/3rd_algo.dir/remove_duplication.cpp.o"
+  "/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/algo/remove_duplication.cpp" "/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/algo/CMakeFiles/3rd_algo.dir/remove_duplication.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -16,8 +16,8 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/suxing/AdTree/Release/3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/DependInfo.cmake"
-  "/home/suxing/AdTree/Release/3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/DependInfo.cmake"
+  "/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/DependInfo.cmake"
+  "/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

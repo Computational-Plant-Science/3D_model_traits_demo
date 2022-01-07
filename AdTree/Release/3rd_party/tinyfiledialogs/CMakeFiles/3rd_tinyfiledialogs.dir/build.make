@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
 
 # Include any dependencies generated for this target.
 include 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/depend.make
@@ -59,16 +59,16 @@ include 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/flags.make
 
 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.o: 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/flags.make
 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.o: ../3rd_party/tinyfiledialogs/tinyfiledialogs.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.o"
-	cd /home/suxing/AdTree/Release/3rd_party/tinyfiledialogs && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.o   -c /home/suxing/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.o"
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tinyfiledialogs && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.o   -c /home/suxing/3D_model_traits_demo/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.c
 
 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.i"
-	cd /home/suxing/AdTree/Release/3rd_party/tinyfiledialogs && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/suxing/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.c > CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tinyfiledialogs && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/suxing/3D_model_traits_demo/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.c > CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.i
 
 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.s"
-	cd /home/suxing/AdTree/Release/3rd_party/tinyfiledialogs && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/suxing/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.c -o CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tinyfiledialogs && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/suxing/3D_model_traits_demo/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.c -o CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.s
 
 # Object files for target 3rd_tinyfiledialogs
 3rd_tinyfiledialogs_OBJECTS = \
@@ -80,9 +80,9 @@ include 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/flags.make
 lib/lib3rd_tinyfiledialogs.a: 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.o
 lib/lib3rd_tinyfiledialogs.a: 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/build.make
 lib/lib3rd_tinyfiledialogs.a: 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/suxing/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C static library ../../lib/lib3rd_tinyfiledialogs.a"
-	cd /home/suxing/AdTree/Release/3rd_party/tinyfiledialogs && $(CMAKE_COMMAND) -P CMakeFiles/3rd_tinyfiledialogs.dir/cmake_clean_target.cmake
-	cd /home/suxing/AdTree/Release/3rd_party/tinyfiledialogs && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/3rd_tinyfiledialogs.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C static library ../../lib/lib3rd_tinyfiledialogs.a"
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tinyfiledialogs && $(CMAKE_COMMAND) -P CMakeFiles/3rd_tinyfiledialogs.dir/cmake_clean_target.cmake
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tinyfiledialogs && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/3rd_tinyfiledialogs.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/build: lib/lib3rd_tinyfiledialogs.a
@@ -90,10 +90,10 @@ lib/lib3rd_tinyfiledialogs.a: 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiled
 .PHONY : 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/build
 
 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/clean:
-	cd /home/suxing/AdTree/Release/3rd_party/tinyfiledialogs && $(CMAKE_COMMAND) -P CMakeFiles/3rd_tinyfiledialogs.dir/cmake_clean.cmake
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tinyfiledialogs && $(CMAKE_COMMAND) -P CMakeFiles/3rd_tinyfiledialogs.dir/cmake_clean.cmake
 .PHONY : 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/clean
 
 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/depend:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/suxing/AdTree /home/suxing/AdTree/3rd_party/tinyfiledialogs /home/suxing/AdTree/Release /home/suxing/AdTree/Release/3rd_party/tinyfiledialogs /home/suxing/AdTree/Release/3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/suxing/3D_model_traits_demo/AdTree /home/suxing/3D_model_traits_demo/AdTree/3rd_party/tinyfiledialogs /home/suxing/3D_model_traits_demo/AdTree/Release /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tinyfiledialogs /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/depend
 

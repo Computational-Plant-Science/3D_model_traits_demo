@@ -1,4 +1,4 @@
-# Install script for directory: /home/suxing/AdTree/3rd_party/tinyfiledialogs
+# Install script for directory: /home/suxing/3D_model_traits_demo/AdTree/3rd_party/tinyfiledialogs
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

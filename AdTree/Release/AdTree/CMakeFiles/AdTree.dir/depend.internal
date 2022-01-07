@@ -27,10 +27,10 @@ AdTree/CMakeFiles/AdTree.dir/main.cpp.o
  ../3rd_party/kd_tree/PriorityQueue.h
  ../3rd_party/kd_tree/Vector2D.h
  ../3rd_party/kd_tree/Vector3D.h
- /home/suxing/AdTree/AdTree/main.cpp
- /home/suxing/AdTree/AdTree/skeleton.h
- /home/suxing/AdTree/AdTree/tree_viewer.h
- /home/suxing/AdTree/AdTree/viewer_imgui.h
+ /home/suxing/3D_model_traits_demo/AdTree/AdTree/main.cpp
+ /home/suxing/3D_model_traits_demo/AdTree/AdTree/skeleton.h
+ /home/suxing/3D_model_traits_demo/AdTree/AdTree/tree_viewer.h
+ /home/suxing/3D_model_traits_demo/AdTree/AdTree/viewer_imgui.h
 AdTree/CMakeFiles/AdTree.dir/skeleton.cpp.o
  ../3rd_party/easy3d/core/box.h
  ../3rd_party/easy3d/core/constant.h
@@ -55,9 +55,9 @@ AdTree/CMakeFiles/AdTree.dir/skeleton.cpp.o
  ../3rd_party/kd_tree/Vector3D.h
  ../3rd_party/optimizer_lm/optimizer_lm.h
  ../3rd_party/tetgen/tetgen.h
- /home/suxing/AdTree/AdTree/cylinder.h
- /home/suxing/AdTree/AdTree/skeleton.cpp
- /home/suxing/AdTree/AdTree/skeleton.h
+ /home/suxing/3D_model_traits_demo/AdTree/AdTree/cylinder.h
+ /home/suxing/3D_model_traits_demo/AdTree/AdTree/skeleton.cpp
+ /home/suxing/3D_model_traits_demo/AdTree/AdTree/skeleton.h
 AdTree/CMakeFiles/AdTree.dir/tree_viewer.cpp.o
  ../3rd_party/easy3d/algo/remove_duplication.h
  ../3rd_party/easy3d/core/box.h
@@ -94,10 +94,10 @@ AdTree/CMakeFiles/AdTree.dir/tree_viewer.cpp.o
  ../3rd_party/kd_tree/PriorityQueue.h
  ../3rd_party/kd_tree/Vector2D.h
  ../3rd_party/kd_tree/Vector3D.h
- /home/suxing/AdTree/AdTree/skeleton.h
- /home/suxing/AdTree/AdTree/tree_viewer.cpp
- /home/suxing/AdTree/AdTree/tree_viewer.h
- /home/suxing/AdTree/AdTree/viewer_imgui.h
+ /home/suxing/3D_model_traits_demo/AdTree/AdTree/skeleton.h
+ /home/suxing/3D_model_traits_demo/AdTree/AdTree/tree_viewer.cpp
+ /home/suxing/3D_model_traits_demo/AdTree/AdTree/tree_viewer.h
+ /home/suxing/3D_model_traits_demo/AdTree/AdTree/viewer_imgui.h
 AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.o
  ../3rd_party/easy3d/core/box.h
  ../3rd_party/easy3d/core/constant.h
@@ -116,5 +116,5 @@ AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.o
  ../3rd_party/imgui/impl/imgui_impl_glfw.h
  ../3rd_party/imgui/impl/imgui_impl_opengl3.h
  ../3rd_party/imgui/misc/fonts/imgui_fonts_droid_sans.h
- /home/suxing/AdTree/AdTree/viewer_imgui.cpp
- /home/suxing/AdTree/AdTree/viewer_imgui.h
+ /home/suxing/3D_model_traits_demo/AdTree/AdTree/viewer_imgui.cpp
+ /home/suxing/3D_model_traits_demo/AdTree/AdTree/viewer_imgui.h

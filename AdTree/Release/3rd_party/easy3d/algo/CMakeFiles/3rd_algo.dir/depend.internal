@@ -20,4 +20,4 @@
  ../3rd_party/kd_tree/PriorityQueue.h
  ../3rd_party/kd_tree/Vector2D.h
  ../3rd_party/kd_tree/Vector3D.h
- /home/suxing/AdTree/3rd_party/easy3d/algo/remove_duplication.cpp
+ /home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/algo/remove_duplication.cpp

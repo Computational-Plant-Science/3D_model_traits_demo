@@ -396,7 +396,7 @@ GL/glu.h
 vulkan/vulkan.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/ambient_occlusion.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/ambient_occlusion.cpp
 easy3d/viewer/ambient_occlusion.h
 -
 random
@@ -422,7 +422,7 @@ easy3d/viewer/drawable.h
 easy3d/viewer/opengl.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/average_color_blending.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/average_color_blending.cpp
 easy3d/viewer/average_color_blending.h
 -
 easy3d/viewer/camera.h
@@ -442,7 +442,7 @@ easy3d/viewer/primitives.h
 easy3d/viewer/setting.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/camera.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/camera.cpp
 easy3d/viewer/camera.h
 -
 algorithm
@@ -452,7 +452,7 @@ easy3d/viewer/manipulated_camera_frame.h
 easy3d/viewer/viewer.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/constraint.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/constraint.cpp
 easy3d/viewer/constraint.h
 -
 easy3d/viewer/camera.h
@@ -462,7 +462,7 @@ easy3d/viewer/frame.h
 easy3d/viewer/manipulated_camera_frame.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/drawable.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/drawable.cpp
 easy3d/viewer/drawable.h
 -
 cassert
@@ -476,7 +476,7 @@ easy3d/viewer/shader_program.h
 easy3d/viewer/opengl_error.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/dual_depth_peeling.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/dual_depth_peeling.cpp
 easy3d/viewer/dual_depth_peeling.h
 -
 algorithm
@@ -502,7 +502,7 @@ easy3d/viewer/setting.h
 easy3d/util/file_system.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/eye_dome_lighting.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/eye_dome_lighting.cpp
 easy3d/viewer/eye_dome_lighting.h
 -
 easy3d/viewer/shader_manager.h
@@ -518,13 +518,13 @@ easy3d/viewer/primitives.h
 easy3d/viewer/camera.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/frame.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/frame.cpp
 easy3d/viewer/frame.h
 -
 cmath
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/framebuffer_object.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/framebuffer_object.cpp
 easy3d/viewer/framebuffer_object.h
 -
 algorithm
@@ -538,13 +538,13 @@ easy3d/viewer/opengl_error.h
 easy3d/viewer/opengl_info.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/frustum.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/frustum.cpp
 easy3d/viewer/frustum.h
 -
 easy3d/viewer/transform.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/manipulated_camera_frame.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/manipulated_camera_frame.cpp
 easy3d/viewer/manipulated_camera_frame.h
 -
 algorithm
@@ -552,7 +552,7 @@ algorithm
 easy3d/viewer/camera.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/manipulated_frame.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/manipulated_frame.cpp
 easy3d/viewer/manipulated_frame.h
 -
 easy3d/viewer/camera.h
@@ -560,13 +560,13 @@ easy3d/viewer/camera.h
 easy3d/viewer/manipulated_camera_frame.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/model.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/model.cpp
 easy3d/viewer/model.h
 -
 easy3d/viewer/drawable.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/opengl_error.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/opengl_error.cpp
 easy3d/viewer/opengl_error.h
 -
 iostream
@@ -578,7 +578,7 @@ easy3d/viewer/opengl_info.h
 easy3d/util/file_system.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/opengl_info.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/opengl_info.cpp
 easy3d/viewer/opengl_info.h
 -
 iostream
@@ -594,7 +594,7 @@ easy3d/viewer/opengl_error.h
 easy3d/viewer/opengl.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/opengl_timer.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/opengl_timer.cpp
 easy3d/viewer/opengl_timer.h
 -
 easy3d/viewer/opengl.h
@@ -604,7 +604,7 @@ easy3d/viewer/opengl_error.h
 cassert
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/primitives.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/primitives.cpp
 easy3d/viewer/primitives.h
 -
 easy3d/viewer/opengl_error.h
@@ -612,7 +612,7 @@ easy3d/viewer/opengl_error.h
 easy3d/viewer/opengl.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/read_pixel.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/read_pixel.cpp
 easy3d/viewer/read_pixel.h
 -
 iostream
@@ -624,13 +624,13 @@ easy3d/viewer/opengl_error.h
 easy3d/viewer/opengl.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/setting.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/setting.cpp
 easy3d/viewer/setting.h
 -
 easy3d/util/file_system.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/shader_manager.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/shader_manager.cpp
 easy3d/viewer/shader_manager.h
 -
 easy3d/viewer/opengl_error.h
@@ -642,7 +642,7 @@ easy3d/util/file_system.h
 easy3d/util/string.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/shader_program.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/shader_program.cpp
 easy3d/viewer/shader_program.h
 -
 cassert
@@ -658,7 +658,7 @@ easy3d/viewer/opengl_info.h
 easy3d/viewer/opengl_error.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/shadow.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/shadow.cpp
 easy3d/viewer/shadow.h
 -
 easy3d/viewer/shader_manager.h
@@ -682,7 +682,7 @@ easy3d/viewer/drawable.h
 easy3d/viewer/setting.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/soft_shadow.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/soft_shadow.cpp
 easy3d/viewer/soft_shadow.h
 -
 easy3d/viewer/framebuffer_object.h
@@ -700,19 +700,19 @@ easy3d/viewer/frustum.h
 easy3d/viewer/drawable.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/transform.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/transform.cpp
 easy3d/viewer/transform.h
 -
 cmath
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/transform_decompose.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/transform_decompose.cpp
 easy3d/viewer/transform_decompose.h
 -
 cmath
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/vertex_array_object.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/vertex_array_object.cpp
 easy3d/viewer/vertex_array_object.h
 -
 cassert
@@ -722,7 +722,7 @@ easy3d/viewer/opengl_error.h
 easy3d/viewer/opengl_info.h
 -
 
-/home/suxing/AdTree/3rd_party/easy3d/viewer/viewer.cpp
+/home/suxing/3D_model_traits_demo/AdTree/3rd_party/easy3d/viewer/viewer.cpp
 easy3d/viewer/viewer.h
 -
 thread
