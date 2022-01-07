@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/util/CMakeFiles/progress.marks
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/util/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles 0
+	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles /home/suxing/AdTree/Release/3rd_party/easy3d/util/CMakeFiles/progress.marks
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/util/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/util/clean
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/util/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,33 +97,33 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/util/preinstall
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/util/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/util/preinstall
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/util/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
-3rd_party/easy3d/util/CMakeFiles/util.dir/rule:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/util/CMakeFiles/util.dir/rule
-.PHONY : 3rd_party/easy3d/util/CMakeFiles/util.dir/rule
+3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/rule:
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/rule
+.PHONY : 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/rule
 
 # Convenience name for target.
-util: 3rd_party/easy3d/util/CMakeFiles/util.dir/rule
+3rd_util: 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/rule
 
-.PHONY : util
+.PHONY : 3rd_util
 
 # fast build rule for target.
-util/fast:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/build
-.PHONY : util/fast
+3rd_util/fast:
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build
+.PHONY : 3rd_util/fast
 
 chrono_watch.o: chrono_watch.cpp.o
 
@@ -131,7 +131,7 @@ chrono_watch.o: chrono_watch.cpp.o
 
 # target to build an object file
 chrono_watch.cpp.o:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/chrono_watch.cpp.o
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/chrono_watch.cpp.o
 .PHONY : chrono_watch.cpp.o
 
 chrono_watch.i: chrono_watch.cpp.i
@@ -140,7 +140,7 @@ chrono_watch.i: chrono_watch.cpp.i
 
 # target to preprocess a source file
 chrono_watch.cpp.i:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/chrono_watch.cpp.i
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/chrono_watch.cpp.i
 .PHONY : chrono_watch.cpp.i
 
 chrono_watch.s: chrono_watch.cpp.s
@@ -149,7 +149,7 @@ chrono_watch.s: chrono_watch.cpp.s
 
 # target to generate assembly for a file
 chrono_watch.cpp.s:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/chrono_watch.cpp.s
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/chrono_watch.cpp.s
 .PHONY : chrono_watch.cpp.s
 
 dialogs.o: dialogs.cpp.o
@@ -158,7 +158,7 @@ dialogs.o: dialogs.cpp.o
 
 # target to build an object file
 dialogs.cpp.o:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/dialogs.cpp.o
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/dialogs.cpp.o
 .PHONY : dialogs.cpp.o
 
 dialogs.i: dialogs.cpp.i
@@ -167,7 +167,7 @@ dialogs.i: dialogs.cpp.i
 
 # target to preprocess a source file
 dialogs.cpp.i:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/dialogs.cpp.i
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/dialogs.cpp.i
 .PHONY : dialogs.cpp.i
 
 dialogs.s: dialogs.cpp.s
@@ -176,7 +176,7 @@ dialogs.s: dialogs.cpp.s
 
 # target to generate assembly for a file
 dialogs.cpp.s:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/dialogs.cpp.s
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/dialogs.cpp.s
 .PHONY : dialogs.cpp.s
 
 file_system.o: file_system.cpp.o
@@ -185,7 +185,7 @@ file_system.o: file_system.cpp.o
 
 # target to build an object file
 file_system.cpp.o:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/file_system.cpp.o
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/file_system.cpp.o
 .PHONY : file_system.cpp.o
 
 file_system.i: file_system.cpp.i
@@ -194,7 +194,7 @@ file_system.i: file_system.cpp.i
 
 # target to preprocess a source file
 file_system.cpp.i:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/file_system.cpp.i
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/file_system.cpp.i
 .PHONY : file_system.cpp.i
 
 file_system.s: file_system.cpp.s
@@ -203,7 +203,7 @@ file_system.s: file_system.cpp.s
 
 # target to generate assembly for a file
 file_system.cpp.s:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/file_system.cpp.s
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/file_system.cpp.s
 .PHONY : file_system.cpp.s
 
 stop_watch.o: stop_watch.cpp.o
@@ -212,7 +212,7 @@ stop_watch.o: stop_watch.cpp.o
 
 # target to build an object file
 stop_watch.cpp.o:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/stop_watch.cpp.o
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/stop_watch.cpp.o
 .PHONY : stop_watch.cpp.o
 
 stop_watch.i: stop_watch.cpp.i
@@ -221,7 +221,7 @@ stop_watch.i: stop_watch.cpp.i
 
 # target to preprocess a source file
 stop_watch.cpp.i:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/stop_watch.cpp.i
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/stop_watch.cpp.i
 .PHONY : stop_watch.cpp.i
 
 stop_watch.s: stop_watch.cpp.s
@@ -230,7 +230,7 @@ stop_watch.s: stop_watch.cpp.s
 
 # target to generate assembly for a file
 stop_watch.cpp.s:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/stop_watch.cpp.s
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/stop_watch.cpp.s
 .PHONY : stop_watch.cpp.s
 
 string.o: string.cpp.o
@@ -239,7 +239,7 @@ string.o: string.cpp.o
 
 # target to build an object file
 string.cpp.o:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/string.cpp.o
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/string.cpp.o
 .PHONY : string.cpp.o
 
 string.i: string.cpp.i
@@ -248,7 +248,7 @@ string.i: string.cpp.i
 
 # target to preprocess a source file
 string.cpp.i:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/string.cpp.i
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/string.cpp.i
 .PHONY : string.cpp.i
 
 string.s: string.cpp.s
@@ -257,7 +257,7 @@ string.s: string.cpp.s
 
 # target to generate assembly for a file
 string.cpp.s:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/string.cpp.s
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/string.cpp.s
 .PHONY : string.cpp.s
 
 # Help Target
@@ -268,7 +268,7 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... util"
+	@echo "... 3rd_util"
 	@echo "... chrono_watch.o"
 	@echo "... chrono_watch.i"
 	@echo "... chrono_watch.s"
@@ -295,6 +295,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

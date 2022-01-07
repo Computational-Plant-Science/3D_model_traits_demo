@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
 
 # Include any dependencies generated for this target.
 include AdTree/CMakeFiles/AdTree.dir/depend.make
@@ -59,55 +59,55 @@ include AdTree/CMakeFiles/AdTree.dir/flags.make
 
 AdTree/CMakeFiles/AdTree.dir/main.cpp.o: AdTree/CMakeFiles/AdTree.dir/flags.make
 AdTree/CMakeFiles/AdTree.dir/main.cpp.o: ../AdTree/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object AdTree/CMakeFiles/AdTree.dir/main.cpp.o"
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/AdTree.dir/main.cpp.o -c /home/suxing/3D_model_traits_demo/AdTree/AdTree/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object AdTree/CMakeFiles/AdTree.dir/main.cpp.o"
+	cd /home/suxing/AdTree/Release/AdTree && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/AdTree.dir/main.cpp.o -c /home/suxing/AdTree/AdTree/main.cpp
 
 AdTree/CMakeFiles/AdTree.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/AdTree.dir/main.cpp.i"
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/3D_model_traits_demo/AdTree/AdTree/main.cpp > CMakeFiles/AdTree.dir/main.cpp.i
+	cd /home/suxing/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/AdTree/AdTree/main.cpp > CMakeFiles/AdTree.dir/main.cpp.i
 
 AdTree/CMakeFiles/AdTree.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/AdTree.dir/main.cpp.s"
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/3D_model_traits_demo/AdTree/AdTree/main.cpp -o CMakeFiles/AdTree.dir/main.cpp.s
+	cd /home/suxing/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/AdTree/AdTree/main.cpp -o CMakeFiles/AdTree.dir/main.cpp.s
 
 AdTree/CMakeFiles/AdTree.dir/tree_viewer.cpp.o: AdTree/CMakeFiles/AdTree.dir/flags.make
 AdTree/CMakeFiles/AdTree.dir/tree_viewer.cpp.o: ../AdTree/tree_viewer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object AdTree/CMakeFiles/AdTree.dir/tree_viewer.cpp.o"
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/AdTree.dir/tree_viewer.cpp.o -c /home/suxing/3D_model_traits_demo/AdTree/AdTree/tree_viewer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object AdTree/CMakeFiles/AdTree.dir/tree_viewer.cpp.o"
+	cd /home/suxing/AdTree/Release/AdTree && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/AdTree.dir/tree_viewer.cpp.o -c /home/suxing/AdTree/AdTree/tree_viewer.cpp
 
 AdTree/CMakeFiles/AdTree.dir/tree_viewer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/AdTree.dir/tree_viewer.cpp.i"
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/3D_model_traits_demo/AdTree/AdTree/tree_viewer.cpp > CMakeFiles/AdTree.dir/tree_viewer.cpp.i
+	cd /home/suxing/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/AdTree/AdTree/tree_viewer.cpp > CMakeFiles/AdTree.dir/tree_viewer.cpp.i
 
 AdTree/CMakeFiles/AdTree.dir/tree_viewer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/AdTree.dir/tree_viewer.cpp.s"
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/3D_model_traits_demo/AdTree/AdTree/tree_viewer.cpp -o CMakeFiles/AdTree.dir/tree_viewer.cpp.s
+	cd /home/suxing/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/AdTree/AdTree/tree_viewer.cpp -o CMakeFiles/AdTree.dir/tree_viewer.cpp.s
 
 AdTree/CMakeFiles/AdTree.dir/skeleton.cpp.o: AdTree/CMakeFiles/AdTree.dir/flags.make
 AdTree/CMakeFiles/AdTree.dir/skeleton.cpp.o: ../AdTree/skeleton.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object AdTree/CMakeFiles/AdTree.dir/skeleton.cpp.o"
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/AdTree.dir/skeleton.cpp.o -c /home/suxing/3D_model_traits_demo/AdTree/AdTree/skeleton.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object AdTree/CMakeFiles/AdTree.dir/skeleton.cpp.o"
+	cd /home/suxing/AdTree/Release/AdTree && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/AdTree.dir/skeleton.cpp.o -c /home/suxing/AdTree/AdTree/skeleton.cpp
 
 AdTree/CMakeFiles/AdTree.dir/skeleton.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/AdTree.dir/skeleton.cpp.i"
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/3D_model_traits_demo/AdTree/AdTree/skeleton.cpp > CMakeFiles/AdTree.dir/skeleton.cpp.i
+	cd /home/suxing/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/AdTree/AdTree/skeleton.cpp > CMakeFiles/AdTree.dir/skeleton.cpp.i
 
 AdTree/CMakeFiles/AdTree.dir/skeleton.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/AdTree.dir/skeleton.cpp.s"
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/3D_model_traits_demo/AdTree/AdTree/skeleton.cpp -o CMakeFiles/AdTree.dir/skeleton.cpp.s
+	cd /home/suxing/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/AdTree/AdTree/skeleton.cpp -o CMakeFiles/AdTree.dir/skeleton.cpp.s
 
 AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.o: AdTree/CMakeFiles/AdTree.dir/flags.make
 AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.o: ../AdTree/viewer_imgui.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.o"
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/AdTree.dir/viewer_imgui.cpp.o -c /home/suxing/3D_model_traits_demo/AdTree/AdTree/viewer_imgui.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/suxing/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.o"
+	cd /home/suxing/AdTree/Release/AdTree && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/AdTree.dir/viewer_imgui.cpp.o -c /home/suxing/AdTree/AdTree/viewer_imgui.cpp
 
 AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/AdTree.dir/viewer_imgui.cpp.i"
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/3D_model_traits_demo/AdTree/AdTree/viewer_imgui.cpp > CMakeFiles/AdTree.dir/viewer_imgui.cpp.i
+	cd /home/suxing/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/suxing/AdTree/AdTree/viewer_imgui.cpp > CMakeFiles/AdTree.dir/viewer_imgui.cpp.i
 
 AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/AdTree.dir/viewer_imgui.cpp.s"
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/3D_model_traits_demo/AdTree/AdTree/viewer_imgui.cpp -o CMakeFiles/AdTree.dir/viewer_imgui.cpp.s
+	cd /home/suxing/AdTree/Release/AdTree && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/suxing/AdTree/AdTree/viewer_imgui.cpp -o CMakeFiles/AdTree.dir/viewer_imgui.cpp.s
 
 # Object files for target AdTree
 AdTree_OBJECTS = \
@@ -126,38 +126,31 @@ bin/AdTree: AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.o
 bin/AdTree: AdTree/CMakeFiles/AdTree.dir/build.make
 bin/AdTree: /usr/lib/x86_64-linux-gnu/libGL.so
 bin/AdTree: /usr/lib/x86_64-linux-gnu/libGLU.so
-bin/AdTree: lib/libglew.a
-bin/AdTree: lib/libglfw3.a
-bin/AdTree: lib/libimgui.a
-bin/AdTree: lib/libcore.a
-bin/AdTree: lib/libutil.a
-bin/AdTree: lib/libfileio.a
-bin/AdTree: lib/libalgo.a
-bin/AdTree: lib/libviewer.a
-bin/AdTree: lib/libtetgen.a
-bin/AdTree: lib/libkd_tree.a
-bin/AdTree: lib/libcminpack.a
-bin/AdTree: lib/liboptimizer_lm.a
-bin/AdTree: lib/libcore.a
-bin/AdTree: lib/libfileio.a
-bin/AdTree: lib/libcore.a
-bin/AdTree: lib/libfileio.a
-bin/AdTree: lib/libviewer.a
-bin/AdTree: lib/librply.a
-bin/AdTree: lib/libglew.a
-bin/AdTree: lib/libglfw3.a
+bin/AdTree: lib/lib3rd_imgui.a
+bin/AdTree: lib/lib3rd_algo.a
+bin/AdTree: lib/lib3rd_viewer.a
+bin/AdTree: lib/lib3rd_util.a
+bin/AdTree: lib/lib3rd_tetgen.a
+bin/AdTree: lib/lib3rd_kd_tree.a
+bin/AdTree: lib/lib3rd_cminpack.a
+bin/AdTree: lib/lib3rd_optimizer_lm.a
+bin/AdTree: lib/lib3rd_glew.a
+bin/AdTree: lib/lib3rd_glfw.a
 bin/AdTree: /usr/lib/x86_64-linux-gnu/librt.so
 bin/AdTree: /usr/lib/x86_64-linux-gnu/libm.so
 bin/AdTree: /usr/lib/x86_64-linux-gnu/libX11.so
 bin/AdTree: /usr/lib/x86_64-linux-gnu/libOpenGL.so
 bin/AdTree: /usr/lib/x86_64-linux-gnu/libGLX.so
 bin/AdTree: /usr/lib/x86_64-linux-gnu/libGLU.so
-bin/AdTree: lib/libtinyfiledialogs.a
-bin/AdTree: lib/libutil.a
-bin/AdTree: lib/libcminpack.a
+bin/AdTree: lib/lib3rd_fileio.a
+bin/AdTree: lib/lib3rd_util.a
+bin/AdTree: lib/lib3rd_core.a
+bin/AdTree: lib/lib3rd_rply.a
+bin/AdTree: lib/lib3rd_tinyfiledialogs.a
+bin/AdTree: lib/lib3rd_cminpack.a
 bin/AdTree: AdTree/CMakeFiles/AdTree.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable ../bin/AdTree"
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/AdTree.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/suxing/AdTree/Release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable ../bin/AdTree"
+	cd /home/suxing/AdTree/Release/AdTree && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/AdTree.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 AdTree/CMakeFiles/AdTree.dir/build: bin/AdTree
@@ -165,10 +158,10 @@ AdTree/CMakeFiles/AdTree.dir/build: bin/AdTree
 .PHONY : AdTree/CMakeFiles/AdTree.dir/build
 
 AdTree/CMakeFiles/AdTree.dir/clean:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree && $(CMAKE_COMMAND) -P CMakeFiles/AdTree.dir/cmake_clean.cmake
+	cd /home/suxing/AdTree/Release/AdTree && $(CMAKE_COMMAND) -P CMakeFiles/AdTree.dir/cmake_clean.cmake
 .PHONY : AdTree/CMakeFiles/AdTree.dir/clean
 
 AdTree/CMakeFiles/AdTree.dir/depend:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/suxing/3D_model_traits_demo/AdTree /home/suxing/3D_model_traits_demo/AdTree/AdTree /home/suxing/3D_model_traits_demo/AdTree/Release /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree/CMakeFiles/AdTree.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/suxing/AdTree /home/suxing/AdTree/AdTree /home/suxing/AdTree/Release /home/suxing/AdTree/Release/AdTree /home/suxing/AdTree/Release/AdTree/CMakeFiles/AdTree.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : AdTree/CMakeFiles/AdTree.dir/depend
 

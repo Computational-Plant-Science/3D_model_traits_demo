@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles /home/suxing/AdTree/Release/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,186 +111,186 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named glew
+# Target rules for targets named 3rd_glew
 
 # Build rule for target.
-glew: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 glew
-.PHONY : glew
+3rd_glew: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3rd_glew
+.PHONY : 3rd_glew
 
 # fast build rule for target.
-glew/fast:
-	$(MAKE) -f 3rd_party/glew/CMakeFiles/glew.dir/build.make 3rd_party/glew/CMakeFiles/glew.dir/build
-.PHONY : glew/fast
+3rd_glew/fast:
+	$(MAKE) -f 3rd_party/glew/CMakeFiles/3rd_glew.dir/build.make 3rd_party/glew/CMakeFiles/3rd_glew.dir/build
+.PHONY : 3rd_glew/fast
 
 #=============================================================================
-# Target rules for targets named glfw
+# Target rules for targets named 3rd_glfw
 
 # Build rule for target.
-glfw: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 glfw
-.PHONY : glfw
+3rd_glfw: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3rd_glfw
+.PHONY : 3rd_glfw
 
 # fast build rule for target.
-glfw/fast:
-	$(MAKE) -f 3rd_party/glfw/src/CMakeFiles/glfw.dir/build.make 3rd_party/glfw/src/CMakeFiles/glfw.dir/build
-.PHONY : glfw/fast
+3rd_glfw/fast:
+	$(MAKE) -f 3rd_party/glfw/src/CMakeFiles/3rd_glfw.dir/build.make 3rd_party/glfw/src/CMakeFiles/3rd_glfw.dir/build
+.PHONY : 3rd_glfw/fast
 
 #=============================================================================
-# Target rules for targets named tetgen
+# Target rules for targets named 3rd_tetgen
 
 # Build rule for target.
-tetgen: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tetgen
-.PHONY : tetgen
+3rd_tetgen: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3rd_tetgen
+.PHONY : 3rd_tetgen
 
 # fast build rule for target.
-tetgen/fast:
-	$(MAKE) -f 3rd_party/tetgen/CMakeFiles/tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/tetgen.dir/build
-.PHONY : tetgen/fast
+3rd_tetgen/fast:
+	$(MAKE) -f 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build.make 3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/build
+.PHONY : 3rd_tetgen/fast
 
 #=============================================================================
-# Target rules for targets named kd_tree
+# Target rules for targets named 3rd_kd_tree
 
 # Build rule for target.
-kd_tree: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 kd_tree
-.PHONY : kd_tree
+3rd_kd_tree: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3rd_kd_tree
+.PHONY : 3rd_kd_tree
 
 # fast build rule for target.
-kd_tree/fast:
-	$(MAKE) -f 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build
-.PHONY : kd_tree/fast
+3rd_kd_tree/fast:
+	$(MAKE) -f 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build
+.PHONY : 3rd_kd_tree/fast
 
 #=============================================================================
-# Target rules for targets named cminpack
+# Target rules for targets named 3rd_cminpack
 
 # Build rule for target.
-cminpack: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 cminpack
-.PHONY : cminpack
+3rd_cminpack: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3rd_cminpack
+.PHONY : 3rd_cminpack
 
 # fast build rule for target.
-cminpack/fast:
-	$(MAKE) -f 3rd_party/cminpack/CMakeFiles/cminpack.dir/build.make 3rd_party/cminpack/CMakeFiles/cminpack.dir/build
-.PHONY : cminpack/fast
+3rd_cminpack/fast:
+	$(MAKE) -f 3rd_party/cminpack/CMakeFiles/3rd_cminpack.dir/build.make 3rd_party/cminpack/CMakeFiles/3rd_cminpack.dir/build
+.PHONY : 3rd_cminpack/fast
 
 #=============================================================================
-# Target rules for targets named optimizer_lm
+# Target rules for targets named 3rd_optimizer_lm
 
 # Build rule for target.
-optimizer_lm: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 optimizer_lm
-.PHONY : optimizer_lm
+3rd_optimizer_lm: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3rd_optimizer_lm
+.PHONY : 3rd_optimizer_lm
 
 # fast build rule for target.
-optimizer_lm/fast:
-	$(MAKE) -f 3rd_party/optimizer_lm/CMakeFiles/optimizer_lm.dir/build.make 3rd_party/optimizer_lm/CMakeFiles/optimizer_lm.dir/build
-.PHONY : optimizer_lm/fast
+3rd_optimizer_lm/fast:
+	$(MAKE) -f 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/build.make 3rd_party/optimizer_lm/CMakeFiles/3rd_optimizer_lm.dir/build
+.PHONY : 3rd_optimizer_lm/fast
 
 #=============================================================================
-# Target rules for targets named core
+# Target rules for targets named 3rd_core
 
 # Build rule for target.
-core: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 core
-.PHONY : core
+3rd_core: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3rd_core
+.PHONY : 3rd_core
 
 # fast build rule for target.
-core/fast:
-	$(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/core.dir/build
-.PHONY : core/fast
+3rd_core/fast:
+	$(MAKE) -f 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build.make 3rd_party/easy3d/core/CMakeFiles/3rd_core.dir/build
+.PHONY : 3rd_core/fast
 
 #=============================================================================
-# Target rules for targets named fileio
+# Target rules for targets named 3rd_fileio
 
 # Build rule for target.
-fileio: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 fileio
-.PHONY : fileio
+3rd_fileio: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3rd_fileio
+.PHONY : 3rd_fileio
 
 # fast build rule for target.
-fileio/fast:
-	$(MAKE) -f 3rd_party/easy3d/fileio/CMakeFiles/fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/fileio.dir/build
-.PHONY : fileio/fast
+3rd_fileio/fast:
+	$(MAKE) -f 3rd_party/easy3d/fileio/CMakeFiles/3rd_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/3rd_fileio.dir/build
+.PHONY : 3rd_fileio/fast
 
 #=============================================================================
-# Target rules for targets named util
+# Target rules for targets named 3rd_util
 
 # Build rule for target.
-util: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 util
-.PHONY : util
+3rd_util: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3rd_util
+.PHONY : 3rd_util
 
 # fast build rule for target.
-util/fast:
-	$(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/util.dir/build
-.PHONY : util/fast
+3rd_util/fast:
+	$(MAKE) -f 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build.make 3rd_party/easy3d/util/CMakeFiles/3rd_util.dir/build
+.PHONY : 3rd_util/fast
 
 #=============================================================================
-# Target rules for targets named algo
+# Target rules for targets named 3rd_algo
 
 # Build rule for target.
-algo: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 algo
-.PHONY : algo
+3rd_algo: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3rd_algo
+.PHONY : 3rd_algo
 
 # fast build rule for target.
-algo/fast:
-	$(MAKE) -f 3rd_party/easy3d/algo/CMakeFiles/algo.dir/build.make 3rd_party/easy3d/algo/CMakeFiles/algo.dir/build
-.PHONY : algo/fast
+3rd_algo/fast:
+	$(MAKE) -f 3rd_party/easy3d/algo/CMakeFiles/3rd_algo.dir/build.make 3rd_party/easy3d/algo/CMakeFiles/3rd_algo.dir/build
+.PHONY : 3rd_algo/fast
 
 #=============================================================================
-# Target rules for targets named viewer
+# Target rules for targets named 3rd_viewer
 
 # Build rule for target.
-viewer: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 viewer
-.PHONY : viewer
+3rd_viewer: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3rd_viewer
+.PHONY : 3rd_viewer
 
 # fast build rule for target.
-viewer/fast:
-	$(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/viewer.dir/build
-.PHONY : viewer/fast
+3rd_viewer/fast:
+	$(MAKE) -f 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build.make 3rd_party/easy3d/viewer/CMakeFiles/3rd_viewer.dir/build
+.PHONY : 3rd_viewer/fast
 
 #=============================================================================
-# Target rules for targets named imgui
+# Target rules for targets named 3rd_imgui
 
 # Build rule for target.
-imgui: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 imgui
-.PHONY : imgui
+3rd_imgui: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3rd_imgui
+.PHONY : 3rd_imgui
 
 # fast build rule for target.
-imgui/fast:
-	$(MAKE) -f 3rd_party/imgui/CMakeFiles/imgui.dir/build.make 3rd_party/imgui/CMakeFiles/imgui.dir/build
-.PHONY : imgui/fast
+3rd_imgui/fast:
+	$(MAKE) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build
+.PHONY : 3rd_imgui/fast
 
 #=============================================================================
-# Target rules for targets named tinyfiledialogs
+# Target rules for targets named 3rd_tinyfiledialogs
 
 # Build rule for target.
-tinyfiledialogs: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tinyfiledialogs
-.PHONY : tinyfiledialogs
+3rd_tinyfiledialogs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3rd_tinyfiledialogs
+.PHONY : 3rd_tinyfiledialogs
 
 # fast build rule for target.
-tinyfiledialogs/fast:
-	$(MAKE) -f 3rd_party/tinyfiledialogs/CMakeFiles/tinyfiledialogs.dir/build.make 3rd_party/tinyfiledialogs/CMakeFiles/tinyfiledialogs.dir/build
-.PHONY : tinyfiledialogs/fast
+3rd_tinyfiledialogs/fast:
+	$(MAKE) -f 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/build.make 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/build
+.PHONY : 3rd_tinyfiledialogs/fast
 
 #=============================================================================
-# Target rules for targets named rply
+# Target rules for targets named 3rd_rply
 
 # Build rule for target.
-rply: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 rply
-.PHONY : rply
+3rd_rply: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3rd_rply
+.PHONY : 3rd_rply
 
 # fast build rule for target.
-rply/fast:
-	$(MAKE) -f 3rd_party/rply/CMakeFiles/rply.dir/build.make 3rd_party/rply/CMakeFiles/rply.dir/build
-.PHONY : rply/fast
+3rd_rply/fast:
+	$(MAKE) -f 3rd_party/rply/CMakeFiles/3rd_rply.dir/build.make 3rd_party/rply/CMakeFiles/3rd_rply.dir/build
+.PHONY : 3rd_rply/fast
 
 #=============================================================================
 # Target rules for targets named AdTree
@@ -313,20 +313,20 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... glew"
-	@echo "... glfw"
-	@echo "... tetgen"
-	@echo "... kd_tree"
-	@echo "... cminpack"
-	@echo "... optimizer_lm"
-	@echo "... core"
-	@echo "... fileio"
-	@echo "... util"
-	@echo "... algo"
-	@echo "... viewer"
-	@echo "... imgui"
-	@echo "... tinyfiledialogs"
-	@echo "... rply"
+	@echo "... 3rd_glew"
+	@echo "... 3rd_glfw"
+	@echo "... 3rd_tetgen"
+	@echo "... 3rd_kd_tree"
+	@echo "... 3rd_cminpack"
+	@echo "... 3rd_optimizer_lm"
+	@echo "... 3rd_core"
+	@echo "... 3rd_fileio"
+	@echo "... 3rd_util"
+	@echo "... 3rd_algo"
+	@echo "... 3rd_viewer"
+	@echo "... 3rd_imgui"
+	@echo "... 3rd_tinyfiledialogs"
+	@echo "... 3rd_rply"
 	@echo "... AdTree"
 .PHONY : help
 

@@ -101,12 +101,15 @@ int batch_reconstruct(std::vector<std::string>& point_cloud_files, const std::st
         }
 
         ///////////////////////////////////////////////////////////////////////////////
-        //const ::Graph& simplified_skeleton = skeleton->get_simplified_skeleton();
-        const ::Graph& simplified_skeleton = skeleton->get_smoothed_skeleton();
         
-        if (boost::num_edges(simplified_skeleton) == 0) {
+        //const ::Graph& smoothed_skeleton = skeleton->get_smoothed_skeleton();
+        
+        const ::Graph& smoothed_skeleton = skeleton->get_smoothed_skeleton();
+        
+        if (boost::num_edges(smoothed_skeleton) == 0) {
             std::cerr << "skeleton has 0 edges" << std::endl;
         }
+        
         const std::vector<std::string> filetypes = {"*.ply"};
         const std::string &file_name = file_system::base_name(cloud->name()) + "_skeleton.ply";
         
@@ -120,21 +123,26 @@ int batch_reconstruct(std::vector<std::string>& point_cloud_files, const std::st
         std::unordered_map<SGraphVertexDescriptor, easy3d::Graph::Vertex>  vvmap;
         easy3d::Graph g;
         
-        auto vts = boost::vertices(simplified_skeleton);
+        auto vts = boost::vertices(smoothed_skeleton);
         for (SGraphVertexIterator iter = vts.first; iter != vts.second; ++iter) {
             SGraphVertexDescriptor vd = *iter;
-            if (boost::degree(vd, simplified_skeleton) != 0 ) { // ignore isolated vertices
-                const vec3& vp = simplified_skeleton[vd].cVert;
+            if (boost::degree(vd, smoothed_skeleton) != 0 ) { // ignore isolated vertices
+                const vec3& vp = smoothed_skeleton[vd].cVert;
                 vvmap[vd] = g.add_vertex(vp);
             }
         }
-
-        auto egs = boost::edges(simplified_skeleton);
+        
+        count = 0;
+        
+        auto egs = boost::edges(smoothed_skeleton);
         for (SGraphEdgeIterator iter = egs.first; iter != egs.second; ++iter) {
-            SGraphVertexDescriptor s = boost::source(*iter, simplified_skeleton);
-            SGraphVertexDescriptor t = boost::target(*iter, simplified_skeleton);
+            SGraphVertexDescriptor s = boost::source(*iter, smoothed_skeleton);
+            SGraphVertexDescriptor t = boost::target(*iter, smoothed_skeleton);
             g.add_edge(vvmap[s], vvmap[t]);
+            ++count;
         }
+        
+        std::cout << "number of smoothed_skeleton edges: " << count << std::endl;
 
         auto offset = cloud->get_model_property<dvec3>("translation");
         if (offset) {
@@ -146,9 +154,33 @@ int batch_reconstruct(std::vector<std::string>& point_cloud_files, const std::st
             std::cout << "successfully saved the model of skeleton to file" << std::endl;
         else
             std::cerr << "failed saving the model of skeleton" << std::endl;
-            
-            
         //////////////////////////////////////////////////////////////////////////////
+        
+        ///////////////////////////////////////////////////////////////
+        const ::Graph& simplified_skeleton = skeleton->get_simplified_skeleton();
+        
+        const std::string &file_name_Radius = file_system::base_name(cloud->name()) + "_avr.txt";
+        const std::string file_output_Radius = output_folder + "/" + file_name_Radius;
+        
+        std::ofstream Radius_file;
+        Radius_file.open(file_output_Radius, std::ios_base::app);
+        
+        //find the trunk edge
+        std::pair<SGraphEdgeIterator, SGraphEdgeIterator> ep = boost::edges(simplified_skeleton);
+        
+        count = 0;
+        
+        for (SGraphEdgeIterator eIter = ep.first; eIter != ep.second; ++eIter)
+        {
+            Radius_file << simplified_skeleton[*eIter].nRadius << '\n';
+            ++count;
+            
+        }
+        std::cout << "number of simplified_skeleton edges: " << count << std::endl;
+        Radius_file.close();
+       
+        //////////////////////////////////////////////////////////////////////////////    
+
         // copy translation property from point_cloud to surface_mesh
         SurfaceMesh::ModelProperty<dvec3> prop = mesh->add_model_property<dvec3>("translation");
         prop[0] = cloud->get_model_property<dvec3>("translation")[0];

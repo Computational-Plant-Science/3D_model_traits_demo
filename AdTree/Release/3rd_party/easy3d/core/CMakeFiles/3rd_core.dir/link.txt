@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../lib/lib3rd_core.a  CMakeFiles/3rd_core.dir/graph.cpp.o CMakeFiles/3rd_core.dir/point_cloud.cpp.o CMakeFiles/3rd_core.dir/surface_mesh.cpp.o
+/usr/bin/ranlib ../../../lib/lib3rd_core.a

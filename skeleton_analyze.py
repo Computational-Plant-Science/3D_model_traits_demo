@@ -513,6 +513,8 @@ def crosssection_analysis(image_file):
     # average of component area
     area_avg = sum(areas)/len(np.unique(labels))
     
+    #area_avg = sum(areas)
+    
     ###################################################################
     # segment overlapping components
     #make backup image
@@ -611,6 +613,8 @@ def crosssection_analysis(image_file):
     
     #print(area_rec)
     #print(radius_rec)
+    
+    #area_avg = sum(area_rec)/len(area_rec)
     
     radius_avg = np.mean(radius_rec)
     
@@ -1102,16 +1106,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     sub_branch_start_rec[:] = [sub_branch_start_rec[i] for i in sorted_idx_len_loc]
     sub_branch_end_rec[:] = [sub_branch_end_rec[i] for i in sorted_idx_len_loc]
     
-    '''
-    data_his = []
     
-    for i, (sub_branch_start) in enumerate(sub_branch_start_rec):
+    #data_his = Z_skeleton[sub_branch_start_rec]
     
-        if i<50:
-            data_his.append(Z_skeleton[sub_branch_start])
-            
-    
-    #data_his = sub_branch_length_rec[0:50]
+   
+    data_his = Z_skeleton[sub_branch_start_rec[0:50]]
     
     # fixed number of bins
     bins = np.linspace(math.ceil(min(data_his)), math.floor(max(data_his)),  100) 
@@ -1123,7 +1122,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     plt.ylabel('count')
 
     plt.show()
-    '''
+    
     ####################################################################
     (count_wholrs, whorl_loc_ex, avg_density) = wholr_number_count(imgList)
     
@@ -1523,7 +1522,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #end_v = 1559
     #end_v = 608
     
-    int_vlist_path = short_path_finder(G_unordered, 0, 608)
+    #int_vlist_path = short_path_finder(G_unordered, 0, 608)
     
     
     vlist_path_rec = []
@@ -1859,7 +1858,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         '''
         #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
         
-        mlab.show()
+        #mlab.show()
+        
         
         #visualize point cloud model with color
         ####################################################################

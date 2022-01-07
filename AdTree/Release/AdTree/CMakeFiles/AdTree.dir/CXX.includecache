@@ -374,7 +374,7 @@ time.h
 stdint.h
 -
 
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/cylinder.h
+/home/suxing/AdTree/AdTree/cylinder.h
 stdexcept
 -
 utility
@@ -390,9 +390,9 @@ vector
 stdio.h
 -
 optimizer_lm.h
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/optimizer_lm.h
+/home/suxing/AdTree/AdTree/optimizer_lm.h
 
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/main.cpp
+/home/suxing/AdTree/AdTree/main.cpp
 iostream
 -
 easy3d/core/graph.h
@@ -414,15 +414,15 @@ easy3d/algo/remove_duplication.h
 easy3d/util/file_system.h
 -
 skeleton.h
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/skeleton.h
+/home/suxing/AdTree/AdTree/skeleton.h
 tree_viewer.h
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/tree_viewer.h
+/home/suxing/AdTree/AdTree/tree_viewer.h
 
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/skeleton.cpp
+/home/suxing/AdTree/AdTree/skeleton.cpp
 skeleton.h
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/skeleton.h
+/home/suxing/AdTree/AdTree/skeleton.h
 cylinder.h
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/cylinder.h
+/home/suxing/AdTree/AdTree/cylinder.h
 easy3d/core/point_cloud.h
 -
 easy3d/core/surface_mesh.h
@@ -438,7 +438,7 @@ iostream
 algorithm
 -
 
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/skeleton.h
+/home/suxing/AdTree/AdTree/skeleton.h
 boost/graph/adjacency_list.hpp
 -
 boost/graph/dijkstra_shortest_paths.hpp
@@ -450,11 +450,11 @@ boost/graph/dijkstra_shortest_paths.hpp
 easy3d/core/types.h
 -
 
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/tree_viewer.cpp
+/home/suxing/AdTree/AdTree/tree_viewer.cpp
 tree_viewer.h
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/tree_viewer.h
+/home/suxing/AdTree/AdTree/tree_viewer.h
 skeleton.h
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/skeleton.h
+/home/suxing/AdTree/AdTree/skeleton.h
 3rd_party/glfw/include/GLFW/glfw3.h
 -
 easy3d/viewer/drawable.h
@@ -488,15 +488,15 @@ easy3d/algo/remove_duplication.h
 iostream
 -
 
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/tree_viewer.h
+/home/suxing/AdTree/AdTree/tree_viewer.h
 viewer_imgui.h
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/viewer_imgui.h
+/home/suxing/AdTree/AdTree/viewer_imgui.h
 vector
 -
 
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/viewer_imgui.cpp
+/home/suxing/AdTree/AdTree/viewer_imgui.cpp
 viewer_imgui.h
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/viewer_imgui.h
+/home/suxing/AdTree/AdTree/viewer_imgui.h
 iostream
 -
 3rd_party/imgui/misc/fonts/imgui_fonts_droid_sans.h
@@ -510,7 +510,7 @@ iostream
 3rd_party/glfw/include/GLFW/glfw3.h
 -
 
-/home/suxing/3D_model_traits_demo/AdTree/AdTree/viewer_imgui.h
+/home/suxing/AdTree/AdTree/viewer_imgui.h
 easy3d/viewer/viewer.h
 -
 

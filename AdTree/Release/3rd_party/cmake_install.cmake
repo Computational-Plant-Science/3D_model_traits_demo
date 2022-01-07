@@ -1,4 +1,4 @@
-# Install script for directory: /home/suxing/3D_model_traits_demo/AdTree/3rd_party
+# Install script for directory: /home/suxing/AdTree/3rd_party
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,16 +39,16 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/glew/cmake_install.cmake")
-  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/glfw/cmake_install.cmake")
-  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tetgen/cmake_install.cmake")
-  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/kd_tree/cmake_install.cmake")
-  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/cminpack/cmake_install.cmake")
-  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/optimizer_lm/cmake_install.cmake")
-  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/cmake_install.cmake")
-  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/imgui/cmake_install.cmake")
-  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tinyfiledialogs/cmake_install.cmake")
-  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/rply/cmake_install.cmake")
+  include("/home/suxing/AdTree/Release/3rd_party/glew/cmake_install.cmake")
+  include("/home/suxing/AdTree/Release/3rd_party/glfw/cmake_install.cmake")
+  include("/home/suxing/AdTree/Release/3rd_party/tetgen/cmake_install.cmake")
+  include("/home/suxing/AdTree/Release/3rd_party/kd_tree/cmake_install.cmake")
+  include("/home/suxing/AdTree/Release/3rd_party/cminpack/cmake_install.cmake")
+  include("/home/suxing/AdTree/Release/3rd_party/optimizer_lm/cmake_install.cmake")
+  include("/home/suxing/AdTree/Release/3rd_party/easy3d/cmake_install.cmake")
+  include("/home/suxing/AdTree/Release/3rd_party/imgui/cmake_install.cmake")
+  include("/home/suxing/AdTree/Release/3rd_party/tinyfiledialogs/cmake_install.cmake")
+  include("/home/suxing/AdTree/Release/3rd_party/rply/cmake_install.cmake")
 
 endif()
 

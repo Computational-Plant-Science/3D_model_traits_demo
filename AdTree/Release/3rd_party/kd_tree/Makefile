@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/kd_tree/CMakeFiles/progress.marks
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/kd_tree/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles 0
+	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles /home/suxing/AdTree/Release/3rd_party/kd_tree/CMakeFiles/progress.marks
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/kd_tree/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/kd_tree/clean
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/kd_tree/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,33 +97,33 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/kd_tree/preinstall
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/kd_tree/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/kd_tree/preinstall
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/kd_tree/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
-3rd_party/kd_tree/CMakeFiles/kd_tree.dir/rule:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/rule
-.PHONY : 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/rule
+3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/rule:
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/rule
+.PHONY : 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/rule
 
 # Convenience name for target.
-kd_tree: 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/rule
+3rd_kd_tree: 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/rule
 
-.PHONY : kd_tree
+.PHONY : 3rd_kd_tree
 
 # fast build rule for target.
-kd_tree/fast:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build
-.PHONY : kd_tree/fast
+3rd_kd_tree/fast:
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build
+.PHONY : 3rd_kd_tree/fast
 
 KdTree.o: KdTree.cpp.o
 
@@ -131,7 +131,7 @@ KdTree.o: KdTree.cpp.o
 
 # target to build an object file
 KdTree.cpp.o:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/KdTree.cpp.o
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/KdTree.cpp.o
 .PHONY : KdTree.cpp.o
 
 KdTree.i: KdTree.cpp.i
@@ -140,7 +140,7 @@ KdTree.i: KdTree.cpp.i
 
 # target to preprocess a source file
 KdTree.cpp.i:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/KdTree.cpp.i
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/KdTree.cpp.i
 .PHONY : KdTree.cpp.i
 
 KdTree.s: KdTree.cpp.s
@@ -149,7 +149,7 @@ KdTree.s: KdTree.cpp.s
 
 # target to generate assembly for a file
 KdTree.cpp.s:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/KdTree.cpp.s
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/KdTree.cpp.s
 .PHONY : KdTree.cpp.s
 
 PriorityQueue.o: PriorityQueue.cpp.o
@@ -158,7 +158,7 @@ PriorityQueue.o: PriorityQueue.cpp.o
 
 # target to build an object file
 PriorityQueue.cpp.o:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/PriorityQueue.cpp.o
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/PriorityQueue.cpp.o
 .PHONY : PriorityQueue.cpp.o
 
 PriorityQueue.i: PriorityQueue.cpp.i
@@ -167,7 +167,7 @@ PriorityQueue.i: PriorityQueue.cpp.i
 
 # target to preprocess a source file
 PriorityQueue.cpp.i:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/PriorityQueue.cpp.i
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/PriorityQueue.cpp.i
 .PHONY : PriorityQueue.cpp.i
 
 PriorityQueue.s: PriorityQueue.cpp.s
@@ -176,7 +176,7 @@ PriorityQueue.s: PriorityQueue.cpp.s
 
 # target to generate assembly for a file
 PriorityQueue.cpp.s:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/PriorityQueue.cpp.s
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/PriorityQueue.cpp.s
 .PHONY : PriorityQueue.cpp.s
 
 Vector2D.o: Vector2D.cpp.o
@@ -185,7 +185,7 @@ Vector2D.o: Vector2D.cpp.o
 
 # target to build an object file
 Vector2D.cpp.o:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/Vector2D.cpp.o
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/Vector2D.cpp.o
 .PHONY : Vector2D.cpp.o
 
 Vector2D.i: Vector2D.cpp.i
@@ -194,7 +194,7 @@ Vector2D.i: Vector2D.cpp.i
 
 # target to preprocess a source file
 Vector2D.cpp.i:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/Vector2D.cpp.i
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/Vector2D.cpp.i
 .PHONY : Vector2D.cpp.i
 
 Vector2D.s: Vector2D.cpp.s
@@ -203,7 +203,7 @@ Vector2D.s: Vector2D.cpp.s
 
 # target to generate assembly for a file
 Vector2D.cpp.s:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/Vector2D.cpp.s
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/Vector2D.cpp.s
 .PHONY : Vector2D.cpp.s
 
 Vector3D.o: Vector3D.cpp.o
@@ -212,7 +212,7 @@ Vector3D.o: Vector3D.cpp.o
 
 # target to build an object file
 Vector3D.cpp.o:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/Vector3D.cpp.o
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/Vector3D.cpp.o
 .PHONY : Vector3D.cpp.o
 
 Vector3D.i: Vector3D.cpp.i
@@ -221,7 +221,7 @@ Vector3D.i: Vector3D.cpp.i
 
 # target to preprocess a source file
 Vector3D.cpp.i:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/Vector3D.cpp.i
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/Vector3D.cpp.i
 .PHONY : Vector3D.cpp.i
 
 Vector3D.s: Vector3D.cpp.s
@@ -230,7 +230,7 @@ Vector3D.s: Vector3D.cpp.s
 
 # target to generate assembly for a file
 Vector3D.cpp.s:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/kd_tree.dir/Vector3D.cpp.s
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/build.make 3rd_party/kd_tree/CMakeFiles/3rd_kd_tree.dir/Vector3D.cpp.s
 .PHONY : Vector3D.cpp.s
 
 # Help Target
@@ -241,7 +241,7 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... kd_tree"
+	@echo "... 3rd_kd_tree"
 	@echo "... KdTree.o"
 	@echo "... KdTree.i"
 	@echo "... KdTree.s"
@@ -265,6 +265,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

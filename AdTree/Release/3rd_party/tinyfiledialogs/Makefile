@@ -48,24 +48,13 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
 
 #=============================================================================
 # Targets provided globally by CMake.
-
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -78,16 +67,27 @@ edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
 
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
+
 # The main all target
 all: cmake_check_build_system
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/tinyfiledialogs/CMakeFiles/progress.marks
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tinyfiledialogs/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles 0
+	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles /home/suxing/AdTree/Release/3rd_party/tinyfiledialogs/CMakeFiles/progress.marks
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tinyfiledialogs/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tinyfiledialogs/clean
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tinyfiledialogs/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,33 +97,33 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tinyfiledialogs/preinstall
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tinyfiledialogs/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tinyfiledialogs/preinstall
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tinyfiledialogs/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
-3rd_party/tinyfiledialogs/CMakeFiles/tinyfiledialogs.dir/rule:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tinyfiledialogs/CMakeFiles/tinyfiledialogs.dir/rule
-.PHONY : 3rd_party/tinyfiledialogs/CMakeFiles/tinyfiledialogs.dir/rule
+3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/rule:
+	cd /home/suxing/AdTree/Release && $(MAKE) -f CMakeFiles/Makefile2 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/rule
+.PHONY : 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/rule
 
 # Convenience name for target.
-tinyfiledialogs: 3rd_party/tinyfiledialogs/CMakeFiles/tinyfiledialogs.dir/rule
+3rd_tinyfiledialogs: 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/rule
 
-.PHONY : tinyfiledialogs
+.PHONY : 3rd_tinyfiledialogs
 
 # fast build rule for target.
-tinyfiledialogs/fast:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/tinyfiledialogs/CMakeFiles/tinyfiledialogs.dir/build.make 3rd_party/tinyfiledialogs/CMakeFiles/tinyfiledialogs.dir/build
-.PHONY : tinyfiledialogs/fast
+3rd_tinyfiledialogs/fast:
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/build.make 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/build
+.PHONY : 3rd_tinyfiledialogs/fast
 
 tinyfiledialogs.o: tinyfiledialogs.c.o
 
@@ -131,7 +131,7 @@ tinyfiledialogs.o: tinyfiledialogs.c.o
 
 # target to build an object file
 tinyfiledialogs.c.o:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/tinyfiledialogs/CMakeFiles/tinyfiledialogs.dir/build.make 3rd_party/tinyfiledialogs/CMakeFiles/tinyfiledialogs.dir/tinyfiledialogs.c.o
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/build.make 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.o
 .PHONY : tinyfiledialogs.c.o
 
 tinyfiledialogs.i: tinyfiledialogs.c.i
@@ -140,7 +140,7 @@ tinyfiledialogs.i: tinyfiledialogs.c.i
 
 # target to preprocess a source file
 tinyfiledialogs.c.i:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/tinyfiledialogs/CMakeFiles/tinyfiledialogs.dir/build.make 3rd_party/tinyfiledialogs/CMakeFiles/tinyfiledialogs.dir/tinyfiledialogs.c.i
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/build.make 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.i
 .PHONY : tinyfiledialogs.c.i
 
 tinyfiledialogs.s: tinyfiledialogs.c.s
@@ -149,7 +149,7 @@ tinyfiledialogs.s: tinyfiledialogs.c.s
 
 # target to generate assembly for a file
 tinyfiledialogs.c.s:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) -f 3rd_party/tinyfiledialogs/CMakeFiles/tinyfiledialogs.dir/build.make 3rd_party/tinyfiledialogs/CMakeFiles/tinyfiledialogs.dir/tinyfiledialogs.c.s
+	cd /home/suxing/AdTree/Release && $(MAKE) -f 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/build.make 3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.s
 .PHONY : tinyfiledialogs.c.s
 
 # Help Target
@@ -158,9 +158,9 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... tinyfiledialogs"
+	@echo "... rebuild_cache"
+	@echo "... 3rd_tinyfiledialogs"
 	@echo "... tinyfiledialogs.o"
 	@echo "... tinyfiledialogs.i"
 	@echo "... tinyfiledialogs.s"
@@ -175,6 +175,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 
