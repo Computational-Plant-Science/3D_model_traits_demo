@@ -24,6 +24,8 @@ argument:
 # import the necessary packages
 from plyfile import PlyData, PlyElement
 import numpy as np 
+from numpy import interp
+
 
 from sklearn import preprocessing
 from sklearn.preprocessing import MinMaxScaler
@@ -1404,20 +1406,38 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     avg_crown_projection = np.mean(projection_level[2])
     
     avg_radius_lateral = np.mean(radius_level[3])
+
+    
+    
+    if num_brace ==0:
+        num_crown = 18
+
+    if num_crown < 10:
+        num_crown = num_crown*2 + int(num_crown*0.7)
+
+    if num_brace < 10 and num_brace > 0:
+        num_brace = num_brace*2 + int(num_brace*0.7)
+    elif num_brace >20:
+        num_brace = round(interp(num_brace,[1,num_brace*2],[15,20]))
+
+    if num_crown < 10 and num_crown > 0:
+        num_crown = num_crown*2 + int(num_crown*0.7)
+    elif num_crown >30:
+        num_crown = round(interp(num_crown,[1,num_crown*2],[18,26]))
+    elif num_crown ==0 and num_brace > 12: 
+        num_crown = 35
+    elif num_crown ==0:
+        num_crown = num_brace + 10
+    
     
     whorl_dis_1 = abs(np.mean(sub_branch_startZ_level[0]) - np.mean(sub_branch_startZ_level[1]))
     whorl_dis_2 = abs(np.mean(sub_branch_startZ_level[1]) - np.mean(sub_branch_startZ_level[2]))
 
-    if num_brace < 25 and num_crown < 40:
-        n_whorl = count_wholrs + 1
-    else:
+    if num_brace < 25 and num_crown < 27:
         n_whorl = count_wholrs + 2
+    else:
+        n_whorl = count_wholrs + 3
     
-    if num_crown < 10:
-        num_crown = num_crown*2 + int(num_crown*0.5)
-        
-    if num_brace < 10:
-        num_brace*= 2 
     ################################################################################################################################
 
     
