@@ -2041,6 +2041,7 @@ if __name__ == '__main__':
     # setting path to model file 
     current_path = args["path"]
     filename_skeleton = args["model_skeleton"]
+    model_skeleton_name_base = os.path.splitext(current_path + filename_skeleton)[0]
     
     if args["model_pcloud"] is None:
         filename_pcloud = None
@@ -2049,6 +2050,8 @@ if __name__ == '__main__':
     
     # analysis result path
     print ("results_folder: " + current_path + "\n")
+    
+    
     
     
     #create label result file folder
@@ -2102,7 +2105,15 @@ if __name__ == '__main__':
     #save reuslt file
     ####################################################################
     
-    trait_file = (current_path + 'trait.xlsx')
+
+    trait_path = os.path.dirname(current_path + filename_skeleton)
+    
+    folder_name = os.path.basename(trait_path)
+    
+    #print("current_path folder ={}".format(folder_name))
+    
+    # create trait file using sub folder name
+    trait_file = (current_path + folder_name + '_trait.xlsx')
     
     #trait_file_csv = (current_path + 'trait.csv')
     
