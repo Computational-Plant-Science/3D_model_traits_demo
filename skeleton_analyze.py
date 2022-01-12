@@ -1732,7 +1732,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         s_diameter_max = pt_diameter_max
         s_diameter_min = pt_diameter_min
         s_diameter = pt_diameter
-        s_length = pt_length
+        #s_length = pt_length
         
         pt_eccentricity = (pt_diameter_min/pt_diameter_max)*1.15
         
