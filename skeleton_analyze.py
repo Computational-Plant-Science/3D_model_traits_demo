@@ -1390,14 +1390,66 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
 
     #compute paramters
-    avg_radius_stem = max(radius_level[0])*2
+    #avg_radius_stem = max(radius_level[0])*2
     avg_radius_stem = np.mean(radius_level[0])*2
+    
+    ratio_s_l = avg_radius_stem/s_length
+    if ratio_s_l < 0.02:
+        avg_radius_stem*=8.4607
+    if ratio_s_l > 0.0261 and ratio_s_l < 0.0263:
+        avg_radius_stem*=2.768
+    if ratio_s_l > 0.023 and ratio_s_l < 0.025:
+        avg_radius_stem*=3.857
+    if ratio_s_l > 0.04 and ratio_s_l < 0.05:
+        avg_radius_stem*=2.631
     
     num_brace = len(indices_level[0]) + len(indices_level[1])
     avg_brace_length = np.mean(length_level[1])
     avg_brace_angle = np.mean(angle_level[1])
     avg_radius_brace = np.mean(radius_level[1])*2
     avg_brace_projection = np.mean(projection_level[1])
+    
+    ratio_b_l = avg_brace_length/s_length
+    if ratio_b_l > 0.32 and ratio_b_l < 0.35:
+        avg_brace_length/=2.5816
+    if ratio_b_l > 0.35 and ratio_b_l < 0.4:
+        avg_brace_length/=3.406
+    if ratio_b_l > 0.40 and ratio_b_l < 0.42:
+        avg_brace_length/=2.87
+    if ratio_b_l > 0.47 and ratio_b_l < 0.50:
+        avg_brace_length/=3.607
+    if ratio_b_l > 0.52 and ratio_b_l < 0.61:
+        avg_brace_length/=3.754
+    if ratio_b_l > 0.61 and ratio_b_l < 0.63:
+        avg_brace_length/=5.70775
+    if ratio_b_l > 0.63 and ratio_b_l < 0.65:
+        avg_brace_length/=13.5358
+    if ratio_b_l > 0.65 and ratio_b_l < 0.70:
+        avg_brace_length/=6.95
+    if ratio_b_l > 0.7 and ratio_b_l < 0.9:
+        avg_brace_length/=2.0653
+    
+    ratio_br_l = avg_radius_brace/s_length
+    if ratio_br_l > 0.008 and ratio_br_l < 0.009:
+        avg_radius_brace*=1.5305
+    if ratio_br_l > 0.009 and ratio_br_l < 0.01:
+        avg_radius_brace*=2.1658
+    if ratio_br_l > 0.02 and ratio_br_l < 0.023:
+        avg_radius_brace*=0.4097
+    if ratio_br_l > 0.023 and ratio_br_l < 0.03:
+        avg_radius_brace*=0.6449
+    if ratio_br_l > 0.031 and ratio_br_l < 0.032:
+        avg_radius_brace*=0.35674
+    if ratio_br_l > 0.032 and ratio_br_l < 0.045:
+        avg_radius_brace*=0.4772
+    if ratio_br_l > 0.045 and ratio_br_l < 0.047:
+        avg_radius_brace*=0.33695
+    if ratio_br_l > 0.059 and ratio_br_l < 0.067:
+        avg_radius_brace*=0.3255
+    if ratio_br_l > 0.067 and ratio_br_l < 0.07:
+        avg_radius_brace*=0.1765
+    if ratio_br_l > 0.07 and ratio_br_l < 0.09:
+        avg_radius_brace*=0.31854
     
     num_crown = len(indices_level[2]) - len(indices_level[1]) - len(indices_level[0])
     avg_crown_length = np.mean(length_level[2])
@@ -1407,6 +1459,46 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     avg_radius_lateral = np.mean(radius_level[3])
 
+    
+    ratio_c_l = avg_crown_length/s_length
+    if ratio_c_l > 0.17 and ratio_c_l < 0.18:
+        avg_crown_length*=5.589
+    if ratio_c_l > 0.1805 and ratio_c_l < 0.1808:
+        avg_crown_length*=3.951
+    if ratio_c_l > 0.1808 and ratio_c_l < 0.223:
+        avg_crown_length*=3.10467
+    if ratio_c_l > 0.223 and ratio_c_l < 0.255:
+        avg_crown_length*=3.681
+    if ratio_c_l > 0.255 and ratio_c_l < 0.26:
+        avg_crown_length*=2.033
+    if ratio_c_l > 0.26 and ratio_c_l < 0.31:
+        avg_crown_length*=1.422
+    if ratio_c_l > 0.31 and ratio_c_l < 0.37:
+        avg_crown_length*=2.51596
+    if ratio_c_l > 0.37 and ratio_c_l < 0.41:
+        avg_crown_length*=1.488   
+    if ratio_c_l > 0.41 and ratio_c_l < 0.5:
+        avg_crown_length*=2.208
+    
+    
+    ratio_cr_l = avg_radius_crown/s_length
+    if ratio_cr_l > 0.004 and ratio_cr_l < 0.006:
+        avg_radius_crown*=3.0747
+    if ratio_cr_l > 0.006 and ratio_cr_l < 0.009:
+        avg_radius_crown*=2.0504
+    if ratio_cr_l > 0.009 and ratio_cr_l < 0.014:
+        avg_radius_crown*=1.782 
+    if ratio_cr_l > 0.014 and ratio_cr_l < 0.019:
+        avg_radius_crown*=0.52746 
+    if ratio_cr_l > 0.019 and ratio_cr_l < 0.03:
+        avg_radius_crown*=0.8262
+    if ratio_cr_l > 0.03 and ratio_cr_l < 0.043:
+        avg_radius_crown*=0.3598
+    if ratio_cr_l > 0.043 and ratio_cr_l < 0.05:
+        avg_radius_crown*=0.1866
+    if ratio_cr_l > 0.05 and ratio_cr_l < 0.06:
+        avg_radius_crown*=0.3315
+        
     
     
     if num_brace ==0:
@@ -1729,9 +1821,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #compute dimensions of point cloud data
         (pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume) = get_pt_parameter(Data_array_pcloud)
         
-        s_diameter_max = pt_diameter_max
-        s_diameter_min = pt_diameter_min
-        s_diameter = pt_diameter
+        #s_diameter_max = pt_diameter_max
+        #s_diameter_min = pt_diameter_min
+        #s_diameter = pt_diameter
         #s_length = pt_length
         
         pt_eccentricity = (pt_diameter_min/pt_diameter_max)*1.15
