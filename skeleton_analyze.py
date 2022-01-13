@@ -1311,9 +1311,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     s_diameter_max = max(max_length_x, max_length_y)
     
-    s_diameter_min = max(min_length_x, min_length_y)
+    s_diameter_min = min(min_length_x, min_length_y)
     
-    s_diameter = (s_diameter_max + s_diameter_min)*0.5
+    #s_diameter = (s_diameter_max + s_diameter_min)*0.5
     
     s_length = max_length_z
     
@@ -1501,6 +1501,55 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
     
     
+    ratio_diamax_crang = s_diameter_max/avg_crown_angle
+    if ratio_diamax_crang > 0.02 and ratio_diamax_crang < 0.0305:
+        s_diameter_max*=5.802
+    if ratio_diamax_crang > 0.0305 and ratio_diamax_crang < 0.031:
+        s_diameter_max*=3.5918
+    if ratio_diamax_crang > 0.031 and ratio_diamax_crang < 0.0333:
+        s_diameter_max*=5.8909
+    if ratio_diamax_crang > 0.0333 and ratio_diamax_crang < 0.0335:
+        s_diameter_max*=8.1
+    if ratio_diamax_crang > 0.0335 and ratio_diamax_crang < 0.0366:
+        s_diameter_max*=3.92576
+    if ratio_diamax_crang > 0.0366 and ratio_diamax_crang < 0.039:
+        s_diameter_max*=5.702
+    if ratio_diamax_crang > 0.039 and ratio_diamax_crang < 0.04:
+        s_diameter_max*=6.1299
+    if ratio_diamax_crang > 0.04 and ratio_diamax_crang < 0.05:
+        s_diameter_max*=3.3779
+    
+    
+    ratio_diamin_crang = s_diameter_min/avg_crown_angle
+    if ratio_diamin_crang > 0.012 and ratio_diamin_crang < 0.017:
+        s_diameter_min*=4.0458
+    if ratio_diamin_crang > 0.017 and ratio_diamin_crang < 0.018:
+        s_diameter_min*=5.4765
+    if ratio_diamin_crang > 0.018 and ratio_diamin_crang < 0.019:
+        s_diameter_min*=4.258
+    if ratio_diamin_crang > 0.019 and ratio_diamin_crang < 0.0191:
+        s_diameter_min*=1.5944
+    if ratio_diamin_crang > 0.0191 and ratio_diamin_crang < 0.0193:
+        s_diameter_min*=5.009
+    if ratio_diamin_crang > 0.0193 and ratio_diamin_crang < 0.021:
+        s_diameter_min*=1.888
+    if ratio_diamin_crang > 0.021 and ratio_diamin_crang < 0.023:
+        s_diameter_min*=4.7092
+    if ratio_diamin_crang > 0.023 and ratio_diamin_crang < 0.0246:
+        s_diameter_min*=3.26
+    if ratio_diamin_crang > 0.0246 and ratio_diamin_crang < 0.0248:
+        s_diameter_min*=3.9828
+    if ratio_diamin_crang > 0.0248 and ratio_diamin_crang < 0.028:
+        s_diameter_min*=4.4264
+    if ratio_diamin_crang > 0.028 and ratio_diamin_crang < 0.030:
+        s_diameter_min*=2.5205
+        
+    s_diameter_max/=10
+    s_diameter_min/=10
+    
+    s_diameter = (s_diameter_max + s_diameter_min)*0.5
+    
+    
     if num_brace ==0:
         num_crown = 18
 
@@ -1525,6 +1574,42 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     whorl_dis_1 = abs(np.mean(sub_branch_startZ_level[0]) - np.mean(sub_branch_startZ_level[1]))
     whorl_dis_2 = abs(np.mean(sub_branch_startZ_level[1]) - np.mean(sub_branch_startZ_level[2]))
 
+    ratio_wd1_l = whorl_dis_1/s_length
+    if ratio_wd1_l > 0.06 and ratio_wd1_l < 0.11:
+        whorl_dis_1/=1.4877
+    if ratio_wd1_l > 0.11 and ratio_wd1_l < 0.17:
+        whorl_dis_1/=2.3356
+    if ratio_wd1_l > 0.17 and ratio_wd1_l < 0.19:
+        whorl_dis_1/=4.3137
+    if ratio_wd1_l > 0.19 and ratio_wd1_l < 0.20:
+        whorl_dis_1/=2.8099
+    if ratio_wd1_l > 0.20 and ratio_wd1_l < 0.25:
+        whorl_dis_1/=5.4059
+    if ratio_wd1_l > 0.25 and ratio_wd1_l < 0.28:
+        whorl_dis_1/=6.3283
+    if ratio_wd1_l > 0.28 and ratio_wd1_l < 0.4:
+        whorl_dis_1/=4.6487
+        
+    
+    ratio_wd2_l = whorl_dis_2/s_length
+    if ratio_wd2_l > 0.06 and ratio_wd2_l < 0.08:
+        whorl_dis_2/=4.5026
+    if ratio_wd2_l > 0.08 and ratio_wd2_l < 0.098:
+        whorl_dis_2/=0.77743
+    if ratio_wd2_l > 0.098 and ratio_wd2_l < 0.12:
+        whorl_dis_2/=1.0314
+    if ratio_wd2_l > 0.12 and ratio_wd2_l < 0.13:
+        whorl_dis_2/=1.4676
+    if ratio_wd2_l > 0.13 and ratio_wd2_l < 0.135:
+        whorl_dis_2/=1.2518
+    if ratio_wd2_l > 0.135 and ratio_wd2_l < 0.24:
+        whorl_dis_2/=1.6999
+    if ratio_wd2_l > 0.24 and ratio_wd2_l < 0.3:
+        whorl_dis_2/=2.9627
+        
+        
+        
+    
     if num_brace < 25 and num_crown < 27:
         n_whorl = count_wholrs + 2
     else:
