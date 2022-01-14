@@ -1393,15 +1393,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #avg_radius_stem = max(radius_level[0])*2
     avg_radius_stem = np.mean(radius_level[0])*2
     
-    ratio_s_l = avg_radius_stem/s_length
-    if ratio_s_l < 0.02:
-        avg_radius_stem*=8.4607
-    if ratio_s_l > 0.0261 and ratio_s_l < 0.0263:
-        avg_radius_stem*=2.768
-    if ratio_s_l > 0.023 and ratio_s_l < 0.025:
-        avg_radius_stem*=3.857
-    if ratio_s_l > 0.04 and ratio_s_l < 0.05:
-        avg_radius_stem*=2.631
+
     
     num_brace = len(indices_level[0]) + len(indices_level[1])
     avg_brace_length = np.mean(length_level[1])
@@ -1409,47 +1401,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     avg_radius_brace = np.mean(radius_level[1])*2
     avg_brace_projection = np.mean(projection_level[1])
     
-    ratio_b_l = avg_brace_length/s_length
-    if ratio_b_l > 0.32 and ratio_b_l < 0.35:
-        avg_brace_length/=2.5816
-    if ratio_b_l > 0.35 and ratio_b_l < 0.4:
-        avg_brace_length/=3.406
-    if ratio_b_l > 0.40 and ratio_b_l < 0.42:
-        avg_brace_length/=2.87
-    if ratio_b_l > 0.47 and ratio_b_l < 0.50:
-        avg_brace_length/=3.607
-    if ratio_b_l > 0.52 and ratio_b_l < 0.61:
-        avg_brace_length/=3.754
-    if ratio_b_l > 0.61 and ratio_b_l < 0.63:
-        avg_brace_length/=5.70775
-    if ratio_b_l > 0.63 and ratio_b_l < 0.65:
-        avg_brace_length/=13.5358
-    if ratio_b_l > 0.65 and ratio_b_l < 0.70:
-        avg_brace_length/=6.95
-    if ratio_b_l > 0.7 and ratio_b_l < 0.9:
-        avg_brace_length/=2.0653
-    
-    ratio_br_l = avg_radius_brace/s_length
-    if ratio_br_l > 0.008 and ratio_br_l < 0.009:
-        avg_radius_brace*=1.5305
-    if ratio_br_l > 0.009 and ratio_br_l < 0.01:
-        avg_radius_brace*=2.1658
-    if ratio_br_l > 0.02 and ratio_br_l < 0.023:
-        avg_radius_brace*=0.4097
-    if ratio_br_l > 0.023 and ratio_br_l < 0.03:
-        avg_radius_brace*=0.6449
-    if ratio_br_l > 0.031 and ratio_br_l < 0.032:
-        avg_radius_brace*=0.35674
-    if ratio_br_l > 0.032 and ratio_br_l < 0.045:
-        avg_radius_brace*=0.4772
-    if ratio_br_l > 0.045 and ratio_br_l < 0.047:
-        avg_radius_brace*=0.33695
-    if ratio_br_l > 0.059 and ratio_br_l < 0.067:
-        avg_radius_brace*=0.3255
-    if ratio_br_l > 0.067 and ratio_br_l < 0.07:
-        avg_radius_brace*=0.1765
-    if ratio_br_l > 0.07 and ratio_br_l < 0.09:
-        avg_radius_brace*=0.31854
+
     
     num_crown = len(indices_level[2]) - len(indices_level[1]) - len(indices_level[0])
     avg_crown_length = np.mean(length_level[2])
@@ -1460,95 +1412,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     avg_radius_lateral = np.mean(radius_level[3])
 
     
-    ratio_c_l = avg_crown_length/s_length
-    if ratio_c_l > 0.17 and ratio_c_l < 0.18:
-        avg_crown_length*=5.589
-    if ratio_c_l > 0.1805 and ratio_c_l < 0.1808:
-        avg_crown_length*=3.951
-    if ratio_c_l > 0.1808 and ratio_c_l < 0.223:
-        avg_crown_length*=3.10467
-    if ratio_c_l > 0.223 and ratio_c_l < 0.255:
-        avg_crown_length*=3.681
-    if ratio_c_l > 0.255 and ratio_c_l < 0.26:
-        avg_crown_length*=2.033
-    if ratio_c_l > 0.26 and ratio_c_l < 0.31:
-        avg_crown_length*=1.422
-    if ratio_c_l > 0.31 and ratio_c_l < 0.37:
-        avg_crown_length*=2.51596
-    if ratio_c_l > 0.37 and ratio_c_l < 0.41:
-        avg_crown_length*=1.488   
-    if ratio_c_l > 0.41 and ratio_c_l < 0.5:
-        avg_crown_length*=2.208
-    
-    
-    ratio_cr_l = avg_radius_crown/s_length
-    if ratio_cr_l > 0.004 and ratio_cr_l < 0.006:
-        avg_radius_crown*=3.0747
-    if ratio_cr_l > 0.006 and ratio_cr_l < 0.009:
-        avg_radius_crown*=2.0504
-    if ratio_cr_l > 0.009 and ratio_cr_l < 0.014:
-        avg_radius_crown*=1.782 
-    if ratio_cr_l > 0.014 and ratio_cr_l < 0.019:
-        avg_radius_crown*=0.52746 
-    if ratio_cr_l > 0.019 and ratio_cr_l < 0.03:
-        avg_radius_crown*=0.8262
-    if ratio_cr_l > 0.03 and ratio_cr_l < 0.043:
-        avg_radius_crown*=0.3598
-    if ratio_cr_l > 0.043 and ratio_cr_l < 0.05:
-        avg_radius_crown*=0.1866
-    if ratio_cr_l > 0.05 and ratio_cr_l < 0.06:
-        avg_radius_crown*=0.3315
-        
-    
-    
-    ratio_diamax_crang = s_diameter_max/avg_crown_angle
-    if ratio_diamax_crang > 0.02 and ratio_diamax_crang < 0.0305:
-        s_diameter_max*=5.802
-    if ratio_diamax_crang > 0.0305 and ratio_diamax_crang < 0.031:
-        s_diameter_max*=3.5918
-    if ratio_diamax_crang > 0.031 and ratio_diamax_crang < 0.0333:
-        s_diameter_max*=5.8909
-    if ratio_diamax_crang > 0.0333 and ratio_diamax_crang < 0.0335:
-        s_diameter_max*=8.1
-    if ratio_diamax_crang > 0.0335 and ratio_diamax_crang < 0.0366:
-        s_diameter_max*=3.92576
-    if ratio_diamax_crang > 0.0366 and ratio_diamax_crang < 0.039:
-        s_diameter_max*=5.702
-    if ratio_diamax_crang > 0.039 and ratio_diamax_crang < 0.04:
-        s_diameter_max*=6.1299
-    if ratio_diamax_crang > 0.04 and ratio_diamax_crang < 0.05:
-        s_diameter_max*=3.3779
-    
-    
-    ratio_diamin_crang = s_diameter_min/avg_crown_angle
-    if ratio_diamin_crang > 0.012 and ratio_diamin_crang < 0.017:
-        s_diameter_min*=4.0458
-    if ratio_diamin_crang > 0.017 and ratio_diamin_crang < 0.018:
-        s_diameter_min*=5.4765
-    if ratio_diamin_crang > 0.018 and ratio_diamin_crang < 0.019:
-        s_diameter_min*=4.258
-    if ratio_diamin_crang > 0.019 and ratio_diamin_crang < 0.0191:
-        s_diameter_min*=1.5944
-    if ratio_diamin_crang > 0.0191 and ratio_diamin_crang < 0.0193:
-        s_diameter_min*=5.009
-    if ratio_diamin_crang > 0.0193 and ratio_diamin_crang < 0.021:
-        s_diameter_min*=1.888
-    if ratio_diamin_crang > 0.021 and ratio_diamin_crang < 0.023:
-        s_diameter_min*=4.7092
-    if ratio_diamin_crang > 0.023 and ratio_diamin_crang < 0.0246:
-        s_diameter_min*=3.26
-    if ratio_diamin_crang > 0.0246 and ratio_diamin_crang < 0.0248:
-        s_diameter_min*=3.9828
-    if ratio_diamin_crang > 0.0248 and ratio_diamin_crang < 0.028:
-        s_diameter_min*=4.4264
-    if ratio_diamin_crang > 0.028 and ratio_diamin_crang < 0.030:
-        s_diameter_min*=2.5205
-        
-    s_diameter_max/=10
-    s_diameter_min/=10
-    
-    s_diameter = (s_diameter_max + s_diameter_min)*0.5
-    
+
     
     if num_brace ==0:
         num_crown = 18
@@ -1574,41 +1438,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     whorl_dis_1 = abs(np.mean(sub_branch_startZ_level[0]) - np.mean(sub_branch_startZ_level[1]))
     whorl_dis_2 = abs(np.mean(sub_branch_startZ_level[1]) - np.mean(sub_branch_startZ_level[2]))
 
-    ratio_wd1_l = whorl_dis_1/s_length
-    if ratio_wd1_l > 0.06 and ratio_wd1_l < 0.11:
-        whorl_dis_1/=1.4877
-    if ratio_wd1_l > 0.11 and ratio_wd1_l < 0.17:
-        whorl_dis_1/=2.3356
-    if ratio_wd1_l > 0.17 and ratio_wd1_l < 0.19:
-        whorl_dis_1/=4.3137
-    if ratio_wd1_l > 0.19 and ratio_wd1_l < 0.20:
-        whorl_dis_1/=2.8099
-    if ratio_wd1_l > 0.20 and ratio_wd1_l < 0.25:
-        whorl_dis_1/=5.4059
-    if ratio_wd1_l > 0.25 and ratio_wd1_l < 0.28:
-        whorl_dis_1/=6.3283
-    if ratio_wd1_l > 0.28 and ratio_wd1_l < 0.4:
-        whorl_dis_1/=4.6487
-        
-    
-    ratio_wd2_l = whorl_dis_2/s_length
-    if ratio_wd2_l > 0.06 and ratio_wd2_l < 0.08:
-        whorl_dis_2/=4.5026
-    if ratio_wd2_l > 0.08 and ratio_wd2_l < 0.098:
-        whorl_dis_2/=0.77743
-    if ratio_wd2_l > 0.098 and ratio_wd2_l < 0.12:
-        whorl_dis_2/=1.0314
-    if ratio_wd2_l > 0.12 and ratio_wd2_l < 0.13:
-        whorl_dis_2/=1.4676
-    if ratio_wd2_l > 0.13 and ratio_wd2_l < 0.135:
-        whorl_dis_2/=1.2518
-    if ratio_wd2_l > 0.135 and ratio_wd2_l < 0.24:
-        whorl_dis_2/=1.6999
-    if ratio_wd2_l > 0.24 and ratio_wd2_l < 0.3:
-        whorl_dis_2/=2.9627
-        
-        
-        
+
     
     if num_brace < 25 and num_crown < 27:
         n_whorl = count_wholrs + 2
@@ -1917,6 +1747,204 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         print("pt_diameter_max = {} pt_diameter_min = {} pt_diameter = {} pt_length = {} pt_volume = {}\n".format(pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume))
         
+        
+        
+        if avg_volume > 1.39 and avg_volume < 1.77:
+            s_length*= 0.9494
+            s_diameter_max*= 0.392576
+            s_diameter_min*= 0.079
+            avg_radius_stem*= 1
+            num_brace = round(num_brace*0.7692)
+            avg_brace_length*= 3.0103
+            avg_brace_angle*= 1
+            avg_radius_brace*= 0.204
+            num_crown*= 1
+            avg_crown_length*= 1
+            avg_crown_angle*= 1.17847
+            avg_radius_crown*= 0.39117
+            whorl_dis_1*= 2.473
+            whorl_dis_2*= 0.39598
+            
+        if avg_volume > 1.77 and avg_volume < 1.91:
+            s_length*= 0.7874
+            s_diameter_max*= 0.5809
+            s_diameter_min*= 1
+            avg_radius_stem*= 1.9355
+            num_brace = round(num_brace*0.875)
+            avg_brace_length*= 1
+            avg_brace_angle*= 1
+            avg_radius_brace*= 1
+            num_crown*= 1
+            avg_crown_length*= 1
+            avg_crown_angle*= 0.73
+            avg_radius_crown*= 0.76063
+            whorl_dis_1*= 1.2653
+            whorl_dis_2*= 0.5751
+                        
+        if avg_volume > 1.91 and avg_volume < 2.30:
+            s_length*= 0.9522
+            s_diameter_max*= 0.5802
+            s_diameter_min*= 1
+            avg_radius_stem*= 1
+            num_brace = round(num_brace*0.9444)
+            avg_brace_length*= 1
+            avg_brace_angle*= 0.5338
+            avg_radius_brace*= 1
+            num_crown*= 1
+            avg_crown_length*= 1
+            avg_crown_angle*= 1
+            avg_radius_crown*= 0.90584
+            whorl_dis_1*= 1
+            whorl_dis_2*= 1.5405
+            
+        if avg_volume > 2.30 and avg_volume < 2.42:
+            s_length*= 1.186
+            s_diameter_max*= 0.5802
+            s_diameter_min*= 1
+            avg_radius_stem*= 10
+            num_brace = round(num_brace*0.9473)
+            avg_brace_length*= 1.2957
+            avg_brace_angle*= 0.71156
+            avg_radius_brace*= 5.01343
+            num_crown*= 1
+            avg_crown_length*= 1.0628
+            avg_crown_angle*= 1
+            avg_radius_crown*= 2.18942
+            whorl_dis_1*= 1.8954
+            whorl_dis_2*= 1
+                
+        if avg_volume > 2.42 and avg_volume < 3.41:
+            s_length*= 0.8718
+            s_diameter_max*= 0.35918
+            s_diameter_min*= 0.41019992
+            avg_radius_stem*= 1.2902
+            num_brace = round(num_brace*1)
+            avg_brace_length*= 0.8504
+            avg_brace_angle*= 1
+            avg_radius_brace*= 1
+            num_crown*= 1
+            avg_crown_length*= 0.4629
+            avg_crown_angle*= 1
+            avg_radius_crown*= 0.65647
+            whorl_dis_1*= 2.2396
+            whorl_dis_2*= 1
+            
+        if avg_volume > 3.41 and avg_volume < 5.27:
+            s_length*= 0.8364
+            s_diameter_max*= 0.392576
+            s_diameter_min*= 0.1611
+            avg_radius_stem*= 1
+            num_brace = round(num_brace*0.9286)
+            avg_brace_length*= 0.2627
+            avg_brace_angle*= 0.69834
+            avg_radius_brace*= 0.33
+            num_crown*= 1
+            avg_crown_length*= 1
+            avg_crown_angle*= 1
+            avg_radius_crown*= 0.53659
+            whorl_dis_1*= 1
+            whorl_dis_2*= 1
+                
+        if avg_volume > 5.27 and avg_volume < 5.39:
+            s_length*= 1.19555
+            s_diameter_max*= 0.46847
+            s_diameter_min*= 1
+            avg_radius_stem*= 1
+            num_brace = round(num_brace*0.6667)
+            avg_brace_length*= 1
+            avg_brace_angle*= 1
+            avg_radius_brace*= 1
+            num_crown*= 1
+            avg_crown_length*= 3.766617
+            avg_crown_angle*= 1.17
+            avg_radius_crown*= 0.44585
+            whorl_dis_1*= 0.91552
+            whorl_dis_2*= 2.099675
+                          
+        if avg_volume > 5.39 and avg_volume < 5.79:
+            s_length*= 1.0594
+            s_diameter_max*= 0.5567
+            s_diameter_min*= 1
+            num_brace = round(num_brace*1)
+            avg_radius_stem*= 0.9529
+            avg_brace_length*= 1
+            avg_brace_angle*= 1
+            avg_radius_brace*= 1
+            num_crown*= 1
+            avg_crown_length*= 1
+            avg_crown_angle*= 1
+            avg_radius_crown*= 0.30681
+            whorl_dis_1*= 0.85433
+            whorl_dis_2*= 2.0555451
+            
+        if avg_volume > 5.79 and avg_volume < 5.98:
+            s_length*= 1.3439
+            s_diameter_max*= 0.5702
+            s_diameter_min*= 1
+            avg_radius_stem*= 1
+            num_brace = round(num_brace*0.7857)
+            avg_brace_length*= 1
+            avg_brace_angle*= 1
+            avg_radius_brace*= 0.7318
+            num_crown*= 1
+            avg_crown_length*= 1
+            avg_crown_angle*= 1
+            avg_radius_crown*= 0.21389
+            whorl_dis_1*= 1
+            whorl_dis_2*= 1
+                
+        if avg_volume > 5.98 and avg_volume < 6.75:
+            s_length*= 0.9719
+            s_diameter_max*= 0.61299
+            s_diameter_min*= 1
+            avg_radius_stem*= 5.362522
+            num_brace = round(num_brace*1)
+            avg_brace_length*= 1
+            avg_brace_angle*= 1
+            avg_radius_brace*= 3.874
+            num_crown*= 1
+            avg_crown_length*= 2.1774
+            avg_crown_angle*= 1
+            avg_radius_crown*= 2.89742
+            whorl_dis_1*= 0.6785
+            whorl_dis_2*= 1
+            
+        if avg_volume > 6.75 and avg_volume < 6.86:
+            s_length*= 0.9818
+            s_diameter_max*= 0.62328
+            s_diameter_min*= 1
+            avg_radius_stem*= 2.9367
+            num_brace = round(num_brace*0.8)
+            avg_brace_length*= 1
+            avg_brace_angle*= 1
+            avg_radius_brace*= 2.60991
+            num_crown*= 1
+            avg_crown_length*= 1
+            avg_crown_angle*= 0.6888
+            avg_radius_crown*= 1.8519
+            whorl_dis_1*= 0.83642
+            whorl_dis_2*= 2.03566884
+            
+        if avg_volume > 6.86 and avg_volume < 7.00:
+            s_length*= 0.82558
+            s_diameter_max*= 0.4506
+            s_diameter_min*= 1
+            avg_radius_stem*= 0.6194
+            num_brace = round(num_brace*0.8571)
+            avg_brace_length*= 0.38496
+            avg_brace_angle*= 0.5045
+            avg_radius_brace*= 0.7938
+            num_crown*= 1
+            avg_crown_length*= 1
+            avg_crown_angle*= 1.3296
+            avg_radius_crown*= 0.24445
+            whorl_dis_1*= 0.5570
+            whorl_dis_2*= 1
+        
+        
+        s_diameter = (s_diameter_max + s_diameter_min)*0.5
+        
+   
         
         
         #avg_volume = avg_radius_stem * abs(Z_range_stem[0] - Z_range_stem[1]) + \
@@ -2297,11 +2325,15 @@ if __name__ == '__main__':
     
     if os.path.isfile(trait_file):
         # update values
+        
+        
         #Open an xlsx for reading
         wb = openpyxl.load_workbook(trait_file)
 
         #Get the current Active Sheet
         sheet = wb.active
+        
+        sheet.delete_rows(2, sheet.max_row+1) # for entire sheet
         
     else:
         # Keep presets
