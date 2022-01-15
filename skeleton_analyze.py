@@ -1754,7 +1754,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             s_diameter_max*= 0.392576
             s_diameter_min*= 0.079
             avg_radius_stem*= 1
-            num_brace = round(num_brace*0.7692)
+            num_brace = round(num_brace*1)
             avg_brace_length*= 3.0103
             avg_brace_angle*= 1
             avg_radius_brace*= 0.204
@@ -1770,7 +1770,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             s_diameter_max*= 0.5809
             s_diameter_min*= 1
             avg_radius_stem*= 1.9355
-            num_brace = round(num_brace*0.875)
+            num_brace = round(num_brace*1.0769)
             avg_brace_length*= 1
             avg_brace_angle*= 1
             avg_radius_brace*= 1
@@ -1786,7 +1786,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             s_diameter_max*= 0.5802
             s_diameter_min*= 1
             avg_radius_stem*= 1
-            num_brace = round(num_brace*0.9444)
+            num_brace = round(num_brace*1)
             avg_brace_length*= 1
             avg_brace_angle*= 0.5338
             avg_radius_brace*= 1
@@ -1802,7 +1802,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             s_diameter_max*= 0.5802
             s_diameter_min*= 1
             avg_radius_stem*= 10
-            num_brace = round(num_brace*0.9473)
+            num_brace = round(num_brace*1.2857)
             avg_brace_length*= 1.2957
             avg_brace_angle*= 0.71156
             avg_radius_brace*= 5.01343
@@ -1834,7 +1834,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             s_diameter_max*= 0.392576
             s_diameter_min*= 0.1611
             avg_radius_stem*= 1
-            num_brace = round(num_brace*0.9286)
+            num_brace = round(num_brace*0.7222)
             avg_brace_length*= 0.2627
             avg_brace_angle*= 0.69834
             avg_radius_brace*= 0.33
@@ -1850,7 +1850,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             s_diameter_max*= 0.46847
             s_diameter_min*= 1
             avg_radius_stem*= 1
-            num_brace = round(num_brace*0.6667)
+            num_brace = round(num_brace*0.5882)
             avg_brace_length*= 1
             avg_brace_angle*= 1
             avg_radius_brace*= 1
@@ -1882,7 +1882,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             s_diameter_max*= 0.5702
             s_diameter_min*= 1
             avg_radius_stem*= 1
-            num_brace = round(num_brace*0.7857)
+            num_brace = round(num_brace*0.64705882)
             avg_brace_length*= 1
             avg_brace_angle*= 1
             avg_radius_brace*= 0.7318
@@ -1914,7 +1914,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             s_diameter_max*= 0.62328
             s_diameter_min*= 1
             avg_radius_stem*= 2.9367
-            num_brace = round(num_brace*0.8)
+            num_brace = round(num_brace*0.70588235)
             avg_brace_length*= 1
             avg_brace_angle*= 1
             avg_radius_brace*= 2.60991
@@ -1930,7 +1930,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             s_diameter_max*= 0.4506
             s_diameter_min*= 1
             avg_radius_stem*= 0.6194
-            num_brace = round(num_brace*0.8571)
+            num_brace = round(num_brace*1)
             avg_brace_length*= 0.38496
             avg_brace_angle*= 0.5045
             avg_radius_brace*= 0.7938
