@@ -5,9 +5,7 @@ public: True
 commands: /opt/3D_model_traits_demo/shim.sh
 input:
   path:
-  kind: files
-  filetypes:
-    - ply
+  kind: file
 output:
   path:
   include:
