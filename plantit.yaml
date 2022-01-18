@@ -6,6 +6,8 @@ commands: /opt/3D_model_traits_demo/shim.sh
 input:
   path:
   kind: file
+  filetypes:
+    - ply
 output:
   path:
   include:
