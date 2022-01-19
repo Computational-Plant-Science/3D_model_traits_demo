@@ -2,7 +2,7 @@ name: DIRT3D Traits
 author: Suxing Liu
 image: docker://computationalplantscience/dirt3d-traits
 public: True
-commands: /opt/3D_model_traits_demo/shim.sh
+commands: /opt/code/shim.sh
 input:
   path:
   kind: file
