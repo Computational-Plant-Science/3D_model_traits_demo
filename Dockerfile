@@ -2,8 +2,10 @@ FROM ubuntu:20.04
 
 LABEL maintainer='Suxing Liu, Wes Bonelli'
 
-COPY ./ /opt/3D_model_traits_demo
+# copy project source
+COPY ./ /opt/code
 
+# update OS and install dependencies
 RUN apt update
 RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt install -y \
     build-essential \
@@ -27,43 +29,21 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt install -y \
     libcairo2 \
     python-cairo \
     nano
-    
 
-ENV PYTHONPATH=$PYTHONPATH:/opt/3D_model_traits_demo/
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/3D_model_traits_demo/
-
-# ENV LC_ALL=C.UTF-8
-# ENV LANG=C.UTF-8
-
+# install Python dependencies
 RUN pip3 install --upgrade pip && \
-    pip3 install numpy \
-    Pillow \
-    rdp \
-    scipy \
-    scikit-image \
-    scikit-learn \
-    scikit-build \
-    matplotlib \
-    mahotas \
-    plyfile \
-    psutil \
-    cairosvg \
-    certifi \
-    pandas \
-    pytest \
-    coverage \
-    coveralls \
-    open3d \
-    opencv-python-headless \
-    openpyxl \
-    click \
-    PyYAML \
-    imutils 
+    pip3 install -r /opt/code/requirements.txt
 
-RUN apt-key adv --keyserver keys.openpgp.org --recv-key 612DEFB798507F25
+# install Python graph-tool (not available via pip)
+RUN apt-key adv --keyserver keys.openpgp.org --recv-key 612DEFB798507F25 && \
+    add-apt-repository 'deb [ arch=amd64 ] https://downloads.skewed.de/apt focal main' && \
+    apt update && \
+    apt install python3-graph-tool -y
 
-RUN add-apt-repository 'deb [ arch=amd64 ] https://downloads.skewed.de/apt focal main'
+# make sure Python modules/scripts are available
+ENV PYTHONPATH=$PYTHONPATH:/opt/code/
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/code/
 
-RUN apt update 
-
-RUN apt install python3-graph-tool -y
+# is this necessary?
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8

@@ -1,13 +1,15 @@
 name: DIRT3D Traits
+logo: root_logo.jpg
 author: Suxing Liu
 image: docker://computationalplantscience/dirt3d-traits
 public: True
 commands: /opt/3D_model_traits_demo/shim.sh
+env:
+  - LC_ALL=C.UTF-8
+  - LANG=C.UTF-8
 input:
-  path:
   kind: file
 output:
-  path:
   include:
     patterns:
       - png
@@ -16,10 +18,6 @@ output:
       - txt
       - csv
       - xlsx
-logo: root_logo.jpg
-env:
-  - LC_ALL=C.UTF-8
-  - LANG=C.UTF-8
 jobqueue:
   walltime: "04:00:00"
   memory: "40GB"

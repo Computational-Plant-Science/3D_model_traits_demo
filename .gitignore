@@ -1,5 +1,7 @@
 .idea
 tests/data*
 tests/output
+input*
+output*
 __pycache__
 **/*__pycache__

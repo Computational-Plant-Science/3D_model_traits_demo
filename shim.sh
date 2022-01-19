@@ -1,7 +1,8 @@
 # run pipeline
-python3 /opt/3D_model_traits_demo/pipeline.py -p $(dirname $INPUT)/ -m $(basename $INPUT)
+# TODO: maybe just 1 input parameter? (full path to model file instead of specifying dir and name separately)
+python3 /opt/code/pipeline.py -p $(dirname $INPUT)/ -m $(basename $INPUT)
 
-# copy nested output files to working directory
+# copy nested output files to base working directory
 find . -type f -name "*.png" -exec cp {} $WORKDIR \;
 find . -type f -name "*.jpg" -exec cp {} $WORKDIR \;
 find . -type f -name "*.csv" -exec cp {} $WORKDIR \;
