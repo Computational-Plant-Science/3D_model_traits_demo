@@ -18,7 +18,7 @@ output:
       - txt
       - csv
       - xlsx
-logo: root_logo.jpg
+logo: media/image5.jpg
 env:
   - LC_ALL=C.UTF-8
   - LANG=C.UTF-8
