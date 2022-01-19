@@ -1,5 +1,5 @@
 # run pipeline
-python3 /opt/3D_model_traits_demo/pipeline.py -p $(dirname $INPUT)/ -m $(basename $INPUT)
+python3 /opt/code/pipeline.py -p $INPUT -o $OUTPUT
 
 # copy nested output files to working directory
 find . -type f -name "*.png" -exec cp {} $WORKDIR \;
