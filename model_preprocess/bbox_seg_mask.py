@@ -110,8 +110,8 @@ def foreground_substractor(image_file):
     # Convert BGR to GRAY
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     
-    #blur = cv2.blur(gray, (3, 3)) # blur the image
-    blur = cv2.GaussianBlur(gray, (25, 25), 0)
+    blur = cv2.blur(gray, (3, 3)) # blur the image
+    #blur = cv2.GaussianBlur(gray, (25, 25), 0)
     
     #Obtain the threshold image using OTSU adaptive filter
     ret, thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
@@ -236,7 +236,7 @@ def foreground_substractor(image_file):
 
     
     
-    margin = 550
+    margin = 150
     
     # define crop region
     start_y = int((y - margin) if (y - margin )> 0 else 0)
@@ -256,10 +256,12 @@ def foreground_substractor(image_file):
     
     #crop_img = masked_fg_contour[start_y:crop_height, start_x:crop_width]
     
-    if args['bounding_box']:
+    if args['bounding_box'] == 1:
         crop_img = ori[start_y:crop_height, start_x:crop_width]
     else:
+        #crop_img = combined_fg_bk[start_y:crop_height, start_x:crop_width]
         crop_img = masked_fg_contour[start_y:crop_height, start_x:crop_width]
+        
     cv2.imwrite(result_img_path, crop_img)
     
     
@@ -330,7 +332,7 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True,    help = "path to image file")
     ap.add_argument("-ft", "--filetype", required = False,  default = 'jpg' ,    help = "image filetype")
-    ap.add_argument("-b", "--bounding_box", required = False,  default = False ,    help = "using bounding box")
+    ap.add_argument("-b", "--bounding_box", required = False,  type = int, default = 0, help = "using bounding box")
     args = vars(ap.parse_args())
 
     # setting path to model file

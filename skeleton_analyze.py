@@ -1431,7 +1431,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         num_crown = round(interp(num_crown,[1,num_crown*2],[18,26]))
     elif num_crown ==0 and num_brace > 12: 
         num_crown = 35
-    elif num_crown ==0:
+    elif num_crown ==0 or num_crown < 0:
         num_crown = num_brace + 10
     
     
@@ -1941,7 +1941,24 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             whorl_dis_1*= 0.5570
             whorl_dis_2*= 1
         
-        
+        if avg_volume > 10:
+            s_length*= 0.82558
+            s_diameter_max*= 0.4506
+            s_diameter_min*= 1
+            avg_radius_stem*= 0.6194
+            num_brace = round(num_brace*1)
+            avg_brace_length*= 0.38496
+            avg_brace_angle*= 1
+            avg_radius_brace*= 0.7938
+            num_crown*= 1
+            avg_crown_length*= 1
+            avg_crown_angle*= 1
+            avg_radius_crown*= 0.24445
+            whorl_dis_1*= 0.5570
+            whorl_dis_2*= 1
+            avg_volume/= (interp(avg_volume,[1,avg_volume],[5,10]))
+            
+            
         s_diameter = (s_diameter_max + s_diameter_min)*0.5
         
    
