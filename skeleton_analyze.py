@@ -1956,7 +1956,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             avg_radius_crown*= 0.24445
             whorl_dis_1*= 0.5570
             whorl_dis_2*= 1
-            avg_volume/= (interp(avg_volume,[1,avg_volume],[5,10]))
+            avg_volume/= (interp(avg_volume,[1,avg_volume],[3,5]))
             
             
         s_diameter = (s_diameter_max + s_diameter_min)*0.5
