@@ -19,34 +19,23 @@ python3 extract_slice.py -p ~/path/model.obj -n 10
 '''
 # !/usr/bin/env python3
 
+import argparse
+import io
+import os
+import shutil
+import struct
 import sys
 from os.path import join
 from pathlib import Path
 
+import cv2
 import numpy as np
-import extract_intersection
-import struct
-
-import os
-import glob
-import argparse
-import shutil
-
-from sklearn import preprocessing
-from sklearn.preprocessing import MinMaxScaler
-
-import psutil
-import multiprocessing
-from multiprocessing import Pool
-from contextlib import closing
-
-from cairosvg import svg2png
 import open3d as o3d
 from PIL import Image
+from cairosvg import svg2png
+from sklearn import preprocessing
 
-import io
-
-import cv2
+import extract_intersection
 
 
 # generate foloder to store the output results
@@ -77,35 +66,22 @@ def mkdir(path):
         return False
 
 
-def OBJ2STL(current_path, model_name):
-    model_file = current_path + model_name
+def OBJ2STL(model_path, output_directory):
+    stem = Path(model_path).stem
+    name = Path(model_path).name
+    print("Converting file format for 3D point cloud model: {}".format(name))
 
-    print("Converting file format for 3D point cloud model {}...\n".format(model_name))
-
-    model_name_base = os.path.splitext(model_file)[0]
-
-    mesh = o3d.io.read_triangle_mesh(model_file)
-
-    print("3D model file infomation: {}\n".format(mesh))
+    mesh = o3d.io.read_triangle_mesh(model_path)
+    print("3D model file infomation: {}".format(mesh))
 
     stl_mesh = o3d.geometry.TriangleMesh.compute_triangle_normals(mesh)
-
-    stl_output = model_name_base + '.stl'
-
-    # print(stl_output)
-
-    o3d.io.write_triangle_mesh(stl_output, stl_mesh)
-
-    # check saved file
-    if os.path.exists(stl_output):
-        print("Converted 3d model was saved at {0}\n".format(stl_output))
-        return True
+    stl_model_file = join(output_directory, stem + '.stl')
+    if o3d.io.write_triangle_mesh(stl_model_file, stl_mesh):
+        print("Converted 3d model was saved at: {0}".format(stl_model_file))
+        return stl_mesh
     else:
-        return False
-        print("Model file converter failed !\n")
-        sys.exit(0)
-
-    return stl_mesh
+        print("Model file converter failed!")
+        sys.exit(1)
 
 
 # get data from STL file as point coordinates
@@ -147,9 +123,9 @@ def normalize_data(data_points, data_range):
 
 # Generate svg file from slice
 def save_file(data_list, width, height, slice_name, xmin, ymin, output_directory: str):
-    result_file = join(output_directory, + slice_name + '.png')
+    result_file = join(output_directory, slice_name + '.png')
 
-    print("Generating slice image '{}' ...\n".format(slice_name))
+    print("Generating slice image: '{}'".format(slice_name))
 
     # svg_data = bytearray()
 
@@ -221,14 +197,9 @@ def save_file(data_list, width, height, slice_name, xmin, ymin, output_directory
 # get data point from model files
 def get_slice_data(plane_h, output_directory: str):
     slice_planes = extract_intersection.filter_data(data_points, plane_h)
-
     data_slice_planes = extract_intersection.intersection(slice_planes, plane_h)
-
-    width = max(xmax - xmin, ymax - ymin)
-
-    height = max(xmax - xmin, ymax - ymin)
-
-    save_file(data_slice_planes, max(xmax - xmin, ymax - ymin), max(xmax - xmin, ymax - ymin),
+    max_width = max(xmax - xmin, ymax - ymin)
+    save_file(data_slice_planes, max_width, max_width,
               "slice_" + str(int(plane_h)).zfill(3) + ".svg", xmin, ymin, output_directory)
 
     return data_slice_planes
@@ -239,15 +210,12 @@ def slice_model(model_path: str, output_directory: str, n_slices: int):
     global data_points, xmin, xmax, ymin, ymax, zmin, zmax
 
     data_points_model = get_data(model_path)
-
     data_points = normalize_data(data_points_model, n_slices)
 
     (xmin, xmax, ymin, ymax, zmin, zmax) = extract_intersection.find_boundary(data_points)
-
     print(xmin, xmax, ymin, ymax, zmin, zmax)
 
     planes = np.linspace(zmin + 1, zmax - 1, n_slices - 2)
-
     for index, plane_h in enumerate(planes):
         # slice_planes = extract_intersection.filter_data(data_points, plane_h)
 
@@ -282,25 +250,27 @@ if __name__ == '__main__':
     args = vars(ap.parse_args())
 
     # path to model file
-    model_path = Path(args["path"])
+    model_path = args["path"]
     output_directory = args['output']
     slices = int(args['num_slices'])
 
     # make sure model file and output directory exist
-    if not model_path.exists():
+    if not Path(model_path).exists():
         print(f"Model file does not exist: {model_path}")
+        sys.exit(1)
+
+    # make sure model file and output directory exist
+    if not Path(output_directory).exists():
+        print(f"Output directory does not exist: {output_directory}")
         sys.exit(1)
 
     # if no output directory provided, use current working directory
     if output_directory is None: output_directory = os.getcwd()
 
-    # make sure output directory exists
-    if not Path(output_directory).is_dir():
-        print(f"Output directory does not exist: {output_directory}")
-        sys.exit(1)
-
     # convert .obj to .stl
-    stl_mesh = OBJ2STL(model_path)
+    print("Converting .obj file to .stl")
+    stl_mesh = OBJ2STL(model_path, output_directory)
 
     # extract slices from .stl model
-    slice_model(join(model_path.parent, model_path.stem, '.stl'), output_directory, slices)
+    print("Computing slices")
+    slice_model(join(output_directory, Path(model_path).stem + '.stl'), output_directory, slices)

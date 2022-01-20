@@ -17,57 +17,37 @@ python3 pipeline.py -p ~/example/ -m test.ply
 
 """
 
-import subprocess, os
-import sys
 import argparse
+import os
+import subprocess
+import sys
 from os.path import join
 from pathlib import Path
-
-import numpy as np
-
-
-# execute script inside program
-def execute_script(cmd_line):
-    try:
-        # print(cmd_line)
-        # os.system(cmd_line)
-
-        process = subprocess.getoutput(cmd_line)
-
-        print(process)
-
-        # process = subprocess.Popen(cmd_line, shell = True, stdout = subprocess.PIPE)
-        # process.wait()
-        # print (process.communicate())
-
-    except OSError:
-
-        print("Failed ...!\n")
 
 
 def model_analysis_pipeline(model_path: str, output_directory: str, n_slices: int, test: bool = False):
 
     # step 1  python3 model_alignment.py -p ~/example/test.ply
-    print("Transform point cloud to its rotation center and align its upright orientation with Z direction...\n")
+    print("Transform point cloud to its rotation center and align its upright orientation with Z direction...")
     subprocess.getoutput(f"python3 model_alignment.py -p {model_path} -o {output_directory} -t {str(test)}")
 
     # step 2 ./AdTree/Release/bin/AdTree ~/example/pt_cloud/test.xyz ~/example/pt_cloud/
-    print("Compute structure and skeleton from point cloud model ...\n")
+    print("Compute structure and skeleton from point cloud model...")
     model_stem = Path(model_path).stem
     aligned_model_path = join(output_directory, model_stem + ".xyz")
     subprocess.getoutput(f"./AdTree/Release/bin/AdTree {aligned_model_path} {output_directory}")
 
     # step 3  python3 extract_slice.py -p ~/example/pt_cloud/test_branches.obj -n 100
-    print("Generate cross section sequence ...\n")
+    print("Generate cross section sequence...")
     obj_model_path = join(output_directory, model_stem + "_branches.obj")
     slice_directory_path = join(output_directory, 'slices')
+    Path(slice_directory_path).mkdir(exist_ok=True)
     subprocess.getoutput(f"python3 extract_slice.py -p {obj_model_path} -o {slice_directory_path} -n {str(n_slices)}")
 
     # step 4 python3 skeleton_analyze.py -m1 ~/example/pt_cloud/test_skeleton.ply -m2 ~/example/pt_cloud/test_aligned.ply -m3 ~/example/pt_cloud/slices/
-    print("Analyze skeleton&structure and compute traits...\n")
+    print("Analyze skeleton & structure and compute traits...")
     skeleton_model_path = join(output_directory, model_stem + "_skeleton.ply")
-    traits_computation = f"python3 skeleton_analyze.py -m1 {skeleton_model_path} -m2 {aligned_model_path} -m3 {slice_directory_path} -o {output_directory}"
-    execute_script(traits_computation)
+    subprocess.getoutput(f"python3 skeleton_analyze.py -m1 {skeleton_model_path} -m2 {aligned_model_path} -m3 {slice_directory_path} -o {output_directory}")
 
 
 if __name__ == '__main__':
@@ -97,7 +77,7 @@ if __name__ == '__main__':
     n_slices = args["n_slices"]         # number of slices for cross section
     test = args['test']                 # if using test setup
 
-    print("Processing 3d model point cloud file '{}' ...\n".format(file_path))
+    print("Processing 3d model point cloud file '{}'".format(file_path))
 
     # if no output directory provided, use current working directory
     if output_directory is None: output_directory = os.getcwd()

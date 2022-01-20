@@ -20,58 +20,34 @@ argument:
 # !/usr/bin/env python
 
 
-# import the necessary packages
-from os.path import join
-from pathlib import Path
-
-from plyfile import PlyData, PlyElement
-import numpy as np
-from numpy import interp
-
-from sklearn import preprocessing
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.cluster import KMeans
-from operator import itemgetter
 import argparse
-
-from skimage.segmentation import watershed
-from skimage.feature import peak_local_max
-from skimage.morphology import convex_hull_image
-from skimage.measure import regionprops
-
-from scipy.spatial import KDTree
-from scipy import ndimage
-import random
-
-import cv2
-
 import glob
+import math
 import os
 import sys
-import open3d as o3d
-import copy
-import shutil
+from os.path import join
+from pathlib import Path
+from warnings import simplefilter
 
-# import networkx as nx
-
+import cv2
 import graph_tool.all as gt
-
-# import plotly.graph_objects as go
-
-from matplotlib import pyplot as plt
-import math
-import itertools
-
-# from tabulate import tabulate
-from rdp import rdp
-
+import numpy as np
+import open3d as o3d
 import openpyxl
+from matplotlib import pyplot as plt
+from numpy import interp
 from openpyxl import Workbook
 from openpyxl import load_workbook
-import csv
+from plyfile import PlyData
+from rdp import rdp
+from scipy import ndimage
+from scipy.spatial import KDTree
+from skimage.feature import peak_local_max
+from skimage.measure import regionprops
+from skimage.morphology import convex_hull_image
+from skimage.segmentation import watershed
+from sklearn.cluster import KMeans
 
-# import warnings filter
-from warnings import simplefilter
 
 # ignore all future warnings
 simplefilter(action='ignore', category=FutureWarning)
