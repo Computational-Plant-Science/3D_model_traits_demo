@@ -4,12 +4,10 @@ image: docker://computationalplantscience/dirt3d-traits
 public: True
 commands: /opt/code/shim.sh
 input:
-  path:
   kind: file
   filetypes:
     - ply
 output:
-  path:
   include:
     patterns:
       - png
