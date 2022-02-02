@@ -1087,7 +1087,44 @@ def weightedAverageQuaternions(Q, w):
     #return np.real(eigenVectors[:,0].A1)
     return np.ravel(eigenVectors[:,0])
 
+
+def euler_to_rotMat(yaw, pitch, roll):
+    Rz_yaw = np.array([
+        [np.cos(yaw), -np.sin(yaw), 0],
+        [np.sin(yaw),  np.cos(yaw), 0],
+        [          0,            0, 1]])
+    Ry_pitch = np.array([
+        [ np.cos(pitch), 0, np.sin(pitch)],
+        [             0, 1,             0],
+        [-np.sin(pitch), 0, np.cos(pitch)]])
+    Rx_roll = np.array([
+        [1,            0,             0],
+        [0, np.cos(roll), -np.sin(roll)],
+        [0, np.sin(roll),  np.cos(roll)]])
+    # R = RzRyRx
+    rotMat = np.dot(Rz_yaw, np.dot(Ry_pitch, Rx_roll))
     
+    return rotMat
+
+
+# RPY/Euler angles to Rotation Vector
+def euler_to_rotVec(yaw, pitch, roll):
+
+    # compute the rotation matrix
+    Rmat = euler_to_rotMat(yaw, pitch, roll)
+    
+    theta = math.acos(((Rmat[0, 0] + Rmat[1, 1] + Rmat[2, 2]) - 1) / 2)
+    sin_theta = math.sin(theta)
+    if sin_theta == 0:
+        rx, ry, rz = 0.0, 0.0, 0.0
+    else:
+        multi = 1 / (2 * math.sin(theta))
+        rx = multi * (Rmat[2, 1] - Rmat[1, 2]) * theta
+        ry = multi * (Rmat[0, 2] - Rmat[2, 0]) * theta
+        rz = multi * (Rmat[1, 0] - Rmat[0, 1]) * theta
+    return rx, ry, rz
+
+
 
 #find shortest path between start and end vertex
 def short_path_finder(G_unordered, start_v, end_v):
@@ -1807,7 +1844,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     quaternion_path_rec = []
     
-    for idx, end_v in enumerate(sub_branch_end_rec[0:10]):
+    rotVec_rec = []
+    
+    for idx, end_v in enumerate(sub_branch_end_rec[0:100]):
         
         #print("start_v = {} end_v = {} \n".format(start_v, end_v))
    
@@ -1818,6 +1857,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             vlist_path_rec.append(vlist_path)
             
             sum_quaternion = np.zeros([len(vlist_path), 4])
+            
+            #sum_euler = np.zeros([len(vlist_path), 3])
             
             for i, v_path in enumerate(vlist_path):
         
@@ -1834,17 +1875,31 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
                     quaternion_r = R.from_matrix(mat).as_quat()
                     
+                    #euler_r = R.from_matrix(mat).as_euler('xyz', degrees = True)
+                    
                     sum_quaternion[i,:] = quaternion_r
+                    
+                    #sum_euler[i,:] = euler_r
                     
                     #print("vlist_path = {} quaternion_r = {}".format(idx, quaternion_r))
             
-            avg_sum_quaternion = averageQuaternions(sum_quaternion)
+            avg_quaternion = averageQuaternions(sum_quaternion)
             
-            print("vlist_path = {} avg_sum_quaternion = {}".format(idx, avg_sum_quaternion))
+            rot = R.from_quat(avg_quaternion)
             
+            avg_euler = rot.as_euler('xyz')
             
+            #avg_euler = np.mean(sum_euler, axis = 0)
+            
+            rotVec = euler_to_rotVec(avg_euler[0], avg_euler[1], avg_euler[2])
+            
+            print("vlist_path = {} avg_quaternion = {} avg_euler = {} rotVec = {}".format(idx, avg_quaternion, avg_euler, rotVec))
+            
+            rotVec_rec.append(rotVec)
             
     print("Found {} shortest path \n".format(len(vlist_path_rec)))
+    
+    #print(rotVec_rec)
     
     '''
     for idx, v_path in enumerate(vlist_path_rec[0]):
@@ -2214,6 +2269,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     
     
+    
     #Skeleton Visualization pipeline
     ####################################################################
     # The number of points per line
@@ -2253,6 +2309,52 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
        
         #pts.glyph.glyph.clamping = False
 
+
+        ###############################################################################
+        # Display a semi-transparent sphere, for the surface of the Earth
+
+        # We use a sphere Glyph, through the points3d mlab function, rather than
+        # building the mesh ourselves, because it gives a better transparent
+        # rendering.
+        sphere = mlab.points3d(0, 0, 0, scale_mode='none',
+                                scale_factor=2,
+                                color=(0.67, 0.77, 0.93),
+                                resolution=50,
+                                opacity=0.7,
+                                name='Earth')
+
+        # These parameters, as well as the color, where tweaked through the GUI,
+        # with the record mode to produce lines of code usable in a script.
+        sphere.actor.property.specular = 0.45
+        sphere.actor.property.specular_power = 5
+        # Backface culling is necessary for more a beautiful transparent
+        # rendering.
+        sphere.actor.property.backface_culling = True
+
+        for Vec in rotVec_rec:
+            
+            #print(Vec[0], Vec[1], Vec[2])
+            
+            mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0,Vec[0], Vec[1], Vec[2])) #xyzuvw
+            
+            #pts = mlab.points3d(Vec[0], Vec[1], Vec[2], color = (1,0,0), mode = 'sphere', scale_factor = 0.05)
+
+
+        ###############################################################################
+        # Plot the equator and the tropiques
+        theta = np.linspace(0, 2 * np.pi, 100)
+        for angle in (- np.pi / 6, 0, np.pi / 6):
+            x = np.cos(theta) * np.cos(angle)
+            y = np.sin(theta) * np.cos(angle)
+            z = np.ones_like(theta) * np.sin(angle)
+
+            mlab.plot3d(x, y, z, color=(1, 1, 1), opacity=0.2, tube_radius=None)
+
+        mlab.view(63.4, 73.8, 4, [-0.05, 0, 0])
+    
+        
+        
+        
         '''
         N_sublist = dsf_length_divide_idx
 
