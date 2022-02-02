@@ -16,7 +16,7 @@ output:
       - txt
       - csv
       - xlsx
-logo: media/image5.jpg
+logo: media/DIRTX-3D
 env:
   - LC_ALL=C.UTF-8
   - LANG=C.UTF-8
