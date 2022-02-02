@@ -1,4 +1,4 @@
-name: DIRT3D Traits
+name: DIRT\3D Traits
 author: Suxing Liu
 image: docker://computationalplantscience/dirt3d-traits
 public: True
