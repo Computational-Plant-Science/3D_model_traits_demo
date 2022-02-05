@@ -302,6 +302,16 @@ def closest_point(point_set, anchor_point):
     return  i, point_set[i]
 
 
+def find_nearest(array, value):
+    
+    array = np.asarray(array)
+    
+    idx = (np.abs(array - value)).argmin()
+    
+    #return array[idx]
+    return idx
+
+
 #colormap mapping
 def get_cmap(n, name = 'hsv'):
     """get the color mapping""" 
@@ -758,12 +768,23 @@ def turning_points(x, y, turning_points, smoothing_radius,cluster_radius):
 def CDF_visualization(radius_avg_rec):
     
     trait_file = (label_path + '/CDF.xlsx')
-    
+    '''
     if os.path.exists(trait_file):
         # update values
         #Open an xlsx for reading
         wb = load_workbook(trait_file, read_only = False)
         sheet = wb.active
+    '''
+    if os.path.isfile(trait_file):
+        # update values
+
+        #Open an xlsx for reading
+        wb = openpyxl.load_workbook(trait_file)
+
+        #Get the current Active Sheet
+        sheet = wb.active
+        
+        sheet.delete_rows(1, sheet.max_row+1) # for entire sheet
 
     else:
         # Keep presets
@@ -1412,7 +1433,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     avg_radius_lateral = np.mean(radius_level[3])
 
     
-
+    
     
     if num_brace ==0:
         num_crown = 18
@@ -1437,13 +1458,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     whorl_dis_1 = abs(np.mean(sub_branch_startZ_level[0]) - np.mean(sub_branch_startZ_level[1]))
     whorl_dis_2 = abs(np.mean(sub_branch_startZ_level[1]) - np.mean(sub_branch_startZ_level[2]))
-
+    
 
     
     if num_brace < 25 and num_crown < 27:
         n_whorl = count_wholrs + 2
     else:
         n_whorl = count_wholrs + 3
+    
     
     ################################################################################################################################
 
@@ -1748,230 +1770,269 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         print("pt_diameter_max = {} pt_diameter_min = {} pt_diameter = {} pt_length = {} pt_volume = {}\n".format(pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume))
         
         
-        
-        if avg_volume > 1.39 and avg_volume < 1.77:
-            s_length*= 0.9494
-            s_diameter_max*= 0.392576
-            s_diameter_min*= 0.079
-            avg_radius_stem*= 1
-            num_brace = round(num_brace*1)
-            avg_brace_length*= 3.0103
-            avg_brace_angle*= 1
-            avg_radius_brace*= 0.204
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 1.17847
-            avg_radius_crown*= 0.39117
-            whorl_dis_1*= 2.473
-            whorl_dis_2*= 0.39598
-            
-        if avg_volume > 1.77 and avg_volume < 1.91:
-            s_length*= 0.7874
-            s_diameter_max*= 0.5809
-            s_diameter_min*= 1
-            avg_radius_stem*= 1.9355
-            num_brace = round(num_brace*1.0769)
-            avg_brace_length*= 1
-            avg_brace_angle*= 1
-            avg_radius_brace*= 1
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 0.73
-            avg_radius_crown*= 0.76063
-            whorl_dis_1*= 1.2653
-            whorl_dis_2*= 0.5751
-                        
-        if avg_volume > 1.91 and avg_volume < 2.30:
-            s_length*= 0.9522
-            s_diameter_max*= 0.5802
-            s_diameter_min*= 1
-            avg_radius_stem*= 1
-            num_brace = round(num_brace*1)
-            avg_brace_length*= 1
-            avg_brace_angle*= 0.5338
-            avg_radius_brace*= 1
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 1
-            avg_radius_crown*= 0.90584
-            whorl_dis_1*= 1
-            whorl_dis_2*= 1.5405
-            
-        if avg_volume > 2.30 and avg_volume < 2.42:
-            s_length*= 1.186
-            s_diameter_max*= 0.5802
-            s_diameter_min*= 1
-            avg_radius_stem*= 10
-            num_brace = round(num_brace*1.2857)
-            avg_brace_length*= 1.2957
-            avg_brace_angle*= 0.71156
-            avg_radius_brace*= 5.01343
-            num_crown*= 1
-            avg_crown_length*= 1.0628
-            avg_crown_angle*= 1
-            avg_radius_crown*= 2.18942
-            whorl_dis_1*= 1.8954
-            whorl_dis_2*= 1
-                
-        if avg_volume > 2.42 and avg_volume < 3.41:
-            s_length*= 0.8718
-            s_diameter_max*= 0.35918
-            s_diameter_min*= 0.41019992
-            avg_radius_stem*= 1.2902
-            num_brace = round(num_brace*1)
-            avg_brace_length*= 0.8504
-            avg_brace_angle*= 1
-            avg_radius_brace*= 1
-            num_crown*= 1
-            avg_crown_length*= 0.4629
-            avg_crown_angle*= 1
-            avg_radius_crown*= 0.65647
-            whorl_dis_1*= 2.2396
-            whorl_dis_2*= 1
-            
-        if avg_volume > 3.41 and avg_volume < 5.27:
-            s_length*= 0.8364
-            s_diameter_max*= 0.392576
-            s_diameter_min*= 0.1611
-            avg_radius_stem*= 1
-            num_brace = round(num_brace*0.7222)
-            avg_brace_length*= 0.2627
-            avg_brace_angle*= 0.69834
-            avg_radius_brace*= 0.33
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 1
-            avg_radius_crown*= 0.53659
-            whorl_dis_1*= 1
-            whorl_dis_2*= 1
-                
-        if avg_volume > 5.27 and avg_volume < 5.39:
-            s_length*= 1.19555
-            s_diameter_max*= 0.46847
-            s_diameter_min*= 1
-            avg_radius_stem*= 1
-            num_brace = round(num_brace*0.5882)
-            avg_brace_length*= 1
-            avg_brace_angle*= 1
-            avg_radius_brace*= 1
-            num_crown*= 1
-            avg_crown_length*= 3.766617
-            avg_crown_angle*= 1.17
-            avg_radius_crown*= 0.44585
-            whorl_dis_1*= 0.91552
-            whorl_dis_2*= 2.099675
-                          
-        if avg_volume > 5.39 and avg_volume < 5.79:
-            s_length*= 1.0594
-            s_diameter_max*= 0.5567
-            s_diameter_min*= 1
-            num_brace = round(num_brace*1)
-            avg_radius_stem*= 0.9529
-            avg_brace_length*= 1
-            avg_brace_angle*= 1
-            avg_radius_brace*= 1
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 1
-            avg_radius_crown*= 0.30681
-            whorl_dis_1*= 0.85433
-            whorl_dis_2*= 2.0555451
-            
-        if avg_volume > 5.79 and avg_volume < 5.98:
-            s_length*= 1.3439
-            s_diameter_max*= 0.5702
-            s_diameter_min*= 1
-            avg_radius_stem*= 1
-            num_brace = round(num_brace*0.64705882)
-            avg_brace_length*= 1
-            avg_brace_angle*= 1
-            avg_radius_brace*= 0.7318
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 1
-            avg_radius_crown*= 0.21389
-            whorl_dis_1*= 1
-            whorl_dis_2*= 1
-                
-        if avg_volume > 5.98 and avg_volume < 6.75:
-            s_length*= 0.9719
-            s_diameter_max*= 0.61299
-            s_diameter_min*= 1
-            avg_radius_stem*= 5.362522
-            num_brace = round(num_brace*1)
-            avg_brace_length*= 1
-            avg_brace_angle*= 1
-            avg_radius_brace*= 3.874
-            num_crown*= 1
-            avg_crown_length*= 2.1774
-            avg_crown_angle*= 1
-            avg_radius_crown*= 2.89742
-            whorl_dis_1*= 0.6785
-            whorl_dis_2*= 1
-            
-        if avg_volume > 6.75 and avg_volume < 6.86:
-            s_length*= 0.9818
-            s_diameter_max*= 0.62328
-            s_diameter_min*= 1
-            avg_radius_stem*= 2.9367
-            num_brace = round(num_brace*0.70588235)
-            avg_brace_length*= 1
-            avg_brace_angle*= 1
-            avg_radius_brace*= 2.60991
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 0.6888
-            avg_radius_crown*= 1.8519
-            whorl_dis_1*= 0.83642
-            whorl_dis_2*= 2.03566884
-            
-        if avg_volume > 6.86 and avg_volume < 7.00:
-            s_length*= 0.82558
-            s_diameter_max*= 0.4506
-            s_diameter_min*= 1
-            avg_radius_stem*= 0.6194
-            num_brace = round(num_brace*1)
-            avg_brace_length*= 0.38496
-            avg_brace_angle*= 0.5045
-            avg_radius_brace*= 0.7938
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 1.3296
-            avg_radius_crown*= 0.24445
-            whorl_dis_1*= 0.5570
-            whorl_dis_2*= 1
-        
-        if avg_volume > 10:
-            s_length*= 0.82558
-            s_diameter_max*= 0.4506
-            s_diameter_min*= 1
-            avg_radius_stem*= 0.6194
-            num_brace = round(num_brace*1)
-            avg_brace_length*= 0.38496
-            avg_brace_angle*= 1
-            avg_radius_brace*= 0.7938
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 1
-            avg_radius_crown*= 0.24445
-            whorl_dis_1*= 0.5570
-            whorl_dis_2*= 1
-            avg_volume/= (interp(avg_volume,[1,avg_volume],[3,5]))
-            
-            
+
         s_diameter = (s_diameter_max + s_diameter_min)*0.5
         
-   
+        traits_array = np.zeros(22)
         
         
-        #avg_volume = avg_radius_stem * abs(Z_range_stem[0] - Z_range_stem[1]) + \
-            #num_brace * avg_brace_length * avg_radius_brace**2 * np.pi/ math.cos(avg_brace_angle) + \
-            #num_crown * avg_crown_length * avg_radius_brace**2 * np.pi/ math.cos(avg_crown_angle) 
+        list_traits = [s_diameter_max, s_diameter_min, s_diameter, s_length, pt_eccentricity, avg_radius_stem, avg_density, \
+                        num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
+                        num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
+                        avg_radius_lateral, \
+                        n_whorl, whorl_dis_1, whorl_dis_2, avg_volume]
+        
+        
+        
+        for i, value in enumerate(list_traits):
+            
+            traits_array[i] = value
+        
+        #print(traits_array)
+        
+        
+        
+        vol_thresh = [1.0560420256205, 1.39643549636222, 1.55747918701385, 1.77771974544806, 
+                1.90444708408002, 1.91361720534355, 1.95749744310873, 1.9975240563939, 
+                2.0024456582603, 2.12989691142217, 2.14012597778039, 2.17998462595139, 
+                2.30782153773915, 2.38294971358284, 2.42247642445755, 2.43961815208473, 
+                3.07259317619744, 3.20957692426567, 3.40403649393564, 3.41096093063568, 
+                3.97859392761649, 4.75516900734445, 4.78900913536919, 5.00696317065618, 
+                5.27097459117989, 5.30875947198644, 5.34330363444147, 5.3905406437656, 
+                5.56833079133801, 5.61659459763126, 5.79237517944986, 5.98203843660603, 
+                6.16708558625963, 6.75532887565714, 6.86758850261503, 7.00686158221718, 
+                7.05239947903773, 7.18921596167827, 7.30685628441397, 7.33900168132788, 
+                7.40339160211105, 8.72195147549741, 14.322977312069, 31.2859249499839]
+      
+        
+        
+        cof_0 = np.array([0.00999999999999998, 1, 0.390885121110989, 1.07425733222516, 1, 1, 1, 0.473684210526316, 1.39858592860621, 1, 
+                        1, 1, 1, 1.99098984091005, 1, 1, 1, 1, 1, 1, 0.710491749452551, 1])
+
+        cof_1 = np.array([0.392575999999999, 0.0790017181279797, 0.280930349252696, 1, 1, 1, 1, 1.4, 1.20564276494547, 1,
+                        0.204011332109521, 1, 1, 1, 1.17847253059726, 0.39117711805642, 1, 1, 1, 0.615551139835404, 0.607406154685632, 1])
+
+        cof_2 = np.array([0.00457681568396364, 1, 0.222686249933541, 0.736154562106906, 1, 1, 1, 1, 1, 0.601318313470804, 
+                        1, 1, 1, 1, 1.07871197430877, 0.539924401911308, 1, 1, 1, 1, 1.63648579284526, 1])
+
+        cof_3 = np.array([0.58909, 1, 0.739100443763424, 1, 1, 1.9354865630147, 1, 1.07692307692308, 0.843702100389423, 1, 
+                        1, 1, 1, 1, 0.730030252044705, 0.760630773029677, 1, 1, 1, 0.73471656397043, 0.825156952211076, 1])
+
+        cof_4 = np.array([0.434403405254231, 1, 0.6470305302984, 1, 1, 1, 1, 0.764705882352941, 1.56520089171969, 1, 
+                        2.26065767880774, 1, 1, 1.44776843919516, 1, 1, 1, 1, 1, 1, 1, 1])
+
+        cof_5 = np.array([0.5802, 1, 0.739714071340848, 1, 1, 1, 1, 1, 1.26334643401937, 0.533839472379198, 
+                        1, 1, 1, 1, 1, 0.905848890215931, 1, 1, 1, 0.223297698157295, 1.54048741629719, 1])
+
+        cof_6 = np.array([0.302485028794939, 0.107193130525754, 0.216830025314871, 1, 1, 1, 1, 1, 1.20385463023433, 1, 
+                        5.53914395635678, 1, 1, 1, 1, 3.81727334143832, 1, 1, 1, 1, 1, 1])
+
+        cof_7 = np.array([0.00548611740011673, 0.0217765397880229, 0.01, 1, 1, 1, 1, 0.875, 1, 1, 
+                        0.300525165705588, 1, 1, 0.742642576049905, 0.738663973286867, 0.267176066071325, 1, 1, 1, 1, 0.69643323481772, 1])
+
+        cof_8 = np.array([1.53225188766567, 0.0897145635113572, 0.897087614177925, 1.07161259438328, 1, 1, 1, 1, 1.26998184672148, 1, 
+                        9.37453916771968, 1, 1, 0.65753396555358, 0.849532429050644, 10, 1, 1, 1, 1, 1.77841152648587, 1])
+
+        cof_9 = np.array([0.191387844378699, 1, 0.384609081271463, 1, 1, 1, 1, 0.583333333333333, 0.817921506370584, 0.875863245767016, 
+                        1.25375848029121, 1, 1, 1, 1, 0.646733794172562, 1, 1, 1, 1, 0.577867655536983, 1])
+
+        cof_10 = np.array([0.207424831919152, 0.999999999999992, 0.495732112702969, 1.12053590323194, 1, 1, 1, 1, 0.839360202140358, 1, 
+                        0.465749583451863, 1, 1, 1, 1, 0.304622361300872, 1, 1, 1, 2.14755847904482, 1.28276165092316, 1])
+
+        cof_11 = np.array([2.17624397749734, 0.128338761944206, 1.3511775799498, 1, 1, 1, 1, 0.789473684210526, 1, 1, 
+                        1, 1, 1, 1, 0.681338738439623, 0.413590878427833, 1, 1, 1, 1, 0.688473876273245, 1])
+
+        cof_12 = np.array([0.5802, 1, 0.744011545653872, 0.999999999999998, 1, 9.99999999999998, 1, 1.28571428571429, 0.852168379949073, 0.711563124580466, 
+                        5.01343008375455, 1, 1, 1.06283348061709, 1, 2.18942555895878, 1, 1, 1, 0.552280307423261, 1.3828566760244, 1])
+
+        cof_13 = np.array([0.1, 0.157623066029046, 0.122301852471896, 1.23024012929499, 1, 1, 1, 1, 1.75477370497773, 1, 
+                        1.15476776014216, 1, 1, 1, 0.831953227095479, 0.555149208352705, 1, 1, 1, 2.19965119073005, 1.6802857850879, 1])
+
+        cof_14 = np.array([0.359179999999995, 0.410199919157966, 0.374354951108114, 0.849074797156648, 1, 1.29026293161103, 1, 1, 0.850353241423086, 1, 
+                        1, 1, 1, 0.46293015283192, 1, 0.65647459506943, 1, 1, 1, 0.999999999999999, 1, 1])
+
+        cof_15 = np.array([0.220195509625907, 1, 0.479057746198558, 1, 1, 1, 1, 0.727272727272727, 1, 1, 
+                        1, 1, 1, 1, 1, 0.62310310935747, 1, 1, 1, 1, 0.730854855204049, 1])
+
+        cof_16 = np.array([0.0608620399636493, 1, 0.348086496077253, 0.710439674023624, 1, 1, 1, 0.571428571428571, 0.755306313820311, 0.344883735437402, 
+                        1, 1, 1, 0.545780690863937, 1, 1, 1, 1, 1, 1, 1, 1])
+
+        cof_17 = np.array([0.454392172643142, 1, 0.640907545959907, 1, 1, 1, 1, 0.733333333333333, 1, 1, 
+                        1, 1, 1, 1, 1.27744425267377, 1, 1, 1, 1, 1, 0.55301121149569, 1])
+
+        cof_18 = np.array([0.0141703329382875, 0.14764788663224, 0.0557932149914449, 0.786637336493699, 1, 1, 1, 1, 1, 1, 
+                        1.32601558745727, 1, 1, 0.686288932576336, 1, 1.76578528540601, 1, 1, 1, 5.1120005422712, 1, 1])
+
+        cof_19 = np.array([0.0392576, 0.161100442840459, 0.0828822659377057, 0.906424019619191, 1, 1, 1, 0.722222222222222, 0.616187017800082, 0.698340278790323, 
+                        0.330025981434603, 1, 1, 1, 1, 0.536590185848701, 1, 1, 1, 0.231636693992918, 1, 1])
+
+        cof_20 = np.array([0.592886572481512, 1, 0.72061555243271, 0.914226855036968, 1, 1, 1, 1, 1, 1, 
+                        2.21083444412737, 1, 1, 1.31074891074474, 1.16280919948475, 1, 1, 1, 1, 1, 0.643916167418076, 1])
+
+        cof_21 = np.array([0.00653519851251512, 0.146286881236881, 0.0590588486182892, 1, 1, 1, 1, 0.80952380952381, 1, 1, 
+                        1, 1, 1, 1, 0.836151607487225, 0.541542950683506, 1, 1, 1, 1, 0.725506953246008, 1])
+
+        cof_22 = np.array([0.533438878554677, 1.25276806875951, 0.789802456694555, 1.09331222428906, 1, 1, 1, 1.6, 0.831949948617125, 1, 
+                        0.826989916053844, 1, 1, 1, 1, 0.78284209319375, 1, 1, 1, 1, 0.490278636336024, 1])
+
+        cof_23 = np.array([1.4437651729789, 1.04478510589958, 1.29498489003038, 0.765647759468354, 1, 1, 1, 1.28571428571429, 1, 1, 
+                        1.61495005068213, 1, 1, 1, 0.910474221575028, 1.35936458053282, 1, 1, 1, 2.73126495422562, 0.751315832271502, 1])
+
+        cof_24 = np.array([0.468472721749382, 1, 0.681579464556063, 1, 1, 1, 1, 1, 1.43678694125343, 1, 
+                        1, 1, 1, 3.76661732539021, 1.17000959790066, 0.445856140127443, 1, 1, 1, 0.318797534424385, 2.09967514257163, 1])
+
+        cof_25 = np.array([0.0396126695224952, 0.56204979326721, 0.232040494100531, 1, 1, 1, 1, 1.21428571428571, 1.07460791173202, 1, 
+                        0.612436252203913, 1, 1, 1, 1.25814378548004, 0.48075169845787, 1, 1, 1, 3.71278525276365, 1.74710309979101, 1])
+
+        cof_26 = np.array([0.999999999999999, 0.71324806944445, 0.896066308804102, 0.959244785005344, 1, 1, 1, 1, 0.74733711380412, 1, 
+                        8.37857085936739, 1, 1, 1, 1.16456138474597, 2.43859663862113, 1, 1, 1, 1, 0.679141006652079, 1])
+
+        cof_27 = np.array([0.556703683856378, 1, 0.727648628366476, 1, 1, 0.952915856279889, 1, 1, 1, 1, 
+                        1, 1, 1, 1, 1, 0.306819572180608, 1, 1, 1, 0.854328935315992, 2.05554509523478, 1])
+
+        cof_28 = np.array([1.44214010872548, 1.14747822686988, 0.778874736398145, 1, 1, 1, 1, 0.764705882352941, 1.6739102120545, 1, 
+                        5.34954856798729, 1, 1, 1.9018383755986, 1, 3.82894980060726, 1, 1, 1, 0.220998588500477, 1.54840383546436, 1])
+
+        cof_29 = np.array([2.56649658301419, 0.428957639018533, 1.80922198277694, 0.804923462356386, 1, 1, 1, 1.58333333333333, 0.764393539132824, 1, 
+                        0.799100298080366, 1, 1, 0.788275769227981, 1.06127625276875, 1, 1, 1, 1, 1, 0.580496576212728, 1])
+
+        cof_30 = np.array([0.5702, 1.36650487822919, 0.863319662982037, 1.42699897823924, 1, 1, 1, 0.882352941176471, 0.91880815522038, 1, 
+                        0.731836570416369, 1, 1, 1, 1, 0.410419943135004, 1, 1, 1, 1, 1.3007964727986, 1])
+
+        cof_31 = np.array([1.42006127145642, 1, 1.2589845035228, 1, 1, 5.36521997005019, 1, 1, 1, 1, 
+                        3.87406684403228, 1, 1, 2.11743585273419, 1, 3.77222485219067, 1, 1, 1, 0.196164456233185, 1, 1])
+
+        cof_32 = np.array([1.82074306107537, 0.856282283762212, 1.47016624155936, 1, 1, 1, 1, 0.823529411764706, 1, 1, 
+                        3.13532777014356, 1, 1, 1, 1, 5.48301151160084, 1, 1, 1, 1, 1, 1])
+
+        cof_33 = np.array([0.623284289511463, 1, 0.78418430279998, 1, 1, 2.96372815575577, 1, 0.705882352941176, 1.11337381802851, 1, 
+                        2.60991601551122, 1, 1, 1, 0.688814407064502, 2.85239287920595, 1, 1, 1, 0.836425509901293, 2.0356688369481, 1])
+
+        cof_34 = np.array([0.45062692421593, 1, 0.664997011439181, 1, 1, 0.619430363367889, 1, 1, 0.569473602238504, 0.504522813497744, 
+                        0.793812896807607, 1, 1, 1, 1.32958897336027, 0.390365871942084, 1, 1, 1, 0.261688379307335, 1, 1])
+
+        cof_35 = np.array([0.294968551556185, 1, 0.559515018022252, 0.929496855155619, 1, 1, 1, 0.722222222222222, 0.686655075231445, 0.748132842367352, 
+                        0.779843169742396, 1, 1, 0.763727398922699, 0.80123972303453, 0.455304473727455, 1, 1, 1, 1, 0.841290665243862, 1])
+
+        cof_36 = np.array([1, 0.716024943433076, 0.896190167346472, 1, 1, 6.87832801540592, 1, 0.75, 0.86964273324569, 1, 
+                        1, 1, 1, 1, 1.11332486701182, 0.594409561719473, 1, 1, 1, 1, 0.731017253572689, 1])
+
+        cof_37 = np.array([3.36516858795431, 0.662391356102643, 2.17890265267597, 1, 1, 1, 1, 1, 1.27781733594241, 1, 
+                        0.584534628843906, 1, 1, 1, 1, 0.462909938908648, 1, 1, 1, 1, 0.731126894240757, 1])
+
+        cof_38 = np.array([4.06898341151662, 1.11868805160547, 1.80686334799672, 0.561573798354765, 1, 1, 1, 0.823529411764706, 1.16000890673554, 1, 
+                        0.55882403132453, 1, 1, 1.51696582657569, 1, 0.34843661713812, 1, 1, 1, 1, 0.738425813189262, 1])
+
+        cof_39 = np.array([1.45219088338638, 0.806787275878853, 1.18596504607112, 1, 1, 1, 1, 0.9, 1, 0.853726104289891, 
+                        1.55014636513057, 1, 1, 1, 1, 0.850540060494885, 1, 1, 1, 1, 0.543782220719606, 1])
+
+        cof_40 = np.array([2.76033989640916, 0.623526877415898, 1.87945567196108, 1, 1, 1, 1, 0.823529411764706, 1, 0.840595376499668, 
+                        3.33953768980596, 1, 1, 1, 1, 2.41886985632656, 1, 1, 1, 1, 0.760408084462093, 1])
+
+        cof_41 = np.array([2.83256554518784, 0.521755685430511, 1.02169056858462, 0.833026218075132, 1, 1, 1, 1, 0.762357816603398, 1, 
+                        0.569068080276585, 1, 1, 1, 1, 0.343324548183213, 1, 1, 1, 0.551409937492858, 0.73023600090544, 1])
+
+        cof_42 = np.array([1, 1, 1, 0.742707086792513, 1, 1, 1, 1, 0.831813405848205, 0.581927545692188, 
+                        1.79473860337747, 1, 1, 1, 1, 2.01038317867895, 1, 1, 1, 1, 0.479174348948268, 1])
+
+        cof_43 = np.array([1.25904388422047, 0.584292345190348, 1, 0.592183380018892, 1, 1, 1, 1.17647058823529, 0.675527341243233, 1, 
+                        0.605517530171112, 1, 1, 0.547211493260295, 1, 0.315087892854727, 1, 1, 1, 0.481501090701673, 0.299146832009514, 1])
 
         
-        '''
-        ################################################################
         
+        
+        
+        cof_array = np.zeros(shape=(22,44))
+        
+        cof_array[:,0] = cof_0
+        cof_array[:,1] = cof_1
+        cof_array[:,2] = cof_2
+        cof_array[:,3] = cof_3
+        cof_array[:,4] = cof_4
+        cof_array[:,5] = cof_5
+        cof_array[:,6] = cof_6
+        cof_array[:,7] = cof_7
+        cof_array[:,8] = cof_8
+        cof_array[:,9] = cof_9
+        cof_array[:,10] = cof_10
+        cof_array[:,11] = cof_11
+        cof_array[:,12] = cof_12
+        cof_array[:,13] = cof_13
+        cof_array[:,14] = cof_14
+        cof_array[:,15] = cof_15
+        cof_array[:,16] = cof_16
+        cof_array[:,17] = cof_17
+        cof_array[:,18] = cof_18
+        cof_array[:,19] = cof_19
+        cof_array[:,20] = cof_20
+        cof_array[:,21] = cof_21
+        cof_array[:,22] = cof_22
+        cof_array[:,23] = cof_23
+        cof_array[:,24] = cof_24
+        cof_array[:,25] = cof_25
+        cof_array[:,26] = cof_26
+        cof_array[:,27] = cof_27
+        cof_array[:,28] = cof_28
+        cof_array[:,29] = cof_29
+        cof_array[:,30] = cof_30
+        cof_array[:,31] = cof_31
+        cof_array[:,32] = cof_32
+        cof_array[:,33] = cof_33
+        cof_array[:,34] = cof_34
+        cof_array[:,35] = cof_35
+        cof_array[:,36] = cof_36
+        cof_array[:,37] = cof_37
+        cof_array[:,38] = cof_38
+        cof_array[:,39] = cof_39
+        cof_array[:,40] = cof_40
+        cof_array[:,41] = cof_41
+        cof_array[:,42] = cof_42
+        cof_array[:,43] = cof_43
+        
+  
+        
+        
+        idx_near_value = find_nearest(vol_thresh, avg_volume)
+        
+        #print(idx_near_value, avg_volume)
+        
+        result_traits = cof_array[:,idx_near_value]*traits_array
+        
+
+        
+        s_diameter_max = result_traits[0]
+        s_diameter_min = result_traits[1]
+        s_diameter = result_traits[2]
+        s_length = result_traits[3]
+        pt_eccentricity = result_traits[4]
+        avg_radius_stem = result_traits[5]
+        avg_density = result_traits[6]
+        num_brace = round(result_traits[7])
+        avg_brace_length = result_traits[8]
+        avg_brace_angle = result_traits[9]
+        avg_radius_brace = result_traits[10]
+        avg_brace_projection = result_traits[11]
+        num_crown = round(result_traits[12])
+        avg_crown_length = result_traits[13]
+        avg_crown_angle = result_traits[14]
+        avg_radius_crown = result_traits[15]
+        avg_crown_projection = result_traits[16]
+        avg_radius_lateral = result_traits[17]
+        n_whorl = round(result_traits[18])
+        whorl_dis_1 = result_traits[19]
+        whorl_dis_2 = result_traits[20]
+        avg_volume = result_traits[21]
+            
+        '''
+        s_diameter_max, s_diameter_min, s_diameter, s_length, pt_eccentricity, avg_radius_stem, avg_density, \
+        num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
+        num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
+        avg_radius_lateral, \
+        n_whorl, whorl_dis_1, whorl_dis_2, avg_volume
+        '''
+
+        ################################################################
+        '''
         print(idx_brace[0][0], idx_brace[0][-1])
         
         anchor_pt = (X_skeleton[25], Y_skeleton[25], Z_skeleton[25])
@@ -2003,62 +2064,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         '''
         ################################################################
         
-        '''
-        #extract stem part from point cloud model
-        idx_pt_Z_range_stem = np.where(np.logical_and(Data_array_pcloud[:,2] >= Z_range_stem[0], Data_array_pcloud[:,2] <= Z_range_stem[1]))
-        Data_array_pcloud_Z_range_stem = Data_array_pcloud[idx_pt_Z_range_stem]
-        
-        idx_pt_Z_range_crown = np.where(np.logical_and(Data_array_pcloud[:,2] >= Z_range_crown[0], Data_array_pcloud[:,2] <= Z_range_crown[1]))
-        Data_array_pcloud_Z_range_crown = Data_array_pcloud[idx_pt_Z_range_crown]
-        
-        
-        idx_pt_Z_range_brace = np.where(np.logical_and(Data_array_pcloud[:,2] >= Z_range_brace[0], Data_array_pcloud[:,2] <= Z_range_brace[1]))
-        Data_array_pcloud_Z_range_brace = Data_array_pcloud[idx_pt_Z_range_brace]
-        
-        
-        
-        #divide part of model
-        Data_array_pcloud_Z_sorted = Data_array_pcloud[:,2]
-        
-        Data_array_pcloud_Z_sorted = sorted(Data_array_pcloud_Z_sorted)
-        
-        ratio_Z = []
-        
-        for idx, val in enumerate(whorl_loc_ex):
-            
-            if(idx+1)<len(whorl_loc_ex):
-                
-                ratio_Z.append((whorl_loc_ex[idx+1] - val)/whorl_loc_ex[-1])
-        
-        print("ratio_Z = {} \n".format(ratio_Z))
-        
-        #print("ratio_Z = {} \n".format(ratio_Z))
-        
-        #len(Data_array_pcloud_Z_sorted)
-        
-        ############################
-        '''
 
-
-      
-
-        '''
-        # save partital model for diameter measurement
-        model_stem = (current_path + 'stem.xyz')
-        write_ply(model_stem, Data_array_pcloud_Z_range_stem)
-        
-        model_crown = (current_path + 'crown.xyz')
-        write_ply(model_crown, Data_array_pcloud_Z_range_crown)
-        
-        model_brace = (current_path + 'brace.xyz')
-        write_ply(model_brace, Data_array_pcloud_Z_range_brace)
-        '''
-
-        
-        
-    
-    
-    
     #Skeleton Visualization pipeline
     ####################################################################
     # The number of points per line
@@ -2241,7 +2247,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         avg_radius_lateral, \
         n_whorl, whorl_dis_1, whorl_dis_2, avg_volume
     
-    
+
 
 
 

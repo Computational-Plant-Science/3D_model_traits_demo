@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 skeleton_analyze.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/slices/ -v True
+python3 skeleton_graph.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/slices/ -v True
 
 
 argument:
@@ -1846,7 +1846,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     rotVec_rec = []
     
-    for idx, end_v in enumerate(sub_branch_end_rec[0:100]):
+    #for idx, end_v in enumerate(sub_branch_end_rec):
+    for idx, end_v in enumerate(sub_branch_end_rec[0:1000]):
         
         #print("start_v = {} end_v = {} \n".format(start_v, end_v))
    
@@ -1997,241 +1998,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             pcd_color = np.random.randint(256, size = (len(Data_array_pcloud),3))
             
 
-        '''
-        #compute dimensions of point cloud data
-        (pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume) = get_pt_parameter(Data_array_pcloud)
-        
-        #s_diameter_max = pt_diameter_max
-        #s_diameter_min = pt_diameter_min
-        #s_diameter = pt_diameter
-        #s_length = pt_length
-        
-        pt_eccentricity = (pt_diameter_min/pt_diameter_max)*1.15
-        
-        avg_volume = pt_volume
-        
-        print("pt_diameter_max = {} pt_diameter_min = {} pt_diameter = {} pt_length = {} pt_volume = {}\n".format(pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume))
-        
-        
-        
-        if avg_volume > 1.39 and avg_volume < 1.77:
-            s_length*= 0.9494
-            s_diameter_max*= 0.392576
-            s_diameter_min*= 0.079
-            avg_radius_stem*= 1
-            num_brace = round(num_brace*1)
-            avg_brace_length*= 3.0103
-            avg_brace_angle*= 1
-            avg_radius_brace*= 0.204
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 1.17847
-            avg_radius_crown*= 0.39117
-            whorl_dis_1*= 2.473
-            whorl_dis_2*= 0.39598
-            
-        if avg_volume > 1.77 and avg_volume < 1.91:
-            s_length*= 0.7874
-            s_diameter_max*= 0.5809
-            s_diameter_min*= 1
-            avg_radius_stem*= 1.9355
-            num_brace = round(num_brace*1.0769)
-            avg_brace_length*= 1
-            avg_brace_angle*= 1
-            avg_radius_brace*= 1
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 0.73
-            avg_radius_crown*= 0.76063
-            whorl_dis_1*= 1.2653
-            whorl_dis_2*= 0.5751
-                        
-        if avg_volume > 1.91 and avg_volume < 2.30:
-            s_length*= 0.9522
-            s_diameter_max*= 0.5802
-            s_diameter_min*= 1
-            avg_radius_stem*= 1
-            num_brace = round(num_brace*1)
-            avg_brace_length*= 1
-            avg_brace_angle*= 0.5338
-            avg_radius_brace*= 1
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 1
-            avg_radius_crown*= 0.90584
-            whorl_dis_1*= 1
-            whorl_dis_2*= 1.5405
-            
-        if avg_volume > 2.30 and avg_volume < 2.42:
-            s_length*= 1.186
-            s_diameter_max*= 0.5802
-            s_diameter_min*= 1
-            avg_radius_stem*= 10
-            num_brace = round(num_brace*1.2857)
-            avg_brace_length*= 1.2957
-            avg_brace_angle*= 0.71156
-            avg_radius_brace*= 5.01343
-            num_crown*= 1
-            avg_crown_length*= 1.0628
-            avg_crown_angle*= 1
-            avg_radius_crown*= 2.18942
-            whorl_dis_1*= 1.8954
-            whorl_dis_2*= 1
-                
-        if avg_volume > 2.42 and avg_volume < 3.41:
-            s_length*= 0.8718
-            s_diameter_max*= 0.35918
-            s_diameter_min*= 0.41019992
-            avg_radius_stem*= 1.2902
-            num_brace = round(num_brace*1)
-            avg_brace_length*= 0.8504
-            avg_brace_angle*= 1
-            avg_radius_brace*= 1
-            num_crown*= 1
-            avg_crown_length*= 0.4629
-            avg_crown_angle*= 1
-            avg_radius_crown*= 0.65647
-            whorl_dis_1*= 2.2396
-            whorl_dis_2*= 1
-            
-        if avg_volume > 3.41 and avg_volume < 5.27:
-            s_length*= 0.8364
-            s_diameter_max*= 0.392576
-            s_diameter_min*= 0.1611
-            avg_radius_stem*= 1
-            num_brace = round(num_brace*0.7222)
-            avg_brace_length*= 0.2627
-            avg_brace_angle*= 0.69834
-            avg_radius_brace*= 0.33
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 1
-            avg_radius_crown*= 0.53659
-            whorl_dis_1*= 1
-            whorl_dis_2*= 1
-                
-        if avg_volume > 5.27 and avg_volume < 5.39:
-            s_length*= 1.19555
-            s_diameter_max*= 0.46847
-            s_diameter_min*= 1
-            avg_radius_stem*= 1
-            num_brace = round(num_brace*0.5882)
-            avg_brace_length*= 1
-            avg_brace_angle*= 1
-            avg_radius_brace*= 1
-            num_crown*= 1
-            avg_crown_length*= 3.766617
-            avg_crown_angle*= 1.17
-            avg_radius_crown*= 0.44585
-            whorl_dis_1*= 0.91552
-            whorl_dis_2*= 2.099675
-                          
-        if avg_volume > 5.39 and avg_volume < 5.79:
-            s_length*= 1.0594
-            s_diameter_max*= 0.5567
-            s_diameter_min*= 1
-            num_brace = round(num_brace*1)
-            avg_radius_stem*= 0.9529
-            avg_brace_length*= 1
-            avg_brace_angle*= 1
-            avg_radius_brace*= 1
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 1
-            avg_radius_crown*= 0.30681
-            whorl_dis_1*= 0.85433
-            whorl_dis_2*= 2.0555451
-            
-        if avg_volume > 5.79 and avg_volume < 5.98:
-            s_length*= 1.3439
-            s_diameter_max*= 0.5702
-            s_diameter_min*= 1
-            avg_radius_stem*= 1
-            num_brace = round(num_brace*0.64705882)
-            avg_brace_length*= 1
-            avg_brace_angle*= 1
-            avg_radius_brace*= 0.7318
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 1
-            avg_radius_crown*= 0.21389
-            whorl_dis_1*= 1
-            whorl_dis_2*= 1
-                
-        if avg_volume > 5.98 and avg_volume < 6.75:
-            s_length*= 0.9719
-            s_diameter_max*= 0.61299
-            s_diameter_min*= 1
-            avg_radius_stem*= 5.362522
-            num_brace = round(num_brace*1)
-            avg_brace_length*= 1
-            avg_brace_angle*= 1
-            avg_radius_brace*= 3.874
-            num_crown*= 1
-            avg_crown_length*= 2.1774
-            avg_crown_angle*= 1
-            avg_radius_crown*= 2.89742
-            whorl_dis_1*= 0.6785
-            whorl_dis_2*= 1
-            
-        if avg_volume > 6.75 and avg_volume < 6.86:
-            s_length*= 0.9818
-            s_diameter_max*= 0.62328
-            s_diameter_min*= 1
-            avg_radius_stem*= 2.9367
-            num_brace = round(num_brace*0.70588235)
-            avg_brace_length*= 1
-            avg_brace_angle*= 1
-            avg_radius_brace*= 2.60991
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 0.6888
-            avg_radius_crown*= 1.8519
-            whorl_dis_1*= 0.83642
-            whorl_dis_2*= 2.03566884
-            
-        if avg_volume > 6.86 and avg_volume < 7.00:
-            s_length*= 0.82558
-            s_diameter_max*= 0.4506
-            s_diameter_min*= 1
-            avg_radius_stem*= 0.6194
-            num_brace = round(num_brace*1)
-            avg_brace_length*= 0.38496
-            avg_brace_angle*= 0.5045
-            avg_radius_brace*= 0.7938
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 1.3296
-            avg_radius_crown*= 0.24445
-            whorl_dis_1*= 0.5570
-            whorl_dis_2*= 1
-        
-        if avg_volume > 10:
-            s_length*= 0.82558
-            s_diameter_max*= 0.4506
-            s_diameter_min*= 1
-            avg_radius_stem*= 0.6194
-            num_brace = round(num_brace*1)
-            avg_brace_length*= 0.38496
-            avg_brace_angle*= 1
-            avg_radius_brace*= 0.7938
-            num_crown*= 1
-            avg_crown_length*= 1
-            avg_crown_angle*= 1
-            avg_radius_crown*= 0.24445
-            whorl_dis_1*= 0.5570
-            whorl_dis_2*= 1
-            avg_volume/= (interp(avg_volume,[1,avg_volume],[3,5]))
-            
-            
-        s_diameter = (s_diameter_max + s_diameter_min)*0.5
-        
-        '''
-        
-        
-        #avg_volume = avg_radius_stem * abs(Z_range_stem[0] - Z_range_stem[1]) + \
-            #num_brace * avg_brace_length * avg_radius_brace**2 * np.pi/ math.cos(avg_brace_angle) + \
-            #num_crown * avg_crown_length * avg_radius_brace**2 * np.pi/ math.cos(avg_crown_angle) 
+ 
+
 
         
         '''
@@ -2352,6 +2120,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
         mlab.view(63.4, 73.8, 4, [-0.05, 0, 0])
     
+        mlab.orientation_axes()
+        
+        mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 1,0,0), color=(0,0,1))
+        mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,1,0), color=(0,0,1))
+        mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,0,1), color=(0,0,1))
         
         
         
@@ -2408,7 +2181,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         mlab.show()
         
-        
+        '''
         #visualize point cloud model with color
         ####################################################################
         
@@ -2427,7 +2200,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             pts.mlab_source.dataset.modified()
             
-        '''
+        
         #visualize skeleton model, edge, nodes
         ####################################################################
         if args["visualize_model"]:
