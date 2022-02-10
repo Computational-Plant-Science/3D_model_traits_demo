@@ -59,6 +59,8 @@ RUN pip3 install --upgrade pip && \
     click \
     PyYAML \
     imutils 
+    
+RUN pip3 install --upgrade numpy
 
 RUN apt-key adv --keyserver keys.openpgp.org --recv-key 612DEFB798507F25
 

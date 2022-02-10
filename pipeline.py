@@ -54,7 +54,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     
     execute_script(format_convert)
 
-    
+    '''
     # step 2 ./AdTree/Release/bin/AdTree ~/example/pt_cloud/test.xyz ~/example/pt_cloud/
     print("Compute structure and skeleton from point cloud model ...\n")
     
@@ -69,7 +69,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     cross_section_scan = "python3 extract_slice.py -p " + file_path + " -f " + basename + "_branches.obj " + "-n " + str(n_slices)
 
     execute_script(cross_section_scan)
-    '''
+    
     
     # step 4 python3 skeleton_analyze.py -p ~/example/pt_cloud/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/pt_cloud/slices/ 
     print("Analyze skeleton / structure and compute traits...\n")
