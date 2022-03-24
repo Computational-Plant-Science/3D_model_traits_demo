@@ -193,7 +193,7 @@ def foreground_substractor(image_file):
     
     avg_color = int(np.average(avg_color_per_row, axis=0))
     
-    
+    '''
     max_contour = c
     
     #get_orientation(max_contour)
@@ -245,7 +245,7 @@ def foreground_substractor(image_file):
     xbot = xc + cos(radians(angle+180))*rmajor
     ybot = yc + sin(radians(angle+180))*rmajor
     cv2.line(masked_fg_contour, (int(xtop),int(ytop)), (int(xbot),int(ybot)), (0, 0, 255), 3)
-
+    '''
     
     
     
@@ -352,8 +352,8 @@ def foreground_substractor(image_file):
     if args['bounding_box'] == 1:
         crop_img = ori[start_y:crop_height, start_x:crop_width]
     else:
-        #crop_img = combined_fg_bk[start_y:crop_height, start_x:crop_width]
-        crop_img = masked_fg_contour[start_y:crop_height, start_x:crop_width]
+        crop_img = combined_fg_bk[start_y:crop_height, start_x:crop_width]
+        #crop_img = masked_fg_contour[start_y:crop_height, start_x:crop_width]
         
     cv2.imwrite(result_img_path, crop_img)
     
