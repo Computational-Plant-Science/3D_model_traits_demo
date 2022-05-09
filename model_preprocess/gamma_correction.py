@@ -121,7 +121,7 @@ def gamma_correction(image_file):
     
     #image = cv2.resize(image, (0,0), fx = scale_factor, fy = scale_factor) 
     
-    gamma = 1.5
+    gamma = 0.5
     
     # apply gamma correction and show the images
     gamma = gamma if gamma > 0 else 0.1
