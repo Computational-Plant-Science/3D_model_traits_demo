@@ -2218,7 +2218,7 @@ if __name__ == '__main__':
     ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
     ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
     ap.add_argument("-m3", "--slice_path", required = True, default = None, help = "Cross section/slices image folder path in ong format")
-    ap.add_argument("-v", "--visualize_model", required = False, default = True, help = "Display model or not, deafult no")
+    ap.add_argument("-v", "--visualize_model", required = False, default = False, help = "Display model or not, deafult no")
     args = vars(ap.parse_args())
 
 
