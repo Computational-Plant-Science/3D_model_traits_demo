@@ -1,7 +1,7 @@
 """
 Version: 1.5
 
-Summary: compute the cross section plane based on 3d model
+Summary: compute the Quaternions representation of 3d model graph
 
 Author: suxing liu
 
@@ -9,7 +9,11 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 skeleton_graph.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/slices/ -v True
+#default parameter: python3 skeleton_graph.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -v True
+
+#customized parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -th 0.21 -v True
+
+#customized parameter: python3 skeleton_graph.py -p ~/example/pt_cloud/tiny/ -m1 tiny_skeleton.ply -m2 tiny.xyz -v True
 
 
 argument:
@@ -1141,6 +1145,9 @@ def short_path_finder(G_unordered, start_v, end_v):
     #print(X_skeleton[start_v], Y_skeleton[start_v], Z_skeleton[start_v])
     
     # find shortest path in the graph between start and end vertices 
+    
+    #vlist, elist = gt.all_shortest_paths(G_unordered, G_unordered.vertex(start_v), G_unordered.vertex(end_v))
+    
     vlist, elist = gt.shortest_path(G_unordered, G_unordered.vertex(start_v), G_unordered.vertex(end_v))
     
     vlist_path = [str(v) for v in vlist]
@@ -1252,7 +1259,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     Y_skeleton = Data_array_skeleton[:,1]
     Z_skeleton = Data_array_skeleton[:,2]
     
-    
+    '''
     #load radius values
     ####################################################################
     #radius_skeleton = current_path + filename_skeleton
@@ -1273,7 +1280,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         sys.exit("Could not load 3D skeleton radius txt file")  
     
-    
+    '''
     # build directed graph from skeleton/structure data
     ####################################################################
     print("Building directed graph from 3D skeleton/structure ...\n")
@@ -1366,7 +1373,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         projection_radius = np.linalg.norm(p0 - p1)
         
         #radius value from fitted point cloud contours
-        radius_edge = float(radius_vtx[int_v_list[0]])*1
+        #radius_edge = float(radius_vtx[int_v_list[0]])*1
         
         sub_branch_xs = X_skeleton[int_v_list[0]]
         sub_branch_ys = Y_skeleton[int_v_list[0]]
@@ -1380,7 +1387,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         sub_branch_start_rec.append(int_v_list[0])
         sub_branch_end_rec.append(int_v_list[-1])
         sub_branch_projection_rec.append(projection_radius)
-        sub_branch_radius_rec.append(radius_edge)
+        #sub_branch_radius_rec.append(radius_edge)
         
         sub_branch_xs_rec.append(sub_branch_xs)
         sub_branch_ys_rec.append(sub_branch_ys)
@@ -1435,12 +1442,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     sub_branch_start_rec[:] = [sub_branch_start_rec[i] for i in sorted_idx_len_loc]
     sub_branch_end_rec[:] = [sub_branch_end_rec[i] for i in sorted_idx_len_loc]
     sub_branch_projection_rec[:] = [sub_branch_projection_rec[i] for i in sorted_idx_len_loc]
-    sub_branch_radius_rec[:] = [sub_branch_radius_rec[i] for i in sorted_idx_len_loc]
+    #sub_branch_radius_rec[:] = [sub_branch_radius_rec[i] for i in sorted_idx_len_loc]
     
     sub_branch_xs_rec[:] = [sub_branch_xs_rec[i] for i in sorted_idx_len_loc]
     sub_branch_ys_rec[:] = [sub_branch_ys_rec[i] for i in sorted_idx_len_loc]
     sub_branch_zs_rec[:] = [sub_branch_zs_rec[i] for i in sorted_idx_len_loc]
 
+    
+    print("number of sub_branch_end_rec is: {} \n".format(len(sub_branch_end_rec)))
     
     ####################################################################
     #(count_wholrs, whorl_loc_ex, avg_density) = wholr_number_count(imgList)
@@ -1637,7 +1646,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         dis_v_closest_pair = path_length(X_skeleton[v_closest_pair], Y_skeleton[v_closest_pair], Z_skeleton[v_closest_pair])
         
         #small threshold indicating close pair vetices
-        if dis_v_closest_pair < 0.11:
+        if dis_v_closest_pair < thresh_join:
             
             closest_pts.append(index_cp)
             
@@ -1846,8 +1855,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     rotVec_rec = []
     
-    #for idx, end_v in enumerate(sub_branch_end_rec):
-    for idx, end_v in enumerate(sub_branch_end_rec[0:1000]):
+    for idx, end_v in enumerate(sub_branch_end_rec):
+    #for idx, end_v in enumerate(sub_branch_end_rec[0:1000]):
         
         #print("start_v = {} end_v = {} \n".format(start_v, end_v))
    
@@ -2046,13 +2055,18 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
         from mayavi import mlab
         from tvtk.api import tvtk
-
+        
+        
         N = 2
         
         mlab.figure("Structure_graph", size = (800, 800), bgcolor = (0, 0, 0))
         
         mlab.clf()
-       
+        
+        
+        #visualize paths found between root node and end notes
+        ############################################################################
+        '''
         # visualize 3d points
         #pts = mlab.points3d(X_skeleton[0], Y_skeleton[0], Z_skeleton[0], color = (0.58, 0.29, 0), mode = 'sphere', scale_factor = 0.15)
         #pts = mlab.points3d(X_skeleton[neighbors_idx], Y_skeleton[neighbors_idx], Z_skeleton[neighbors_idx], mode = 'sphere', color=(0,0,1), scale_factor = 0.05)
@@ -2073,115 +2087,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             mlab.text3d(X_skeleton[vlist_path[-1]], Y_skeleton[vlist_path[-1]], Z_skeleton[vlist_path[-1]], str("{:.0f}".format(i)), color = (0,1,0), scale = (0.04, 0.04, 0.04))
             
         
-        #pts = mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0,1,1,1)) #xyzuvw
-       
-        #pts.glyph.glyph.clamping = False
-
-
-        ###############################################################################
-        # Display a semi-transparent sphere, for the surface of the Earth
-
-        # We use a sphere Glyph, through the points3d mlab function, rather than
-        # building the mesh ourselves, because it gives a better transparent
-        # rendering.
-        sphere = mlab.points3d(0, 0, 0, scale_mode='none',
-                                scale_factor=2,
-                                color=(0.67, 0.77, 0.93),
-                                resolution=50,
-                                opacity=0.7,
-                                name='Earth')
-
-        # These parameters, as well as the color, where tweaked through the GUI,
-        # with the record mode to produce lines of code usable in a script.
-        sphere.actor.property.specular = 0.45
-        sphere.actor.property.specular_power = 5
-        # Backface culling is necessary for more a beautiful transparent
-        # rendering.
-        sphere.actor.property.backface_culling = True
-
-        for Vec in rotVec_rec:
-            
-            #print(Vec[0], Vec[1], Vec[2])
-            
-            mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0,Vec[0], Vec[1], Vec[2])) #xyzuvw
-            
-            #pts = mlab.points3d(Vec[0], Vec[1], Vec[2], color = (1,0,0), mode = 'sphere', scale_factor = 0.05)
-
-
-        ###############################################################################
-        # Plot the equator and the tropiques
-        theta = np.linspace(0, 2 * np.pi, 100)
-        for angle in (- np.pi / 6, 0, np.pi / 6):
-            x = np.cos(theta) * np.cos(angle)
-            y = np.sin(theta) * np.cos(angle)
-            z = np.ones_like(theta) * np.sin(angle)
-
-            mlab.plot3d(x, y, z, color=(1, 1, 1), opacity=0.2, tube_radius=None)
-
-        mlab.view(63.4, 73.8, 4, [-0.05, 0, 0])
-    
-        mlab.orientation_axes()
-        
-        mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 1,0,0), color=(0,0,1))
-        mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,1,0), color=(0,0,1))
-        mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,0,1), color=(0,0,1))
-        
-        
-        
         '''
-        N_sublist = dsf_length_divide_idx
-
-        cmap = get_cmap(N_sublist)
-
-        #cmap = get_cmap(len(sub_branch_list))
         
-        #draw all the sub branches in loop 
-        for i, (sub_branch, sub_branch_start, sub_branch_radius) in enumerate(zip(sub_branch_level[0], sub_branch_start_rec, sub_branch_angle_rec)):
 
-            if i < 50000:
-            #if i <= dsf_length_divide_idx:
-                
-                color_rgb = cmap(i)[:len(cmap(i))-1]
-                
-                pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.05)
-
-                #mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str(i), color = (0,1,0), scale = (0.04, 0.04, 0.04))
-        
-                pts = mlab.points3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start], color = (1,1,1), mode = 'sphere', scale_factor = 0.06)
-                
-                mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str("{:.2f}".format(sub_branch_radius)), color = (0,1,0), scale = (0.04, 0.04, 0.04))
-                
-                #mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str("{:.2f}".format(Z_skeleton[sub_branch_start])), color = (0,1,0), scale = (0.04, 0.04, 0.04))
-        '''
-        '''
-        N_sublist = 3
-        
-        cmap = get_cmap(N_sublist)
-        
-        for idx in range(N_sublist):
-            
-            color_rgb = cmap(idx)[:len(cmap(idx))-1]
-            
-            for i, (sub_branch, sub_branch_start, sub_branch_radius) in enumerate(zip(sub_branch_level[idx], sub_branch_start_level[idx], radius_level[idx])):
-
-                pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.05)
-
-                pts = mlab.points3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start], color = (1,1,1), mode = 'sphere', scale_factor = 0.06)
-                
-                pts = mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str("{:.2f}".format(sub_branch_radius)), color = (0,1,0), scale = (0.04, 0.04, 0.04))
-
-        '''
-                
-        '''
-        for i, (end_val, x_e, y_e, z_e) in enumerate(zip(closest_pts_unique_sorted_combined, X_skeleton[closest_pts_unique_sorted_combined], Y_skeleton[closest_pts_unique_sorted_combined], Z_skeleton[closest_pts_unique_sorted_combined])):
-            
-            mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.04, 0.04, 0.04))
-        '''
         #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
+        ################################################################################################################
+
         
-        mlab.show()
         
-        '''
         #visualize point cloud model with color
         ####################################################################
         
@@ -2267,9 +2180,61 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             # And choose a nice view
             #mlab.view(33.6, 106, 5.5, [0, 0, .05])
             #mlab.roll(125)
-            mlab.show()
+            #mlab.show()
         
-       '''
+        
+       
+        ###############################################################################
+        # Display a semi-transparent sphere, for the surface of the Earth
+        
+        mlab.figure("sphere_representation_rotation_vector", size = (800, 800), bgcolor = (0, 0, 0))
+        
+        # We use a sphere Glyph, through the points3d mlab function, rather than
+        # building the mesh ourselves, because it gives a better transparent
+        # rendering.
+        sphere = mlab.points3d(0, 0, 0, scale_mode='none',
+                                scale_factor=2,
+                                color=(0.67, 0.77, 0.93),
+                                resolution=50,
+                                opacity=0.7,
+                                name='Earth')
+
+        # These parameters, as well as the color, where tweaked through the GUI,
+        # with the record mode to produce lines of code usable in a script.
+        sphere.actor.property.specular = 0.45
+        sphere.actor.property.specular_power = 5
+        # Backface culling is necessary for more a beautiful transparent
+        # rendering.
+        sphere.actor.property.backface_culling = True
+
+        for Vec in rotVec_rec:
+            
+            #print(Vec[0], Vec[1], Vec[2])
+            
+            mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, Vec[0], Vec[1], Vec[2])) #xyzuvw
+            
+            #pts = mlab.points3d(Vec[0], Vec[1], Vec[2], color = (1,0,0), mode = 'sphere', scale_factor = 0.05)
+
+
+        ###############################################################################
+        # Plot the equator and the tropiques
+        theta = np.linspace(0, 2 * np.pi, 100)
+        for angle in (- np.pi / 6, 0, np.pi / 6):
+            x = np.cos(theta) * np.cos(angle)
+            y = np.sin(theta) * np.cos(angle)
+            z = np.ones_like(theta) * np.sin(angle)
+
+            mlab.plot3d(x, y, z, color=(1, 1, 1), opacity=0.2, tube_radius=None)
+
+        mlab.view(63.4, 73.8, 4, [-0.05, 0, 0])
+    
+        mlab.orientation_axes()
+        
+        mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 1,0,0), color=(0,0,1))
+        mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,1,0), color=(0,0,1))
+        mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,0,1), color=(0,0,1))
+        #################################################################################
+        mlab.show()
                 
     '''
     return s_diameter_max, s_diameter_min, s_diameter, s_length, pt_eccentricity, avg_radius_stem, avg_density, \
@@ -2291,7 +2256,7 @@ if __name__ == '__main__':
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
     ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
-    ap.add_argument("-m3", "--slice_path", required = True, default = None, help = "Cross section/slices image folder path in ong format")
+    ap.add_argument("-th", "--thresh_join", required = False, type = float, default = 3.21, help = "threshhold value to join all disconnected graph nodes")
     ap.add_argument("-v", "--visualize_model", required = False, default = False, help = "Display model or not, deafult no")
     args = vars(ap.parse_args())
 
@@ -2301,6 +2266,8 @@ if __name__ == '__main__':
     current_path = args["path"]
     filename_skeleton = args["model_skeleton"]
     model_skeleton_name_base = os.path.splitext(current_path + filename_skeleton)[0]
+    
+    thresh_join = args["thresh_join"]
     
     if args["model_pcloud"] is None:
         filename_pcloud = None
@@ -2312,7 +2279,7 @@ if __name__ == '__main__':
     
     
     
-    
+    '''
     #create label result file folder
     mkpath = os.path.dirname(current_path) +'/label'
     mkdir(mkpath)
@@ -2336,7 +2303,7 @@ if __name__ == '__main__':
         exit()
     
     print("Processing {} slices from cross section of the 3d model\n".format(n_images))
-    
+    '''
     #loop all slices to obtain raidus results
     
     #print(avg_radius = crosssection_analysis_range(0, 97))
