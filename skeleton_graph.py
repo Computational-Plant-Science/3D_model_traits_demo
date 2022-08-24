@@ -2066,28 +2066,28 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         #visualize paths found between root node and end notes
         ############################################################################
-        '''
+        
         # visualize 3d points
-        #pts = mlab.points3d(X_skeleton[0], Y_skeleton[0], Z_skeleton[0], color = (0.58, 0.29, 0), mode = 'sphere', scale_factor = 0.15)
-        #pts = mlab.points3d(X_skeleton[neighbors_idx], Y_skeleton[neighbors_idx], Z_skeleton[neighbors_idx], mode = 'sphere', color=(0,0,1), scale_factor = 0.05)
-        #pts = mlab.points3d(X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset], color = (1,1,1), mode = 'sphere', scale_factor = 0.03)
-        #pts = mlab.points3d(X_skeleton[sub_branch_start_rec_selected], Y_skeleton[sub_branch_start_rec_selected], Z_skeleton[sub_branch_start_rec_selected], color = (1,0,0), mode = 'sphere', scale_factor = 0.08)
-        
-        
         
         cmap = get_cmap(len(vlist_path_rec))
 
         for i, vlist_path in enumerate(vlist_path_rec):
 
             color_rgb = cmap(i)[:len(cmap(i))-1]
+            
+            if i == 0: 
+                scale_factor_value = 0.075
+            else:
+                scale_factor_value = 0.01
+            
+            pts = mlab.points3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, mode = 'sphere', scale_factor = scale_factor_value)
+            
 
-            pts = mlab.points3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, mode = 'sphere', scale_factor = 0.05)
-        
-            #pts = mlab.plot3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, tube_radius=0.025)
-            mlab.text3d(X_skeleton[vlist_path[-1]], Y_skeleton[vlist_path[-1]], Z_skeleton[vlist_path[-1]], str("{:.0f}".format(i)), color = (0,1,0), scale = (0.04, 0.04, 0.04))
+             #pts = mlab.plot3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, tube_radius=0.025)
+            #mlab.text3d(X_skeleton[vlist_path[-1]], Y_skeleton[vlist_path[-1]], Z_skeleton[vlist_path[-1]], str("{:.0f}".format(i)), color = (0,1,0), scale = (0.04, 0.04, 0.04))
             
         
-        '''
+        
         
 
         #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
@@ -2207,13 +2207,19 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         # rendering.
         sphere.actor.property.backface_culling = True
 
-        for Vec in rotVec_rec:
+        #scalars = np.random.randint(1, size = (len(rotVec_rec),3))
+        
+        for idx, Vec in enumerate(rotVec_rec):
             
             #print(Vec[0], Vec[1], Vec[2])
             
-            mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, Vec[0], Vec[1], Vec[2])) #xyzuvw
+            #mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, Vec[0], Vec[1], Vec[2], )) #xyzuvw
+            
+            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color=(1, 0, 0)) #xyzuvw
             
             #pts = mlab.points3d(Vec[0], Vec[1], Vec[2], color = (1,0,0), mode = 'sphere', scale_factor = 0.05)
+            
+           
 
 
         ###############################################################################
@@ -2224,15 +2230,16 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             y = np.sin(theta) * np.cos(angle)
             z = np.ones_like(theta) * np.sin(angle)
 
-            mlab.plot3d(x, y, z, color=(1, 1, 1), opacity=0.2, tube_radius=None)
+            pts = mlab.plot3d(x, y, z, color=(1, 1, 1), opacity=0.2, tube_radius=None)
 
         mlab.view(63.4, 73.8, 4, [-0.05, 0, 0])
     
         mlab.orientation_axes()
-        
+        '''
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 1,0,0), color=(0,0,1))
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,1,0), color=(0,0,1))
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,0,1), color=(0,0,1))
+        '''
         #################################################################################
         mlab.show()
                 
