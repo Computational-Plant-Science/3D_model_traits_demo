@@ -23,7 +23,8 @@ argument:
 """
 #!/usr/bin/env python
 
-
+from mayavi import mlab
+from tvtk.api import tvtk
 
 # import the necessary packages
 from plyfile import PlyData, PlyElement
@@ -57,10 +58,7 @@ import open3d as o3d
 import copy
 import shutil
 
-
-
 import graph_tool.all as gt
-
 
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -80,11 +78,12 @@ import pandas as pd
 import plotly
 import plotly.graph_objs as go
 
+'''
 # import warnings filter
 from warnings import simplefilter
 # ignore all future warnings
 simplefilter(action='ignore', category=FutureWarning)
-
+'''
 
 # generate foloder to store the output results
 def mkdir(path):
@@ -782,6 +781,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         model_pcloud_name_base = os.path.splitext(model_pcloud)[0]
         
+        
         pcd = o3d.io.read_point_cloud(model_pcloud)
         
         Data_array_pcloud = np.asarray(pcd.points)
@@ -804,7 +804,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             print("Generate random color\n")
         
             pcd_color = np.random.randint(256, size = (len(Data_array_pcloud),3))
-            
+        
     
     
     #Skeleton Visualization pipeline
@@ -813,10 +813,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     if args["visualize_model"]:
     
-        from mayavi import mlab
-        from tvtk.api import tvtk
-        
-        
         N = 2
         
         mlab.figure("Structure_graph", size = (800, 800), bgcolor = (0, 0, 0))
@@ -849,7 +845,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         
         
-
+        
         #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
         ################################################################################################################
 
@@ -981,7 +977,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
            
 
-
+        
         ###############################################################################
         # Plot the equator and the tropiques
         theta = np.linspace(0, 2 * np.pi, 100)
@@ -995,12 +991,16 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         mlab.view(63.4, 73.8, 4, [-0.05, 0, 0])
     
         mlab.orientation_axes()
+        
+        
         '''
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 1,0,0), color=(0,0,1))
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,1,0), color=(0,0,1))
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,0,1), color=(0,0,1))
         '''
         #################################################################################
+        
+        
         mlab.show()
                 
 
@@ -1131,7 +1131,7 @@ if __name__ == '__main__':
         for r in sh.rows: 
             c.writerow([cell.value for cell in r])
     
-    '''
+    
     ###################################################################
     #visualize quaternion values a + b*i + c*j + d*k
     fig = plt.figure()
@@ -1146,7 +1146,7 @@ if __name__ == '__main__':
     fig.colorbar(img)
     plt.show()
     '''
-
+    '''
     ####################################################################
     #Multi-dimension plots in ploty, color represents quaternion_a
 
@@ -1184,5 +1184,5 @@ if __name__ == '__main__':
                      "layout": mylayout},
                      auto_open=True,
                      filename=quaternion_4D)
-                     
+    
 

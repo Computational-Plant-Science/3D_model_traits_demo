@@ -19,7 +19,8 @@ argument:
 """
 #!/usr/bin/env python
 
-
+from mayavi import mlab
+from tvtk.api import tvtk
 
 # import the necessary packages
 from plyfile import PlyData, PlyElement
@@ -36,8 +37,7 @@ import sys
 import open3d as o3d
 import copy
 
-from mayavi import mlab
-from tvtk.api import tvtk
+
 
 #import networkx as nx
 

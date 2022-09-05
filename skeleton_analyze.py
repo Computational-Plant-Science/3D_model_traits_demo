@@ -19,6 +19,8 @@ argument:
 """
 #!/usr/bin/env python
 
+from mayavi import mlab
+from tvtk.api import tvtk
 
 
 # import the necessary packages
@@ -2028,8 +2030,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     if args["visualize_model"]:
     
-        from mayavi import mlab
-        from tvtk.api import tvtk
+        #from mayavi import mlab
+        #from tvtk.api import tvtk
 
         N = 2
         
