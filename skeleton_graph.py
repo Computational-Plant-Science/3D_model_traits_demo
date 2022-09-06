@@ -207,17 +207,34 @@ def findVec(point1,point2,unitSphere = False):
 
 
 #get rotation matrix between two vectors using scipy
-def get_rotation_matrix(vec2, vec1=np.array([1, 0, 0])):
-
+def get_rotation_matrix(vec2, vec1):
+    
     vec1 = np.reshape(vec1, (1, -1))
     
     vec2 = np.reshape(vec2, (1, -1))
     
     r = R.align_vectors(vec2, vec1)
-    
-    #from scipy.spatial.transform import Rotation as R
-
+        
     return r[0].as_matrix()
+    '''
+    """ Find the rotation matrix that aligns vec1 to vec2
+    :param vec1: A 3d "source" vector
+    :param vec2: A 3d "destination" vector
+    :return mat: A transform matrix (3x3) which when applied to vec1, aligns it with vec2.
+    """
+    a, b = (vec1 / np.linalg.norm(vec1)).reshape(3), (vec2 / np.linalg.norm(vec2)).reshape(3)
+    v = np.cross(a, b)
+    if any(v): #if not all zeros then 
+        c = np.dot(a, b)
+        s = np.linalg.norm(v)
+        kmat = np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
+        return np.eye(3) + kmat + kmat.dot(kmat) * ((1 - c) / (s ** 2))
+
+    else:
+        return numpy.eye(3) #cross of all zeros only occurs on identical directions
+    '''
+
+    
 
 
 #Find the rotation matrix that aligns vec1 to vec2
@@ -732,18 +749,31 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                     vector_12 = findVec(vector1,vector2)
                     vector_23 = findVec(vector2,vector3)
                     
+                    #vector_12 = vector_12 / np.linalg.norm(vector_12)
+                    #vector_23 = vector_23 / np.linalg.norm(vector_23)
+                    
                     mat = get_rotation_matrix(vec1 = vector_12, vec2 = vector_23)
-
+                    
+                    #vec1_rot = mat.dot(vector_12)
+    
+                    #assert np.allclose(vec1_rot / np.linalg.norm(vec1_rot), vector_23 / np.linalg.norm(vector_23))
+                    
+                    #The returned value is in scalar-last (x, y, z, w) format.
                     quaternion_r = R.from_matrix(mat).as_quat()
                     
-                    #euler_r = R.from_matrix(mat).as_euler('xyz', degrees = True)
+                    # change the order of the quaternion_r value from (x, y, z, w)  to (w, x, y, z)
+                    quaternion_r_rearanged = np.hstack((quaternion_r[3], quaternion_r[0], quaternion_r[1], quaternion_r[2]))
                     
-                    sum_quaternion[i,:] = quaternion_r
+                    print(quaternion_r_rearanged.shape)
+                    #euler_r = R.from_matrix(mat).as_euler('xyz', degrees = True)
+                                       
+                    sum_quaternion[i,:] = quaternion_r_rearanged
                     
                     #sum_euler[i,:] = euler_r
                     
                     #print("vlist_path = {} quaternion_r = {}".format(idx, quaternion_r))
             
+            # The quaternions input are arranged as (w,x,y,z),
             avg_quaternion = averageQuaternions(sum_quaternion)
             
             rot = R.from_quat(avg_quaternion)
@@ -969,9 +999,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             #print(Vec[0], Vec[1], Vec[2])
             
-            #mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, Vec[0], Vec[1], Vec[2], )) #xyzuvw
+            #mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, Vec[0], Vec[1], Vec[2], )) #xyz
             
-            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color=(1, 0, 0)) #xyzuvw
+            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color=(1, 0, 0)) #xyz
             
             #pts = mlab.points3d(Vec[0], Vec[1], Vec[2], color = (1,0,0), mode = 'sphere', scale_factor = 0.05)
             
@@ -1048,15 +1078,16 @@ if __name__ == '__main__':
     
     (path_index, quaternion_path_rec, rotVec_rec) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
     
-    
+    rotVec_rec_arr = np.vstack(rotVec_rec)
     quaternion_path_arr = np.vstack(quaternion_path_rec)
     
+    #print(rotVec_rec)
     
     #print((quaternion_path_arr.shape))
     
-    for i, (v0,v1,v2,v3,v4) in enumerate(zip(path_index, quaternion_path_arr[:,0], quaternion_path_arr[:,1], quaternion_path_arr[:,2], quaternion_path_arr[:,3])):
+    for i, (v0,v1,v2,v3,v4,v5,v6,v7) in enumerate(zip(path_index, quaternion_path_arr[:,0], quaternion_path_arr[:,1], quaternion_path_arr[:,2], quaternion_path_arr[:,3], rotVec_rec_arr[:,0], rotVec_rec_arr[:,1], rotVec_rec_arr[:,2])):
 
-        result_list.append([v0,v1,v2,v3,v4])
+        result_list.append([v0,v1,v2,v3,v4,v5,v6,v7])
     
   
     #save reuslt file
@@ -1104,6 +1135,9 @@ if __name__ == '__main__':
         sheet_quaternion.cell(row = 1, column = 3).value = 'quaternion_b'
         sheet_quaternion.cell(row = 1, column = 4).value = 'quaternion_c'
         sheet_quaternion.cell(row = 1, column = 5).value = 'quaternion_d'
+        sheet_quaternion.cell(row = 1, column = 6).value = 'rotVec_rec_0'
+        sheet_quaternion.cell(row = 1, column = 7).value = 'rotVec_rec_1'
+        sheet_quaternion.cell(row = 1, column = 8).value = 'rotVec_rec_2'
               
         
     for row in result_list:
@@ -1131,22 +1165,30 @@ if __name__ == '__main__':
         for r in sh.rows: 
             c.writerow([cell.value for cell in r])
     
-    
+    # creating array with shape(4,3)
+    my_array = np.arange(16).reshape(4, 4)
+    print("Original array:")
+    print(my_array.shape)
+
+
+   
     ###################################################################
     #visualize quaternion values a + b*i + c*j + d*k
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-
+    
+    
     x = quaternion_path_arr[:,1]
     y = quaternion_path_arr[:,2]
     z = quaternion_path_arr[:,3]
     c = quaternion_path_arr[:,0]
 
     img = ax.scatter(x, y, z, c=c, cmap=plt.hot())
+    #img = ax.scatter(x, y, z, c=c, cmap=plt.hot())
     fig.colorbar(img)
     plt.show()
-    '''
-    '''
+    
+    
     ####################################################################
     #Multi-dimension plots in ploty, color represents quaternion_a
 
@@ -1185,4 +1227,4 @@ if __name__ == '__main__':
                      auto_open=True,
                      filename=quaternion_4D)
     
-
+    
