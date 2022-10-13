@@ -37,7 +37,7 @@ import copy
 
 from scipy.spatial.transform import Rotation as Rot
 import math
-
+import pathlib
 
 
 def display_inlier_outlier(cloud, ind):
@@ -522,7 +522,7 @@ if __name__ == '__main__':
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
-    ap.add_argument("-m", "--model", required = True, help = "model file name")
+    ap.add_argument("-m", "--model", required = False, help = "model file name")
     ap.add_argument("-a", "--angle", required = False, type = int, default = 1, help = "rotation_angle")
     ap.add_argument("-r", "--ratio", required = False, type = float, default = 0.01, help = "outlier remove ratio")
     ap.add_argument("-t", "--test", required = False, type = int, default = 0, help = "if using test setup")
@@ -537,7 +537,15 @@ if __name__ == '__main__':
     
     
     
-    #print(ratio)
+    if args["model"] is None:
+        
+        filename = pathlib.PurePath(current_path).name + ".ply"
+        
+        print("Default file name is {}".format(filename))
+    
+    else:
+        
+        filename = args["model"]
     
     
     file_path = current_path + filename

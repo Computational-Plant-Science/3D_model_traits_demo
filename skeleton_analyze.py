@@ -1418,7 +1418,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
 
     
-    num_brace = len(indices_level[0]) + len(indices_level[1])
+    num_brace = int(len(indices_level[0]) + len(indices_level[1])*0.5)
     avg_brace_length = np.mean(length_level[1])
     avg_brace_angle = np.mean(angle_level[1])
     avg_radius_brace = np.mean(radius_level[1])*2
@@ -1426,7 +1426,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
 
     
-    num_crown = len(indices_level[2]) - len(indices_level[1]) - len(indices_level[0])
+    num_crown = int((len(indices_level[2]) - len(indices_level[1]) - len(indices_level[0]))*0.3)
     avg_crown_length = np.mean(length_level[2])
     avg_crown_angle = np.mean(angle_level[2])
     avg_radius_crown = np.mean(radius_level[2])*2
@@ -1436,7 +1436,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     
     
-    
+    '''
     if num_brace ==0:
         num_crown = 18
 
@@ -1458,16 +1458,20 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         num_crown = num_brace + 10
     
     
-    whorl_dis_1 = abs(np.mean(sub_branch_startZ_level[0]) - np.mean(sub_branch_startZ_level[1]))
-    whorl_dis_2 = abs(np.mean(sub_branch_startZ_level[1]) - np.mean(sub_branch_startZ_level[2]))
-    
-
-    
     if num_brace < 25 and num_crown < 27:
         n_whorl = count_wholrs + 2
     else:
         n_whorl = count_wholrs + 3
     
+    
+    '''
+    
+    whorl_dis_1 = abs(np.mean(sub_branch_startZ_level[0]) - np.mean(sub_branch_startZ_level[1]))
+    whorl_dis_2 = abs(np.mean(sub_branch_startZ_level[1]) - np.mean(sub_branch_startZ_level[2]))
+    
+    n_whorl = count_wholrs
+    
+
     
     ################################################################################################################################
 
@@ -1775,6 +1779,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
         s_diameter = (s_diameter_max + s_diameter_min)*0.5
         
+        
+        
+        '''
         traits_array = np.zeros(22)
         
         
@@ -1981,48 +1988,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         whorl_dis_1 = result_traits[19]
         whorl_dis_2 = result_traits[20]
         avg_volume = result_traits[21]
-            
-        '''
-        s_diameter_max, s_diameter_min, s_diameter, s_length, pt_eccentricity, avg_radius_stem, avg_density, \
-        num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
-        num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
-        avg_radius_lateral, \
-        n_whorl, whorl_dis_1, whorl_dis_2, avg_volume
+        
         '''
 
-        ################################################################
-        '''
-        print(idx_brace[0][0], idx_brace[0][-1])
-        
-        anchor_pt = (X_skeleton[25], Y_skeleton[25], Z_skeleton[25])
-        
-        pcd = o3d.geometry.PointCloud()
-        
-        pcd.points = o3d.utility.Vector3dVector(Data_array_pcloud)
-        
-        pcd.paint_uniform_color([0.5, 0.5, 0.5])
 
-        
-        # Build KDTree from point cloud for fast retrieval of nearest neighbors
-        pcd_tree = o3d.geometry.KDTreeFlann(pcd)
-        
-        #print("Paint the 00th point red.")
-        
-        #pcd.colors[anchor_pt] = [1, 0, 0]
-        
-        search_radius = 150
-        #print("Find its 50 nearest neighbors, paint blue.")
-        
-        [k, idx, _] = pcd_tree.search_knn_vector_3d(anchor_pt, search_radius)
-        
-        #print("nearest neighbors = {}\n".format(sorted(np.asarray(idx[1:]))))
-        
-        np.asarray(pcd.colors)[idx[1:], :] = [0, 0, 1]
-        
-        #o3d.visualization.draw_geometries([pcd])
-        '''
-        ################################################################
-        
 
     #Skeleton Visualization pipeline
     ####################################################################

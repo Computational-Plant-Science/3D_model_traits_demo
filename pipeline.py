@@ -21,6 +21,7 @@ import subprocess, os
 import sys
 import argparse
 import numpy as np 
+import pathlib
 
 # execute script inside program
 def execute_script(cmd_line):
@@ -44,7 +45,7 @@ def execute_script(cmd_line):
 # execute pipeline scripts in order
 def model_analysis_pipeline(file_path, filename, basename):
 
-    
+    '''
     # step 1  python3 model_alignment.py -p ~/example/ -m test.ply
     print("Transform point cloud to its rotation center and align its upright orientation with Z direction...\n")
 
@@ -53,7 +54,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     #print(format_convert)
     
     execute_script(format_convert)
-
+    '''
     
     # step 2 ./AdTree/Release/bin/AdTree ~/example/pt_cloud/test.xyz ~/example/pt_cloud/
     print("Compute structure and skeleton from point cloud model ...\n")
@@ -62,7 +63,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     
     execute_script(skeleton_graph)
     
-
+    '''
     # step 3  python3 extract_slice.py -p ~/example/pt_cloud/ -f test_branches.obj -n 100
     print("Generate cross section sequence ...\n")
    
@@ -77,7 +78,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     traits_computation = "python3 skeleton_analyze.py -p " + file_path + " -m1 " + basename + "_skeleton.ply " + " -m2 " + basename + "_aligned.ply " + " -m3 " + file_path + "slices/ "  
     
     execute_script(traits_computation)
-    
+    '''
     
    
     
@@ -115,7 +116,18 @@ if __name__ == '__main__':
     #parameter sets
     # path to model file 
     file_path = args["path"]
-    filename = args["model"]
+    #filename = args["model"]
+    
+    if args["model"] is None:
+        
+        filename = pathlib.PurePath(file_path).name + ".ply"
+        
+        print("Default file name is {}".format(filename))
+    
+    else:
+        
+        filename = args["model"]
+    
     #ratio = args["ratio"]
     #angle = args["angle"]
     file_full_path = file_path + filename

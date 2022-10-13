@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 model_alignment.py -p ~/example/ -m test.ply
+python3 model_alignment_syn.py -p ~/example/ -m test.ply
 
 
 argument:
@@ -37,8 +37,8 @@ import copy
 
 from scipy.spatial.transform import Rotation as Rot
 import math
-import pathlib
 
+import pathlib
 
 def display_inlier_outlier(cloud, ind):
     inlier_cloud = cloud.select_by_index(ind)
@@ -304,18 +304,38 @@ def format_converter(current_path, model_name):
         if angle_y_al < 45:
             
             if angle_y_al < 2:
-                print("%%%%")
+                print("A")
                 R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) , 0, 0))
                 
-            elif angle_y_al < 15:
-                print("^^^^")
-                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) + np.pi/2 - np.pi/4, 0, 0))
+            elif angle_y_al < 7:
+                print("B0")
+                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) , 0, 0))
+           
+            elif angle_y_al < 12:
+                print("B1")
+                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) - np.pi, 0, 0))
             
+            elif angle_y_al < 15:
+                print("B2")
+                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al), 0, 0))
+            
+            elif angle_y_al < 20:
+                print("C0")
+                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al), 0, 0))
+                
+            elif angle_y_al < 30:
+                print("C1")
+                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) - np.pi/4, 0, 0))
+            
+            elif angle_y_al < 40:
+                print("C2")
+                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) , 0, 0))
+                
             elif angle_y_al < 45:
-                print("!!!!")
+                print("C3")
                 R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) , 0, 0))
             else:
-                print("####")
+                print("D")
                 R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al), 0, 0))
             
         elif angle_y_al < 90:
@@ -326,58 +346,56 @@ def format_converter(current_path, model_name):
                 
                 if abs(angle_z - 90) < abs(180 - angle_z):
                     
-                    print("test abs(angle_z - 90) = {} \n".format(abs(angle_z - 90)))
-                    
                     if abs(angle_z - 90)  < 5:
-                        print("(((((( test abs(angle_z - 90) = {} \n".format(abs(angle_z - 90)))
+                        print("E")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2 , 0, 0))
                     elif abs(angle_z - 90)  < 35:
-                        print("VVVV")
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi/2, 0, 0))
+                        print("F")
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2, 0, 0))
                     elif abs(angle_z - 90)  < 45:
-                        print("~~~~")
+                        print("G")
                         #R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi, -np.pi/2 + np.pi/4, -np.pi/2 + np.pi/4))
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi/2 + np.pi/4, 0, 0))
                     else:
-                        print("XXXX")
+                        print("H")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi, 0, 0))
                 else:
                     #print("&&&& abs(angle_z - 90) = {} \n".format(abs(angle_z - 90)))
 
                     if angle_y_al < 50:
-                        print("EEEE")
+                        print("I")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi , 0, 0))
                     elif angle_y_al < 55:
-                        print("<><>")
+                        print("J")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi , 0, 0))
                     elif angle_y_al < 70:
-                        print("RRRR")
+                        print("K")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi - np.pi/4, 0, 0))
                     else:
-                        print("BBBB")
+                        print("L")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2, 0, 0))
             else:
                 if abs(angle_z - 90) < abs(180 - angle_z):
                     
                     if abs(angle_z - 90) < 5 :
-                        print("NNNN")
+                        print("M")
                         R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) - 0*np.pi/2 , 0, 0))
                     elif abs(angle_z - 90) < 10 :
-                        print("GGGG")
+                        print("N")
                         R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al), 0, 0))
                     elif abs(angle_z - 90) < 15 :
-                        print("SSSS")
+                        print("O")
                         R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) + np.pi/8, 0, 0))
                     else:
-                        print("LLLL")
+                        print("P")
                         R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) - np.pi + np.pi/4, 0, 0))
                 else:
                     if abs(angle_z - 90) > 60 :
-                        print("::::")
+                        print("Q")
                         #R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al)  - np.pi/2 - np.pi/4, 0, 0))
                         R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al)  - np.pi/2 - np.pi/4 + np.pi, 0, 0))
                     else:
-                        print("KKKK")
+                        print("R")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) , 0, 0))
             
         elif angle_y_al < 135 :
@@ -387,39 +405,40 @@ def format_converter(current_path, model_name):
                 if abs(angle_z - 90) < abs(180 - angle_z):
 
                     if abs(angle_z - 90) < 6:
-                        print("ZZZZ")
+                        print("S")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi, 0, 0))
 
                     elif abs(angle_z - 90) < 45:
-                        print("WWWWW")
+                        print("T")
                         #R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi/2, -np.pi/2 + np.pi/4, -np.pi/2 + np.pi/4))
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + 0*np.pi/2 - np.pi , 0, 0))
                     
                     else:
-                        print("CCCC")
+                        print("U")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi/2 , 0, 0))
                         
                 else:
                     
                     if abs(angle_z - 90) < 55:
-                        print("OOOO")
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2 , 0, 0))
+                        print("V")
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi + np.pi/4, 0, 0))
                         
                     elif abs(angle_z - 90) < 70:
-                        print("TTTT")
+                        print("W")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2, 0, 0))
                     else:
-                        print("UUUU")
+                        print("X")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi, 0, 0))
                     
             else:
+                print("Y")
                 R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi , 0, 0))
 
         else:
             
             if abs(angle_y_al - 90) < abs(180 - angle_y_al):
                 
-                print("test angle_y_al = {}\n".format(angle_y_al))
+                print("Z")
             
                 R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2 - np.pi/2, 0, 0))
             
@@ -432,46 +451,47 @@ def format_converter(current_path, model_name):
                     
                     if abs(180 - angle_z) < 15:
                         
-                        print("++++")
+                        print("AA")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi, 0, 0))
                     
                     elif abs(180 - angle_z) < 24:
-                        print("FFFF")
+                        print("BB")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2 + np.pi/4, 0, 0))
                     
                     elif abs(180 - angle_z) < 30:
                         
-                        print("YYYY")
+                        print("CC")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi/2 , 0, 0))
                     
                     elif abs(180 - angle_z) < 40:
                         
-                        print("PPPP")
+                        print("DD")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) , 0, 0))
                         
                     else:
-                        print("@@@@")
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi/2 + np.pi/2, 0, 0))
+                        print("EE")
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2 + np.pi/4, 0, 0))
                 else:
                     
                     if abs(180 - angle_z) < 55:
-                        print("DDDD")
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2 + np.pi/4, 0, 0))
+                        print("FF")
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2 - np.pi/2, 0, 0))
                     
                     elif abs(180 - angle_z) < 75:
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi, 0, 0))
+                        print("GG")
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi, 0, 0))
                     
                     elif abs(180 - angle_z) < 95:
-                        print("????")
+                        print("HH")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi, 0, 0))
                     
                     elif abs(180 - angle_z) < 170:
-                        print("AAAA")
+                        print("II")
                         #R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi - np.pi/4, 0, 0))
                         
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi, 0, 0))
                     else:
-                        print("BBBB")
+                        print("JJ")
                         #print("abs(180 - angle_z) = {} \n".format(abs(180 - angle_z)))
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi/2 + np.pi/4, 0, 0))
              
@@ -630,11 +650,12 @@ if __name__ == '__main__':
 
     # setting path to model file 
     current_path = args["path"]
-    filename = args["model"]
+    
     rotation_angle = args["angle"]*np.pi/2
     ratio = args["ratio"]
     
     
+    #path = pathlib.PurePath(current_path)
     
     if args["model"] is None:
         
@@ -645,6 +666,7 @@ if __name__ == '__main__':
     else:
         
         filename = args["model"]
+    
     
     
     file_path = current_path + filename

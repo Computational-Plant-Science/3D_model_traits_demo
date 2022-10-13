@@ -42,6 +42,9 @@ import cv2
 import resource
 import os
 
+from pathlib import Path 
+
+
 # create result folder
 def mkdir(path):
     # import module
@@ -134,6 +137,17 @@ def foreground_substractor(image_file):
         return
     
     
+    gamma = 1.0
+    
+    # apply gamma correction and show the images
+    gamma = gamma if gamma > 0 else 0.1
+    
+    adjusted = adjust_gamma(image, gamma=gamma)
+    
+    image = image_enhance(adjusted)
+    
+    
+    
     ori = image.copy()
     
     #get size of image
@@ -193,61 +207,7 @@ def foreground_substractor(image_file):
     
     avg_color = int(np.average(avg_color_per_row, axis=0))
     
-    '''
-    max_contour = c
-    
-    #get_orientation(max_contour)
-    
-    rect = cv2.minAreaRect(max_contour)
-    box = cv2.boxPoints(rect)
-    box = np.int0(box)
-    orientation = slope(box[0][0], box[0][1], box[1][0], box[1][1])
-    
-    #draw bounding box
-    cv2.drawContours(masked_fg_contour, [box],0,(0,0,255),5)
 
-    print("Image orientation in degress: ", orientation)
-    
-    M = cv2.moments(max_contour)
-
-    if M["m00"] > 0:
-        cX = int(M["m10"] / M["m00"])
-        cY = int(M["m01"] / M["m00"])
-
-    #fit elipse
-    ellipse = cv2.fitEllipse(max_contour)
-    (xc,yc),(d1,d2),angle = ellipse
-    P1x = cX
-    P1y = cY
-    length = 350
-
-    #calculate vector line at angle of bounding box
-    P2x = int(P1x + length * cos(radians(angle)))
-    P2y = int(P1y + length * sin(radians(angle)))
-     #draw vector line
-    cv2.line(masked_fg_contour,(cX, cY),(P2x,P2y),(0,0,255),5)
-    
-    cv2.ellipse(masked_fg_contour, ellipse, (0, 255, 0), 3)
-    # draw circle at center
-    xc, yc = ellipse[0]
-    cv2.circle(masked_fg_contour, (int(xc),int(yc)), 10, (255, 255, 255), -1)
-
-    # draw vertical line
-    # compute major radius
-    rmajor = max(d1,d2)/2
-    if angle > 90:
-        angle = angle - 90
-    else:
-        angle = angle + 90
-    print(angle)
-    xtop = xc + cos(radians(angle))*rmajor
-    ytop = yc + sin(radians(angle))*rmajor
-    xbot = xc + cos(radians(angle+180))*rmajor
-    ybot = yc + sin(radians(angle+180))*rmajor
-    cv2.line(masked_fg_contour, (int(xtop),int(ytop)), (int(xbot),int(ybot)), (0, 0, 255), 3)
-    '''
-    
-    
     
     #print(avg_color)
     
@@ -275,39 +235,7 @@ def foreground_substractor(image_file):
     # combine masked foreground and masked background
     combined_fg_bk = cv2.bitwise_or(fg_masked, bk_masked)
     
-    '''
-    # draw it in red color
-    trait_img = cv2.drawContours(image, [hull], -1, (0, 0, 255), linewidth)
-    
-    # draw the outline of the object, then draw each of the
-    # extreme points, where the left-most is red, right-most
-    # is green, top-most is blue, and bottom-most is teal
-    trait_img = cv2.drawContours(image, [c], -1, (0, 255, 255), linewidth)
-    
-    # determine the most extreme points along the contour
-    extLeft = tuple(c[c[:,:,0].argmin()][0])
-    extRight = tuple(c[c[:,:,0].argmax()][0])
-    extTop = tuple(c[c[:,:,1].argmin()][0])
-    extBot = tuple(c[c[:,:,1].argmax()][0])
-
-    trait_img = cv2.circle(image, extLeft, linewidth, (255, 0, 0), -1)
-    trait_img = cv2.circle(image, extRight, linewidth, (255, 0, 0), -1)
-    trait_img = cv2.circle(image, extTop, linewidth, (255, 0, 0), -1)
-    trait_img = cv2.circle(image, extBot, linewidth, (255, 0, 0), -1)
-
-    from scipy.spatial import distance as dist
-    
-    max_width = dist.euclidean(extLeft, extRight)
-    max_height = dist.euclidean(extTop, extBot)
-
-    trait_img = cv2.line(image, extLeft, extRight, (0,255,0), linewidth)
-    trait_img = cv2.line(image, extTop, extBot, (0,255,0), linewidth)
-    
-    # construct the result file path
-    result_img_path = save_path + str(filename[0:-4]) + '_seg.' + ext
-    
-    cv2.imwrite(result_img_path, trait_img)
-    '''
+ 
     ##############################################################
     
     # find the bouding box of the max contour
@@ -360,62 +288,44 @@ def foreground_substractor(image_file):
     
     #return int(x),int(y),int(w),int(h), int(img_width), int(img_height)
 
-'''
-##opencv crop image function, failed when file numer exceed 1250
-def crop_image(image_file):
-    
-    #parse the file name 
-    path, filename = os.path.split(image_file)
-    
-    print("Saving cropped image : {0} \n".format(str(filename)))
-    
-    # construct the result file path
-    result_img_path = save_path + str(filename[0:-4]) + '_seg.' + ext
-    
-    margin = 150
-    
-    #Load the image
-    img = cv2.imread(image_file)
-    
-    crop_img = img[(y-margin):(y + margin + height), (x -margin):(x + margin + width)]
-    
-    cv2.imwrite(result_img_path,crop_img)
-    
+
+#adjust the gamma value to increase the brightness of image
+def adjust_gamma(image, gamma):
+    # build a lookup table mapping the pixel values [0, 255] to
+    # their adjusted gamma values
+    invGamma = 1.0 / gamma
+    table = np.array([((i / 255.0) ** invGamma) * 255
+        for i in np.arange(0, 256)]).astype("uint8")
+ 
+    # apply gamma correction using the lookup table
+    return cv2.LUT(image, table)
 
 
 
-def crop_pil(image_file):
-    
-    #Load the image
-    img = Image.open(image_file)
-    
-    #parse the file name
-    path, filename = os.path.split(image_file)
-    
-    print("Saving cropped image : {0} \n".format(str(filename)))
-    
-    # construct the result file path
-    result_img_path = save_path + str(filename[0:-4]) + '_seg.' + ext
-    
-    # define crop image region margin 
-    margin = 100
-    
-    # define crop region
-    start_x = (y - margin) if (y - margin )> 0 else 0
-    
-    start_y = (x - margin) if (x - margin )> 0 else 0
-    
-    crop_width = (height + 2*margin) if (start_x + height + 2*margin) < img_height else (start_x + height + 2*margin - img_height)
-    
-    crop_height = (width + 2*margin) if (start_y + width + 2*margin) < img_width else (start_y + width + 2*margin - img_width)
-    
-    # perfrom crop action
-    crop_img = img.crop((start_x, start_y, crop_width, crop_height))
-    
-    # save result by writing image out
-    crop_img.save(result_img_path)
+#apply CLAHE (Contrast Limited Adaptive Histogram Equalization) to perfrom image enhancement
+def image_enhance(img):
 
-'''
+    # CLAHE (Contrast Limited Adaptive Histogram Equalization)
+    clahe = cv2.createCLAHE(clipLimit=3., tileGridSize=(8,8))
+
+    # convert from BGR to LAB color space
+    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)  
+    
+    # split on 3 different channels
+    l, a, b = cv2.split(lab)  
+
+    # apply CLAHE to the L-channel
+    l2 = clahe.apply(l)  
+
+    # merge channels
+    lab = cv2.merge((l2,a,b))  
+    
+    # convert from LAB to BGR
+    img_enhance = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)  
+    
+    return img_enhance
+
+
 
 
 
@@ -461,7 +371,6 @@ if __name__ == '__main__':
     # Create a pool of processes. By default, one is created for each CPU in the machine.
     # extract the bouding box for each image in file list
     with closing(Pool(processes = agents)) as pool:
-        #result = pool.map(foreground_substractor, imgList)
         pool.map(foreground_substractor, imgList)
         pool.terminate()
     

@@ -78,6 +78,9 @@ import pandas as pd
 import plotly
 import plotly.graph_objs as go
 
+
+from pyquaternion import Quaternion
+
 '''
 # import warnings filter
 from warnings import simplefilter
@@ -705,11 +708,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #define start and end vertex index
     start_v = 0
-    #end_v = 1559
-    #end_v = 608
-    
-    #int_vlist_path = short_path_finder(G_unordered, 0, 608)
-    
     
     vlist_path_rec = []
     
@@ -717,12 +715,13 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     rotVec_rec = []
     
-    #path_count = 0
+
     
-    #path_index = []
+
     
+
+    # loop over all paths and compute quaternions values
     for idx, end_v in enumerate(sub_branch_end_rec):
-    #for idx, end_v in enumerate(sub_branch_end_rec[0:1000]):
         
         #print("start_v = {} end_v = {} \n".format(start_v, end_v))
    
@@ -734,6 +733,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
             vlist_path_rec.append(vlist_path)
             
+            # Q is a Nx4 numpy matrix and contains the quaternions to average in the rows.
+            # The quaternions are arranged as (w,x,y,z), with w being the scalar
             sum_quaternion = np.zeros([len(vlist_path), 4])
             
             #sum_euler = np.zeros([len(vlist_path), 3])
@@ -742,29 +743,25 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
                 if i + 2 < len(vlist_path):
                     
+                    # get adjacent vector coordinates
                     vector1 = [X_skeleton[vlist_path[i]], Y_skeleton[vlist_path[i]], Z_skeleton[vlist_path[i]]]
                     vector2 = [X_skeleton[vlist_path[i + 1]], Y_skeleton[vlist_path[i + 1]], Z_skeleton[vlist_path[i + 1]]]
                     vector3 = [X_skeleton[vlist_path[i + 2]], Y_skeleton[vlist_path[i + 2]], Z_skeleton[vlist_path[i + 2]]]
             
+                    # get adjacent directed vectors
                     vector_12 = findVec(vector1,vector2)
                     vector_23 = findVec(vector2,vector3)
                     
-                    #vector_12 = vector_12 / np.linalg.norm(vector_12)
-                    #vector_23 = vector_23 / np.linalg.norm(vector_23)
-                    
+                    # compoute rotation matrix between adjacent directed vectors
                     mat = get_rotation_matrix(vec1 = vector_12, vec2 = vector_23)
                     
-                    #vec1_rot = mat.dot(vector_12)
-    
-                    #assert np.allclose(vec1_rot / np.linalg.norm(vec1_rot), vector_23 / np.linalg.norm(vector_23))
-                    
-                    #The returned value is in scalar-last (x, y, z, w) format.
+                    # compoute quaternion between adjacent directed vectors
+                    #The returned quaternion value is in scalar-last (x, y, z, w) format.
                     quaternion_r = R.from_matrix(mat).as_quat()
                     
                     # change the order of the quaternion_r value from (x, y, z, w)  to (w, x, y, z)
                     quaternion_r_rearanged = np.hstack((quaternion_r[3], quaternion_r[0], quaternion_r[1], quaternion_r[2]))
                     
-                    print(quaternion_r_rearanged.shape)
                     #euler_r = R.from_matrix(mat).as_euler('xyz', degrees = True)
                                        
                     sum_quaternion[i,:] = quaternion_r_rearanged
@@ -773,9 +770,13 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                     
                     #print("vlist_path = {} quaternion_r = {}".format(idx, quaternion_r))
             
-            # The quaternions input are arranged as (w,x,y,z),
-            avg_quaternion = averageQuaternions(sum_quaternion)
-            
+            # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
+            #avg_quaternion = averageQuaternions(sum_quaternion)
+
+            # use components averaging to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
+            avg_quaternion = ((sum_quaternion.sum(axis=0))/len(vlist_path)).flatten()
+            #avg_quaternion = avg_quaternion.flatten()
+
             rot = R.from_quat(avg_quaternion)
             
             avg_euler = rot.as_euler('xyz')
@@ -784,13 +785,20 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             rotVec = euler_to_rotVec(avg_euler[0], avg_euler[1], avg_euler[2])
             
-            print("vlist_path = {} avg_quaternion = {} avg_euler = {} rotVec = {}".format(idx, avg_quaternion, avg_euler, rotVec))
-            
             rotVec_rec.append(rotVec)
-            
+
             quaternion_path_rec.append(avg_quaternion)
             
-            #path_index.append(path_count)
+            print("vlist_path = {} avg_quaternion = {} avg_euler = {} rotVec = {}".format(idx, avg_quaternion, avg_euler, rotVec))
+                
+            '''
+            if rotVec[2] > 0:
+                
+                rotVec_rec.append(rotVec)
+                
+                quaternion_path_rec.append(avg_quaternion)
+            '''
+
             
     print("Found {} shortest path \n".format(len(vlist_path_rec)))
     
@@ -1165,13 +1173,8 @@ if __name__ == '__main__':
         for r in sh.rows: 
             c.writerow([cell.value for cell in r])
     
-    # creating array with shape(4,3)
-    my_array = np.arange(16).reshape(4, 4)
-    print("Original array:")
-    print(my_array.shape)
 
-
-   
+    
     ###################################################################
     #visualize quaternion values a + b*i + c*j + d*k
     fig = plt.figure()

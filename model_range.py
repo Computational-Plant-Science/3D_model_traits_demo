@@ -33,17 +33,47 @@ import os
 import sys
 import open3d as o3d
 import copy
+import random
+import glob
 
-
-def format_converter(current_path, model_name):
+# generate foloder to store the output results
+def mkdir(path):
+    # import module
+    import os
+ 
+    # remove space at the beginning
+    path=path.strip()
+    # remove slash at the end
+    path=path.rstrip("\\")
+ 
+    # path exist?   # True  # False
+    isExists=os.path.exists(path)
+ 
+    # process
+    if not isExists:
+        # construct the path and folder
+        #print path + ' folder constructed!'
+        # make dir
+        os.makedirs(path)
+        return True
+    else:
+        # if exists, return 
+        #print path+' path exists!'
+        #shutil.rmtree(path)
+        #os.makedirs(path)
+        return False
+        
+        
+        
+def format_converter(model_file):
     
-    model_file = current_path + model_name
+    path, filename = os.path.split(model_file)
     
-    print("Parsing {} file format for level set scanning ...\n".format(model_name))
+    model_name_base = os.path.splitext(os.path.basename(filename))[0]
     
-    model_name_base = os.path.splitext(model_file)[0]
+    print("Parsing {} file format for level set scanning ...\n".format(model_name_base))
     
-    
+    '''
     # load the model file
     try:
         with open(model_file, 'rb') as f:
@@ -68,7 +98,34 @@ def format_converter(current_path, model_name):
     
     #sort point cloud data based on Z values
     Data_array = np.asarray(sorted(Data_array_ori, key = itemgetter(2), reverse = False))
-   
+    
+    pcd = o3d.geometry.PointCloud()
+    
+    pcd.points = o3d.utility.Vector3dVector(Data_array)
+    
+    o3d.visualization.draw_geometries([pcd])
+    
+    pcd.colors = 
+    
+    
+    abs_path = os.path.abspath(model_file)
+    filename, file_extension = os.path.splitext(abs_path)
+    base_name = os.path.splitext(os.path.basename(filename))[0]
+    '''
+     
+    # Pass xyz to Open3D.o3d.geometry.PointCloud 
+
+    pcd = o3d.io.read_point_cloud(model_file)
+    
+    
+    #visualize the original point cloud
+    #o3d.visualization.draw_geometries([pcd])
+    
+    Data_array = np.asarray(pcd.points)
+    
+    color_array = np.asarray(pcd.colors)
+    
+    
     '''
     #accquire data range
     min_x = Data_array[:, 0].min()
@@ -87,7 +144,7 @@ def format_converter(current_path, model_name):
     print(min_x,max_x)
     print(min_y,max_y)
     print(min_z,max_z)
-    '''
+    
     
     data_range = 10000
     
@@ -104,7 +161,7 @@ def format_converter(current_path, model_name):
     pcd = o3d.geometry.PointCloud()
     
     pcd.points = o3d.utility.Vector3dVector(point_normalized)
-
+    '''
     '''
     # copy original point cloud for rotation
     pcd_r = copy.deepcopy(pcd)
@@ -124,18 +181,31 @@ def format_converter(current_path, model_name):
     
     # Visualize rotated point cloud 
     #o3d.visualization.draw_geometries([pcd, pcd_r])
-    
+    '''
     #Voxel downsampling uses a regular voxel grid to create a uniformly downsampled point cloud from an input point cloud
     #print("Downsample the point cloud with a voxel of 0.05")
-    #downpcd = pcd_r.voxel_down_sample(voxel_size=0.5)
+    
+    factor = random.randint(5, 10)/1000
+    
+    downpcd = pcd.voxel_down_sample(voxel_size=factor)
     #o3d.visualization.draw_geometries([downpcd])
-    '''
+    
+    #cl, ind = downpcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=2.0)
+    
+    #create label result file folder
+    mkpath = os.path.dirname(current_path) +'/result/' + model_name_base + "/"
+    mkdir(mkpath)
+    result_path = mkpath + '/'
     
     #Save model file as ascii format in ply
-    filename = current_path + 'converted.ply'
+    filename = result_path + model_name_base + '.ply'
+    
+    #print(filename)
     
     #write out point cloud file
-    o3d.io.write_point_cloud(filename, pcd, write_ascii = True)
+    #o3d.io.write_point_cloud(filename, ind, write_ascii = True)
+    
+    o3d.io.write_point_cloud(filename, downpcd)
     
     
     #mesh = o3d.io.read_point_cloud(filename)
@@ -163,17 +233,37 @@ if __name__ == '__main__':
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
-    ap.add_argument("-m", "--model", required = True, help = "model file name")
+    #ap.add_argument("-m", "--model", required = True, help = "model file name")
+    ap.add_argument("-ft", "--filetype", required = True,    help = "Image filetype")
     args = vars(ap.parse_args())
 
 
     # setting path to model file 
     current_path = args["path"]
-    filename = args["model"]
-    file_path = current_path + filename
+    #filename = args["model"]
+    #file_path = current_path + filename
+    
+    
 
-    print ("results_folder: " + current_path)
+    
+    ext = args['filetype']
+    
+    #accquire image file list
+    filetype = '*.' + ext
+    ply_file_path = current_path + filetype
+    
+    #accquire image file list
+    plyList = sorted(glob.glob(ply_file_path))
+    
+    print ("plyList: {}\n".format(plyList))
 
-    format_converter(current_path, filename)
+   
+    ####################################################################################
+    #loop execute to get all traits
+    for ply_file in plyList:
+        
+        format_converter(ply_file)
+
+        
 
  
