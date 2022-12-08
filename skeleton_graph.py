@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-#default parameter: python3 skeleton_graph.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -v True
+#default parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -v True
 
 #customized parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -th 0.21 -v True
 
@@ -1167,6 +1167,7 @@ if __name__ == '__main__':
     # get_active_sheet()
     sh = wb.active 
     
+    
     # save excel file as csv format
     with open(trait_file_csv, 'w', newline = "") as f:
         c = csv.writer(f)
@@ -1219,9 +1220,7 @@ if __name__ == '__main__':
                                 yaxis=dict( title="quaternion_c"),
                                 zaxis=dict(title="quaternion_d")),)
     
-    
 
-    
     quaternion_4D = (current_path + folder_name + '_quaternion_4D.html')
     
     #Plot and save html

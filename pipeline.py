@@ -45,7 +45,7 @@ def execute_script(cmd_line):
 # execute pipeline scripts in order
 def model_analysis_pipeline(file_path, filename, basename):
 
-    '''
+    
     # step 1  python3 model_alignment.py -p ~/example/ -m test.ply
     print("Transform point cloud to its rotation center and align its upright orientation with Z direction...\n")
 
@@ -54,7 +54,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     #print(format_convert)
     
     execute_script(format_convert)
-    '''
+    
     
     # step 2 ./AdTree/Release/bin/AdTree ~/example/pt_cloud/test.xyz ~/example/pt_cloud/
     print("Compute structure and skeleton from point cloud model ...\n")
@@ -63,7 +63,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     
     execute_script(skeleton_graph)
     
-    '''
+    
     # step 3  python3 extract_slice.py -p ~/example/pt_cloud/ -f test_branches.obj -n 100
     print("Generate cross section sequence ...\n")
    
@@ -72,13 +72,13 @@ def model_analysis_pipeline(file_path, filename, basename):
     execute_script(cross_section_scan)
     
     
-    # step 4 python3 skeleton_analyze.py -p ~/example/pt_cloud/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/pt_cloud/slices/ 
+    # step 4 python3 skeleton_analyze.py -p ~/example/pt_cloud/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/pt_cloud/slices/ -v True
     print("Analyze skeleton / structure and compute traits...\n")
 
     traits_computation = "python3 skeleton_analyze.py -p " + file_path + " -m1 " + basename + "_skeleton.ply " + " -m2 " + basename + "_aligned.ply " + " -m3 " + file_path + "slices/ "  
     
     execute_script(traits_computation)
-    '''
+    
     
    
     

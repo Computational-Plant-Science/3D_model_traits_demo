@@ -2025,32 +2025,34 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             pts = mlab.points3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, mode = 'sphere', scale_factor = 0.05)
         '''
         
-        '''
-        N_sublist = dsf_length_divide_idx
+        
+        N_sublist = len(sub_branch_list)
 
-        cmap = get_cmap(N_sublist)
+        cmap = get_cmap(500)
 
         #cmap = get_cmap(len(sub_branch_list))
         
         #draw all the sub branches in loop 
-        for i, (sub_branch, sub_branch_start, sub_branch_radius) in enumerate(zip(sub_branch_level[0], sub_branch_start_rec, sub_branch_angle_rec)):
+        for i, (sub_branch, sub_branch_start, sub_branch_radius) in enumerate(zip(sub_branch_list, sub_branch_start_rec, sub_branch_angle_rec)):
 
-            if i < 50000:
+            if i < 500:
             #if i <= dsf_length_divide_idx:
                 
                 color_rgb = cmap(i)[:len(cmap(i))-1]
                 
-                pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.05)
+                pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.015)
 
                 #mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str(i), color = (0,1,0), scale = (0.04, 0.04, 0.04))
         
-                pts = mlab.points3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start], color = (1,1,1), mode = 'sphere', scale_factor = 0.06)
+                #pts = mlab.points3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start], color = (1,1,1), mode = 'sphere', scale_factor = 0.06)
                 
-                mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str("{:.2f}".format(sub_branch_radius)), color = (0,1,0), scale = (0.04, 0.04, 0.04))
+                #mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str("{:.2f}".format(sub_branch_radius)), color = (0,1,0), scale = (0.04, 0.04, 0.04))
                 
                 #mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str("{:.2f}".format(Z_skeleton[sub_branch_start])), color = (0,1,0), scale = (0.04, 0.04, 0.04))
-        '''
         
+        
+        
+        '''
         N_sublist = 3
         
         cmap = get_cmap(N_sublist)
@@ -2067,7 +2069,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                 
                 pts = mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str("{:.2f}".format(sub_branch_radius)), color = (0,1,0), scale = (0.01, 0.01, 0.01))
 
-        
+        '''
                 
         '''
         for i, (end_val, x_e, y_e, z_e) in enumerate(zip(closest_pts_unique_sorted_combined, X_skeleton[closest_pts_unique_sorted_combined], Y_skeleton[closest_pts_unique_sorted_combined], Z_skeleton[closest_pts_unique_sorted_combined])):
@@ -2081,7 +2083,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         #visualize point cloud model with color
         ####################################################################
-        
+        '''
         if not (filename_pcloud is None):
             
             x, y, z = Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2] 
@@ -2097,6 +2099,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             pts.mlab_source.dataset.modified()
             
+        mlab.show()
+        '''
         
         #visualize skeleton model, edge, nodes
         ####################################################################
@@ -2112,9 +2116,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             index = 0
             
             # Create each line one after the other in a loop
+            #for i in range(100):
             for i in range(N_edges_skeleton):
             #for val in vlist_path:
-                #if i in vertex_dominant:
+
                 if True:
                     #i = int(val)
                     #print("Edges {0} has nodes {1}, {2}\n".format(i, array_edges[i][0], array_edges[i][1]))
@@ -2164,9 +2169,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             # And choose a nice view
             #mlab.view(33.6, 106, 5.5, [0, 0, .05])
             #mlab.roll(125)
-            mlab.show()
+    
+        mlab.show()
         
-       
+    
                 
     
     return s_diameter_max, s_diameter_min, s_diameter, s_length, pt_eccentricity, avg_radius_stem, avg_density, \
