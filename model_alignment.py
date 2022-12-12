@@ -295,7 +295,7 @@ def format_converter(current_path, model_name):
             elif angle_y_al < 15:
                 print("^^^^")
                 #R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) + np.pi/2 - np.pi/4, 0, 0))
-                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) + np.pi/2 - np.pi/4, 0, 0))
+                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) + np.pi/2 - np.pi/2, 0, 0))
             
             elif angle_y_al < 45:
                 print("!!!!")

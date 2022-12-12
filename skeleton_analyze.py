@@ -2099,8 +2099,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             pts.mlab_source.dataset.modified()
             
-        mlab.show()
         '''
+        
         
         #visualize skeleton model, edge, nodes
         ####################################################################
@@ -2116,8 +2116,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             index = 0
             
             # Create each line one after the other in a loop
-            #for i in range(100):
-            for i in range(N_edges_skeleton):
+            for i in range(500):
+            #for i in range(N_edges_skeleton):
             #for val in vlist_path:
 
                 if True:
@@ -2169,7 +2169,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             # And choose a nice view
             #mlab.view(33.6, 106, 5.5, [0, 0, .05])
             #mlab.roll(125)
-    
+        
         mlab.show()
         
     
