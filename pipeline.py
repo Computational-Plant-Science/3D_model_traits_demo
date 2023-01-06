@@ -47,7 +47,7 @@ def model_analysis_pipeline(file_path, filename, basename):
 
     
     # step 1  python3 model_alignment.py -p ~/example/ -m test.ply
-    print("Transform point cloud to its rotation center and align its upright orientation with Z direction...\n")
+    print("Transform point cloud model to its rotation center and align its upright orientation with Z direction...\n")
 
     format_convert = "python3 model_alignment.py -p " + file_path + " -m " + filename + " -t " + str(args["test"])
     
@@ -75,7 +75,9 @@ def model_analysis_pipeline(file_path, filename, basename):
     # step 4 python3 skeleton_analyze.py -p ~/example/pt_cloud/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/pt_cloud/slices/ -v True
     print("Analyze skeleton / structure and compute traits...\n")
 
-    traits_computation = "python3 skeleton_analyze.py -p " + file_path + " -m1 " + basename + "_skeleton.ply " + " -m2 " + basename + "_aligned.ply " + " -m3 " + file_path + "slices/ "  
+    traits_computation = "python3 skeleton_analyze.py -p " + file_path + " -m1 " + basename + "_skeleton.ply " + " -m2 " + basename + "_aligned.ply " + " -m3 " + file_path + "slices/ " + "-v " + str(args["visualize_model"])
+    
+    #print(traits_computation)
     
     execute_script(traits_computation)
     
@@ -90,26 +92,10 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m", "--model", required = False, help = "model file name")
-    #ap.add_argument("-a", "--angle", required = False, type = int, default = 1, help = "rotation_angle")
-    #ap.add_argument("-r", "--ratio", required = False, type = float, default = 0.01, help = "outlier remove ratio")
     ap.add_argument("-t", "--test", required = False, type = int, default = 0, help = "if using test setup")
     ap.add_argument("-n", "--n_slices", required = False, type = int, default = 500 , help = 'Number of slices for 3d model.')
+    ap.add_argument("-v", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult as no due to headless display in cluster")
     
-    
-    '''
-    ap.add_argument("-i", "--interval", required = False, default = '1',  type = int, help= "intervals along sweeping plane")
-    ap.add_argument("-de", "--direction", required = False, default = 'X', help = "direction of sweeping plane, X, Y, Z")
-    ap.add_argument('-frames', '-n_frames', required = False, type = int, default = 2 , help = 'Number of new frames.')
-    ap.add_argument("-th", "--threshold", required = False, default = '2.35', type = float, help = "threshold to remove outliers")
-    ap.add_argument('-d', '--dist_thresh', required = False, type = int, default = 10 , help = 'dist_thresh.')
-    ap.add_argument('-mfs', '--max_frames_to_skip', required = False, type = int, default = 15 , help = 'max_frames_to_skip.')
-    ap.add_argument('-mtl', '--max_trace_length', required = False, type = int, default = 15 , help = 'max_trace_length.')
-    ap.add_argument('-rmin', '--radius_min', required = False, type = int, default = 1 , help = 'radius_min.')
-    ap.add_argument('-rmax', '--radius_max', required = False, type = int, default = 100 , help = 'radius_max.')
-    ap.add_argument("-dt", "--dis_tracking", required = False, type = float, default = 50.5, help = "dis_dis_tracking")
-    ap.add_argument("-ma", "--min_angle", required = False, type = float, default = 0.1, help = "min_angle")
-    ap.add_argument("-dr", "--dist_ratio", required = False, type = float, default = 4.8, help = "dist_ratio")
-    '''
     args = vars(ap.parse_args())
     
     
@@ -122,7 +108,7 @@ if __name__ == '__main__':
         
         filename = pathlib.PurePath(file_path).name + ".ply"
         
-        print("Default file name is {}".format(filename))
+        print("3D model file name is {}\n".format(filename))
     
     else:
         
@@ -142,30 +128,11 @@ if __name__ == '__main__':
     n_slices = args["n_slices"]
     
     
-    
-    '''
-    interval = args["interval"]
-    direction = args["direction"]
-    
-    #frame interpolation 
-    n_frames = args["n_frames"]
-    
-    #cross section scan 
-    thresh_value = args["threshold"]
-    
-    # parameters for tracking
-    dist_thresh = args["dist_thresh"]
-    max_frames_to_skip = args["max_frames_to_skip"]
-    max_trace_length = args["max_trace_length"]
-    radius_min = args["radius_min"]
-    radius_max = args["radius_max"]
-    
-    #define min distance tracking threshold
-    dis_tracking = args["dis_tracking"]
-    min_angle = args["min_angle"]
-    dist_ratio = args["dist_ratio"]
-    '''
-
+    if args["visualize_model"] == True:
+        
+        print("Visualize skeleton and sturcture in 3D graph... \n")
+    else:
+        print("Skip Visualization steps... \n")
     
     model_analysis_pipeline(file_path, filename, file_base_name)
     

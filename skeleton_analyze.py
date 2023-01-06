@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 skeleton_analyze.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/slices/ -v True
+python3 skeleton_analyze.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/slices/ -v 1
 
 
 argument:
@@ -1436,7 +1436,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     
     
-    '''
+    
     if num_brace ==0:
         num_crown = 18
 
@@ -1464,7 +1464,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         n_whorl = count_wholrs + 3
     
     
-    '''
+    
     
     whorl_dis_1 = abs(np.mean(sub_branch_startZ_level[0]) - np.mean(sub_branch_startZ_level[1]))
     whorl_dis_2 = abs(np.mean(sub_branch_startZ_level[1]) - np.mean(sub_branch_startZ_level[2]))
@@ -1781,7 +1781,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         
         
-        '''
+        
         traits_array = np.zeros(22)
         
         
@@ -1989,7 +1989,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         whorl_dis_2 = result_traits[20]
         avg_volume = result_traits[21]
         
-        '''
+        
 
 
 
@@ -1997,7 +1997,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     ####################################################################
     # The number of points per line
     
-    if args["visualize_model"]:
+    if args["visualize_model"] == 1:
     
         #from mayavi import mlab
         #from tvtk.api import tvtk
@@ -2104,7 +2104,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         #visualize skeleton model, edge, nodes
         ####################################################################
-        if args["visualize_model"]:
+        if args["visualize_model"] == 1:
         
             x = list()
             y = list()
@@ -2195,7 +2195,7 @@ if __name__ == '__main__':
     ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
     ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
     ap.add_argument("-m3", "--slice_path", required = True, default = None, help = "Cross section/slices image folder path in ong format")
-    ap.add_argument("-v", "--visualize_model", required = False, default = False, help = "Display model or not, deafult no")
+    ap.add_argument("-v", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult not display")
     args = vars(ap.parse_args())
 
 
@@ -2332,6 +2332,6 @@ if __name__ == '__main__':
         
         print("Result file was saved at {}\n".format(trait_file))
     else:
-        print("Error saving Result file\n")
+        print("Error in saving Result file\n")
 
     
