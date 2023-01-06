@@ -58,3 +58,13 @@ Reference:
 Shenglan Du, Roderik Lindenbergh, Hugo Ledoux, Jantien Stoter, and Liangliang Nan.
 AdTree: Accurate, Detailed, and Automatic Modelling of Laser-Scanned Trees.
 Remote Sensing. 2019, 11(18), 2074.
+
+@article{du2019adtree,
+  title={AdTree: Accurate, detailed, and automatic modelling of laser-scanned trees},
+  author={Du, Shenglan and Lindenbergh, Roderik and Ledoux, Hugo and Stoter, Jantien and Nan, Liangliang},
+  journal={Remote Sensing},
+  volume={11},
+  number={18},
+  pages={2074},
+  year={2019}
+}
