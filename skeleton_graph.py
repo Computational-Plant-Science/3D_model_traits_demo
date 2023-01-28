@@ -9,11 +9,11 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-#default parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -v True
+#default parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -v 1
 
-#customized parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -th 0.21 -v True
+#customized parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -th 0.21 -v 1
 
-#customized parameter: python3 skeleton_graph.py -p ~/example/pt_cloud/tiny/ -m1 tiny_skeleton.ply -m2 tiny.xyz -v True
+#customized parameter: python3 skeleton_graph.py -p ~/example/pt_cloud/tiny/ -m1 tiny_skeleton.ply -m2 tiny.xyz -v 1
 
 
 argument:
@@ -77,6 +77,13 @@ import csv
 import pandas as pd
 import plotly
 import plotly.graph_objs as go
+
+import matplotlib
+matplotlib.use('Agg')
+
+import matplotlib.pyplot as plt
+from matplotlib import colors
+from matplotlib.ticker import PercentFormatter
 
 
 from pyquaternion import Quaternion
@@ -378,21 +385,14 @@ def short_path_finder(G_unordered, start_v, end_v):
     int_vlist_path = [int(i) for i in vlist_path]
     
     #print(int_vlist_path)
-    '''
+    
     if len(vlist_path) > 0: 
         
-        print("Shortest path found in graph! \n")
-        
-        print("vlist_path = {} \n".format(int_vlist_path))
-    
-        #curve_length = path_length(X_skeleton[int_vlist_path], Y_skeleton[int_vlist_path], Z_skeleton[int_vlist_path])
-    
-        #print("curve_length = {} \n".format(curve_length))
-        
+        return int_vlist_path
     else:
         print("No shortest path found in graph...\n")
-    '''
-    return int_vlist_path
+        
+        return 0
 
 
 def dimension_size(Z_skeleton, sub_branch_start_rec, sub_branch_end_rec, select):
@@ -441,6 +441,63 @@ def optimal_number_of_clusters(wcss):
 
     return distances.index(max(distances)) + 0
 
+
+def his_plot(x,y):
+    
+    # Creating distribution
+    x = np.random.randn(N_points)
+    y = .8 ** x + np.random.randn(10000) + 25
+    legend = ['distribution']
+
+    # Creating histogram
+    fig, axs = plt.subplots(1, 1,
+                        figsize =(10, 7),
+                        tight_layout = True)
+
+
+    # Remove axes splines
+    for s in ['top', 'bottom', 'left', 'right']:
+        axs.spines[s].set_visible(False)
+
+    # Remove x, y ticks
+    axs.xaxis.set_ticks_position('none')
+    axs.yaxis.set_ticks_position('none')
+
+    # Add padding between axes and labels
+    axs.xaxis.set_tick_params(pad = 5)
+    axs.yaxis.set_tick_params(pad = 10)
+
+    # Add x, y gridlines
+    axs.grid(b = True, color ='grey',
+        linestyle ='-.', linewidth = 0.5,
+        alpha = 0.6)
+
+    # Add Text watermark
+    fig.text(0.9, 0.15, 'Jeeteshgavande30',
+         fontsize = 12,
+         color ='red',
+         ha ='right',
+         va ='bottom',
+         alpha = 0.7)
+
+    # Creating histogram
+    N, bins, patches = axs.hist(x, bins = n_bins)
+
+    # Setting color
+    fracs = ((N**(1 / 5)) / N.max())
+    norm = colors.Normalize(fracs.min(), fracs.max())
+
+    for thisfrac, thispatch in zip(fracs, patches):
+        color = plt.cm.viridis(norm(thisfrac))
+        thispatch.set_facecolor(color)
+
+    # Adding extra features   
+    plt.xlabel("X-axis")
+    plt.ylabel("y-axis")
+    plt.legend(legend)
+    plt.title('Customized histogram')
+    
+    
 
 # Skeleton analysis
 def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
@@ -695,13 +752,13 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #keep repeat values for correct indexing order
     
-    print("closest_pts = {}\n".format(closest_pts))
+    #print("closest_pts = {}\n".format(closest_pts))
     
     closest_pts_unique = list((closest_pts))
     
     closest_pts_unique_sorted = sorted(closest_pts_unique)
     
-    print("closest_pts_unique_sorted = {}\n".format(closest_pts_unique_sorted))
+    #print("closest_pts_unique_sorted = {}\n".format(closest_pts_unique_sorted))
  
     #find shortest path between start and end vertex
     ####################################################################
@@ -715,7 +772,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     rotVec_rec = []
     
-
+    path_length_rec = []
     
 
     
@@ -730,8 +787,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         if len(vlist_path) > 0:
         
             #path_count+=1
-        
+            #print("Shortest path found in graph! \n")
+            
             vlist_path_rec.append(vlist_path)
+            
+            # record current path length
+            path_length_N2N = path_length(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path])
+            
+            path_length_rec.append(path_length_N2N)
             
             # Q is a Nx4 numpy matrix and contains the quaternions to average in the rows.
             # The quaternions are arranged as (w,x,y,z), with w being the scalar
@@ -740,6 +803,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             #sum_euler = np.zeros([len(vlist_path), 3])
             
             for i, v_path in enumerate(vlist_path):
+                
+                #print("closest_pts = {}\n".format(vlist_path[i]))
         
                 if i + 2 < len(vlist_path):
                     
@@ -769,6 +834,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                     #sum_euler[i,:] = euler_r
                     
                     #print("vlist_path = {} quaternion_r = {}".format(idx, quaternion_r))
+                    
             
             # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
             #avg_quaternion = averageQuaternions(sum_quaternion)
@@ -789,7 +855,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
             quaternion_path_rec.append(avg_quaternion)
             
-            print("vlist_path = {} avg_quaternion = {} avg_euler = {} rotVec = {}".format(idx, avg_quaternion, avg_euler, rotVec))
+            print("vlist_path = {} avg_quaternion = {} avg_euler = {} rotVec = {}\n".format(idx, avg_quaternion, avg_euler, rotVec))
                 
             '''
             if rotVec[2] > 0:
@@ -801,6 +867,95 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
             
     print("Found {} shortest path \n".format(len(vlist_path_rec)))
+    
+    print("Path length are: {}\n".format(path_length_rec)) 
+    
+    
+    '''
+    # save histogram distribution of the path length
+    fig = plt.figure(figsize = (6, 6))
+    
+    counts, bins = np.histogram(path_length_rec)
+    
+    plt.stairs(counts, bins, fill=True)
+    
+    #define result path
+    trait_path = os.path.dirname(current_path + filename_skeleton)
+    folder_name = os.path.basename(trait_path)
+    
+    # Add title and axis names
+    plt.title('Path length histogram distribution')
+    plt.xlabel('categories')
+    plt.ylabel('Length values in 3D space')
+    '''
+    ####################################################3
+    
+    '''
+    # Creating dataset
+    np.random.seed(23685752)
+    N_points = 10000
+    n_bins = 20
+    
+    # Creating distribution
+    x = np.random.randn(N_points)
+    y = .8 ** x + np.random.randn(10000) + 25
+    '''
+    legend = ['Path length histogram distribution']
+
+    N_points = len(path_length_rec)
+    x = path_length_rec
+    n_bins = 20
+    
+    
+    # Creating histogram
+    fig, axs = plt.subplots(1, 1,
+                        figsize =(10, 7),
+                        tight_layout = True)
+
+
+    # Remove axes splines
+    for s in ['top', 'bottom', 'left', 'right']:
+        axs.spines[s].set_visible(False)
+
+    # Remove x, y ticks
+    axs.xaxis.set_ticks_position('none')
+    axs.yaxis.set_ticks_position('none')
+
+    # Add padding between axes and labels
+    axs.xaxis.set_tick_params(pad = 5)
+    axs.yaxis.set_tick_params(pad = 10)
+
+    # Add x, y gridlines
+    axs.grid(b = True, color ='grey',
+        linestyle ='-.', linewidth = 0.5,
+        alpha = 0.6)
+
+    # Creating histogram
+    N, bins, patches = axs.hist(x, bins = n_bins)
+
+    # Setting color
+    fracs = ((N**(1 / 5)) / N.max())
+    norm = colors.Normalize(fracs.min(), fracs.max())
+
+    for thisfrac, thispatch in zip(fracs, patches):
+        color = plt.cm.viridis(norm(thisfrac))
+        thispatch.set_facecolor(color)
+
+    # Adding extra features   
+    plt.xlabel("Path length in 3D model space")
+    plt.ylabel("Counts")
+    plt.legend(legend)
+    plt.title('Customized histogram')
+    
+    
+    trait_path = os.path.dirname(current_path + filename_skeleton)
+    folder_name = os.path.basename(trait_path)
+    
+    # create trait file using sub folder name
+    path_histogram = (current_path + folder_name + '_his.png')
+    
+    plt.savefig(path_histogram)
+    
     
     
     path_index = list(range(1,len(vlist_path_rec)+1))
@@ -1060,7 +1215,7 @@ if __name__ == '__main__':
     ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
     ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
     ap.add_argument("-th", "--thresh_join", required = False, type = float, default = 3.21, help = "threshhold value to join all disconnected graph nodes")
-    ap.add_argument("-v", "--visualize_model", required = False, default = False, help = "Display model or not, deafult no")
+    ap.add_argument("-v", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult not display")
     args = vars(ap.parse_args())
 
 
@@ -1097,7 +1252,7 @@ if __name__ == '__main__':
 
         result_list.append([v0,v1,v2,v3,v4,v5,v6,v7])
     
-  
+    '''
     #save reuslt file
     ####################################################################
     
@@ -1190,7 +1345,17 @@ if __name__ == '__main__':
     img = ax.scatter(x, y, z, c=c, cmap=plt.hot())
     #img = ax.scatter(x, y, z, c=c, cmap=plt.hot())
     fig.colorbar(img)
-    plt.show()
+    #plt.show()
+    
+    #define result path
+    trait_path = os.path.dirname(current_path + filename_skeleton)
+    folder_name = os.path.basename(trait_path)
+    
+    # create trait file using sub folder name
+    quaternion_scatter = (current_path + folder_name + '_quaternion_scatter.png')
+    
+    plt.savefig(quaternion_scatter)
+    
     
     
     ####################################################################
@@ -1228,5 +1393,5 @@ if __name__ == '__main__':
                      "layout": mylayout},
                      auto_open=True,
                      filename=quaternion_4D)
-    
+    '''
     
