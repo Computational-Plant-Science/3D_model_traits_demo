@@ -13,7 +13,7 @@ USAGE
 
 #customized parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -th 0.21 -v 1
 
-#customized parameter: python3 skeleton_graph.py -p ~/example/pt_cloud/tiny/ -m1 tiny_skeleton.ply -m2 tiny.xyz -v 1
+#customized parameter: python3 skeleton_graph.py -p ~/example/pt_cloud/tiny/ -m1 tiny_skeleton.ply -v 1
 
 
 argument:
@@ -442,13 +442,19 @@ def optimal_number_of_clusters(wcss):
     return distances.index(max(distances)) + 0
 
 
-def his_plot(x,y):
-    
-    # Creating distribution
-    x = np.random.randn(N_points)
-    y = .8 ** x + np.random.randn(10000) + 25
-    legend = ['distribution']
 
+
+
+def his_plot(path_length_rec, current_path, filename_skeleton):
+    
+  
+    legend = ['Path length histogram distribution']
+
+    N_points = len(path_length_rec)
+    x = path_length_rec
+    n_bins = 20
+    
+    
     # Creating histogram
     fig, axs = plt.subplots(1, 1,
                         figsize =(10, 7),
@@ -472,16 +478,21 @@ def his_plot(x,y):
         linestyle ='-.', linewidth = 0.5,
         alpha = 0.6)
 
-    # Add Text watermark
-    fig.text(0.9, 0.15, 'Jeeteshgavande30',
-         fontsize = 12,
-         color ='red',
-         ha ='right',
-         va ='bottom',
-         alpha = 0.7)
+    bin_size = 0.1
+    min_edge = 0.0
+    max_edge = 7.0
+    Nplus1 = (max_edge-min_edge)/bin_size + 1
+    bin_list = np.linspace(min_edge, max_edge, int(Nplus1))
 
+
+    #fixed_bins = [0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
+    
     # Creating histogram
-    N, bins, patches = axs.hist(x, bins = n_bins)
+    #N, bins, patches = axs.hist(x, bins = n_bins)
+    
+    N, bins, patches = axs.hist(x, bins = bin_list)
+    
+    axs.set_ylim([0, 10000])
 
     # Setting color
     fracs = ((N**(1 / 5)) / N.max())
@@ -492,10 +503,19 @@ def his_plot(x,y):
         thispatch.set_facecolor(color)
 
     # Adding extra features   
-    plt.xlabel("X-axis")
-    plt.ylabel("y-axis")
+    plt.xlabel("Path length in 3D model space")
+    plt.ylabel("Counts")
     plt.legend(legend)
-    plt.title('Customized histogram')
+    plt.title('Path length distribution')
+    
+    
+    trait_path = os.path.dirname(current_path + filename_skeleton)
+    folder_name = os.path.basename(trait_path)
+    
+    # create trait file using sub folder name
+    path_histogram = (current_path + folder_name + '_his.png')
+    
+    plt.savefig(path_histogram)
     
     
 
@@ -871,91 +891,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     print("Path length are: {}\n".format(path_length_rec)) 
     
     
-    '''
-    # save histogram distribution of the path length
-    fig = plt.figure(figsize = (6, 6))
-    
-    counts, bins = np.histogram(path_length_rec)
-    
-    plt.stairs(counts, bins, fill=True)
-    
-    #define result path
-    trait_path = os.path.dirname(current_path + filename_skeleton)
-    folder_name = os.path.basename(trait_path)
-    
-    # Add title and axis names
-    plt.title('Path length histogram distribution')
-    plt.xlabel('categories')
-    plt.ylabel('Length values in 3D space')
-    '''
     ####################################################3
-    
-    '''
-    # Creating dataset
-    np.random.seed(23685752)
-    N_points = 10000
-    n_bins = 20
-    
-    # Creating distribution
-    x = np.random.randn(N_points)
-    y = .8 ** x + np.random.randn(10000) + 25
-    '''
-    legend = ['Path length histogram distribution']
 
-    N_points = len(path_length_rec)
-    x = path_length_rec
-    n_bins = 20
-    
-    
-    # Creating histogram
-    fig, axs = plt.subplots(1, 1,
-                        figsize =(10, 7),
-                        tight_layout = True)
-
-
-    # Remove axes splines
-    for s in ['top', 'bottom', 'left', 'right']:
-        axs.spines[s].set_visible(False)
-
-    # Remove x, y ticks
-    axs.xaxis.set_ticks_position('none')
-    axs.yaxis.set_ticks_position('none')
-
-    # Add padding between axes and labels
-    axs.xaxis.set_tick_params(pad = 5)
-    axs.yaxis.set_tick_params(pad = 10)
-
-    # Add x, y gridlines
-    axs.grid(b = True, color ='grey',
-        linestyle ='-.', linewidth = 0.5,
-        alpha = 0.6)
-
-    # Creating histogram
-    N, bins, patches = axs.hist(x, bins = n_bins)
-
-    # Setting color
-    fracs = ((N**(1 / 5)) / N.max())
-    norm = colors.Normalize(fracs.min(), fracs.max())
-
-    for thisfrac, thispatch in zip(fracs, patches):
-        color = plt.cm.viridis(norm(thisfrac))
-        thispatch.set_facecolor(color)
-
-    # Adding extra features   
-    plt.xlabel("Path length in 3D model space")
-    plt.ylabel("Counts")
-    plt.legend(legend)
-    plt.title('Customized histogram')
-    
-    
-    trait_path = os.path.dirname(current_path + filename_skeleton)
-    folder_name = os.path.basename(trait_path)
-    
-    # create trait file using sub folder name
-    path_histogram = (current_path + folder_name + '_his.png')
-    
-    plt.savefig(path_histogram)
-    
+    his_plot(path_length_rec, current_path, filename_skeleton)
     
     
     path_index = list(range(1,len(vlist_path_rec)+1))
