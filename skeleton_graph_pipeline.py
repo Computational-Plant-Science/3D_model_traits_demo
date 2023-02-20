@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-    python3 skeleton_graph_pipeline.py -p ~/example/
+    python3 skeleton_graph_pipeline.py -p ~/example/B73_test/
 
 """
 

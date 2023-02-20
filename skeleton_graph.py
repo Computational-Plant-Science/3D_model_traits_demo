@@ -87,6 +87,7 @@ from matplotlib.ticker import PercentFormatter
 
 
 from pyquaternion import Quaternion
+from pathlib import Path
 
 '''
 # import warnings filter
@@ -215,6 +216,15 @@ def findVec(point1,point2,unitSphere = False):
       return finalVector
 
 
+# normalize a list of data
+def normalize(lst):
+    
+    #normlized_list = [float(i)/sum(lst) for i in lst]
+    
+    normlized_list = [float(i)/max(lst) for i in lst]
+    
+    return normlized_list
+    
 
 #get rotation matrix between two vectors using scipy
 def get_rotation_matrix(vec2, vec1):
@@ -474,13 +484,13 @@ def his_plot(path_length_rec, current_path, filename_skeleton):
     axs.yaxis.set_tick_params(pad = 10)
 
     # Add x, y gridlines
-    axs.grid(b = True, color ='grey',
+    axs.grid(visible = True, color ='grey',
         linestyle ='-.', linewidth = 0.5,
         alpha = 0.6)
 
     bin_size = 0.1
     min_edge = 0.0
-    max_edge = 7.0
+    max_edge = 1.0
     Nplus1 = (max_edge-min_edge)/bin_size + 1
     bin_list = np.linspace(min_edge, max_edge, int(Nplus1))
 
@@ -492,7 +502,7 @@ def his_plot(path_length_rec, current_path, filename_skeleton):
     
     N, bins, patches = axs.hist(x, bins = bin_list)
     
-    axs.set_ylim([0, 10000])
+    axs.set_ylim([0, 30000])
 
     # Setting color
     fracs = ((N**(1 / 5)) / N.max())
@@ -893,7 +903,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     ####################################################3
 
-    his_plot(path_length_rec, current_path, filename_skeleton)
+    #normalize path length againste the max value
+    path_length_rec_normalize = normalize(path_length_rec)
+    
+    # generate histogram
+    his_plot(path_length_rec_normalize, current_path, filename_skeleton)
     
     
     path_index = list(range(1,len(vlist_path_rec)+1))

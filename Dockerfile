@@ -69,3 +69,5 @@ RUN add-apt-repository 'deb [ arch=amd64 ] https://downloads.skewed.de/apt focal
 RUN apt update 
 
 RUN apt install python3-graph-tool -y
+
+RUN chmod +x /opt/code/shim.sh 
