@@ -63,7 +63,7 @@ def skeleton_analysis_pipeline(file_path):
     filename = folder_name + '_his.png'
     
     #cp ~/example/B73_test/01/01_his.png ~/example/B73_resulls/histogram/
-    skeleton_analysis = "cp " + file_path_full + filename + " /home/suxing/example/B73_resulls/histogram/" 
+    skeleton_analysis = "cp " + file_path_full + filename + " /home/suxing/example/model_COLMAP_quarterunion/histogram/" 
     
     #print(skeleton_analysis)
     

@@ -502,7 +502,7 @@ def his_plot(path_length_rec, current_path, filename_skeleton):
     
     N, bins, patches = axs.hist(x, bins = bin_list)
     
-    axs.set_ylim([0, 30000])
+    axs.set_ylim([0, 60000])
 
     # Setting color
     fracs = ((N**(1 / 5)) / N.max())
@@ -898,7 +898,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
     print("Found {} shortest path \n".format(len(vlist_path_rec)))
     
-    print("Path length are: {}\n".format(path_length_rec)) 
+    #print("Path length are: {}\n".format(path_length_rec)) 
     
     
     ####################################################3

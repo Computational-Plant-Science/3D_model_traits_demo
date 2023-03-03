@@ -9,11 +9,15 @@ Author: suxing liu
 
 Author-email: suxingliu@gmail.com
 
-Created: 2019-09-29
+Created: 2020-01-29
 
 USAGE:
 
 python3 down_sample.py -p ~/example/ -ft jpg -r 10
+
+python3 down_sample.py -p /media/suxing/DATA/root_image_data/Molly_roots/DKPB80X3IIH6/DKPB80X3IIH6-1/ -ft jpg -r 4
+
+python3 down_sample.py -p ~/molly_root/H96X3IIH6/H96X3IIH6-1/ -ft jpg -r 5
 
 
 '''
@@ -46,8 +50,10 @@ def mkdir(path):
         return True
     else:
         # if exists, return 
-        #print path+' path exists!'
-        return False
+        shutil.rmtree(path)
+        print ('path exists!')
+        os.makedirs(path)
+        return True
         
 
 
@@ -67,8 +73,9 @@ if __name__ == '__main__':
     ratio = int(args['ratio'])
     
     # make the folder to store the results
-    # save folder construction
-    mkpath = os.path.dirname(file_path) +'/images'
+    # parent_path
+    mkpath = os.path.abspath(os.path.join(file_path, os.pardir)) + '/down_sampled'
+    #mkpath = os.path.dirname(file_path) +'/downsampled'
     mkdir(mkpath)
     save_path = mkpath + '/'
     print("results_folder: {0}\n".format(str(save_path)))  
