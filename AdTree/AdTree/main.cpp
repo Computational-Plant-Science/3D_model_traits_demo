@@ -45,7 +45,7 @@
 using namespace easy3d;
 
 // save the smoothed skeleton into a PLY file (where each vertex has a radius)
-void save_skeleton(Skeleton* skeleton, PointCloud* cloud, const std::string& file_name) {
+void save_skeleton(Skeleton* skeleton, PointCloud* cloud, const std::string& file_name, const std::string& radius_file_name) {
 	const ::Graph& sgraph = skeleton->get_smoothed_skeleton();
 	if (boost::num_edges(sgraph) == 0) {
 		std::cerr << "failed to save skeleton (no edge exists)" << std::endl;
@@ -56,6 +56,16 @@ void save_skeleton(Skeleton* skeleton, PointCloud* cloud, const std::string& fil
 
 	std::unordered_map<SGraphVertexDescriptor, easy3d::Graph::Vertex>  vvmap;
 	easy3d::Graph g;
+  
+    //////////////////////////////////////////////////////////
+    // save radius into txt file
+	std::ofstream Radius_file;
+	Radius_file.open(radius_file_name, std::ios_base::app);
+    
+    int count(0);
+    
+    ///////////////////////////////////////////////////////////
+
 
 	auto vertexRadius = g.add_vertex_property<float>("v:radius");
 	auto vts = boost::vertices(sgraph);
@@ -66,8 +76,15 @@ void save_skeleton(Skeleton* skeleton, PointCloud* cloud, const std::string& fil
 			auto v = g.add_vertex(vp);
 			vertexRadius[v] = sgraph[vd].radius;
 			vvmap[vd] = v;
+			Radius_file << vertexRadius[v] << '\n';
+            ++count;
 		}
 	}
+	//////////////////////////////////////////////////////
+	// save radius into txt file
+	Radius_file.close();
+	std::cout << "number of skeleton vertex: " << count << std::endl;
+	
 
 	auto egs = boost::edges(sgraph);
 	for (SGraphEdgeIterator iter = egs.first; iter != egs.second; ++iter) {
@@ -89,6 +106,7 @@ void save_skeleton(Skeleton* skeleton, PointCloud* cloud, const std::string& fil
         std::cout << "model of skeletons saved to: " << file_name << std::endl;
     else
 		std::cerr << "failed to save the model of skeletons into file" << std::endl;
+		
 }
 
 
@@ -163,8 +181,15 @@ int batch_reconstruct(std::vector<std::string>& point_cloud_files, const std::st
 
         if (export_skeleton) {
             const std::string& skeleton_file = output_folder + "/" + file_system::base_name(cloud->name()) + "_skeleton.ply";
-            save_skeleton(skeleton, cloud, skeleton_file);
+            
+            const std::string radius_file = output_folder + "/" + file_system::base_name(cloud->name()) + "_avr.txt";;
+
+            save_skeleton(skeleton, cloud, skeleton_file, radius_file);
         }
+
+
+
+        ////////////////////////////////////////////////////////////////
 
         delete cloud;
         delete mesh;
