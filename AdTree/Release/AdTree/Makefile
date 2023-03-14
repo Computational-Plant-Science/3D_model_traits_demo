@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,14 +87,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles /home/suxing/AdTree/Release/AdTree//CMakeFiles/progress.marks
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 AdTree/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles /home/suxing/3D_model_traits_demo/AdTree/Release/AdTree//CMakeFiles/progress.marks
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 AdTree/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 AdTree/clean
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 AdTree/clean
 .PHONY : clean
 
 # The main clean target
@@ -103,22 +103,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 AdTree/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 AdTree/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 AdTree/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 AdTree/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 AdTree/CMakeFiles/AdTree.dir/rule:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 AdTree/CMakeFiles/AdTree.dir/rule
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 AdTree/CMakeFiles/AdTree.dir/rule
 .PHONY : AdTree/CMakeFiles/AdTree.dir/rule
 
 # Convenience name for target.
@@ -127,7 +127,7 @@ AdTree: AdTree/CMakeFiles/AdTree.dir/rule
 
 # fast build rule for target.
 AdTree/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/build
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/build
 .PHONY : AdTree/fast
 
 main.o: main.cpp.o
@@ -135,7 +135,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/main.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -143,7 +143,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/main.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -151,7 +151,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/main.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 skeleton.o: skeleton.cpp.o
@@ -159,7 +159,7 @@ skeleton.o: skeleton.cpp.o
 
 # target to build an object file
 skeleton.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/skeleton.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/skeleton.cpp.o
 .PHONY : skeleton.cpp.o
 
 skeleton.i: skeleton.cpp.i
@@ -167,7 +167,7 @@ skeleton.i: skeleton.cpp.i
 
 # target to preprocess a source file
 skeleton.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/skeleton.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/skeleton.cpp.i
 .PHONY : skeleton.cpp.i
 
 skeleton.s: skeleton.cpp.s
@@ -175,7 +175,7 @@ skeleton.s: skeleton.cpp.s
 
 # target to generate assembly for a file
 skeleton.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/skeleton.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/skeleton.cpp.s
 .PHONY : skeleton.cpp.s
 
 tree_viewer.o: tree_viewer.cpp.o
@@ -183,7 +183,7 @@ tree_viewer.o: tree_viewer.cpp.o
 
 # target to build an object file
 tree_viewer.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/tree_viewer.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/tree_viewer.cpp.o
 .PHONY : tree_viewer.cpp.o
 
 tree_viewer.i: tree_viewer.cpp.i
@@ -191,7 +191,7 @@ tree_viewer.i: tree_viewer.cpp.i
 
 # target to preprocess a source file
 tree_viewer.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/tree_viewer.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/tree_viewer.cpp.i
 .PHONY : tree_viewer.cpp.i
 
 tree_viewer.s: tree_viewer.cpp.s
@@ -199,7 +199,7 @@ tree_viewer.s: tree_viewer.cpp.s
 
 # target to generate assembly for a file
 tree_viewer.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/tree_viewer.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/tree_viewer.cpp.s
 .PHONY : tree_viewer.cpp.s
 
 viewer_imgui.o: viewer_imgui.cpp.o
@@ -207,7 +207,7 @@ viewer_imgui.o: viewer_imgui.cpp.o
 
 # target to build an object file
 viewer_imgui.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.o
 .PHONY : viewer_imgui.cpp.o
 
 viewer_imgui.i: viewer_imgui.cpp.i
@@ -215,7 +215,7 @@ viewer_imgui.i: viewer_imgui.cpp.i
 
 # target to preprocess a source file
 viewer_imgui.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.i
 .PHONY : viewer_imgui.cpp.i
 
 viewer_imgui.s: viewer_imgui.cpp.s
@@ -223,7 +223,7 @@ viewer_imgui.s: viewer_imgui.cpp.s
 
 # target to generate assembly for a file
 viewer_imgui.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f AdTree/CMakeFiles/AdTree.dir/build.make AdTree/CMakeFiles/AdTree.dir/viewer_imgui.cpp.s
 .PHONY : viewer_imgui.cpp.s
 
 # Help Target
@@ -258,6 +258,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

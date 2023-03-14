@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,14 +87,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles /home/suxing/AdTree/Release/3rd_party/easy3d/fileio//CMakeFiles/progress.marks
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/fileio/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/fileio//CMakeFiles/progress.marks
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/fileio/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/fileio/clean
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/fileio/clean
 .PHONY : clean
 
 # The main clean target
@@ -103,22 +103,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/fileio/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/fileio/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/fileio/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/fileio/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/rule:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/rule
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/rule
 .PHONY : 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/rule
 
 # Convenience name for target.
@@ -127,7 +127,7 @@ easy3d_fileio: 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/rule
 
 # fast build rule for target.
 easy3d_fileio/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build
 .PHONY : easy3d_fileio/fast
 
 graph_io.o: graph_io.cpp.o
@@ -135,7 +135,7 @@ graph_io.o: graph_io.cpp.o
 
 # target to build an object file
 graph_io.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/graph_io.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/graph_io.cpp.o
 .PHONY : graph_io.cpp.o
 
 graph_io.i: graph_io.cpp.i
@@ -143,7 +143,7 @@ graph_io.i: graph_io.cpp.i
 
 # target to preprocess a source file
 graph_io.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/graph_io.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/graph_io.cpp.i
 .PHONY : graph_io.cpp.i
 
 graph_io.s: graph_io.cpp.s
@@ -151,7 +151,7 @@ graph_io.s: graph_io.cpp.s
 
 # target to generate assembly for a file
 graph_io.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/graph_io.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/graph_io.cpp.s
 .PHONY : graph_io.cpp.s
 
 graph_io_ply.o: graph_io_ply.cpp.o
@@ -159,7 +159,7 @@ graph_io_ply.o: graph_io_ply.cpp.o
 
 # target to build an object file
 graph_io_ply.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/graph_io_ply.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/graph_io_ply.cpp.o
 .PHONY : graph_io_ply.cpp.o
 
 graph_io_ply.i: graph_io_ply.cpp.i
@@ -167,7 +167,7 @@ graph_io_ply.i: graph_io_ply.cpp.i
 
 # target to preprocess a source file
 graph_io_ply.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/graph_io_ply.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/graph_io_ply.cpp.i
 .PHONY : graph_io_ply.cpp.i
 
 graph_io_ply.s: graph_io_ply.cpp.s
@@ -175,7 +175,7 @@ graph_io_ply.s: graph_io_ply.cpp.s
 
 # target to generate assembly for a file
 graph_io_ply.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/graph_io_ply.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/graph_io_ply.cpp.s
 .PHONY : graph_io_ply.cpp.s
 
 ply_reader_writer.o: ply_reader_writer.cpp.o
@@ -183,7 +183,7 @@ ply_reader_writer.o: ply_reader_writer.cpp.o
 
 # target to build an object file
 ply_reader_writer.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/ply_reader_writer.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/ply_reader_writer.cpp.o
 .PHONY : ply_reader_writer.cpp.o
 
 ply_reader_writer.i: ply_reader_writer.cpp.i
@@ -191,7 +191,7 @@ ply_reader_writer.i: ply_reader_writer.cpp.i
 
 # target to preprocess a source file
 ply_reader_writer.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/ply_reader_writer.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/ply_reader_writer.cpp.i
 .PHONY : ply_reader_writer.cpp.i
 
 ply_reader_writer.s: ply_reader_writer.cpp.s
@@ -199,7 +199,7 @@ ply_reader_writer.s: ply_reader_writer.cpp.s
 
 # target to generate assembly for a file
 ply_reader_writer.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/ply_reader_writer.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/ply_reader_writer.cpp.s
 .PHONY : ply_reader_writer.cpp.s
 
 point_cloud_io.o: point_cloud_io.cpp.o
@@ -207,7 +207,7 @@ point_cloud_io.o: point_cloud_io.cpp.o
 
 # target to build an object file
 point_cloud_io.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/point_cloud_io.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/point_cloud_io.cpp.o
 .PHONY : point_cloud_io.cpp.o
 
 point_cloud_io.i: point_cloud_io.cpp.i
@@ -215,7 +215,7 @@ point_cloud_io.i: point_cloud_io.cpp.i
 
 # target to preprocess a source file
 point_cloud_io.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/point_cloud_io.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/point_cloud_io.cpp.i
 .PHONY : point_cloud_io.cpp.i
 
 point_cloud_io.s: point_cloud_io.cpp.s
@@ -223,7 +223,7 @@ point_cloud_io.s: point_cloud_io.cpp.s
 
 # target to generate assembly for a file
 point_cloud_io.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/point_cloud_io.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/point_cloud_io.cpp.s
 .PHONY : point_cloud_io.cpp.s
 
 point_cloud_io_xyz.o: point_cloud_io_xyz.cpp.o
@@ -231,7 +231,7 @@ point_cloud_io_xyz.o: point_cloud_io_xyz.cpp.o
 
 # target to build an object file
 point_cloud_io_xyz.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/point_cloud_io_xyz.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/point_cloud_io_xyz.cpp.o
 .PHONY : point_cloud_io_xyz.cpp.o
 
 point_cloud_io_xyz.i: point_cloud_io_xyz.cpp.i
@@ -239,7 +239,7 @@ point_cloud_io_xyz.i: point_cloud_io_xyz.cpp.i
 
 # target to preprocess a source file
 point_cloud_io_xyz.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/point_cloud_io_xyz.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/point_cloud_io_xyz.cpp.i
 .PHONY : point_cloud_io_xyz.cpp.i
 
 point_cloud_io_xyz.s: point_cloud_io_xyz.cpp.s
@@ -247,7 +247,7 @@ point_cloud_io_xyz.s: point_cloud_io_xyz.cpp.s
 
 # target to generate assembly for a file
 point_cloud_io_xyz.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/point_cloud_io_xyz.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/point_cloud_io_xyz.cpp.s
 .PHONY : point_cloud_io_xyz.cpp.s
 
 surface_mesh_io.o: surface_mesh_io.cpp.o
@@ -255,7 +255,7 @@ surface_mesh_io.o: surface_mesh_io.cpp.o
 
 # target to build an object file
 surface_mesh_io.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/surface_mesh_io.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/surface_mesh_io.cpp.o
 .PHONY : surface_mesh_io.cpp.o
 
 surface_mesh_io.i: surface_mesh_io.cpp.i
@@ -263,7 +263,7 @@ surface_mesh_io.i: surface_mesh_io.cpp.i
 
 # target to preprocess a source file
 surface_mesh_io.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/surface_mesh_io.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/surface_mesh_io.cpp.i
 .PHONY : surface_mesh_io.cpp.i
 
 surface_mesh_io.s: surface_mesh_io.cpp.s
@@ -271,7 +271,7 @@ surface_mesh_io.s: surface_mesh_io.cpp.s
 
 # target to generate assembly for a file
 surface_mesh_io.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/surface_mesh_io.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/surface_mesh_io.cpp.s
 .PHONY : surface_mesh_io.cpp.s
 
 surface_mesh_io_obj.o: surface_mesh_io_obj.cpp.o
@@ -279,7 +279,7 @@ surface_mesh_io_obj.o: surface_mesh_io_obj.cpp.o
 
 # target to build an object file
 surface_mesh_io_obj.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/surface_mesh_io_obj.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/surface_mesh_io_obj.cpp.o
 .PHONY : surface_mesh_io_obj.cpp.o
 
 surface_mesh_io_obj.i: surface_mesh_io_obj.cpp.i
@@ -287,7 +287,7 @@ surface_mesh_io_obj.i: surface_mesh_io_obj.cpp.i
 
 # target to preprocess a source file
 surface_mesh_io_obj.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/surface_mesh_io_obj.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/surface_mesh_io_obj.cpp.i
 .PHONY : surface_mesh_io_obj.cpp.i
 
 surface_mesh_io_obj.s: surface_mesh_io_obj.cpp.s
@@ -295,7 +295,7 @@ surface_mesh_io_obj.s: surface_mesh_io_obj.cpp.s
 
 # target to generate assembly for a file
 surface_mesh_io_obj.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/surface_mesh_io_obj.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/build.make 3rd_party/easy3d/fileio/CMakeFiles/easy3d_fileio.dir/surface_mesh_io_obj.cpp.s
 .PHONY : surface_mesh_io_obj.cpp.s
 
 # Help Target
@@ -339,6 +339,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles /home/suxing/AdTree/Release//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles /home/suxing/3D_model_traits_demo/AdTree/Release//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

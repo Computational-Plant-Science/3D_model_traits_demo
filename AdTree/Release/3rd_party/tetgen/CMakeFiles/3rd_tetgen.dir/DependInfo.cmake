@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/suxing/AdTree/3rd_party/tetgen/predicates.cxx" "3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.o" "gcc" "3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.o.d"
-  "/home/suxing/AdTree/3rd_party/tetgen/tetgen.cxx" "3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o" "gcc" "3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o.d"
+  "/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/predicates.cxx" "3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.o" "gcc" "3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/predicates.cxx.o.d"
+  "/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tetgen/tetgen.cxx" "3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o" "gcc" "3rd_party/tetgen/CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o.d"
   )
 
 # Targets to which this target links.

@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,14 +87,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles /home/suxing/AdTree/Release/3rd_party/imgui//CMakeFiles/progress.marks
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/imgui/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/imgui//CMakeFiles/progress.marks
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/imgui/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/imgui/clean
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/imgui/clean
 .PHONY : clean
 
 # The main clean target
@@ -103,22 +103,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/imgui/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/imgui/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/imgui/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/imgui/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/rule:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/rule
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/rule
 .PHONY : 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/rule
 
 # Convenience name for target.
@@ -127,7 +127,7 @@ depend:
 
 # fast build rule for target.
 3rd_imgui/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build
 .PHONY : 3rd_imgui/fast
 
 imgui.o: imgui.cpp.o
@@ -135,7 +135,7 @@ imgui.o: imgui.cpp.o
 
 # target to build an object file
 imgui.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui.cpp.o
 .PHONY : imgui.cpp.o
 
 imgui.i: imgui.cpp.i
@@ -143,7 +143,7 @@ imgui.i: imgui.cpp.i
 
 # target to preprocess a source file
 imgui.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui.cpp.i
 .PHONY : imgui.cpp.i
 
 imgui.s: imgui.cpp.s
@@ -151,7 +151,7 @@ imgui.s: imgui.cpp.s
 
 # target to generate assembly for a file
 imgui.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui.cpp.s
 .PHONY : imgui.cpp.s
 
 imgui_demo.o: imgui_demo.cpp.o
@@ -159,7 +159,7 @@ imgui_demo.o: imgui_demo.cpp.o
 
 # target to build an object file
 imgui_demo.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_demo.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_demo.cpp.o
 .PHONY : imgui_demo.cpp.o
 
 imgui_demo.i: imgui_demo.cpp.i
@@ -167,7 +167,7 @@ imgui_demo.i: imgui_demo.cpp.i
 
 # target to preprocess a source file
 imgui_demo.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_demo.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_demo.cpp.i
 .PHONY : imgui_demo.cpp.i
 
 imgui_demo.s: imgui_demo.cpp.s
@@ -175,7 +175,7 @@ imgui_demo.s: imgui_demo.cpp.s
 
 # target to generate assembly for a file
 imgui_demo.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_demo.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_demo.cpp.s
 .PHONY : imgui_demo.cpp.s
 
 imgui_draw.o: imgui_draw.cpp.o
@@ -183,7 +183,7 @@ imgui_draw.o: imgui_draw.cpp.o
 
 # target to build an object file
 imgui_draw.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_draw.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_draw.cpp.o
 .PHONY : imgui_draw.cpp.o
 
 imgui_draw.i: imgui_draw.cpp.i
@@ -191,7 +191,7 @@ imgui_draw.i: imgui_draw.cpp.i
 
 # target to preprocess a source file
 imgui_draw.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_draw.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_draw.cpp.i
 .PHONY : imgui_draw.cpp.i
 
 imgui_draw.s: imgui_draw.cpp.s
@@ -199,7 +199,7 @@ imgui_draw.s: imgui_draw.cpp.s
 
 # target to generate assembly for a file
 imgui_draw.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_draw.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_draw.cpp.s
 .PHONY : imgui_draw.cpp.s
 
 imgui_widgets.o: imgui_widgets.cpp.o
@@ -207,7 +207,7 @@ imgui_widgets.o: imgui_widgets.cpp.o
 
 # target to build an object file
 imgui_widgets.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_widgets.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_widgets.cpp.o
 .PHONY : imgui_widgets.cpp.o
 
 imgui_widgets.i: imgui_widgets.cpp.i
@@ -215,7 +215,7 @@ imgui_widgets.i: imgui_widgets.cpp.i
 
 # target to preprocess a source file
 imgui_widgets.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_widgets.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_widgets.cpp.i
 .PHONY : imgui_widgets.cpp.i
 
 imgui_widgets.s: imgui_widgets.cpp.s
@@ -223,7 +223,7 @@ imgui_widgets.s: imgui_widgets.cpp.s
 
 # target to generate assembly for a file
 imgui_widgets.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_widgets.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/imgui_widgets.cpp.s
 .PHONY : imgui_widgets.cpp.s
 
 impl/imgui_impl_glfw.o: impl/imgui_impl_glfw.cpp.o
@@ -231,7 +231,7 @@ impl/imgui_impl_glfw.o: impl/imgui_impl_glfw.cpp.o
 
 # target to build an object file
 impl/imgui_impl_glfw.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/impl/imgui_impl_glfw.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/impl/imgui_impl_glfw.cpp.o
 .PHONY : impl/imgui_impl_glfw.cpp.o
 
 impl/imgui_impl_glfw.i: impl/imgui_impl_glfw.cpp.i
@@ -239,7 +239,7 @@ impl/imgui_impl_glfw.i: impl/imgui_impl_glfw.cpp.i
 
 # target to preprocess a source file
 impl/imgui_impl_glfw.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/impl/imgui_impl_glfw.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/impl/imgui_impl_glfw.cpp.i
 .PHONY : impl/imgui_impl_glfw.cpp.i
 
 impl/imgui_impl_glfw.s: impl/imgui_impl_glfw.cpp.s
@@ -247,7 +247,7 @@ impl/imgui_impl_glfw.s: impl/imgui_impl_glfw.cpp.s
 
 # target to generate assembly for a file
 impl/imgui_impl_glfw.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/impl/imgui_impl_glfw.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/impl/imgui_impl_glfw.cpp.s
 .PHONY : impl/imgui_impl_glfw.cpp.s
 
 impl/imgui_impl_opengl3.o: impl/imgui_impl_opengl3.cpp.o
@@ -255,7 +255,7 @@ impl/imgui_impl_opengl3.o: impl/imgui_impl_opengl3.cpp.o
 
 # target to build an object file
 impl/imgui_impl_opengl3.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/impl/imgui_impl_opengl3.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/impl/imgui_impl_opengl3.cpp.o
 .PHONY : impl/imgui_impl_opengl3.cpp.o
 
 impl/imgui_impl_opengl3.i: impl/imgui_impl_opengl3.cpp.i
@@ -263,7 +263,7 @@ impl/imgui_impl_opengl3.i: impl/imgui_impl_opengl3.cpp.i
 
 # target to preprocess a source file
 impl/imgui_impl_opengl3.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/impl/imgui_impl_opengl3.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/impl/imgui_impl_opengl3.cpp.i
 .PHONY : impl/imgui_impl_opengl3.cpp.i
 
 impl/imgui_impl_opengl3.s: impl/imgui_impl_opengl3.cpp.s
@@ -271,7 +271,7 @@ impl/imgui_impl_opengl3.s: impl/imgui_impl_opengl3.cpp.s
 
 # target to generate assembly for a file
 impl/imgui_impl_opengl3.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/impl/imgui_impl_opengl3.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/build.make 3rd_party/imgui/CMakeFiles/3rd_imgui.dir/impl/imgui_impl_opengl3.cpp.s
 .PHONY : impl/imgui_impl_opengl3.cpp.s
 
 # Help Target
@@ -312,6 +312,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

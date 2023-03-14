@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/suxing/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.c" "3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.o" "gcc" "3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.o.d"
+  "/home/suxing/3D_model_traits_demo/AdTree/3rd_party/tinyfiledialogs/tinyfiledialogs.c" "3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.o" "gcc" "3rd_party/tinyfiledialogs/CMakeFiles/3rd_tinyfiledialogs.dir/tinyfiledialogs.c.o.d"
   )
 
 # Targets to which this target links.

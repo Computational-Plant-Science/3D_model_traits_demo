@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/suxing/AdTree
+CMAKE_SOURCE_DIR = /home/suxing/3D_model_traits_demo/AdTree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/suxing/AdTree/Release
+CMAKE_BINARY_DIR = /home/suxing/3D_model_traits_demo/AdTree/Release
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,14 +87,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles /home/suxing/AdTree/Release/3rd_party/easy3d/algo//CMakeFiles/progress.marks
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/algo/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/AdTree/Release/CMakeFiles 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles /home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/easy3d/algo//CMakeFiles/progress.marks
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/algo/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/suxing/3D_model_traits_demo/AdTree/Release/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/algo/clean
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/algo/clean
 .PHONY : clean
 
 # The main clean target
@@ -103,22 +103,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/algo/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/algo/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/algo/preinstall
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/algo/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/rule:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/rule
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/rule
 .PHONY : 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/rule
 
 # Convenience name for target.
@@ -127,7 +127,7 @@ easy3d_algo: 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/rule
 
 # fast build rule for target.
 easy3d_algo/fast:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/build.make 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/build
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/build.make 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/build
 .PHONY : easy3d_algo/fast
 
 remove_duplication.o: remove_duplication.cpp.o
@@ -135,7 +135,7 @@ remove_duplication.o: remove_duplication.cpp.o
 
 # target to build an object file
 remove_duplication.cpp.o:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/build.make 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/remove_duplication.cpp.o
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/build.make 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/remove_duplication.cpp.o
 .PHONY : remove_duplication.cpp.o
 
 remove_duplication.i: remove_duplication.cpp.i
@@ -143,7 +143,7 @@ remove_duplication.i: remove_duplication.cpp.i
 
 # target to preprocess a source file
 remove_duplication.cpp.i:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/build.make 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/remove_duplication.cpp.i
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/build.make 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/remove_duplication.cpp.i
 .PHONY : remove_duplication.cpp.i
 
 remove_duplication.s: remove_duplication.cpp.s
@@ -151,7 +151,7 @@ remove_duplication.s: remove_duplication.cpp.s
 
 # target to generate assembly for a file
 remove_duplication.cpp.s:
-	cd /home/suxing/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/build.make 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/remove_duplication.cpp.s
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(MAKE) $(MAKESILENT) -f 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/build.make 3rd_party/easy3d/algo/CMakeFiles/easy3d_algo.dir/remove_duplication.cpp.s
 .PHONY : remove_duplication.cpp.s
 
 # Help Target
@@ -177,6 +177,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/suxing/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/suxing/3D_model_traits_demo/AdTree/Release && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DGLEW_STATIC
 
-CXX_INCLUDES = -I/home/suxing/AdTree/3rd_party/imgui -I/home/suxing/AdTree/3rd_party/glew/include -I/home/suxing/AdTree/3rd_party/glfw/include
+CXX_INCLUDES = -I/home/suxing/3D_model_traits_demo/AdTree/3rd_party/imgui -I/home/suxing/3D_model_traits_demo/AdTree/3rd_party/glew/include -I/home/suxing/3D_model_traits_demo/AdTree/3rd_party/glfw/include
 
 CXX_FLAGS = -O3 -DNDEBUG -std=gnu++11
 
