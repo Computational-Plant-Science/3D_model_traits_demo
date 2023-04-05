@@ -40,7 +40,7 @@ RUN pip3 install --upgrade pip && \
     Pillow \
     rdp \
     scipy \
-    scikit-image \
+    scikit-image==0.19.3 \
     scikit-learn \
     scikit-build \
     matplotlib \

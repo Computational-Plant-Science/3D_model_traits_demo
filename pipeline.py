@@ -45,7 +45,7 @@ def execute_script(cmd_line):
 # execute pipeline scripts in order
 def model_analysis_pipeline(file_path, filename, basename):
 
-    '''
+    
     # step 1  python3 model_alignment.py -p ~/example/ -m test.ply
     print("Transform point cloud model to its rotation center and align its upright orientation with Z direction...\n")
 
@@ -70,7 +70,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     cross_section_scan = "python3 extract_slice.py -p " + file_path + " -f " + basename + "_branches.obj " + "-n " + str(n_slices)
 
     execute_script(cross_section_scan)
-    '''
+    
     
     # step 4 python3 skeleton_analyze.py -p ~/example/pt_cloud/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/pt_cloud/slices/ -v 1
     print("Compute all the traits...\n")
