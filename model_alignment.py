@@ -290,7 +290,7 @@ def format_converter(current_path, model_name):
             
             if angle_y_al < 1:
                 print("AAA1")
-                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al)  , 0, 0))
+                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) - np.pi , 0, 0))
             
             elif angle_y_al < 2:
                 print("AAA")
@@ -309,11 +309,11 @@ def format_converter(current_path, model_name):
             elif angle_y_al < 30:
                 print("BBB2")
                 #R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) + np.pi/2 - np.pi/4, 0, 0))
-                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) - np.pi/4 - np.pi , 0, 0))
+                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) - np.pi/4 , 0, 0))
             
             elif angle_y_al < 45:
                 print("CCC")
-                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) - 1.25*np.pi , 0, 0))
+                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) - 0.0*np.pi , 0, 0))
            
             else:
                 print("DDD")
@@ -334,7 +334,7 @@ def format_converter(current_path, model_name):
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - 1*np.pi/4 , 0, 0))
                     elif abs(angle_z - 90)  < 35:
                         print("FFF")
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - 1*np.pi/8 , 0, 0))
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - 1*np.pi/4 , 0, 0))
                     elif abs(angle_z - 90)  < 45:
                         print("GGG")
                         #R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi, -np.pi/2 + np.pi/4, -np.pi/2 + np.pi/4))
@@ -394,7 +394,7 @@ def format_converter(current_path, model_name):
                         
                     elif abs(angle_z - 90) < 35:
                         print("TTT1")
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - 1.75*np.pi, 0, 0))
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - 1.0*np.pi, 0, 0))
 
                     elif abs(angle_z - 90) < 45:
                         print("TTT")
@@ -447,7 +447,7 @@ def format_converter(current_path, model_name):
                     
                     elif abs(180 - angle_z) < 24:
                         print("ZZZ")
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - 1.5*np.pi, 0, 0))
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - 1.0*np.pi, 0, 0))
                     
                     elif abs(180 - angle_z) < 30:
                         
@@ -476,7 +476,7 @@ def format_converter(current_path, model_name):
                     elif abs(180 - angle_z) < 85:
                         print("EEEE")
                         #R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi, 0, 0))
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - 0*np.pi - 0*np.pi/2 , 0, 0))
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + 1*np.pi/2 , 0, 0))
                     
                     elif abs(180 - angle_z) < 95:
                         print("FFFF")

@@ -60,10 +60,10 @@ def skeleton_analysis_pipeline(file_path):
     # python3 skeleton_graph.py -p ~/example/pt_cloud/tiny/ -m1 tiny_skeleton.ply
     #skeleton_analysis = "python3 skeleton_graph.py -p " + file_path_full + " -m1 " + model_skeleton_name
     
-    filename = folder_name + '_his.png'
+    filename = folder_name + '_trait.xlsx'
     
     #cp ~/example/B73_test/01/01_his.png ~/example/B73_resulls/histogram/
-    skeleton_analysis = "cp " + file_path_full + filename + " /home/suxing/example/model_COLMAP_quarterunion/histogram/" 
+    skeleton_analysis = "cp " + file_path_full + filename + " /home/suxing/cluster_test/syngenta_data/results/" 
     
     #print(skeleton_analysis)
     

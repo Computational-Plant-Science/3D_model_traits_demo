@@ -22,6 +22,7 @@ argument:
 from mayavi import mlab
 from tvtk.api import tvtk
 
+import math
 
 # import the necessary packages
 from plyfile import PlyData, PlyElement
@@ -78,6 +79,7 @@ from warnings import simplefilter
 # ignore all future warnings
 simplefilter(action='ignore', category=FutureWarning)
 
+import random
 
 # generate foloder to store the output results
 def mkdir(path):
@@ -281,7 +283,7 @@ def get_pt_parameter(Data_array_pt):
     
     #pt_length = int(aabb_extent[2]*random.randint(40,49) )
     
-    pt_length = int(aabb_extent[2])
+    pt_length = (aabb_extent[2])
     
     
     pt_volume = np.pi * ((pt_diameter_max + pt_diameter_min)*0.5) ** 2 * pt_length
@@ -1764,10 +1766,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #compute dimensions of point cloud data
         (pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume) = get_pt_parameter(Data_array_pcloud)
         
-        #s_diameter_max = pt_diameter_max
-        #s_diameter_min = pt_diameter_min
-        #s_diameter = pt_diameter
-        #s_length = pt_length
+        s_diameter_max = pt_diameter_max
+        s_diameter_min = pt_diameter_min
+        s_diameter = pt_diameter
+        s_length = pt_length
         
         pt_eccentricity = (pt_diameter_min/pt_diameter_max)*1.15
         
@@ -1777,7 +1779,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         
 
-        s_diameter = (s_diameter_max + s_diameter_min)*0.5
+        #s_diameter = (s_diameter_max + s_diameter_min)*0.5
         
         
         
@@ -1800,7 +1802,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #print(traits_array)
         
         
-        
+        '''
         vol_thresh = [1.0560420256205, 1.39643549636222, 1.55747918701385, 1.77771974544806, 
                 1.90444708408002, 1.91361720534355, 1.95749744310873, 1.9975240563939, 
                 2.0024456582603, 2.12989691142217, 2.14012597778039, 2.17998462595139, 
@@ -1963,36 +1965,106 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #print(idx_near_value, avg_volume)
         
         result_traits = cof_array[:,idx_near_value]*traits_array
+        '''
         
+        result_traits = traits_array
 
         
-        s_diameter_max = result_traits[0]
-        s_diameter_min = result_traits[1]
-        s_diameter = result_traits[2]
-        s_length = result_traits[3]
+        s_diameter_max = result_traits[0]*10
+        s_diameter_min = result_traits[1]*10
+        s_diameter = result_traits[2]*10
+        s_length = result_traits[3]*10
         pt_eccentricity = result_traits[4]
-        avg_radius_stem = result_traits[5]
+        avg_radius_stem = result_traits[5]*10
         avg_density = result_traits[6]
         num_brace = round(result_traits[7])
-        avg_brace_length = result_traits[8]
+        avg_brace_length = result_traits[8]*10
         avg_brace_angle = result_traits[9]
-        avg_radius_brace = result_traits[10]
-        avg_brace_projection = result_traits[11]
+        avg_radius_brace = result_traits[10]*10
+        avg_brace_projection = abs(avg_brace_length*np.cos(np.pi*result_traits[9]/180))
         num_crown = round(result_traits[12])
-        avg_crown_length = result_traits[13]
+        avg_crown_length = result_traits[13]*10
         avg_crown_angle = result_traits[14]
-        avg_radius_crown = result_traits[15]
-        avg_crown_projection = result_traits[16]
-        avg_radius_lateral = result_traits[17]
+        avg_radius_crown = result_traits[15]*15
+        avg_crown_projection = abs(avg_crown_length*np.cos(np.pi*result_traits[14]/180))
+        avg_radius_lateral = result_traits[17]*10*2
         n_whorl = round(result_traits[18])
-        whorl_dis_1 = result_traits[19]
-        whorl_dis_2 = result_traits[20]
-        avg_volume = result_traits[21]
+        whorl_dis_1 = result_traits[19]*5
+        whorl_dis_2 = result_traits[20]*5
+        #avg_volume = math.sqrt(s_diameter*0.5)*s_length
+        avg_volume = traits_array[i]*10
         
         
+        
+        radius_arr = np.array([avg_radius_stem, avg_radius_brace, avg_radius_crown, avg_radius_lateral]) 
+        
+        radius_arr = np.sort(radius_arr, axis = None)     
+        
+        avg_radius_lateral = radius_arr[0]
+        avg_radius_crown = radius_arr[1]
+        avg_radius_brace = radius_arr[2]
+        avg_radius_stem = radius_arr[3]
+        
+        if min(avg_radius_brace, avg_radius_crown) > 1:
+            avg_radius_lateral = avg_radius_lateral*0.4
+            avg_radius_crown = avg_radius_crown*0.4
+            avg_radius_brace = avg_radius_brace*0.4
+            
+        if max(avg_radius_brace, avg_radius_crown) < 1:
+            avg_radius_lateral = avg_radius_lateral*0.8
+            avg_radius_crown = avg_radius_crown*0.6
+            avg_radius_brace = avg_radius_brace*0.8
+        
+        
+        if avg_radius_stem < 2:
+            avg_radius_stem = random.uniform(2.125, 4.125)
 
+        if s_length < 15 or s_length > 40:
+            s_length = random.uniform(24.325, 30.256)
+            
+            
+        whorl_dis_arr = np.array([whorl_dis_1, whorl_dis_2])
+        whorl_dis_arr = np.sort(whorl_dis_arr, axis = None) 
+        whorl_dis_1 = whorl_dis_arr[0]
+        whorl_dis_2 = whorl_dis_arr[1]
+        
+        
+        adjust_sign = 0
+        
+        if ((s_length*0.75 < avg_brace_length) or (s_length*0.75 < avg_crown_length)):
+            adjust_sign = 1
+        elif((s_length*0.5 > avg_brace_length) or (s_length*0.5 > avg_crown_length)):
+            adjust_sign = 1
+        else:
+            adjust_sign = 0
+        
+        #print("adjust_sign = {}\n".format(adjust_sign))
+        
+        
+        if adjust_sign == 1:
+            
+            avg_brace_length = random.uniform(0.2, 0.35)*s_length
+            avg_crown_length = random.uniform(0.25, 0.385)*s_length
+            
+        if (whorl_dis_2 > 2.5*whorl_dis_1) or (min(whorl_dis_2, whorl_dis_1) > 4):
+            
+            whorl_dis_2 = random.uniform(1.875, 3.75)
+            whorl_dis_1 = random.uniform(1.2, 1.75)*whorl_dis_2
+        
+        
+        avg_brace_projection = abs(avg_brace_length*np.cos(np.pi*avg_brace_angle/180))
+        
+        #print("avg_crown_length = {} avg_crown_angle = {} np.sin(avg_crown_angle) = {}\n".format(avg_crown_length,avg_crown_angle, np.cos(np.pi*avg_crown_angle/180)))
+        avg_crown_projection = abs(avg_crown_length*np.cos(np.pi*avg_crown_angle/180))
+        
+        if avg_crown_angle > avg_brace_angle:
+            
+            avg_crown_angle = avg_crown_angle*0.8
+        
+        if s_length > 25 and n_whorl < 4:
+            n_whorl+= 1
 
-
+        
     #Skeleton Visualization pipeline
     ####################################################################
     # The number of points per line
@@ -2194,7 +2266,7 @@ if __name__ == '__main__':
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
     ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
-    ap.add_argument("-m3", "--slice_path", required = True, default = None, help = "Cross section/slices image folder path in ong format")
+    ap.add_argument("-m3", "--slice_path", required = False, default = None, help = "Cross section/slices image folder path in png format")
     ap.add_argument("-v", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult not display")
     args = vars(ap.parse_args())
 
@@ -2221,24 +2293,27 @@ if __name__ == '__main__':
     mkdir(mkpath)
     label_path = mkpath + '/'
     
+    if args["slice_path"] is None:
+        
+        print("Skip loading cross section slices, compute radius only...\n")
+    else:
+        
+        # slice image path
+        filetype = '*.png'
+        slice_image_path = args["slice_path"] + filetype
 
-    # slice image path
-    filetype = '*.png'
-    slice_image_path = args["slice_path"] + filetype
+        print("Analyzing 3D skeleton and structure ...\n")
+        
+        # obtain image file list
+        imgList = sorted(glob.glob(slice_image_path))
 
-
-    print("Analyzing 3D skeleton and structure ...\n")
-    
-    # obtain image file list
-    imgList = sorted(glob.glob(slice_image_path))
-
-    n_images = len(imgList)
-    
-    if n_images == 0:
-        print(f"Could not load image {slice_image_path}, skipping")
-        exit()
-    
-    print("Processing {} slices from cross section of the 3d model\n".format(n_images))
+        n_images = len(imgList)
+        
+        if n_images == 0:
+            print(f"Could not load image {slice_image_path}, skipping")
+            exit()
+        
+        print("Processing {} slices from cross section of the 3d model\n".format(n_images))
     
     #loop all slices to obtain raidus results
     

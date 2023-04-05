@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-      python3 model_traits_pipeline.py -p ~/example/ 
+      python3 traits_batch_compute.py -p ~/example/ 
 
 """
 
@@ -66,7 +66,7 @@ def model_analysis_pipeline(file_path):
     file_path_full = file_path + '/'
     
     
-    
+    '''
     # step 1  python3 model_alignment.py -p ~/example/ -m test.ply
     print("Transform point cloud model to its rotation center and align its upright orientation with Z direction...\n")
 
@@ -95,7 +95,7 @@ def model_analysis_pipeline(file_path):
     #print(cross_section_scan)
     
     execute_script(cross_section_scan)
-    
+    '''
     
     # step 4 python3 skeleton_analyze.py -p ~/example/pt_cloud/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/pt_cloud/slices/ -v 1
     print("Analyze skeleton / structure and compute traits...\n")
@@ -106,8 +106,7 @@ def model_analysis_pipeline(file_path):
     
     execute_script(traits_computation)
     
-    
-    
+        
     
     
 def fast_scandir(dirname):
@@ -157,14 +156,14 @@ if __name__ == '__main__':
         #print("Processing folder '{}'...\n".format(subfolder_path))
         
         model_analysis_pipeline(subfolder_path)
-   '''
+   
 
-    
+    '''
     ###########################################################
     #parallel processing module
     
     # get cpu number for parallel processing
-    agents = psutil.cpu_count() - 2 
+    agents = psutil.cpu_count() - 1 
     #agents = multiprocessing.cpu_count() 
     #agents = 8
     
