@@ -1416,7 +1416,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     #compute paramters
     #avg_radius_stem = max(radius_level[0])*2
-    avg_radius_stem = np.mean(radius_level[0])*2
+    avg_radius_stem = np.mean(radius_level[0])*2*2
     
 
     
@@ -1966,16 +1966,16 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         result_traits = cof_array[:,idx_near_value]*traits_array
         '''
-        
+        '''
         result_traits = traits_array
 
         
-        s_diameter_max = result_traits[0]*10
-        s_diameter_min = result_traits[1]*10
-        s_diameter = result_traits[2]*10
-        s_length = result_traits[3]*10
+        s_diameter_max = int(result_traits[0]*10)
+        s_diameter_min = int(result_traits[1]*10)
+        s_diameter = int(result_traits[2]*10)
+        s_length = int(result_traits[3]*10)
         pt_eccentricity = result_traits[4]
-        avg_radius_stem = result_traits[5]*10
+        avg_radius_stem = int(result_traits[5]*10)
         avg_density = result_traits[6]
         num_brace = round(result_traits[7])
         avg_brace_length = result_traits[8]*10
@@ -1993,7 +1993,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         whorl_dis_2 = result_traits[20]*5
         #avg_volume = math.sqrt(s_diameter*0.5)*s_length
         avg_volume = traits_array[i]*10
-        
+        '''
         
         
         radius_arr = np.array([avg_radius_stem, avg_radius_brace, avg_radius_crown, avg_radius_lateral]) 
@@ -2015,20 +2015,20 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             avg_radius_crown = avg_radius_crown*0.6
             avg_radius_brace = avg_radius_brace*0.8
         
-        
+        '''
         if avg_radius_stem < 2:
-            avg_radius_stem = random.uniform(2.125, 4.125)
+            avg_radius_stem = int(random.uniform(2.125, 4.125))
 
         if s_length < 15 or s_length > 40:
-            s_length = random.uniform(24.325, 30.256)
-            
+            s_length = int(random.uniform(24.325, 30.256))
+        '''
             
         whorl_dis_arr = np.array([whorl_dis_1, whorl_dis_2])
         whorl_dis_arr = np.sort(whorl_dis_arr, axis = None) 
         whorl_dis_1 = whorl_dis_arr[0]
         whorl_dis_2 = whorl_dis_arr[1]
         
-        
+        '''
         adjust_sign = 0
         
         if ((s_length*0.75 < avg_brace_length) or (s_length*0.75 < avg_crown_length)):
@@ -2043,14 +2043,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         if adjust_sign == 1:
             
-            avg_brace_length = random.uniform(0.2, 0.35)*s_length
-            avg_crown_length = random.uniform(0.25, 0.385)*s_length
+            avg_brace_length = int(random.uniform(0.2, 0.35)*s_length)
+            avg_crown_length = int(random.uniform(0.25, 0.385)*s_length)
             
         if (whorl_dis_2 > 2.5*whorl_dis_1) or (min(whorl_dis_2, whorl_dis_1) > 4):
             
             whorl_dis_2 = random.uniform(1.875, 3.75)
             whorl_dis_1 = random.uniform(1.2, 1.75)*whorl_dis_2
-        
+        '''
         
         avg_brace_projection = abs(avg_brace_length*np.cos(np.pi*avg_brace_angle/180))
         
@@ -2247,9 +2247,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
                 
     
-    return s_diameter_max, s_diameter_min, s_diameter, s_length, pt_eccentricity, avg_radius_stem, avg_density, \
-        num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
-        num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
+    return int(s_diameter_max), int(s_diameter_min), s_diameter, int(s_length), pt_eccentricity, avg_radius_stem, avg_density, \
+        num_brace, int(avg_brace_length), avg_brace_angle, avg_radius_brace, avg_brace_projection,\
+        num_crown, int(avg_crown_length), avg_crown_angle, avg_radius_crown, avg_crown_projection, \
         avg_radius_lateral, \
         n_whorl, whorl_dis_1, whorl_dis_2, avg_volume
     

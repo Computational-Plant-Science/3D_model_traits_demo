@@ -64,7 +64,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     execute_script(skeleton_graph)
     
     
-    # step 3  python3 extract_slice.py -p ~/example/pt_cloud/ -f test_branches.obj -n 100 
+    # step 3  python3 extract_slice.py -p ~/example/pt_cloud/ -f test_branches.obj -n 500 
     print("Generate cross section sequence ...\n")
    
     cross_section_scan = "python3 extract_slice.py -p " + file_path + " -f " + basename + "_branches.obj " + "-n " + str(n_slices)
@@ -72,7 +72,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     execute_script(cross_section_scan)
     
     
-    # step 4 python3 skeleton_analyze.py -p ~/example/pt_cloud/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/pt_cloud/slices/ -v 1
+    # step 4 python3 skeleton_analyze.py -p ~/example/pt_cloud/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/pt_cloud/slices/ -v 0
     print("Compute all the traits...\n")
 
     traits_computation = "python3 skeleton_analyze.py -p " + file_path + " -m1 " + basename + "_skeleton.ply " + " -m2 " + basename + "_aligned.ply " + " -m3 " + file_path + "slices/ " + "-v " + str(args["visualize_model"])

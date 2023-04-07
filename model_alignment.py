@@ -350,10 +350,10 @@ def format_converter(current_path, model_name):
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi , 0, 0))
                     elif angle_y_al < 55:
                         print("JJJ")
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi , 0, 0))
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - 0*np.pi , 0, 0))
                     elif angle_y_al < 70:
                         print("KKK")
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al)  -np.pi/4, 0, 0))
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/4, 0, 0))
                     else:
                         print("LLL")
                         R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi/2 - np.pi/8, 0, 0))
