@@ -2247,9 +2247,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
                 
     
-    return int(s_diameter_max), int(s_diameter_min), s_diameter, int(s_length), pt_eccentricity, avg_radius_stem, avg_density, \
-        num_brace, int(avg_brace_length), avg_brace_angle, avg_radius_brace, avg_brace_projection,\
-        num_crown, int(avg_crown_length), avg_crown_angle, avg_radius_crown, avg_crown_projection, \
+    return (s_diameter_max), (s_diameter_min), s_diameter, (s_length), pt_eccentricity, avg_radius_stem, avg_density, \
+        num_brace, (avg_brace_length), avg_brace_angle, avg_radius_brace, avg_brace_projection,\
+        num_crown, (avg_crown_length), avg_crown_angle, avg_radius_crown, avg_crown_projection, \
         avg_radius_lateral, \
         n_whorl, whorl_dis_1, whorl_dis_2, avg_volume
     

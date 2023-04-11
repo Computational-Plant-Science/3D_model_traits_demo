@@ -53,7 +53,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     
     #print(format_convert)
     
-    #execute_script(format_convert)
+    execute_script(format_convert)
     
     
     # step 2 ./AdTree/Release/bin/AdTree ~/example/pt_cloud/test.xyz ~/example/pt_cloud/ -s
