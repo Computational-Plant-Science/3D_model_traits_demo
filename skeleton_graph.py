@@ -37,7 +37,6 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
 from operator import itemgetter
 import argparse
-import kmeans1d
 
 from skimage.segmentation import watershed
 from skimage.feature import peak_local_max
@@ -88,7 +87,6 @@ from matplotlib.ticker import PercentFormatter
 
 
 from pyquaternion import Quaternion
-from pathlib import Path
 
 '''
 # import warnings filter
@@ -217,15 +215,6 @@ def findVec(point1,point2,unitSphere = False):
       return finalVector
 
 
-# normalize a list of data
-def normalize(lst):
-    
-    #normlized_list = [float(i)/sum(lst) for i in lst]
-    
-    normlized_list = [float(i)/max(lst) for i in lst]
-    
-    return normlized_list
-    
 
 #get rotation matrix between two vectors using scipy
 def get_rotation_matrix(vec2, vec1):
@@ -454,6 +443,8 @@ def optimal_number_of_clusters(wcss):
 
 
 
+
+
 def his_plot(path_length_rec, current_path, filename_skeleton):
     
   
@@ -483,13 +474,13 @@ def his_plot(path_length_rec, current_path, filename_skeleton):
     axs.yaxis.set_tick_params(pad = 10)
 
     # Add x, y gridlines
-    axs.grid(visible = True, color ='grey',
+    axs.grid(b = True, color ='grey',
         linestyle ='-.', linewidth = 0.5,
         alpha = 0.6)
 
     bin_size = 0.1
     min_edge = 0.0
-    max_edge = 1.0
+    max_edge = 7.0
     Nplus1 = (max_edge-min_edge)/bin_size + 1
     bin_list = np.linspace(min_edge, max_edge, int(Nplus1))
 
@@ -501,7 +492,7 @@ def his_plot(path_length_rec, current_path, filename_skeleton):
     
     N, bins, patches = axs.hist(x, bins = bin_list)
     
-    axs.set_ylim([0, 60000])
+    axs.set_ylim([0, 10000])
 
     # Setting color
     fracs = ((N**(1 / 5)) / N.max())
@@ -525,36 +516,8 @@ def his_plot(path_length_rec, current_path, filename_skeleton):
     path_histogram = (current_path + folder_name + '_his.png')
     
     plt.savefig(path_histogram)
-
-
-
-#cluster 1D list using Kmeans
-def cluster_list(list_array, n_clusters):
     
-    data = np.array(list_array)
     
-    if data.ndim == 1:
-        
-        data = data.reshape(-1,1)
-    
-    #kmeans = KMeans(n_clusters).fit(data.reshape(-1,1))
-        
-    kmeans = KMeans(n_clusters, init='k-means++', random_state=0).fit(data)
-    
-    #kmeans = KMeans(n_clusters).fit(data)
-    
-    labels = kmeans.labels_
-    
-    centers = kmeans.cluster_centers_
-    
-    center_labels = kmeans.predict(centers)
-    
-    #print(kmeans.cluster_centers_)
-
-    return labels, centers, center_labels
-
-
-
 
 # Skeleton analysis
 def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
@@ -756,44 +719,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     print("number of sub_branch_end_rec is: {} \n".format(len(sub_branch_end_rec)))
     
-    
-    
-    
-    # filter sub branches with dominant length threshold
     ####################################################################
-    cluster_number = 4
-    
-    #(labels, centers, center_labels) = cluster_list(sub_branch_length_rec, n_clusters = cluster_number)
-    
-    (clusters, centroids) = kmeans1d.cluster(sub_branch_length_rec, cluster_number)
 
-    print(sub_branch_length_rec)
-    print(clusters)   # [1, 1, 1, 0, 3, 3, 3, 2, 2, 2]
-    print(centroids)  # [-50.0, 4.1, 94.0, 200.5]
-
-    
-    
-    #sorted_idx = np.argsort(centers[:,0])[::-1]
-    
-    #print(sorted_idx)
-    
-    max_cluster_index = centroids.index(max(centroids))
-    value_keep_index =  [idx for idx, value in enumerate(clusters) if value == max_cluster_index]
-
-    #print(value_keep_index)
-    
-    print(len(sub_branch_list))
-
-    sub_branch_list[:] = [sub_branch_list[i] for i in value_keep_index] 
-    sub_branch_length_rec[:] = [sub_branch_length_rec[i] for i in value_keep_index]
-    sub_branch_angle_rec[:] = [sub_branch_angle_rec[i] for i in value_keep_index]
-    sub_branch_start_rec[:] = [sub_branch_start_rec[i] for i in value_keep_index]
-    sub_branch_end_rec[:] = [sub_branch_end_rec[i] for i in value_keep_index]
-    sub_branch_projection_rec[:] = [sub_branch_projection_rec[i] for i in value_keep_index]
-    #sub_branch_radius_rec[:] = [sub_branch_radius_rec[i] for i in value_keep_index]
-    
     ################################################################################################################################
-    print(len(sub_branch_list))
+
     
     
     # graph: find closest point pairs and connect close graph edges
@@ -946,7 +875,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
             quaternion_path_rec.append(avg_quaternion)
             
-            #print("vlist_path = {} avg_quaternion = {} avg_euler = {} rotVec = {}\n".format(idx, avg_quaternion, avg_euler, rotVec))
+            print("vlist_path = {} avg_quaternion = {} avg_euler = {} rotVec = {}\n".format(idx, avg_quaternion, avg_euler, rotVec))
                 
             '''
             if rotVec[2] > 0:
@@ -959,25 +888,12 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
     print("Found {} shortest path \n".format(len(vlist_path_rec)))
     
-    #print("Path length are: {}\n".format(path_length_rec)) 
+    print("Path length are: {}\n".format(path_length_rec)) 
     
     
-   
-    
+    ####################################################3
 
-    
-    ####################################################
-    
-    
-    path_length_rec = sub_branch_length_rec
-    
-    #normalize path length againste the max value
-    #path_length_rec_normalize = normalize(path_length_rec)
-    
-    path_length_rec_normalize = path_length_rec
-    
-    # generate histogram
-    his_plot(path_length_rec_normalize, current_path, filename_skeleton)
+    his_plot(path_length_rec, current_path, filename_skeleton)
     
     
     path_index = list(range(1,len(vlist_path_rec)+1))
@@ -1274,7 +1190,7 @@ if __name__ == '__main__':
 
         result_list.append([v0,v1,v2,v3,v4,v5,v6,v7])
     
-    '''
+    
     #save reuslt file
     ####################################################################
     
@@ -1415,5 +1331,5 @@ if __name__ == '__main__':
                      "layout": mylayout},
                      auto_open=True,
                      filename=quaternion_4D)
-    '''
+    
     
