@@ -4,11 +4,6 @@ Function: Extract gemetrical traits of 3D root model
 
 Author            : Suxing Liu
 
-Date created      : 04/04/2018
-
-Date last modified: 04/25/2020
-
-Python Version    : 3.7
 
 
 Example of structure vs. 3D root model
