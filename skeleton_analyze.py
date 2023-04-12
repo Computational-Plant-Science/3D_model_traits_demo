@@ -9,7 +9,9 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 skeleton_analyze.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/slices/ -v 1
+	python3 skeleton_analyze.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/slices/ -v 0
+	
+	python3 skeleton_analyze.py -p /srv/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 /srv/test/slices/ -v 0
 
 
 argument:
@@ -19,8 +21,7 @@ argument:
 """
 #!/usr/bin/env python
 
-from mayavi import mlab
-from tvtk.api import tvtk
+
 
 import math
 
@@ -486,9 +487,9 @@ def watershed_seg(orig, thresh, min_distance_value):
     # distance map
     D = ndimage.distance_transform_edt(thresh)
     
-    #localMax = peak_local_max(D, indices = False, min_distance = min_distance_value,  labels = thresh)
+    localMax = peak_local_max(D, indices = False, min_distance = min_distance_value,  labels = thresh)
     
-    localMax = peak_local_max(D, min_distance = min_distance_value,  indices = False, labels = thresh)
+    #localMax = peak_local_max(D,  min_distance = min_distance_value,  labels = thresh)
      
     # perform a connected component analysis on the local peaks,
     # using 8-connectivity, then appy the Watershed algorithm
@@ -2071,8 +2072,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     if args["visualize_model"] == 1:
     
-        #from mayavi import mlab
-        #from tvtk.api import tvtk
+        from mayavi import mlab
+        from tvtk.api import tvtk
 
         N = 2
         

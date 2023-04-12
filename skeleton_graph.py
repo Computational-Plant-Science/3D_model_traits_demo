@@ -963,14 +963,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             color_rgb = cmap(i)[:len(cmap(i))-1]
             
             if i == 0: 
-                scale_factor_value = 0.075
+                scale_factor_value = 0.015
             else:
-                scale_factor_value = 0.01
+                scale_factor_value = 0.005
             
             pts = mlab.points3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, mode = 'sphere', scale_factor = scale_factor_value)
             
 
-             #pts = mlab.plot3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, tube_radius=0.025)
+            #pts = mlab.plot3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, tube_radius=0.025)
             #mlab.text3d(X_skeleton[vlist_path[-1]], Y_skeleton[vlist_path[-1]], Z_skeleton[vlist_path[-1]], str("{:.0f}".format(i)), color = (0,1,0), scale = (0.04, 0.04, 0.04))
             
         
@@ -990,7 +990,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             x, y, z = Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2] 
             
             
-            pts = mlab.points3d(x,y,z, mode = 'point')
+            #pts = mlab.points3d(x,y,z, mode = 'point')
+            
+            pts = mlab.quiver3d(x,y,z)
             
             sc = tvtk.UnsignedCharArray()
             
@@ -1190,7 +1192,7 @@ if __name__ == '__main__':
 
         result_list.append([v0,v1,v2,v3,v4,v5,v6,v7])
     
-    
+    '''
     #save reuslt file
     ####################################################################
     
@@ -1332,4 +1334,4 @@ if __name__ == '__main__':
                      auto_open=True,
                      filename=quaternion_4D)
     
-    
+    '''

@@ -11,7 +11,6 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt-get install -y \
     python3-pip \
     python3 \
     python3-tk \
-    python3-numexpr \
     python3-pil.imagetk \
     libgl1-mesa-glx \
     libsm6 \
@@ -38,11 +37,12 @@ RUN pip3 install --upgrade pip && \
     Pillow \
     rdp \
     scipy \
-    scikit-image \
+    scikit-image==0.19.3 \
     scikit-learn \
     scikit-build \
     matplotlib \
     mahotas \
+    numexpr \
     plyfile \
     psutil \
     cairosvg \
@@ -52,11 +52,12 @@ RUN pip3 install --upgrade pip && \
     coverage \
     coveralls \
     open3d \
-    opencv-python-headless \
+    opencv-python \
     openpyxl \
     click \
     PyYAML \
     imutils 
+    
 
 
 RUN pip3 install --upgrade numpy

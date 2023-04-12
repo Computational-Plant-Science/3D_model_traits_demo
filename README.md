@@ -1,6 +1,6 @@
 # 3D_model_traits_measurement
 
-Function: Extract gemetrical traits of 3D model 
+Function: Extract gemetrical traits of 3D root model 
 
 Author            : Suxing Liu
 
@@ -26,31 +26,44 @@ usage:
 
 python3 pipeline.py -p /$path_to_your_3D_model/ -m 3D_model_name.ply
 
-Singularity test:
 
-sudo singularity build --writable model-scan.img Singularity
 
-singularity exec model-scan.img python /opt/code/pipeline.py -p /$path_to_your_3D_model/ -m surface.ply
+## Requirements
 
-singularity exec shub://lsx1980/3D_model_traits_measurement python /opt/code/pipeline.py -p /$path_to_your_3D_model/ -m surface.ply
+[Docker](https://www.docker.com/) is required to run this project in a Linux environment.
 
-- Pre-requisite:  
-    - Python3.7  
-    - Numpy  
-    - SciPy  
-    - Opencv 3.0 for Python - [Installation](http://www.pyimagesearch.com/2015/06/15/install-opencv-3-0-and-python-2-7-on-osx/)
-    
+Install Docker Engine (https://docs.docker.com/engine/install/)
 
-Visualization requirement:
 
-  pip3 install numba \
-                imagesize \
-                progressbar2 \
-                mayavi \
-                PyQt5 \
-                networkx
-  
-  python3 graph_compute.py -p /&path/active_component/
+## Usage
+
+
+1. Build docker image on your PC under linux environment
+```shell
+docker build -t 3d-model-traits -f Dockerfile .
+```
+2. Download prebuild docker image from Docker hub
+```shell
+docker pull computationalplantscience/3d-model-traits
+```
+3. Run the pipeline inside the docker container 
+
+link your test image path to the /images/ path inside the docker container
+ ```shell
+docker run -v /path_to_your_3D_model:/srv/test -it 3d-model-traits
+
+or 
+
+docker run -v /path_to_your_3D_model:/srv/test -it computationalplantscience/3d-model-traits
+
+```
+(For example: docker run -v /your local directory to cloned "Syngenta_PhenoTOOLs"/Syngenta_PhenoTOOLs/sample_test/Ear_test:/images -it syngenta_phenotools)
+
+4. Run the pipeline inside the container
+```shell
+python3 pipeline.py -p /$path_to_your_3D_model/ -m 3D_model_name.ply
+
+
   
 
 Reference:
