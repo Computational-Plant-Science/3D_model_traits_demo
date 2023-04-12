@@ -30,7 +30,7 @@ git clone https://github.com/Computational-Plant-Science/3D_model_traits_demo.gi
 
 docker build -t 3d-model-traits -f Dockerfile .
 ```
-2. Download prebuild docker image directly from Docker hub, without build docker image on your PC 
+2. Download prebuild docker image directly from Docker hub, without building docker image on your local PC 
 ```shell
 docker pull computationalplantscience/3d-model-traits
 ```
