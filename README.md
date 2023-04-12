@@ -65,7 +65,7 @@ docker run -v /path_to_your_3D_model:/srv/test -it computationalplantscience/3d-
 ```shell
 python3 pipeline.py -p /$path_to_your_3D_model/ -m 3D_model_name.ply
 
-
+```
   
 
 Reference:
