@@ -22,11 +22,6 @@ Example of connecting disconnected root path
 ![Optional Text](../master/media/image7.png) ![Optional Text](../master/media/image8.png)
 
 
-usage: 
-
-python3 pipeline.py -p /$path_to_your_3D_model/ -m 3D_model_name.ply
-
-
 
 ## Requirements
 
