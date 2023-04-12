@@ -40,15 +40,18 @@ Install Docker Engine (https://docs.docker.com/engine/install/)
 
 1. Build docker image on your PC under linux environment
 ```shell
+
+git clone https://github.com/Computational-Plant-Science/3D_model_traits_demo.git
+
 docker build -t 3d-model-traits -f Dockerfile .
 ```
-2. Download prebuild docker image from Docker hub
+2. Download prebuild docker image directly from Docker hub, without build docker image on your PC 
 ```shell
 docker pull computationalplantscience/3d-model-traits
 ```
 3. Run the pipeline inside the docker container 
 
-link your test image path to the /images/ path inside the docker container
+link your test 3D model path to the /srv/test path inside the docker container
  ```shell
 docker run -v /path_to_your_3D_model:/srv/test -it 3d-model-traits
 
@@ -57,7 +60,6 @@ or
 docker run -v /path_to_your_3D_model:/srv/test -it computationalplantscience/3d-model-traits
 
 ```
-(For example: docker run -v /your local directory to cloned "Syngenta_PhenoTOOLs"/Syngenta_PhenoTOOLs/sample_test/Ear_test:/images -it syngenta_phenotools)
 
 4. Run the pipeline inside the container
 ```shell
