@@ -22,7 +22,7 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt-get install -y \
     python3 \
     python3-tk \
     python3-pil.imagetk \
-    python-cairo \
+    python3-cairo \
     freeglut3-dev \
     freeglut3 \
     libopengl0 -y \
