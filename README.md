@@ -8,7 +8,7 @@ Maintainer: Suxing Liu, Wes Bonelli, Alexander Bucksch
 
 
 
-![Optional Text](../master/media/DIRTX-3D.png)
+![Optional Text](../master/media/image1.png)
 
 Example of computed root structure v.s. 3D root point cloud model
 
@@ -92,4 +92,4 @@ Remote Sensing. 2019, 11(18), 2074.
 }
 
 
-![Optional Text](../master/media/image1.png)
+
