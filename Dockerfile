@@ -2,8 +2,9 @@ FROM ubuntu:20.04
 
 LABEL maintainer='Suxing Liu, Wes Bonelli'
 
-COPY ./ /opt/3D_model_traits_demo
-WORKDIR /opt/3D_model_traits_demo
+COPY ./ /opt/3D_model_traits_demo/
+WORKDIR /opt/3D_model_traits_demo/
+
 
 RUN apt-get update && apt-get upgrade -y
 RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt-get install -y \
