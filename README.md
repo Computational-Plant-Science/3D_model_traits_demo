@@ -2,9 +2,6 @@
 
 Function: Compute 3D root traits from 3D root model for field-grown maize roots
 
-Author: Suxing Liu
-
-Maintainer: Suxing Liu, Wes Bonelli, Alexander Bucksch
 
 
 
@@ -91,5 +88,17 @@ Remote Sensing. 2019, 11(18), 2074.
   year={2019}
 }
 
+
+# Author
+Suxing Liu (suxingliu@gmail.com), Wesley Paul Bonelli(wbonelli@uga.edu), Alexander Bucksch
+
+
+## Other contributions
+
+Docker container was maintained and deployed to [PlantIT](https://portnoy.cyverse.org) by Wes Bonelli (wbonelli@uga.edu).
+
+
+# License
+GNU Public License
 
 
