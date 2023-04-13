@@ -9,10 +9,6 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-test
-    python3 pipeline.py -p ~/example/ -m test.ply -t 1
-
-normal
     python3 pipeline.py -p ~/example/ -m test.ply
 
 """

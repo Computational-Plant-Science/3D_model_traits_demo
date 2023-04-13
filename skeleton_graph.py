@@ -861,6 +861,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
             # use components averaging to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
             avg_quaternion = ((sum_quaternion.sum(axis=0))/len(vlist_path)).flatten()
+            
             #avg_quaternion = avg_quaternion.flatten()
 
             rot = R.from_quat(avg_quaternion)
