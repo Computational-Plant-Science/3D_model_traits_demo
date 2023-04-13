@@ -59,7 +59,7 @@ RUN pip3 install --upgrade pip && \
     imutils 
     
 
-RUN cd /opt/3D_model_traits_demo/ && mkdir /opt/3D_model_traits_demo/Release && cd /opt/3D_model_traits_demo/Release  && cmake -DCMAKE_BUILD_TYPE=Release .. && make
+RUN cd /opt/3D_model_traits_demo/AdTree/ && mkdir /opt/3D_model_traits_demo/AdTree/Release && cd /opt/3D_model_traits_demo/AdTree/Release  && cmake -DCMAKE_BUILD_TYPE=Release .. && make
 
 
 RUN pip3 install --upgrade numpy

@@ -474,9 +474,7 @@ def his_plot(path_length_rec, current_path, filename_skeleton):
     axs.yaxis.set_tick_params(pad = 10)
 
     # Add x, y gridlines
-    axs.grid(b = True, color ='grey',
-        linestyle ='-.', linewidth = 0.5,
-        alpha = 0.6)
+    axs.grid(visible = True, color ='grey', linestyle ='-.', linewidth = 0.5, alpha = 0.6)
 
     bin_size = 0.1
     min_edge = 0.0
@@ -857,12 +855,15 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                     
             
             # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
-            #avg_quaternion = averageQuaternions(sum_quaternion)
-
-            # use components averaging to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
-            avg_quaternion = ((sum_quaternion.sum(axis=0))/len(vlist_path)).flatten()
+            avg_quaternion = averageQuaternions(sum_quaternion)
             
-            #avg_quaternion = avg_quaternion.flatten()
+            
+            # use components averaging to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
+            #avg_quaternion = ((sum_quaternion.sum(axis=0))/len(vlist_path)).flatten()
+            
+            avg_quaternion = avg_quaternion.flatten()
+            
+            print(avg_quaternion)
 
             rot = R.from_quat(avg_quaternion)
             
@@ -889,10 +890,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
     print("Found {} shortest path \n".format(len(vlist_path_rec)))
     
-    print("Path length are: {}\n".format(path_length_rec)) 
+    #print("Path length are: {}\n".format(path_length_rec)) 
     
     
-    ####################################################3
+    ####################################################
 
     his_plot(path_length_rec, current_path, filename_skeleton)
     
