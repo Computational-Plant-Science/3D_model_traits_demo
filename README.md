@@ -49,7 +49,7 @@ The Docker container allows you to package up your application(s) and deliver th
 
 There are two ways to run the pipeline inside a docker container, 
 
-One was is to build a docker based on the docker recipe file inside the Github repostoriy. In our case, please follow step 1 and step 3. 
+One was is to build a docker based on the docker recipe file inside the GitHub repository. In our case, please follow step 1 and step 3. 
 
 Antoher way is to download prebuild docker image directly from Docker hub. In our case, please follow step 2 and step 3. 
 
