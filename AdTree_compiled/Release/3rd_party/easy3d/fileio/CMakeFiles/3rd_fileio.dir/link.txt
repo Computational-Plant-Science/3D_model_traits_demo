@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../lib/lib3rd_fileio.a  CMakeFiles/3rd_fileio.dir/graph_io.cpp.o CMakeFiles/3rd_fileio.dir/graph_io_ply.cpp.o CMakeFiles/3rd_fileio.dir/ply_reader_writer.cpp.o CMakeFiles/3rd_fileio.dir/point_cloud_io.cpp.o CMakeFiles/3rd_fileio.dir/point_cloud_io_xyz.cpp.o CMakeFiles/3rd_fileio.dir/surface_mesh_io.cpp.o CMakeFiles/3rd_fileio.dir/surface_mesh_io_obj.cpp.o
+/usr/bin/ranlib ../../../lib/lib3rd_fileio.a

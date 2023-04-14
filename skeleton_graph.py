@@ -986,7 +986,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     quaternion_path_rec_dominant_3rd = [quaternion_path_rec[i] for i in index_dominant_3rd]
     
-    rotVec_rec_dominant_3rd = [rotVec_rec[i] for i in index_dominant_2nd]
+    rotVec_rec_dominant_3rd = [rotVec_rec[i] for i in index_dominant_3rd]
     
     
     ############################################################################################
@@ -1214,17 +1214,22 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         for idx, Vec in enumerate(rotVec_rec_dominant):
             
-            #print(Vec[0], Vec[1], Vec[2])
-            
             #mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, Vec[0], Vec[1], Vec[2], )) #xyz
             
-            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color=(1, 0, 0)) #xyz
+            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (1, 0, 0)) #xyz
             
             #pts = mlab.points3d(Vec[0], Vec[1], Vec[2], color = (1,0,0), mode = 'sphere', scale_factor = 0.05)
             
-           
+        for idx, Vec in enumerate(rotVec_rec_dominant_2nd):
+            
+            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (0, 1, 0)) #xyz
+            
 
-        
+        for idx, Vec in enumerate(rotVec_rec_dominant_2nd):
+            
+            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (0, 1, 0)) #xyz
+            
+            
         ###############################################################################
         # Plot the equator and the tropiques
         theta = np.linspace(0, 2 * np.pi, 100)

@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../lib/lib3rd_util.a  CMakeFiles/3rd_util.dir/dialogs.cpp.o CMakeFiles/3rd_util.dir/file_system.cpp.o CMakeFiles/3rd_util.dir/chrono_watch.cpp.o CMakeFiles/3rd_util.dir/stop_watch.cpp.o CMakeFiles/3rd_util.dir/string.cpp.o
+/usr/bin/ranlib ../../../lib/lib3rd_util.a
