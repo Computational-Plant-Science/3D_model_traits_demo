@@ -901,8 +901,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         quaternion_path_rec_list.append(vector.reshape(4,1))
 
+
     quaternion_path_rec_list_reshape = np.asarray(quaternion_path_rec).reshape((len(vlist_path_rec),4))
-    
     
     print("quaternion_path_rec: {}\n".format((quaternion_path_rec_list_reshape.shape)))
     
@@ -936,6 +936,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
 
     ################################################################################
+    #Keman cluster of average of quaternion values for all the paths
     number_cluster = 3
     
     kmeans = KMeans(n_clusters = number_cluster)
@@ -952,6 +953,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #print(centroid)
     
+    # compute the ratio of each cluster
     percent=[]
     for i in range(len(centroid)):
         j = labels.count(i)
@@ -972,14 +974,16 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     print(percent)
     
 
-    ##########################################################################################3
+    ##########################################################################################
+    # obtain the dominant cluster of quaternion vectors and related rotation vectors
     index_dominant = [ index for index in range(len(labels))  if labels[index] == sorted_idx_percent[0]]
     
     quaternion_path_rec_dominant = [quaternion_path_rec[i] for i in index_dominant]
     
     rotVec_rec_dominant = [rotVec_rec[i] for i in index_dominant]
     
-        
+    
+    # obtain the second dominant cluster of quaternion vectors and related rotation vectors
     index_dominant_2nd = [ index for index in range(len(labels))  if labels[index] == sorted_idx_percent[1]]
     
     quaternion_path_rec_dominant_2nd = [quaternion_path_rec[i] for i in index_dominant_2nd]
@@ -987,7 +991,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     rotVec_rec_dominant_2nd = [rotVec_rec[i] for i in index_dominant_2nd]
     
     
-    
+    # obtain the 3rd dominant cluster of quaternion vectors and related rotation vectors
     index_dominant_3rd = [ index for index in range(len(labels))  if labels[index] == sorted_idx_percent[2]]
     
     quaternion_path_rec_dominant_3rd = [quaternion_path_rec[i] for i in index_dominant_3rd]
@@ -1219,7 +1223,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             #mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, Vec[0], Vec[1], Vec[2], )) #xyz
             
-            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (1, 0, 0), mode = '2dthick_arrow') #xyz
+            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (1, 0, 0), mode = '2darrow') #xyz
             #pts = mlab.points3d(Vec[0], Vec[1], Vec[2], color = (1,0,0), mode = 'sphere', scale_factor = 0.15)
             
         for idx, Vec in enumerate(rotVec_rec_dominant_2nd):
@@ -1258,7 +1262,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                 
 
     
-    return path_index, quaternion_path_rec, rotVec_rec
+    #return path_index, quaternion_path_rec, rotVec_rec, quaternion_path_rec_dominant, rotVec_rec_dominant, rotVec_rec_dominant_2nd, rotVec_rec_dominant
+    
+    return    percent[sorted_idx_percent[0]], quaternion_path_rec_dominant, rotVec_rec_dominant,\
+      percent[sorted_idx_percent[1]], quaternion_path_rec_dominant_2nd, rotVec_rec_dominant_2nd,\
+      percent[sorted_idx_percent[2]], quaternion_path_rec_dominant_3rd,  rotVec_rec_dominant_3rd
     
     
     
@@ -1299,20 +1307,41 @@ if __name__ == '__main__':
     
     result_list = []
     
-    (path_index, quaternion_path_rec, rotVec_rec) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+    (percent_dominant, quaternion_path_rec_dominant, rotVec_rec_dominant,\
+      percent_dominant_2nd, quaternion_path_rec_dominant_2nd, rotVec_rec_dominant_2nd,\
+      percent_dominant_3rd, quaternion_path_rec_dominant_3rd,  rotVec_rec_dominant_3rd) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
     
-    rotVec_rec_arr = np.vstack(rotVec_rec)
-    quaternion_path_arr = np.vstack(quaternion_path_rec)
     
-    #print(rotVec_rec)
+    quaternion_path_rec_dominant_arr = np.vstack(quaternion_path_rec_dominant)
+    rotVec_rec_dominant_arr = np.vstack(rotVec_rec_dominant)
     
-    #print((quaternion_path_arr.shape))
+    quaternion_path_rec_dominant_2nd_arr = np.vstack(quaternion_path_rec_dominant_2nd)
+    rotVec_rec_dominant_2nd_arr = np.vstack(rotVec_rec_dominant_2nd)
     
-    for i, (v0,v1,v2,v3,v4,v5,v6,v7) in enumerate(zip(path_index, quaternion_path_arr[:,0], quaternion_path_arr[:,1], quaternion_path_arr[:,2], quaternion_path_arr[:,3], rotVec_rec_arr[:,0], rotVec_rec_arr[:,1], rotVec_rec_arr[:,2])):
+    quaternion_path_rec_dominant_3rd_arr = np.vstack(quaternion_path_rec_dominant_3rd)
+    rotVec_rec_dominant_3rd_arr = np.vstack(rotVec_rec_dominant_3rd)
+    
+    percent_dominant_arr = np.repeat(percent_dominant, repeats = len(quaternion_path_rec_dominant_arr), axis = 0)
+    percent_dominant_2nd_arr = np.repeat(percent_dominant_2nd, repeats = len(quaternion_path_rec_dominant_2nd_arr), axis = 0)
+    percent_dominant_3rd_arr = np.repeat(percent_dominant_3rd, repeats = len(quaternion_path_rec_dominant_3rd_arr), axis = 0)
+    
+    
+    result_dominant = []
+    result_dominant_2nd = []
+    result_dominant_3rd = []
+    
+    for i, (v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23) in enumerate(zip(percent_dominant_arr, quaternion_path_rec_dominant_arr[:,0], quaternion_path_rec_dominant_arr[:,1], quaternion_path_rec_dominant_arr[:,2], quaternion_path_rec_dominant_arr[:,3],\
+                                                        rotVec_rec_dominant_arr[:,0], rotVec_rec_dominant_arr[:,1], rotVec_rec_dominant_arr[:,2],\
+                                                        percent_dominant_2nd_arr, quaternion_path_rec_dominant_2nd_arr[:,0], quaternion_path_rec_dominant_2nd_arr[:,1], quaternion_path_rec_dominant_2nd_arr[:,2], quaternion_path_rec_dominant_2nd_arr[:,3],\
+                                                        rotVec_rec_dominant_2nd_arr[:,0], rotVec_rec_dominant_2nd_arr[:,1], rotVec_rec_dominant_2nd_arr[:,2],\
+                                                        percent_dominant_3rd_arr, quaternion_path_rec_dominant_3rd_arr[:,0], quaternion_path_rec_dominant_3rd_arr[:,1], quaternion_path_rec_dominant_3rd_arr[:,2], quaternion_path_rec_dominant_3rd_arr[:,3],\
+                                                        rotVec_rec_dominant_3rd_arr[:,0], rotVec_rec_dominant_3rd_arr[:,1], rotVec_rec_dominant_3rd_arr[:,2])):
 
-        result_list.append([v0,v1,v2,v3,v4,v5,v6,v7])
+        result_dominant.append([v0,v1,v2,v3,v4,v5,v6,v7])
+        result_dominant_2nd.append([v8,v9,v10,v11,v12,v13,v14,v15])
+        result_dominant_3rd.append([v16,v17,v18,v19,v20,v21,v22,v23])
     
-    '''
+    
     #save reuslt file
     ####################################################################
     
@@ -1326,7 +1355,7 @@ if __name__ == '__main__':
     # create trait file using sub folder name
     trait_file = (current_path + folder_name + '_quaternion.xlsx')
     
-    trait_file_csv = (current_path + folder_name + '_quaternion.csv')
+    #trait_file_csv = (current_path + folder_name + '_quaternion.csv')
     
     
     if os.path.isfile(trait_file):
@@ -1337,36 +1366,70 @@ if __name__ == '__main__':
         wb = openpyxl.load_workbook(trait_file)
 
         #Get the current Active Sheet
-         #Get the current Active Sheet
-        sheet_quaternion = wb['sheet_quaternion']
+        sheet_quaternion_1 = wb['sheet_quaternion_1']
+        sheet_quaternion_1.delete_rows(2, sheet_quaternion_1.max_row + 1) # for entire sheet
         
-        sheet_quaternion.delete_rows(2, sheet_quaternion.max_row+1) # for entire sheet
+        #Get the current Active Sheet
+        sheet_quaternion_2 = wb['sheet_quaternion_2']
+        sheet_quaternion_2.delete_rows(2, sheet_quaternion_2.max_row + 1) # for entire sheet
+        
+        #Get the current Active Sheet
+        sheet_quaternion_3 = wb['sheet_quaternion_3']
+        sheet_quaternion_3.delete_rows(2, sheet_quaternion_3.max_row + 1) # for entire sheet
         
     else:
         # Keep presets
         # Keep presets
         wb = openpyxl.Workbook()
-        
-        #sheet = wb.active
-        
-        sheet_quaternion = wb.active
-        sheet_quaternion.title = "sheet_quaternion"
-        
+        sheet_quaternion_1 = wb.active
+        sheet_quaternion_1.title = "sheet_quaternion_1"
 
-        sheet_quaternion.cell(row = 1, column = 1).value = 'graph path index'
-        sheet_quaternion.cell(row = 1, column = 2).value = 'quaternion_a'
-        sheet_quaternion.cell(row = 1, column = 3).value = 'quaternion_b'
-        sheet_quaternion.cell(row = 1, column = 4).value = 'quaternion_c'
-        sheet_quaternion.cell(row = 1, column = 5).value = 'quaternion_d'
-        sheet_quaternion.cell(row = 1, column = 6).value = 'rotVec_rec_0'
-        sheet_quaternion.cell(row = 1, column = 7).value = 'rotVec_rec_1'
-        sheet_quaternion.cell(row = 1, column = 8).value = 'rotVec_rec_2'
+        sheet_quaternion_1.cell(row = 1, column = 1).value = 'Ratio of cluster'
+        sheet_quaternion_1.cell(row = 1, column = 2).value = 'quaternion_a'
+        sheet_quaternion_1.cell(row = 1, column = 3).value = 'quaternion_b'
+        sheet_quaternion_1.cell(row = 1, column = 4).value = 'quaternion_c'
+        sheet_quaternion_1.cell(row = 1, column = 5).value = 'quaternion_d'
+        sheet_quaternion_1.cell(row = 1, column = 6).value = 'rotVec_rec_0'
+        sheet_quaternion_1.cell(row = 1, column = 7).value = 'rotVec_rec_1'
+        sheet_quaternion_1.cell(row = 1, column = 8).value = 'rotVec_rec_2'
               
         
-    for row in result_list:
-        sheet_quaternion.append(row)
+        sheet_quaternion_2 = wb.create_sheet()
+        sheet_quaternion_2.title = "sheet_quaternion_2"
+
+        sheet_quaternion_2.cell(row = 1, column = 1).value = 'Ratio of cluster'
+        sheet_quaternion_2.cell(row = 1, column = 2).value = 'quaternion_a'
+        sheet_quaternion_2.cell(row = 1, column = 3).value = 'quaternion_b'
+        sheet_quaternion_2.cell(row = 1, column = 4).value = 'quaternion_c'
+        sheet_quaternion_2.cell(row = 1, column = 5).value = 'quaternion_d'
+        sheet_quaternion_2.cell(row = 1, column = 6).value = 'rotVec_rec_0'
+        sheet_quaternion_2.cell(row = 1, column = 7).value = 'rotVec_rec_1'
+        sheet_quaternion_2.cell(row = 1, column = 8).value = 'rotVec_rec_2'
+        
+        
+        sheet_quaternion_3 = wb.create_sheet()
+        sheet_quaternion_3.title = "sheet_quaternion_3"
+
+        sheet_quaternion_3.cell(row = 1, column = 1).value = 'Ratio of cluster'
+        sheet_quaternion_3.cell(row = 1, column = 2).value = 'quaternion_a'
+        sheet_quaternion_3.cell(row = 1, column = 3).value = 'quaternion_b'
+        sheet_quaternion_3.cell(row = 1, column = 4).value = 'quaternion_c'
+        sheet_quaternion_3.cell(row = 1, column = 5).value = 'quaternion_d'
+        sheet_quaternion_3.cell(row = 1, column = 6).value = 'rotVec_rec_0'
+        sheet_quaternion_3.cell(row = 1, column = 7).value = 'rotVec_rec_1'
+        sheet_quaternion_3.cell(row = 1, column = 8).value = 'rotVec_rec_2'
+        
+        
+    for row in result_dominant:
+        sheet_quaternion_1.append(row)
+        
+    for row in result_dominant_2nd:
+        sheet_quaternion_2.append(row)
    
-   
+    for row in result_dominant_3rd:
+        sheet_quaternion_3.append(row)
+        
+           
     #save the csv file
     wb.save(trait_file)
     
@@ -1382,15 +1445,9 @@ if __name__ == '__main__':
     # get_active_sheet()
     sh = wb.active 
     
-    
-    # save excel file as csv format
-    with open(trait_file_csv, 'w', newline = "") as f:
-        c = csv.writer(f)
-        for r in sh.rows: 
-            c.writerow([cell.value for cell in r])
-    
 
-    
+
+    '''
     ###################################################################
     #visualize quaternion values a + b*i + c*j + d*k
     fig = plt.figure()
