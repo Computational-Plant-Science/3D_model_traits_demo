@@ -909,6 +909,12 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     ###############################################################################
     #Use Elbow Method methods to determine this optimal value of number_cluster.
+    
+    trait_path = os.path.dirname(current_path + filename_skeleton)
+    
+    folder_name = os.path.basename(trait_path)
+    
+    
     md=[]
     for i in range(1,21):
         
@@ -994,9 +1000,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     #text = "{} {}".format(range(len(centroid)), percent)
     fig = plt.pie(percent, colors = np.transpose(color_array), labels = np.arange(len(centroid)))
-    
-    trait_path = os.path.dirname(current_path + filename_skeleton)
-    folder_name = os.path.basename(trait_path)
     
     # create trait file using sub folder name
     pie_chart = (current_path + folder_name + '_pie.png')
@@ -1216,18 +1219,16 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             #mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, Vec[0], Vec[1], Vec[2], )) #xyz
             
-            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (1, 0, 0)) #xyz
-            
-            #pts = mlab.points3d(Vec[0], Vec[1], Vec[2], color = (1,0,0), mode = 'sphere', scale_factor = 0.05)
+            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (1, 0, 0), mode = '2dthick_arrow') #xyz
+            #pts = mlab.points3d(Vec[0], Vec[1], Vec[2], color = (1,0,0), mode = 'sphere', scale_factor = 0.15)
             
         for idx, Vec in enumerate(rotVec_rec_dominant_2nd):
             
-            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (0, 1, 0)) #xyz
-            
+            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (0, 1, 0), mode = '2ddash') #xyz
 
-        for idx, Vec in enumerate(rotVec_rec_dominant_2nd):
+        for idx, Vec in enumerate(rotVec_rec_dominant_3rd):
             
-            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (0, 1, 0)) #xyz
+            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (0, 0, 1), mode = '2darrow') #xyz
             
             
         ###############################################################################

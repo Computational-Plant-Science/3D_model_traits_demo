@@ -42,6 +42,22 @@ Install Docker Engine (https://docs.docker.com/engine/install/)
 ## Usage
 
 
+We suggest to run the pipeline inside a docker container, 
+
+The Docker container allows you to package up your application(s) and deliver them to the cloud without any dependencies. 
+
+The Docker containercontainer is a portable computing environment. 
+
+It contains everything an application needs to run, from binaries to dependencies to configuration files.
+
+
+There are two ways to run the pipeline inside a docker container, 
+
+One was is to build a docker based on the docker recipe file inside the Github repostoriy. In our case, please follow step 1 and step 3. 
+
+Antoher way is to download prebuild docker image directly from Docker hub. In our case, please follow step 2 and step 3. 
+
+
 1. Build docker image on your PC under linux environment
 ```shell
 

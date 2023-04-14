@@ -86,8 +86,6 @@ From: ubuntu:18.04
                 PyYAML \
                 imutils 
   
-  cd /opt/3D_model_traits_demo/AdTree/ && mkdir /opt/3D_model_traits_demo/AdTree/Release && cd /opt/3D_model_traits_demo/AdTree/Release  && cmake -DCMAKE_BUILD_TYPE=Release .. && make
-  
   mkdir /lscratch /db /work /scratch
   
   chmod -R a+rwx /opt/code/

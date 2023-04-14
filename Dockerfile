@@ -3,6 +3,8 @@ FROM ubuntu:20.04
 LABEL maintainer='Suxing Liu, Wes Bonelli'
 
 COPY ./ /opt/3D_model_traits_demo
+WORKDIR /opt/3D_model_traits_demo
+
 
 RUN apt update
 RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt install -y \
@@ -25,15 +27,11 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt install -y \
     mesa-utils \
     software-properties-common \
     libcairo2 \
-    python-cairo \
-    nano
-    
+    python3-cairo \
+    nano \
+    xorg-dev \
+    libboost-all-dev
 
-ENV PYTHONPATH=$PYTHONPATH:/opt/3D_model_traits_demo/
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/3D_model_traits_demo/
-
-# ENV LC_ALL=C.UTF-8
-# ENV LANG=C.UTF-8
 
 RUN pip3 install --upgrade pip && \
     pip3 install numpy \
@@ -69,3 +67,13 @@ RUN add-apt-repository 'deb [ arch=amd64 ] https://downloads.skewed.de/apt focal
 RUN apt update 
 
 RUN apt install python3-graph-tool -y
+
+
+RUN chmod +x /opt/3D_model_traits_demo/shim.sh 
+
+
+
+ENV PYTHONPATH=$PYTHONPATH:/opt/3D_model_traits_demo/
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/3D_model_traits_demo/
+
+
