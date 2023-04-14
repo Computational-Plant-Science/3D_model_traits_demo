@@ -1454,12 +1454,12 @@ if __name__ == '__main__':
     ax = fig.add_subplot(111, projection='3d')
     
     
-    x = quaternion_path_arr[:,1]
-    y = quaternion_path_arr[:,2]
-    z = quaternion_path_arr[:,3]
-    c = quaternion_path_arr[:,0]
+    x = quaternion_path_rec_dominant_arr[:,1]
+    y = quaternion_path_rec_dominant_arr[:,2]
+    z = quaternion_path_rec_dominant_arr[:,3]
+    c = quaternion_path_rec_dominant_arr[:,0]
 
-    img = ax.scatter(x, y, z, c=c, cmap=plt.hot())
+    img = ax.scatter(x, y, z, c = c, cmap = plt.hot())
     #img = ax.scatter(x, y, z, c=c, cmap=plt.hot())
     fig.colorbar(img)
     #plt.show()
@@ -1472,18 +1472,28 @@ if __name__ == '__main__':
     quaternion_scatter = (current_path + folder_name + '_quaternion_scatter.png')
     
     plt.savefig(quaternion_scatter)
-    
+    '''
     
     
     ####################################################################
     #Multi-dimension plots in ploty, color represents quaternion_a
 
-    #Read cars data from csv
-    data = pd.read_csv(trait_file_csv)
+    
+    
+    quaternion_path_all = np.concatenate((quaternion_path_rec_dominant_arr, quaternion_path_rec_dominant_2nd_arr, quaternion_path_rec_dominant_3rd_arr), axis = 0)
+    
+    percent_all = np.concatenate((percent_dominant_arr, percent_dominant_2nd_arr, percent_dominant_3rd_arr), axis = 0) 
+    
+    
+    print((quaternion_path_all.shape))
+
+    data = pd.DataFrame(quaternion_path_all, columns = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d'])
 
     #Set marker properties
-    markercolor = data['quaternion_a']
-
+    #markercolor = data['quaternion_a']
+    
+    markercolor = percent_all
+    
     #Make Plotly figure
     fig1 = go.Scatter3d(x=data['quaternion_b'],
                     y=data['quaternion_c'],
@@ -1496,7 +1506,8 @@ if __name__ == '__main__':
                                 size=5),
                     line=dict (width=0.02),
                     mode='markers')
-
+    
+                 
     #Make Plot.ly Layout
     mylayout = go.Layout(scene=dict(xaxis=dict( title="quaternion_b"),
                                 yaxis=dict( title="quaternion_c"),
@@ -1511,4 +1522,4 @@ if __name__ == '__main__':
                      auto_open=True,
                      filename=quaternion_4D)
     
-    '''
+    
