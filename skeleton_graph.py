@@ -88,12 +88,12 @@ from matplotlib.ticker import PercentFormatter
 
 from pyquaternion import Quaternion
 
-'''
+
 # import warnings filter
 from warnings import simplefilter
 # ignore all future warnings
 simplefilter(action='ignore', category=FutureWarning)
-'''
+
 
 # generate foloder to store the output results
 def mkdir(path):
@@ -486,11 +486,11 @@ def his_plot(path_length_rec, current_path, filename_skeleton):
     #fixed_bins = [0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
     
     # Creating histogram
-    #N, bins, patches = axs.hist(x, bins = n_bins)
+    N, bins, patches = axs.hist(x, bins = n_bins)
     
-    N, bins, patches = axs.hist(x, bins = bin_list)
+    #N, bins, patches = axs.hist(x, bins = bin_list)
     
-    axs.set_ylim([0, 10000])
+    #axs.set_ylim([0, 10000])
 
     # Setting color
     fracs = ((N**(1 / 5)) / N.max())
@@ -856,14 +856,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
             avg_quaternion = averageQuaternions(sum_quaternion)
-            
-            
+
             # use components averaging to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
             #avg_quaternion = ((sum_quaternion.sum(axis=0))/len(vlist_path)).flatten()
             
+            #the signs of the output quaternion can be reversed, since q and -q describe the same orientation
+            avg_quaternion = np.absolute(avg_quaternion)
+
             avg_quaternion = avg_quaternion.flatten()
-            
-            print(avg_quaternion)
 
             rot = R.from_quat(avg_quaternion)
             
@@ -890,10 +890,122 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
     print("Found {} shortest path \n".format(len(vlist_path_rec)))
     
-    #print("Path length are: {}\n".format(path_length_rec)) 
     
     
-    ####################################################
+    ####################################################################
+    #find the dominant cluster of the average quaternion as 4 dimensional vectors 
+    
+    quaternion_path_rec_list = []
+    
+    for vector in quaternion_path_rec:
+        
+        quaternion_path_rec_list.append(vector.reshape(4,1))
+
+    quaternion_path_rec_list_reshape = np.asarray(quaternion_path_rec).reshape((len(vlist_path_rec),4))
+    
+    
+    print("quaternion_path_rec: {}\n".format((quaternion_path_rec_list_reshape.shape)))
+    
+    
+    ###############################################################################
+    #Use Elbow Method methods to determine this optimal value of number_cluster.
+    md=[]
+    for i in range(1,21):
+        
+        kmeans = KMeans(n_clusters = i)
+        
+        kmeans.fit(quaternion_path_rec_list_reshape)
+
+        md.append(kmeans.inertia_)
+    #print(md)
+    
+    plt.plot(list(np.arange(1,21)), md)
+
+    # create trait file using sub folder name
+    Elbow_chart = (current_path + folder_name + '_Elbow.png')
+    
+    plt.savefig(Elbow_chart)
+    
+    plt.close()
+
+
+    ################################################################################
+    number_cluster = 3
+    
+    kmeans = KMeans(n_clusters = number_cluster)
+    
+    s = kmeans.fit(quaternion_path_rec_list_reshape)
+    
+    labels = kmeans.labels_
+    
+    labels = list(labels)
+    
+    #print((labels))
+
+    centroid = kmeans.cluster_centers_
+    
+    #print(centroid)
+    
+    percent=[]
+    for i in range(len(centroid)):
+        j = labels.count(i)
+        j = j/(len(labels))
+        percent.append(j)
+        
+    #print(percent)
+    
+
+    #descending order sorting as per frequency count
+    sorted_idx = np.argsort(percent)
+    
+    #reverse the order from accending to descending
+    sorted_idx_percent = sorted_idx[::-1]
+    
+    
+    print(sorted_idx_percent)
+    print(percent)
+    
+
+    ##########################################################################################3
+    index_dominant = [ index for index in range(len(labels))  if labels[index] == sorted_idx_percent[0]]
+    
+    quaternion_path_rec_dominant = [quaternion_path_rec[i] for i in index_dominant]
+    
+    rotVec_rec_dominant = [rotVec_rec[i] for i in index_dominant]
+    
+        
+    index_dominant_2nd = [ index for index in range(len(labels))  if labels[index] == sorted_idx_percent[1]]
+    
+    quaternion_path_rec_dominant_2nd = [quaternion_path_rec[i] for i in index_dominant_2nd]
+    
+    rotVec_rec_dominant_2nd = [rotVec_rec[i] for i in index_dominant_2nd]
+    
+    
+    
+    index_dominant_3rd = [ index for index in range(len(labels))  if labels[index] == sorted_idx_percent[2]]
+    
+    quaternion_path_rec_dominant_3rd = [quaternion_path_rec[i] for i in index_dominant_3rd]
+    
+    rotVec_rec_dominant_3rd = [rotVec_rec[i] for i in index_dominant_2nd]
+    
+    
+    ############################################################################################
+    color_array = np.repeat(np.array(percent).reshape(1,number_cluster), repeats = 4, axis = 0)
+
+    #text = "{} {}".format(range(len(centroid)), percent)
+    fig = plt.pie(percent, colors = np.transpose(color_array), labels = np.arange(len(centroid)))
+    
+    trait_path = os.path.dirname(current_path + filename_skeleton)
+    folder_name = os.path.basename(trait_path)
+    
+    # create trait file using sub folder name
+    pie_chart = (current_path + folder_name + '_pie.png')
+    
+    plt.savefig(pie_chart)
+    
+    plt.close()
+
+    ####################################################################
 
     his_plot(path_length_rec, current_path, filename_skeleton)
     
@@ -1100,7 +1212,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
         #scalars = np.random.randint(1, size = (len(rotVec_rec),3))
         
-        for idx, Vec in enumerate(rotVec_rec):
+        for idx, Vec in enumerate(rotVec_rec_dominant):
             
             #print(Vec[0], Vec[1], Vec[2])
             

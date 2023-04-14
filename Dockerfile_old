@@ -2,38 +2,35 @@ FROM ubuntu:20.04
 
 LABEL maintainer='Suxing Liu, Wes Bonelli'
 
-COPY ./ /opt/3D_model_traits_demo
+COPY ./ /opt/3D_model_traits_demo/
+WORKDIR /opt/3D_model_traits_demo/
 
-RUN apt update
-RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt install -y \
+
+RUN apt-get update && apt-get upgrade -y
+RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt-get install -y \
     build-essential \
     python3-setuptools \
-    python3-pip \
-    python3 \
-    python3-tk \
-    python3-numexpr \
-    python3-pil.imagetk \
+    cmake-gui \
+    xorg-dev \
+    libglu1-mesa-dev \ 
+    mesa-utils \
+    libboost-all-dev \
     libgl1-mesa-glx \
     libsm6 \
     libxext6 \
-    cmake-gui \
-    libglu1-mesa-dev \
+    libcairo2 \
+    python3-pip \
+    python3 \
+    python3-tk \
+    python3-pil.imagetk \
+    python3-cairo \
     freeglut3-dev \
     freeglut3 \
     libopengl0 -y \
     mesa-common-dev \
-    mesa-utils \
     software-properties-common \
-    libcairo2 \
-    python-cairo \
     nano
-    
 
-ENV PYTHONPATH=$PYTHONPATH:/opt/3D_model_traits_demo/
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/3D_model_traits_demo/
-
-# ENV LC_ALL=C.UTF-8
-# ENV LANG=C.UTF-8
 
 RUN pip3 install --upgrade pip && \
     pip3 install numpy \
@@ -45,6 +42,7 @@ RUN pip3 install --upgrade pip && \
     scikit-build \
     matplotlib \
     mahotas \
+    numexpr \
     plyfile \
     psutil \
     cairosvg \
@@ -54,12 +52,16 @@ RUN pip3 install --upgrade pip && \
     coverage \
     coveralls \
     open3d \
-    opencv-python-headless \
+    opencv-python \
     openpyxl \
     click \
     PyYAML \
     imutils 
     
+
+RUN cd /opt/3D_model_traits_demo/AdTree/ && mkdir /opt/3D_model_traits_demo/AdTree/Release && cd /opt/3D_model_traits_demo/AdTree/Release  && cmake -DCMAKE_BUILD_TYPE=Release .. && make
+
+
 RUN pip3 install --upgrade numpy
 
 RUN apt-key adv --keyserver keys.openpgp.org --recv-key 612DEFB798507F25
@@ -69,3 +71,10 @@ RUN add-apt-repository 'deb [ arch=amd64 ] https://downloads.skewed.de/apt focal
 RUN apt update 
 
 RUN apt install python3-graph-tool -y
+
+
+RUN chmod +x /opt/3D_model_traits_demo/shim.sh 
+
+
+ENV PYTHONPATH=$PYTHONPATH:/opt/3D_model_traits_demo/
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/3D_model_traits_demo/

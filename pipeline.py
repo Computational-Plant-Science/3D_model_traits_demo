@@ -52,10 +52,10 @@ def model_analysis_pipeline(file_path, filename, basename):
     execute_script(format_convert)
     
     
-    # step 2 ./AdTree/Release/bin/AdTree ~/example/pt_cloud/test.xyz ~/example/pt_cloud/ -s
+    # step 2 ./AdTree/Release/bin/AdTree ~/example/pt_cloud/test.xyz ~/example/pt_cloud/ 
     print("Compute structure and skeleton from point cloud model ...\n")
     
-    skeleton_graph = "./AdTree/Release/bin/AdTree " + file_path + basename + ".xyz " + file_path + " -s"
+    skeleton_graph = "./AdTree/Release/bin/AdTree " + file_path + basename + ".xyz " + file_path 
     
     execute_script(skeleton_graph)
     

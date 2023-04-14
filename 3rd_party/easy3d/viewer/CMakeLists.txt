@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-get_filename_component(MODULE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-set(PROJECT_NAME easy3d_${MODULE_NAME})
+get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(${PROJECT_NAME})
 
 
@@ -83,8 +82,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${ADTREE_glfw_INCLUDE_DIR})
 set (OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 message(STATUS "OpenGL libraries: ${OPENGL_LIBRARIES}")
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew glfw core util fileio tinyfiledialogs)
+
 target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_STATIC)
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} 3rd_glew 3rd_glfw easy3d_core easy3d_util easy3d_fileio 3rd_tinyfiledialogs)
 
 
 if (MSVC)
