@@ -44,11 +44,7 @@ Install Docker Engine (https://docs.docker.com/engine/install/)
 
 We suggest to run the pipeline inside a docker container, 
 
-The Docker container allows you to package up your application(s) and deliver them to the cloud without any dependencies. 
-
-The Docker containercontainer is a portable computing environment. 
-
-It contains everything an application needs to run, from binaries to dependencies to configuration files.
+The Docker container allows you to package up your application(s) and deliver them to the cloud without any dependencies. It is a portable computing environment. It contains everything an application needs to run, from binaries to dependencies to configuration files.
 
 
 There are two ways to run the pipeline inside a docker container, 
