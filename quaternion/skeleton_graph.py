@@ -443,9 +443,7 @@ def optimal_number_of_clusters(wcss):
 
 
 
-
-
-def his_plot(path_length_rec, current_path, filename_skeleton):
+def his_plot(path_length_rec, current_path, folder_name):
     
   
     legend = ['Path length histogram distribution']
@@ -456,9 +454,7 @@ def his_plot(path_length_rec, current_path, filename_skeleton):
     
     
     # Creating histogram
-    fig, axs = plt.subplots(1, 1,
-                        figsize =(10, 7),
-                        tight_layout = True)
+    fig, axs = plt.subplots(1, 1, figsize =(10, 7), tight_layout = True)
 
 
     # Remove axes splines
@@ -477,8 +473,8 @@ def his_plot(path_length_rec, current_path, filename_skeleton):
     axs.grid(visible = True, color ='grey', linestyle ='-.', linewidth = 0.5, alpha = 0.6)
 
     bin_size = 0.1
-    min_edge = 0.0
-    max_edge = 7.0
+    min_edge = 0.1
+    max_edge = 5.0
     Nplus1 = (max_edge-min_edge)/bin_size + 1
     bin_list = np.linspace(min_edge, max_edge, int(Nplus1))
 
@@ -486,11 +482,13 @@ def his_plot(path_length_rec, current_path, filename_skeleton):
     #fixed_bins = [0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
     
     # Creating histogram
-    N, bins, patches = axs.hist(x, bins = n_bins)
+    #N, bins, patches = axs.hist(x, bins = fixed_bins)
     
-    #N, bins, patches = axs.hist(x, bins = bin_list)
+    N, bins, patches = axs.hist(x, bins = bin_list)
     
-    #axs.set_ylim([0, 10000])
+    #N, bins, patches = axs.hist(x, bins = n_bins)
+    
+    axs.set_ylim([0, 150])
 
     # Setting color
     fracs = ((N**(1 / 5)) / N.max())
@@ -501,21 +499,102 @@ def his_plot(path_length_rec, current_path, filename_skeleton):
         thispatch.set_facecolor(color)
 
     # Adding extra features   
-    plt.xlabel("Path length in 3D model space")
+    plt.xlabel("Node based path length in 3D model space")
     plt.ylabel("Counts")
     plt.legend(legend)
-    plt.title('Path length distribution')
+    plt.title('Node based path length distribution')
     
-    
-    trait_path = os.path.dirname(current_path + filename_skeleton)
-    folder_name = os.path.basename(trait_path)
     
     # create trait file using sub folder name
     path_histogram = (current_path + folder_name + '_his.png')
     
     plt.savefig(path_histogram)
+
+
+
+
+#cluster 1D list using Kmeans
+def cluster_list(list_array, n_clusters):
+    
+    data = np.array(list_array)
+    
+    if data.ndim == 1:
+        
+        data = data.reshape(-1,1)
+    
+    #kmeans = KMeans(n_clusters).fit(data.reshape(-1,1))
+        
+    kmeans = KMeans(n_clusters, init='k-means++', random_state=0).fit(data)
+    
+    #kmeans = KMeans(n_clusters).fit(data)
+    
+    labels = kmeans.labels_
+    
+    centers = kmeans.cluster_centers_
+    
+    center_labels = kmeans.predict(centers)
+    
+    #print(kmeans.cluster_centers_)
+    '''
+    #visualzie data clustering 
+    ######################################################
+    y_kmeans = kmeans.predict(data)
+    
+    plt.scatter(data[:, 0], data[:, 1], c=y_kmeans, s=50, cmap='viridis')
+
+    centers = kmeans.cluster_centers_
+    
+    plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5)
+    
+    #plt.legend()
+
+    plt.show()
+    
+    '''
     
     
+    '''
+    from sklearn.metrics import silhouette_score
+    
+    range_n_clusters = [2, 3, 4, 5, 6, 7, 8]
+    silhouette_avg = []
+    for num_clusters in range_n_clusters:
+     
+         # initialize kmeans
+         kmeans = KMeans(n_clusters=num_clusters)
+         kmeans.fit(data)
+         cluster_labels = kmeans.labels_
+         
+         # silhouette score
+         silhouette_avg.append(silhouette_score(data, cluster_labels))
+    
+    plt.plot(range_n_clusters,silhouette_avg,'bx-')
+    plt.xlabel('Values of K')
+    plt.ylabel('Silhouette score')
+    plt.title('Silhouette analysis For Optimal k')
+    plt.show()
+    
+    
+    Sum_of_squared_distances = []
+    K = range(2,8)
+    for num_clusters in K :
+        kmeans = KMeans(n_clusters=num_clusters)
+        kmeans.fit(data)
+        Sum_of_squared_distances.append(kmeans.inertia_)
+        
+    plt.plot(K,Sum_of_squared_distances,'bx-')
+    plt.xlabel('Values of K') 
+    plt.ylabel('Sum of squared distances/Inertia') 
+    plt.title('Elbow Method For Optimal k')
+    plt.show()
+    '''
+    ######################################################
+    
+    
+    return labels, centers, center_labels
+
+
+
 
 # Skeleton analysis
 def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
@@ -574,8 +653,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     else:
         
         sys.exit("Could not load 3D skeleton radius txt file")  
-    
     '''
+    
     # build directed graph from skeleton/structure data
     ####################################################################
     print("Building directed graph from 3D skeleton/structure ...\n")
@@ -674,19 +753,21 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         sub_branch_ys = Y_skeleton[int_v_list[0]]
         sub_branch_zs = Z_skeleton[int_v_list[0]]
         
+        # apply thersh length threshold
+        if sub_branch_length > thresh_length: 
         
-        # save computed parameters for each branch
-        sub_branch_list.append(v_list)
-        sub_branch_length_rec.append(sub_branch_length)
-        sub_branch_angle_rec.append(angle_sub_branch)
-        sub_branch_start_rec.append(int_v_list[0])
-        sub_branch_end_rec.append(int_v_list[-1])
-        sub_branch_projection_rec.append(projection_radius)
-        #sub_branch_radius_rec.append(radius_edge)
-        
-        sub_branch_xs_rec.append(sub_branch_xs)
-        sub_branch_ys_rec.append(sub_branch_ys)
-        sub_branch_zs_rec.append(sub_branch_zs)
+            # save computed parameters for each branch
+            sub_branch_list.append(v_list)
+            sub_branch_length_rec.append(sub_branch_length)
+            sub_branch_angle_rec.append(angle_sub_branch)
+            sub_branch_start_rec.append(int_v_list[0])
+            sub_branch_end_rec.append(int_v_list[-1])
+            sub_branch_projection_rec.append(projection_radius)
+            #sub_branch_radius_rec.append(radius_edge)
+            
+            sub_branch_xs_rec.append(sub_branch_xs)
+            sub_branch_ys_rec.append(sub_branch_ys)
+            sub_branch_zs_rec.append(sub_branch_zs)
     
     #print(min(sub_branch_angle_rec))
     #print(max(sub_branch_angle_rec))
@@ -717,11 +798,45 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     print("number of sub_branch_end_rec is: {} \n".format(len(sub_branch_end_rec)))
     
+    '''
     ####################################################################
-
-    ################################################################################################################################
-
     
+    # construct sub branches with length and radius feature 
+    ####################################################################
+    #combined_list = np.array(list(zip(sub_branch_length_rec, sub_branch_radius_rec))).reshape(len(sub_branch_length_rec), 2)
+    
+    combined_list = np.array(list(sub_branch_length_rec)).reshape(-1, 1)
+    
+    # calculating the within clusters sum-of-squares 
+    sum_of_squares = calculate_wcss(combined_list)
+    
+    # calculating the optimal number of clusters
+    n_optimal = optimal_number_of_clusters(sum_of_squares)
+    
+    print("optimal_number_of_clusters = {}\n".format(n_optimal))
+    
+   
+    # find sub branches cluster with length and radius feature 
+    ####################################################################
+    cluster_number = n_optimal - 2
+    
+    (labels, centers, center_labels) = cluster_list(combined_list, n_clusters = cluster_number)
+    
+    sorted_idx = np.argsort(centers[:,0])[::-1]
+
+    print("sorted_idx = {}\n".format(sorted_idx))
+    
+    
+    # obtain the dominant cluster of quaternion vectors and related rotation vectors
+    sub_branch_idx_dominant = [ index for index in range(len(labels))  if labels[index] == sorted_idx[1]]
+    
+    sub_branch_list_dominant = [sub_branch_list[index] for index in sub_branch_idx_dominant]
+    
+    end_vlist_offset_dominant = [end_vlist_offset[i] for i in sub_branch_idx_dominant]
+    
+
+    print("number of sub_branch_list_dominant is: {} \n".format(len(sub_branch_list_dominant)))
+    '''
     
     # graph: find closest point pairs and connect close graph edges
     ####################################################################
@@ -751,7 +866,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         dis_v_closest_pair = path_length(X_skeleton[v_closest_pair], Y_skeleton[v_closest_pair], Z_skeleton[v_closest_pair])
         
         #small threshold indicating close pair vetices
-        if dis_v_closest_pair < thresh_join:
+        if (dis_v_closest_pair < thresh_join ):
             
             closest_pts.append(index_cp)
             
@@ -799,61 +914,67 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     for idx, end_v in enumerate(sub_branch_end_rec):
         
         #print("start_v = {} end_v = {} \n".format(start_v, end_v))
-   
-        vlist_path = short_path_finder(G_unordered, start_v, end_v)
         
-        if len(vlist_path) > 0:
+        n_paths = gt.count_shortest_paths(G_unordered, start_v, end_v)
         
-            #path_count+=1
-            #print("Shortest path found in graph! \n")
+        if n_paths > 0:
+
+            vlist_path = short_path_finder(G_unordered, start_v, end_v)
             
-            vlist_path_rec.append(vlist_path)
+            if len(vlist_path) > 0:
             
-            # record current path length
-            path_length_N2N = path_length(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path])
-            
-            path_length_rec.append(path_length_N2N)
-            
-            # Q is a Nx4 numpy matrix and contains the quaternions to average in the rows.
-            # The quaternions are arranged as (w,x,y,z), with w being the scalar
-            sum_quaternion = np.zeros([len(vlist_path), 4])
-            
-            #sum_euler = np.zeros([len(vlist_path), 3])
-            
-            for i, v_path in enumerate(vlist_path):
+                #path_count+=1
+                #print("Shortest path found in graph! \n")
                 
-                #print("closest_pts = {}\n".format(vlist_path[i]))
-        
-                if i + 2 < len(vlist_path):
+                vlist_path_rec.append(vlist_path)
+                
+                # record current path length
+                path_length_N2N = path_length(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path])
+                
+                path_length_rec.append(path_length_N2N)
+                
+                # Q is a Nx4 numpy matrix and contains the quaternions to average in the rows.
+                # The quaternions are arranged as (w,x,y,z), with w being the scalar
+                sum_quaternion = np.zeros([len(vlist_path), 4])
+                
+                #sum_euler = np.zeros([len(vlist_path), 3])
+                
+                for i, v_path in enumerate(vlist_path):
                     
-                    # get adjacent vector coordinates
-                    vector1 = [X_skeleton[vlist_path[i]], Y_skeleton[vlist_path[i]], Z_skeleton[vlist_path[i]]]
-                    vector2 = [X_skeleton[vlist_path[i + 1]], Y_skeleton[vlist_path[i + 1]], Z_skeleton[vlist_path[i + 1]]]
-                    vector3 = [X_skeleton[vlist_path[i + 2]], Y_skeleton[vlist_path[i + 2]], Z_skeleton[vlist_path[i + 2]]]
+                    #print("closest_pts = {}\n".format(vlist_path[i]))
             
-                    # get adjacent directed vectors
-                    vector_12 = findVec(vector1,vector2)
-                    vector_23 = findVec(vector2,vector3)
+                    if i + 2 < len(vlist_path):
+                        
+                        # get adjacent vector coordinates
+                        vector1 = [X_skeleton[vlist_path[i]], Y_skeleton[vlist_path[i]], Z_skeleton[vlist_path[i]]]
+                        vector2 = [X_skeleton[vlist_path[i + 1]], Y_skeleton[vlist_path[i + 1]], Z_skeleton[vlist_path[i + 1]]]
+                        vector3 = [X_skeleton[vlist_path[i + 2]], Y_skeleton[vlist_path[i + 2]], Z_skeleton[vlist_path[i + 2]]]
+                
+                        # get adjacent directed vectors
+                        vector_12 = findVec(vector1,vector2)
+                        vector_23 = findVec(vector2,vector3)
+                        
+                        # compoute rotation matrix between adjacent directed vectors
+                        mat = get_rotation_matrix(vec1 = vector_12, vec2 = vector_23)
+                        
+                        # compoute quaternion between adjacent directed vectors
+                        #The returned quaternion value is in scalar-last (x, y, z, w) format.
+                        quaternion_r = R.from_matrix(mat).as_quat()
+                        
+                        # change the order of the quaternion_r value from (x, y, z, w)  to (w, x, y, z)
+                        quaternion_r_rearanged = np.hstack((quaternion_r[3], quaternion_r[0], quaternion_r[1], quaternion_r[2]))
+                        
+                        #euler_r = R.from_matrix(mat).as_euler('xyz', degrees = True)
+                                           
+                        sum_quaternion[i,:] = quaternion_r_rearanged
+                        
+                        #sum_euler[i,:] = euler_r
+                        
+                        #print("vlist_path = {} quaternion_r = {}".format(idx, quaternion_r))
                     
-                    # compoute rotation matrix between adjacent directed vectors
-                    mat = get_rotation_matrix(vec1 = vector_12, vec2 = vector_23)
-                    
-                    # compoute quaternion between adjacent directed vectors
-                    #The returned quaternion value is in scalar-last (x, y, z, w) format.
-                    quaternion_r = R.from_matrix(mat).as_quat()
-                    
-                    # change the order of the quaternion_r value from (x, y, z, w)  to (w, x, y, z)
-                    quaternion_r_rearanged = np.hstack((quaternion_r[3], quaternion_r[0], quaternion_r[1], quaternion_r[2]))
-                    
-                    #euler_r = R.from_matrix(mat).as_euler('xyz', degrees = True)
-                                       
-                    sum_quaternion[i,:] = quaternion_r_rearanged
-                    
-                    #sum_euler[i,:] = euler_r
-                    
-                    #print("vlist_path = {} quaternion_r = {}".format(idx, quaternion_r))
-                    
-            
+            else:
+                sys.exit("Graph has no shortest path, quit!")
+                
             # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
             avg_quaternion = averageQuaternions(sum_quaternion)
 
@@ -982,6 +1103,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     rotVec_rec_dominant = [rotVec_rec[i] for i in index_dominant]
     
+    path_length_rec_dominant = [path_length_rec[i] for i in index_dominant]
+    
     
     # obtain the second dominant cluster of quaternion vectors and related rotation vectors
     index_dominant_2nd = [ index for index in range(len(labels))  if labels[index] == sorted_idx_percent[1]]
@@ -990,6 +1113,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     rotVec_rec_dominant_2nd = [rotVec_rec[i] for i in index_dominant_2nd]
     
+    path_length_rec_2nd = [path_length_rec[i] for i in index_dominant_2nd]
+    
     
     # obtain the 3rd dominant cluster of quaternion vectors and related rotation vectors
     index_dominant_3rd = [ index for index in range(len(labels))  if labels[index] == sorted_idx_percent[2]]
@@ -997,6 +1122,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     quaternion_path_rec_dominant_3rd = [quaternion_path_rec[i] for i in index_dominant_3rd]
     
     rotVec_rec_dominant_3rd = [rotVec_rec[i] for i in index_dominant_3rd]
+    
+    path_length_rec_3rd = [path_length_rec[i] for i in index_dominant_3rd]
     
     
     ############################################################################################
@@ -1014,7 +1141,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     ####################################################################
 
-    his_plot(path_length_rec, current_path, filename_skeleton)
+    his_plot(path_length_rec_dominant, current_path, folder_name)
     
     
     path_index = list(range(1,len(vlist_path_rec)+1))
@@ -1032,7 +1159,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         print("Loading 3D point cloud {}...\n".format(filename_pcloud))
         
         model_pcloud_name_base = os.path.splitext(model_pcloud)[0]
-        
         
         pcd = o3d.io.read_point_cloud(model_pcloud)
         
@@ -1269,9 +1395,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
       percent[sorted_idx_percent[2]], quaternion_path_rec_dominant_3rd,  rotVec_rec_dominant_3rd
     
     
-    
-
-
 
 
 if __name__ == '__main__':
@@ -1282,7 +1405,8 @@ if __name__ == '__main__':
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
     ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
-    ap.add_argument("-th", "--thresh_join", required = False, type = float, default = 3.21, help = "threshhold value to join all disconnected graph nodes")
+    ap.add_argument("-th", "--thresh_join", required = False, type = float, default = 3.2, help = "threshhold value to join all disconnected graph nodes")
+    ap.add_argument("-th_l", "--thresh_length", required = False, type = float, default = 0.05, help = "threshhold value to cluster path length")
     ap.add_argument("-v", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult not display")
     args = vars(ap.parse_args())
 
@@ -1294,6 +1418,7 @@ if __name__ == '__main__':
     model_skeleton_name_base = os.path.splitext(current_path + filename_skeleton)[0]
     
     thresh_join = args["thresh_join"]
+    thresh_length = args["thresh_length"]
     
     if args["model_pcloud"] is None:
         filename_pcloud = None
@@ -1519,7 +1644,7 @@ if __name__ == '__main__':
     #Plot and save html
     plotly.offline.plot({"data": [fig1],
                      "layout": mylayout},
-                     auto_open=True,
+                     auto_open=False,
                      filename=quaternion_4D)
     
     

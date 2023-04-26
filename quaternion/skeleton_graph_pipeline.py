@@ -18,13 +18,44 @@ import sys
 import argparse
 import numpy as np 
 import pathlib
-
+import os
+import glob
 
 import psutil
 import concurrent.futures
 import multiprocessing
 from multiprocessing import Pool
 from contextlib import closing
+
+
+# generate foloder to store the output results
+def mkdir(path):
+    # import module
+    import os
+ 
+    # remove space at the beginning
+    path=path.strip()
+    # remove slash at the end
+    path=path.rstrip("\\")
+ 
+    # path exist?   # True  # False
+    isExists=os.path.exists(path)
+ 
+    # process
+    if not isExists:
+        # construct the path and folder
+        #print path + ' folder constructed!'
+        # make dir
+        os.makedirs(path)
+        return True
+    else:
+        # if exists, return 
+        #print path+' path exists!'
+        #shutil.rmtree(path)
+        #os.makedirs(path)
+        return False
+        
+
 
 
 # execute script inside program
@@ -46,6 +77,9 @@ def execute_script(cmd_line):
         
         print("Failed ...!\n")
 
+
+
+
 # execute pipeline scripts in order
 def skeleton_analysis_pipeline(file_path):
     
@@ -58,14 +92,25 @@ def skeleton_analysis_pipeline(file_path):
     file_path_full = file_path + '/'
 
     # python3 skeleton_graph.py -p ~/example/pt_cloud/tiny/ -m1 tiny_skeleton.ply
-    #skeleton_analysis = "python3 skeleton_graph.py -p " + file_path_full + " -m1 " + model_skeleton_name
+    skeleton_analysis = "python3 skeleton_graph.py -p " + file_path_full + " -m1 " + model_skeleton_name
     
-    filename = folder_name + '_trait.xlsx'
+    '''
+    ####################################################################
+
+    filename = folder_name + '_quaternion.xlsx'
+    #filename = folder_name + '_his.png' 
+    #filename = folder_name + '_quaternion_4D.html'
     
-    #cp ~/example/B73_test/01/01_his.png ~/example/B73_resulls/histogram/
-    skeleton_analysis = "cp " + file_path_full + filename + " /home/suxing/cluster_test/syngenta_data/results/" 
     
+    #cp ~/example/B73_test/01/01_his.png ~/example/B73_resulls/histogram/  
+    skeleton_analysis = "cp " + file_path_full + filename + " /home/suxing/example/molly_3d_models_skeleton/HighN_result/quaternion_values/" 
+    #skeleton_analysis = "cp " + file_path_full + filename + " /home/suxing/example/molly_3d_models_skeleton/LowN_result/histogram/" 
+    #skeleton_analysis = "cp " + file_path_full + filename + " /home/suxing/example/molly_3d_models_skeleton/LowN_result/scatterplot/" 
+    
+    #skeleton_analysis = "rm " + file_path_full + filename 
+    ####################################################################
     #print(skeleton_analysis)
+    '''
     
     execute_script(skeleton_analysis)
 
@@ -85,17 +130,46 @@ if __name__ == '__main__':
     args = vars(ap.parse_args())
     
     
+    
+    '''
+    ###################################################################
+    current_path = args["path"]
+    
+    file_path = current_path + '*.ply'
+
+    # get the absolute path of all Excel files 
+    Files_list = glob.glob(file_path)
+    
+    for image_file in Files_list:
+    
+        abs_path = os.path.abspath(image_file)
+    
+        filename, file_extension = os.path.splitext(abs_path)
+        
+        base_name = os.path.splitext(os.path.basename(filename))[0]
+        
+        base_name = base_name.replace("_skeleton", "")
+
+        mkpath = os.path.dirname(abs_path) + '/' + base_name + '/'
+        mkdir(mkpath)
+        save_path = mkpath + '/'
+        
+        cp_model = "cp " + image_file + ' ' + save_path
+        
+        execute_script(cp_model)
+    ####################################################################
+    '''
+    
+    
     #parameter sets
     # path to individual folders
     current_path = args["path"]
-    
-    #subfolders = sorted([ f.path for f in os.scandir(current_path) if f.is_dir() ])
-    
+
     subfolders = fast_scandir(current_path)
     
     #print("Processing folder in path '{}' ...\n".format(subfolders))
     
-    '''
+    
     #loop execute
     for subfolder_id, subfolder_path in enumerate(subfolders):
         
@@ -110,8 +184,9 @@ if __name__ == '__main__':
         #print("Processing folder '{}'...\n".format(subfolder_path))
         
         skeleton_analysis_pipeline(subfolder_path)
-        
+    
 
+    
     '''
     ###########################################################
     #parallel processing module
@@ -128,4 +203,4 @@ if __name__ == '__main__':
     with closing(Pool(processes = agents)) as pool:
         result = pool.map(skeleton_analysis_pipeline, subfolders)
         pool.terminate()
-    
+    '''
