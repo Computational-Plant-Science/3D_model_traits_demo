@@ -40,6 +40,12 @@ import plotly.figure_factory as ff
 
 import random
 
+from scipy import linalg 
+
+from sklearn.preprocessing import normalize
+
+from statistics import mean 
+
 
 
 def cMap(x):
@@ -50,6 +56,9 @@ def cMap(x):
     
     
 def visualization_rotation_vector(rotVec_rec, genotype_sub):
+    
+  
+    
     ###############################################################################
     # Display a semi-transparent sphere
 
@@ -86,18 +95,20 @@ def visualization_rotation_vector(rotVec_rec, genotype_sub):
     mlab.plot3d(x, y, z, color=(1, 1, 1), opacity=0.2, tube_radius=None)
     '''
     
+    
     NUM_COLORS = 2
     
     cm = plt.get_cmap('turbo')
     
     # Primitives
-    #N = len(np.unique(genotype_sub)) # Number of points
+    #N = len(np.unique(genotype_sub)) 
     
-    N = len((genotype_sub))
+    N = len(rotVec_rec)
     
     print(N)
 
-    scalars = np.arange(N) # Key point: set an integer for each point
+    # Key point: set an integer for each point
+    scalars = genotype_sub
 
     # Define color table (including alpha), which must be uint8 and [0,255]
     colors = (np.random.random((N, 4))*255).astype(np.uint8)
@@ -109,7 +120,8 @@ def visualization_rotation_vector(rotVec_rec, genotype_sub):
     #mlab.quiver3d( 0,0,0, Vec_arr[0], Vec_arr[1], Vec_arr[2], color = current_color)
     pts = mlab.quiver3d(zeros,zeros,zeros, rotVec_rec[:,0], rotVec_rec[:,1], rotVec_rec[:,2], scalars=scalars)
     
-    pts.glyph.color_mode = 'color_by_scalar' # Color by scalar
+    # Color by scalar
+    pts.glyph.color_mode = 'color_by_scalar' 
 
     # Set look-up table and redraw
     pts.module_manager.scalar_lut_manager.lut.table = colors
@@ -125,33 +137,13 @@ def visualization_rotation_vector(rotVec_rec, genotype_sub):
             current_color = (0, 1, 0)
             
         #mlab.quiver3d( 0,0,0, Vec_arr[0], Vec_arr[1], Vec_arr[2], color = current_color)
-        pts = mlab.quiver3d(0,0,0, Vec_arr[0], Vec_arr[1], Vec_arr[2], scalars=scalars)
+        #pts = mlab.quiver3d(0,0,0, Vec_arr[0], Vec_arr[1], Vec_arr[2], scalars=scalars)
         
-        pts.glyph.color_mode = 'color_by_scalar' # Color by scalar
-
-        # Set look-up table and redraw
+        magnitude = linalg.norm(Vec_arr)
+        
+        #print("genoype_value = {} Vector_length = {}".format(genoype_value, magnitude))
     '''
         
-        
-    '''
-    # Primitives
-    N = 200 # Number of points
-    ones = np.ones(N)
-    scalars = np.arange(N) # Key point: set an integer for each point
-
-    # Define color table (including alpha), which must be uint8 and [0,255]
-    colors = (np.random.random((N, 4))*255).astype(np.uint8)
-    colors[:,-1] = 255 # No transparency
-
-    # Define coordinates and points
-    x, y, z = colors[:,0], colors[:,1], colors[:,2] # Assign x, y, z values to match color
-    pts = mlab.quiver3d(x, y, z, ones, ones, ones, scalars=scalars) # Create points
-    pts.glyph.color_mode = 'color_by_scalar' # Color by scalar
-
-    # Set look-up table and redraw
-    pts.module_manager.scalar_lut_manager.lut.table = colors
-    '''
-
 
     mlab.show()
     
@@ -166,6 +158,7 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-ft", "--filetype", required = False, default = 'xlsx', help = "file type")
+    ap.add_argument("-v", "--visulize", required = False, type= int, default = 0, help = "Visualize rotation vector or not")
     args = vars(ap.parse_args())
 
     
@@ -226,7 +219,7 @@ if __name__ == '__main__':
     
         ################################################################
         #get downsampled genotype values
-        genotype_sub = data['genotype'].values.tolist()
+        genotype_sub = data['genotype_label'].values.tolist()
 
         # downsample along coloum direction, every 10th
         #genotype_sub = genotype_v[::sample_rate,:]
@@ -234,13 +227,71 @@ if __name__ == '__main__':
         
         genotype_sub = np.asarray(genotype_sub)
         
+
+        
         
     
     ####################################################################
-   
+    # filter small vectors 
+    
+    '''
+    vector_length = []
+    
+    for idx, Vec_arr  in enumerate(data_v):
+        
+        magnitude = linalg.norm(Vec_arr)
+        
+        vector_length.append(magnitude)
+        
+        
+    avg_vec_len = mean(vector_length)
+    
+    indices_keep = [idx for idx, value in enumerate(vector_length) if value >= mean(vector_length)*1.2]
+     
+    data_v_sel = data_v[indices_keep, :]
+    
+    genotype_sub_sel = genotype_sub[indices_keep]
+    '''
+    
+    
+    '''
+    genotype_label = np.zeros((len(genotype_sub), 4))
+    
+    
+    genotype_sub = genotype_sub.tolist() 
+    
+    #print(type(genotype_sub))
+    #print(len(genotype_sub))
+    
+    indices_LowN = np.where(genotype_sub == )
+    
+    print(indices_LowN)
+    
+    print(genotype_label[indices_LowN,:])
+    '''
+    
+    
+    #indices_HighN = np.where(genotype_sub == 'HighN')
+    
+    #genotype_label[indices_HighN] == 255
+    
+    
+    
+    
+    #colors = (np.random.random((N, 4))*255).astype(np.uint8)
+    
+
+    data_v_sel = data_v
+    genotype_sub_sel = genotype_sub
+    
+    #print(genotype_sub_sel)
     
     #visualize rotation vectors
-    visualization_rotation_vector(data_v, genotype_sub)
+    #visualization_rotation_vector(np.asarray(normalized_data_v), genotype_sub)
+    
+    if args['visulize'] == 1:
+        
+        visualization_rotation_vector(np.asarray(data_v_sel), genotype_sub_sel)
     
     
     
