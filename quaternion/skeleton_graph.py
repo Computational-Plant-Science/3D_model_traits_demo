@@ -1058,7 +1058,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     ################################################################################
     #Keman cluster of average of quaternion values for all the paths
-    number_cluster = 3
+    
     
     kmeans = KMeans(n_clusters = number_cluster)
     
@@ -1405,6 +1405,7 @@ if __name__ == '__main__':
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
     ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
+    ap.add_argument("-n", "--n_cluster", required = False, type = int, default = 3, help = "Number of clusters to filter the small length paths")
     ap.add_argument("-th", "--thresh_join", required = False, type = float, default = 3.2, help = "threshhold value to join all disconnected graph nodes")
     ap.add_argument("-th_l", "--thresh_length", required = False, type = float, default = 0.05, help = "threshhold value to cluster path length")
     ap.add_argument("-v", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult not display")
@@ -1419,6 +1420,7 @@ if __name__ == '__main__':
     
     thresh_join = args["thresh_join"]
     thresh_length = args["thresh_length"]
+    number_cluster = args["n_cluster"]
     
     if args["model_pcloud"] is None:
         filename_pcloud = None
