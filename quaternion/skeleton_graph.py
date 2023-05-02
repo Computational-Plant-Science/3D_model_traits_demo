@@ -931,7 +931,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     path_length_rec = []
     
-    
+    index_inv = []
     
     
 
@@ -991,6 +991,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                         #compute rotation vector between adjacent directed vectors
                         rotVec_r = R.from_matrix(mat).as_rotvec()
                         
+                       
+                            
                         # change the order of the quaternion_r value from (x, y, z, w)  to (w, x, y, z)
                         quaternion_r_rearanged = np.hstack((quaternion_r[3], quaternion_r[0], quaternion_r[1], quaternion_r[2]))
                         
@@ -1013,7 +1015,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             # compute average of quaternions from Quaternion averaging functions from scikit-surgerycore, The quaternions input are arranged as (w,x,y,z),
             avg_quaternion = average_quaternions(sum_quaternion)
             
-            avg_quaternion = np.absolute(avg_quaternion)
+            #avg_quaternion = np.absolute(avg_quaternion)
             
             #the signs of the output quaternion can be reversed, since q and -q describe the same orientation
             '''
@@ -1066,10 +1068,12 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                 quaternion_path_rec.append(avg_quaternion)
             '''
 
-            
+        if rotVec_r[2] < 0:
+            index_inv.append(idx)
+                            
     print("Found {} shortest path \n".format(len(vlist_path_rec)))
     
-    
+    print("index_inv = {} \n".format(index_inv))
     
     ####################################################################
     #find the dominant cluster of the average quaternion as 4 dimensional vectors 
@@ -1284,9 +1288,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             pts = mlab.points3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, mode = 'sphere', scale_factor = scale_factor_value)
             
-
+            if i in index_inv:
             #pts = mlab.plot3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, tube_radius=0.025)
-            #mlab.text3d(X_skeleton[vlist_path[-1]], Y_skeleton[vlist_path[-1]], Z_skeleton[vlist_path[-1]], str("{:.0f}".format(i)), color = (0,1,0), scale = (0.04, 0.04, 0.04))
+                pts = mlab.text3d(X_skeleton[vlist_path[-1]], Y_skeleton[vlist_path[-1]], Z_skeleton[vlist_path[-1]], str("{:.0f}".format(i)), color = (0,1,0), scale = (0.04, 0.04, 0.04))
             
         
         
@@ -1415,7 +1419,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         for idx, Vec in enumerate(rotVec_rec_dominant):
             
-            Vec = np.absolute(Vec)
+            #Vec = np.absolute(Vec)
             #mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, Vec[0], Vec[1], Vec[2], )) #xyz
             
             mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (1, 0, 0), mode = '2darrow') #xyz
@@ -1424,13 +1428,13 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         for idx, Vec in enumerate(rotVec_rec_dominant_2nd):
             
-            Vec = np.absolute(Vec)
+            #Vec = np.absolute(Vec)
             
             mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (0, 1, 0), mode = '2darrow') #xyz
 
         for idx, Vec in enumerate(rotVec_rec_dominant_3rd):
             
-            Vec = np.absolute(Vec)
+            #Vec = np.absolute(Vec)
             
             mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (0, 0, 1), mode = '2darrow') #xyz
        
