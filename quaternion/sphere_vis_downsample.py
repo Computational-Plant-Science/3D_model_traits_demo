@@ -132,7 +132,7 @@ def visualization_rotation_vector(rotVec_rec, genotype_sub, avg_rotVec):
     # Display a semi-transparent sphere
 
     mlab.figure("sphere_representation_rotation_vector: B101 v.s. Pa762", size = (800, 800), bgcolor = (0, 0, 0))
-
+    '''
     # use a sphere Glyph, through the points3d mlab function, rather than
     # building the mesh ourselves, because it gives a better transparent
     # rendering.
@@ -150,7 +150,7 @@ def visualization_rotation_vector(rotVec_rec, genotype_sub, avg_rotVec):
     
     # Backface culling is necessary for more a beautiful transparent rendering.
     sphere.actor.property.backface_culling = True
-
+    '''
     #cmap = matplotlib.cm.get_cmap('viridis')
     
     '''
@@ -183,7 +183,11 @@ def visualization_rotation_vector(rotVec_rec, genotype_sub, avg_rotVec):
     colors = (np.random.random((N, 4))*255).astype(np.uint8)
     colors[:,-1] = 255 # No transparency
 
+    
     zeros = np.zeros(N)
+    
+    
+    rotVec_rec = np.absolute(rotVec_rec)
 
     # draw all the rotation vectors in pipeline
     #mlab.quiver3d( 0,0,0, Vec_arr[0], Vec_arr[1], Vec_arr[2], color = current_color)
@@ -195,11 +199,13 @@ def visualization_rotation_vector(rotVec_rec, genotype_sub, avg_rotVec):
     # Set look-up table and redraw
     pts.module_manager.scalar_lut_manager.lut.table = colors
     
-        # draw one average rotation vector
+
+    # draw one average rotation vector
     pts = mlab.quiver3d(0,0,0, avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = (1, 0, 0), line_width = 15, scale_factor = 2)
     
     
-        
+
+    
     '''
     for idx, (Vec_arr, genoype_value)  in enumerate(zip(rotVec_rec, genotype_sub)):
         

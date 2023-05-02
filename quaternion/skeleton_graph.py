@@ -88,6 +88,9 @@ from matplotlib.ticker import PercentFormatter
 
 from pyquaternion import Quaternion
 
+#validation for average_quaternions
+from sksurgerycore.algorithms.averagequaternions import average_quaternions
+
 
 # import warnings filter
 from warnings import simplefilter
@@ -357,6 +360,27 @@ def euler_to_rotVec(yaw, pitch, roll):
 
 
 
+
+
+def product_Quaternions(quaternion_arr):
+    
+    #A cool feature of quaternions is that they can be intuitively chained together to form a composite rotation from a sequence of discrete rotations:
+    product_quaternion = quaternion_arr[0,:]
+    
+    #print(product_quaternion)
+
+    #Quaternion(numpy.array([a, b, c, d]))
+
+    for idx, q_r in enumerate(quaternion_arr):
+
+        if idx>0:
+            
+            product_quaternion = Quaternion(product_quaternion)*Quaternion(q_r)
+        
+    return product_quaternion.elements
+            
+
+
 #find shortest path between start and end vertex
 def short_path_finder(G_unordered, start_v, end_v):
     
@@ -484,9 +508,9 @@ def his_plot(path_length_rec, current_path, folder_name):
     # Creating histogram
     #N, bins, patches = axs.hist(x, bins = fixed_bins)
     
-    N, bins, patches = axs.hist(x, bins = bin_list)
+    #N, bins, patches = axs.hist(x, bins = bin_list)
     
-    #N, bins, patches = axs.hist(x, bins = n_bins)
+    N, bins, patches = axs.hist(x, bins = n_bins)
     
     axs.set_ylim([0, 150])
 
@@ -907,6 +931,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     path_length_rec = []
     
+    
+    
+    
 
     
 
@@ -961,6 +988,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                         #The returned quaternion value is in scalar-last (x, y, z, w) format.
                         quaternion_r = R.from_matrix(mat).as_quat()
                         
+                        #compute rotation vector between adjacent directed vectors
+                        rotVec_r = R.from_matrix(mat).as_rotvec()
+                        
                         # change the order of the quaternion_r value from (x, y, z, w)  to (w, x, y, z)
                         quaternion_r_rearanged = np.hstack((quaternion_r[3], quaternion_r[0], quaternion_r[1], quaternion_r[2]))
                         
@@ -975,22 +1005,50 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             else:
                 sys.exit("Graph has no shortest path, quit!")
                 
-            # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
-            avg_quaternion = averageQuaternions(sum_quaternion)
+            # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z) with w being the scalar
+            #avg_quaternion = averageQuaternions(sum_quaternion)
 
-            # use components averaging to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
-            #avg_quaternion = ((sum_quaternion.sum(axis=0))/len(vlist_path)).flatten()
+            ###############################################################
+
+            # compute average of quaternions from Quaternion averaging functions from scikit-surgerycore, The quaternions input are arranged as (w,x,y,z),
+            avg_quaternion = average_quaternions(sum_quaternion)
+            
+            avg_quaternion = np.absolute(avg_quaternion)
             
             #the signs of the output quaternion can be reversed, since q and -q describe the same orientation
-            avg_quaternion = np.absolute(avg_quaternion)
+            '''
+            if avg_quaternion[0] < 0:
+                
+                q = Quaternion(avg_quaternion).inverse
+                avg_quaternion = q.elements
+                
+                #avg_quaternion = np.absolute(avg_quaternion)
+    
+                avg_quaternion = avg_quaternion.flatten()
 
+                rot = R.from_quat(avg_quaternion)
+                
+                #Invert this rotation.
+                rot_inv = rot.inv()
+                
+                avg_euler = rot_inv.as_euler('xyz')
+            
+            else:
+                
+                avg_quaternion = avg_quaternion.flatten()
+
+                rot = R.from_quat(avg_quaternion)
+                
+                avg_euler = rot.as_euler('xyz')
+            '''
+            
+            
+            
             avg_quaternion = avg_quaternion.flatten()
 
             rot = R.from_quat(avg_quaternion)
-            
+                
             avg_euler = rot.as_euler('xyz')
-            
-            #avg_euler = np.mean(sum_euler, axis = 0)
             
             rotVec = euler_to_rotVec(avg_euler[0], avg_euler[1], avg_euler[2])
             
@@ -1091,8 +1149,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     sorted_idx_percent = sorted_idx[::-1]
     
     
-    print(sorted_idx_percent)
-    print(percent)
+
     
 
     ##########################################################################################
@@ -1105,6 +1162,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     path_length_rec_dominant = [path_length_rec[i] for i in index_dominant]
     
+    
+    #print(quaternion_path_rec_dominant)
     
     # obtain the second dominant cluster of quaternion vectors and related rotation vectors
     index_dominant_2nd = [ index for index in range(len(labels))  if labels[index] == sorted_idx_percent[1]]
@@ -1126,6 +1185,15 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     path_length_rec_3rd = [path_length_rec[i] for i in index_dominant_3rd]
     
     
+    print("sorted_idx_percent = {} percent = {}".format(sorted_idx_percent, percent))
+    print("dominant path number = {}, 2nd dominant path number = {}, 3rd dominant path number = {}\n".format(len(path_length_rec_dominant),len(path_length_rec_2nd),len(path_length_rec_3rd)))
+    
+    
+    
+    
+    
+    
+
     ############################################################################################
     color_array = np.repeat(np.array(percent).reshape(1,number_cluster), repeats = 4, axis = 0)
 
@@ -1347,19 +1415,25 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         for idx, Vec in enumerate(rotVec_rec_dominant):
             
+            Vec = np.absolute(Vec)
             #mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, Vec[0], Vec[1], Vec[2], )) #xyz
             
             mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (1, 0, 0), mode = '2darrow') #xyz
             #pts = mlab.points3d(Vec[0], Vec[1], Vec[2], color = (1,0,0), mode = 'sphere', scale_factor = 0.15)
-            
+        
+        
         for idx, Vec in enumerate(rotVec_rec_dominant_2nd):
             
-            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (0, 1, 0), mode = '2ddash') #xyz
+            Vec = np.absolute(Vec)
+            
+            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (0, 1, 0), mode = '2darrow') #xyz
 
         for idx, Vec in enumerate(rotVec_rec_dominant_3rd):
             
-            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (0, 0, 1), mode = '2darrow') #xyz
+            Vec = np.absolute(Vec)
             
+            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (0, 0, 1), mode = '2darrow') #xyz
+       
             
         ###############################################################################
         # Plot the equator and the tropiques
@@ -1456,18 +1530,23 @@ if __name__ == '__main__':
     result_dominant = []
     result_dominant_2nd = []
     result_dominant_3rd = []
-    
-    for i, (v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23) in enumerate(zip(percent_dominant_arr, quaternion_path_rec_dominant_arr[:,0], quaternion_path_rec_dominant_arr[:,1], quaternion_path_rec_dominant_arr[:,2], quaternion_path_rec_dominant_arr[:,3],\
-                                                        rotVec_rec_dominant_arr[:,0], rotVec_rec_dominant_arr[:,1], rotVec_rec_dominant_arr[:,2],\
-                                                        percent_dominant_2nd_arr, quaternion_path_rec_dominant_2nd_arr[:,0], quaternion_path_rec_dominant_2nd_arr[:,1], quaternion_path_rec_dominant_2nd_arr[:,2], quaternion_path_rec_dominant_2nd_arr[:,3],\
-                                                        rotVec_rec_dominant_2nd_arr[:,0], rotVec_rec_dominant_2nd_arr[:,1], rotVec_rec_dominant_2nd_arr[:,2],\
-                                                        percent_dominant_3rd_arr, quaternion_path_rec_dominant_3rd_arr[:,0], quaternion_path_rec_dominant_3rd_arr[:,1], quaternion_path_rec_dominant_3rd_arr[:,2], quaternion_path_rec_dominant_3rd_arr[:,3],\
-                                                        rotVec_rec_dominant_3rd_arr[:,0], rotVec_rec_dominant_3rd_arr[:,1], rotVec_rec_dominant_3rd_arr[:,2])):
 
-        result_dominant.append([v0,v1,v2,v3,v4,v5,v6,v7])
-        result_dominant_2nd.append([v8,v9,v10,v11,v12,v13,v14,v15])
-        result_dominant_3rd.append([v16,v17,v18,v19,v20,v21,v22,v23])
+    for i, (v0,v1,v2,v3,v4,v5,v6,v7) in enumerate(zip(percent_dominant_arr, quaternion_path_rec_dominant_arr[:,0], quaternion_path_rec_dominant_arr[:,1], quaternion_path_rec_dominant_arr[:,2], quaternion_path_rec_dominant_arr[:,3],\
+                                                        rotVec_rec_dominant_arr[:,0], rotVec_rec_dominant_arr[:,1], rotVec_rec_dominant_arr[:,2])):
     
+        result_dominant.append([v0,v1,v2,v3,v4,v5,v6,v7])
+    
+    for i, (v0,v1,v2,v3,v4,v5,v6,v7) in enumerate(zip(percent_dominant_2nd_arr, quaternion_path_rec_dominant_2nd_arr[:,0], quaternion_path_rec_dominant_2nd_arr[:,1], quaternion_path_rec_dominant_2nd_arr[:,2], quaternion_path_rec_dominant_2nd_arr[:,3],\
+                                                        rotVec_rec_dominant_2nd_arr[:,0], rotVec_rec_dominant_2nd_arr[:,1], rotVec_rec_dominant_2nd_arr[:,2])):
+    
+        result_dominant_2nd.append([v0,v1,v2,v3,v4,v5,v6,v7])
+    
+    for i, (v0,v1,v2,v3,v4,v5,v6,v7) in enumerate(zip(percent_dominant_3rd_arr, quaternion_path_rec_dominant_3rd_arr[:,0], quaternion_path_rec_dominant_3rd_arr[:,1], quaternion_path_rec_dominant_3rd_arr[:,2], quaternion_path_rec_dominant_3rd_arr[:,3],\
+                                                        rotVec_rec_dominant_3rd_arr[:,0], rotVec_rec_dominant_3rd_arr[:,1], rotVec_rec_dominant_3rd_arr[:,2])):
+    
+        result_dominant_3rd.append([v0,v1,v2,v3,v4,v5,v6,v7])
+        
+        
     
     #save reuslt file
     ####################################################################
@@ -1612,7 +1691,7 @@ if __name__ == '__main__':
     percent_all = np.concatenate((percent_dominant_arr, percent_dominant_2nd_arr, percent_dominant_3rd_arr), axis = 0) 
     
     
-    print((quaternion_path_all.shape))
+    #print((quaternion_path_all.shape))
 
     data = pd.DataFrame(quaternion_path_all, columns = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d'])
 
