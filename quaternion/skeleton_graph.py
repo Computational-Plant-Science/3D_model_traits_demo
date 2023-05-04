@@ -221,6 +221,12 @@ def findVec(point1,point2,unitSphere = False):
 
 #get rotation matrix between two vectors using scipy
 def get_rotation_matrix(vec2, vec1):
+    """ Find the rotation matrix that aligns vec1 to vec2
+    :param vec1: A 3d "source" vector
+    :param vec2: A 3d "destination" vector
+    :return mat: A transform matrix (3x3) which when applied to vec1, aligns it with vec2.
+    """
+    
     
     vec1 = np.reshape(vec1, (1, -1))
     
@@ -229,12 +235,8 @@ def get_rotation_matrix(vec2, vec1):
     r = R.align_vectors(vec2, vec1)
         
     return r[0].as_matrix()
+    
     '''
-    """ Find the rotation matrix that aligns vec1 to vec2
-    :param vec1: A 3d "source" vector
-    :param vec2: A 3d "destination" vector
-    :return mat: A transform matrix (3x3) which when applied to vec1, aligns it with vec2.
-    """
     a, b = (vec1 / np.linalg.norm(vec1)).reshape(3), (vec2 / np.linalg.norm(vec2)).reshape(3)
     v = np.cross(a, b)
     if any(v): #if not all zeros then 
@@ -940,18 +942,22 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     # loop over all paths and compute quaternions values
     for idx, end_v in enumerate(sub_branch_end_rec):
         
-        #print("start_v = {} end_v = {} \n".format(start_v, end_v))
-        
+       
+        # Return the number of shortest paths from source to target.
         n_paths = gt.count_shortest_paths(G_unordered, start_v, end_v)
         
+        print("start_v = {} end_v = {} n_paths = {}\n".format(start_v, end_v, n_paths))
+        
         if n_paths > 0:
-
+            
+            # Return the shortest path from source to target.
             vlist_path = short_path_finder(G_unordered, start_v, end_v)
             
+            # List of vertices from source to target in the shortest path was not empty
             if len(vlist_path) > 0:
             
                 #path_count+=1
-                #print("Shortest path found in graph! \n")
+                #print("Anayzing shortest path {}\n".format(vlist_path))
                 
                 vlist_path_rec.append(vlist_path)
                 
@@ -973,13 +979,15 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                     if i + 2 < len(vlist_path):
                         
                         # get adjacent vector coordinates
-                        vector1 = [X_skeleton[vlist_path[i]], Y_skeleton[vlist_path[i]], Z_skeleton[vlist_path[i]]]
-                        vector2 = [X_skeleton[vlist_path[i + 1]], Y_skeleton[vlist_path[i + 1]], Z_skeleton[vlist_path[i + 1]]]
-                        vector3 = [X_skeleton[vlist_path[i + 2]], Y_skeleton[vlist_path[i + 2]], Z_skeleton[vlist_path[i + 2]]]
+                        p1 = [X_skeleton[vlist_path[i]], Y_skeleton[vlist_path[i]], Z_skeleton[vlist_path[i]]]
+                        p2 = [X_skeleton[vlist_path[i + 1]], Y_skeleton[vlist_path[i + 1]], Z_skeleton[vlist_path[i + 1]]]
+                        p3 = [X_skeleton[vlist_path[i + 2]], Y_skeleton[vlist_path[i + 2]], Z_skeleton[vlist_path[i + 2]]]
                 
                         # get adjacent directed vectors
-                        vector_12 = findVec(vector1,vector2)
-                        vector_23 = findVec(vector2,vector3)
+                        vector_12 = findVec(p1,p2)
+                        vector_23 = findVec(p2,p3)
+                        
+                        #print("p1 = {}, p2 = {}, p3 = {}, vector_12 = {}, vector_23 = {}\n".format(p1, p2, p3, vector_12, vector_23))
                         
                         # compoute rotation matrix between adjacent directed vectors
                         mat = get_rotation_matrix(vec1 = vector_12, vec2 = vector_23)
@@ -990,9 +998,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                         
                         #compute rotation vector between adjacent directed vectors
                         rotVec_r = R.from_matrix(mat).as_rotvec()
-                        
-                       
-                            
+
                         # change the order of the quaternion_r value from (x, y, z, w)  to (w, x, y, z)
                         quaternion_r_rearanged = np.hstack((quaternion_r[3], quaternion_r[0], quaternion_r[1], quaternion_r[2]))
                         
@@ -1044,36 +1050,40 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                 avg_euler = rot.as_euler('xyz')
             '''
             
-            
-            
+            # compute average quaternion values from a list of quarternion along the path
             avg_quaternion = avg_quaternion.flatten()
-
-            rot = R.from_quat(avg_quaternion)
-                
-            avg_euler = rot.as_euler('xyz')
             
-            rotVec = euler_to_rotVec(avg_euler[0], avg_euler[1], avg_euler[2])
+            # get Rotation matrix from quaternion
+            rot = R.from_quat(avg_quaternion)
+            
+            # get the rotation vector
+            rotVec = rot.as_rotvec()
+            
+            #avg_euler = rot.as_euler('xyz')
+            
+            # get the rotation vector
+            #rotVec = euler_to_rotVec(avg_euler[0], avg_euler[1], avg_euler[2])
+            
+            
+            if rotVec[0] > 0:
+                rotVec = np.multiply(rotVec,-1)
+                #avg_quaternion = np.multiply(avg_quaternion,-1)
+                #avg_quaternion[0] = avg_quaternion[0]*(-1)
             
             rotVec_rec.append(rotVec)
 
             quaternion_path_rec.append(avg_quaternion)
             
-            print("vlist_path = {} avg_quaternion = {} avg_euler = {} rotVec = {}\n".format(idx, avg_quaternion, avg_euler, rotVec))
+            print("vlist_path = {} avg_quaternion = {} rotVec = {}\n".format(idx, avg_quaternion, rotVec))
                 
-            '''
-            if rotVec[2] > 0:
-                
-                rotVec_rec.append(rotVec)
-                
-                quaternion_path_rec.append(avg_quaternion)
-            '''
+
 
         if rotVec_r[2] < 0:
             index_inv.append(idx)
                             
     print("Found {} shortest path \n".format(len(vlist_path_rec)))
     
-    print("index_inv = {} \n".format(index_inv))
+    #print("index_inv = {} \n".format(index_inv))
     
     ####################################################################
     #find the dominant cluster of the average quaternion as 4 dimensional vectors 
@@ -1417,29 +1427,49 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
         #scalars = np.random.randint(1, size = (len(rotVec_rec),3))
         
-        for idx, Vec in enumerate(rotVec_rec_dominant):
-            
-            #Vec = np.absolute(Vec)
-            #mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, Vec[0], Vec[1], Vec[2], )) #xyz
-            
-            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (1, 0, 0), mode = '2darrow') #xyz
-            #pts = mlab.points3d(Vec[0], Vec[1], Vec[2], color = (1,0,0), mode = 'sphere', scale_factor = 0.15)
         
         
-        for idx, Vec in enumerate(rotVec_rec_dominant_2nd):
-            
-            #Vec = np.absolute(Vec)
-            
-            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (0, 1, 0), mode = '2darrow') #xyz
+        ################################################################
+        #draw rotatin vectors
+        
+        # Key point: set an integer for each point
+        #scalars = genotype_sub
 
-        for idx, Vec in enumerate(rotVec_rec_dominant_3rd):
-            
-            #Vec = np.absolute(Vec)
-            
-            mlab.quiver3d(0,0,0, Vec[0], Vec[1], Vec[2], color = (0, 0, 1), mode = '2darrow') #xyz
-       
-            
+        # Define color table (including alpha), which must be uint8 and [0,255]
+        #colors = (np.random.random((N, 4))*255).astype(np.uint8)
+        #colors[:,-1] = 255 # No transparency
+
+        zeros = np.zeros(len(rotVec_rec_dominant))
+
+        # draw all the rotation vectors in pipeline
+        #mlab.quiver3d( 0,0,0, Vec_arr[0], Vec_arr[1], Vec_arr[2], color = current_color)
+        pts = mlab.quiver3d(zeros, zeros, zeros, np.asarray(rotVec_rec_dominant)[:,0], np.asarray(rotVec_rec_dominant)[:,1], np.asarray(rotVec_rec_dominant)[:,2], color = (1, 0, 0), mode = '2ddash')
+
+
+    
+        zeros = np.zeros(len(rotVec_rec_dominant_2nd))
+        
+        pts = mlab.quiver3d(zeros, zeros, zeros, np.asarray(rotVec_rec_dominant_2nd)[:,0], np.asarray(rotVec_rec_dominant_2nd)[:,1], np.asarray(rotVec_rec_dominant_2nd)[:,2], color = (0, 1, 0), mode = '2ddash')
+        
+        
+        zeros = np.zeros(len(rotVec_rec_dominant_3rd))
+        
+        pts = mlab.quiver3d(zeros, zeros, zeros, np.asarray(rotVec_rec_dominant_3rd)[:,0], np.asarray(rotVec_rec_dominant_3rd)[:,1], np.asarray(rotVec_rec_dominant_3rd)[:,2], color = (0, 0, 1), mode = '2ddash')
+        
+
+        
+        # Color by scalar
+        #pts.glyph.color_mode = 'color_by_scalar' 
+
+        # Set look-up table and redraw
+        #pts.module_manager.scalar_lut_manager.lut.table = colors
+
+
+        # draw one average rotation vector
+        #pts = mlab.quiver3d(0,0,0, avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = (1, 0, 0), line_width = 15, scale_factor = 2)
+           
         ###############################################################################
+        '''
         # Plot the equator and the tropiques
         theta = np.linspace(0, 2 * np.pi, 100)
         for angle in (- np.pi / 6, 0, np.pi / 6):
@@ -1454,13 +1484,15 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         mlab.orientation_axes()
         
         
-        '''
+        
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 1,0,0), color=(0,0,1))
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,1,0), color=(0,0,1))
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,0,1), color=(0,0,1))
         '''
         #################################################################################
         
+        
+        mlab.orientation_axes()
         
         mlab.show()
                 
