@@ -1,7 +1,7 @@
 """
 Version: 1.5
 
-Summary: CDF visualization
+Summary: compbine mutiple excels files 
 
 Author: suxing liu
 

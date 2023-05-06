@@ -9,8 +9,14 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-    python3 sphere_vis_downsample.py -p ~/example/model_COLMAP_results_quarterunion/quaternion_summary/ 
+    python3 sphere_vis_downsample.py -p ~/example/quaternion/species_comp/ -v 1
 
+
+Input:
+    *.xlsx
+
+header:
+    file_name    Ratio of cluster    quaternion_a    quaternion_b    quaternion_c    quaternion_d    rotVec_rec_0    rotVec_rec_1    rotVec_rec_2    genotype    genotype_label
 
 
 """
@@ -114,6 +120,17 @@ def averageQuaternions(Q):
     return np.ravel(eigenVectors[:,0])
     
 
+def averageVectors(avg_quaternion):
+    
+    avg_quaternion = avg_quaternion.flatten()
+
+    # get Rotation matrix from quaternion
+    rot = R.from_quat(avg_quaternion)
+
+    # get the rotation vector
+    avg_rotVec = rot.as_rotvec()
+    
+    return avg_rotVec
 
 
 
@@ -124,15 +141,50 @@ def cMap(x):
     
     
     
-def visualization_rotation_vector(rotVec_rec, genotype_sub, avg_rotVec):
+def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_sub):
     
   
+    #####################################################################
+    #group quaternion values and rotation vectors by genotypes
+    avg_rotVec_list = []
+    
+    genotype_unique = np.unique(genotype_sub)
+    
+    #print(genotype_unique)
+    
+
+    for idx, genoype_value  in enumerate(genotype_unique):
+        
+        #print("genotype_ID = {}, genoype_value = {}".format(idx, genoype_value))
+        
+        index_sel = np.where(genotype_sub == genotype_unique[idx])[0]
+    
+        print(data_q_arr[index_sel])
+        
+        # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
+        avg_quaternion = averageQuaternions(data_q_arr[index_sel])
+
+        # use components averaging to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
+        #avg_quaternion = ((sum_quaternion.sum(axis=0))/len(vlist_path)).flatten()
+
+        #the signs of the output quaternion can be reversed, since q and -q describe the same orientation
+        #avg_quaternion = np.absolute(avg_quaternion)
+
+        avg_quaternion = avg_quaternion.flatten()
+        
+        avg_rotVec = averageVectors(avg_quaternion)
+        
+        avg_rotVec_list.append(avg_rotVec)
+        
+        
+   
+    print("{} genotypes in total, average roration vectors = {}\n".format(len(genotype_unique), avg_rotVec_list))
     
     ###############################################################################
     # Display a semi-transparent sphere
 
-    mlab.figure("sphere_representation_rotation_vector: B101 v.s. Pa762", size = (800, 800), bgcolor = (0, 0, 0))
-    '''
+    mlab.figure("sphere_representation_rotation_vector", size = (800, 800), bgcolor = (0, 0, 0))
+    
     # use a sphere Glyph, through the points3d mlab function, rather than
     # building the mesh ourselves, because it gives a better transparent
     # rendering.
@@ -150,7 +202,7 @@ def visualization_rotation_vector(rotVec_rec, genotype_sub, avg_rotVec):
     
     # Backface culling is necessary for more a beautiful transparent rendering.
     sphere.actor.property.backface_culling = True
-    '''
+    
     #cmap = matplotlib.cm.get_cmap('viridis')
     
     '''
@@ -165,7 +217,6 @@ def visualization_rotation_vector(rotVec_rec, genotype_sub, avg_rotVec):
     '''
     
     
-    NUM_COLORS = 2
     
     cm = plt.get_cmap('turbo')
     
@@ -187,24 +238,25 @@ def visualization_rotation_vector(rotVec_rec, genotype_sub, avg_rotVec):
     zeros = np.zeros(N)
     
     
-    rotVec_rec = np.absolute(rotVec_rec)
+    #rotVec_rec = np.absolute(rotVec_rec)
 
     # draw all the rotation vectors in pipeline
     #mlab.quiver3d( 0,0,0, Vec_arr[0], Vec_arr[1], Vec_arr[2], color = current_color)
-    pts = mlab.quiver3d(zeros,zeros,zeros, rotVec_rec[:,0], rotVec_rec[:,1], rotVec_rec[:,2], scalars=scalars)
+    sphere = mlab.quiver3d(zeros,zeros,zeros, rotVec_rec[:,0], rotVec_rec[:,1], rotVec_rec[:,2], scalars=scalars, mode = '2ddash')
     
     # Color by scalar
-    pts.glyph.color_mode = 'color_by_scalar' 
+    sphere.glyph.color_mode = 'color_by_scalar' 
 
     # Set look-up table and redraw
-    pts.module_manager.scalar_lut_manager.lut.table = colors
-    
-
-    # draw one average rotation vector
-    pts = mlab.quiver3d(0,0,0, avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = (1, 0, 0), line_width = 15, scale_factor = 2)
+    sphere.module_manager.scalar_lut_manager.lut.table = colors
     
     
-
+    
+    
+    for idx, avg_rotVec  in enumerate(avg_rotVec_list):
+        
+        sphere = mlab.quiver3d(0,0,0, avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = (1, 0, 0), line_width = 15, mode = '2darrow')
+        
     
     '''
     for idx, (Vec_arr, genoype_value)  in enumerate(zip(rotVec_rec, genotype_sub)):
@@ -224,8 +276,13 @@ def visualization_rotation_vector(rotVec_rec, genotype_sub, avg_rotVec):
         #print("genoype_value = {} Vector_length = {}".format(genoype_value, magnitude))
     '''
         
-
+    #rotVec_obj = (current_path + 'rotation_vector_sphere.obj')
+    
+    #mlab.savefig(rotVec_obj)
+    
     mlab.show()
+    
+    
     
     
     
@@ -283,7 +340,7 @@ if __name__ == '__main__':
         # downsample along coloum direction, every 10th
         #data_v = np.asarray(data_v)[::sample_rate,:]
         
-        data_v = np.asarray(data_v)
+        data_v_arr = np.asarray(data_v)
 
         ################################################################
         #get downsampled quarterunion values
@@ -294,7 +351,7 @@ if __name__ == '__main__':
         #data_q = quarterunionVec[::sample_rate,:]
         #data_q = np.asarray(data_q)[::sample_rate,:]
         
-        data_q = np.asarray(data_q)
+        data_q_arr = np.asarray(data_q)
         
     
         ################################################################
@@ -305,35 +362,11 @@ if __name__ == '__main__':
         #genotype_sub = genotype_v[::sample_rate,:]
         #genotype_sub = np.asarray(genotype_sub)[::sample_rate]
         
-        genotype_sub = np.asarray(genotype_sub)
+        genotype_sub_arr = np.asarray(genotype_sub)
         
 
         
-    #####################################################################
-    #compute one average of quaternion vector of all paths
-    sum_quaternion = data_q
-    
-    # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
-    avg_quaternion = averageQuaternions(sum_quaternion)
 
-    # use components averaging to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
-    #avg_quaternion = ((sum_quaternion.sum(axis=0))/len(vlist_path)).flatten()
-
-    #the signs of the output quaternion can be reversed, since q and -q describe the same orientation
-    avg_quaternion = np.absolute(avg_quaternion)
-
-    avg_quaternion = avg_quaternion.flatten()
-    
-    rot = R.from_quat(avg_quaternion)
-            
-    avg_euler = rot.as_euler('xyz')
-    
-    avg_rotVec = euler_to_rotVec(avg_euler[0], avg_euler[1], avg_euler[2])
-      
-    
-    print(avg_quaternion)
-    print(avg_rotVec)
-    
     ####################################################################
     # filter small vectors 
     '''
@@ -367,8 +400,8 @@ if __name__ == '__main__':
     
     #genotype_label[indices_HighN] == 255
     
-    data_v_sel = data_v
-    genotype_sub_sel = genotype_sub
+    data_v_sel = data_v_arr
+    genotype_sub_sel = genotype_sub_arr
     
     #print(genotype_sub_sel)
     
@@ -377,7 +410,7 @@ if __name__ == '__main__':
     
     if args['visulize'] == 1:
         
-        visualization_rotation_vector(np.asarray(data_v_sel), genotype_sub_sel, avg_rotVec)
+        visualization_rotation_vector(np.asarray(data_v_sel), np.asarray(data_q_arr), genotype_sub_sel)
     
 
     ###########################################################################################3
@@ -385,11 +418,13 @@ if __name__ == '__main__':
     # merge all excel files read all Excel files at once
     df = pd.concat(pd.read_excel(excelFile) for excelFile in ExcelFiles_list)
     
-    #n_colors = len(ExcelFiles_list)
+    n_colors = len(np.unique(genotype_sub))
     
-    n_colors = 2
+    if n_colors < 2:
+        markercolor = px.colors.sample_colorscale("turbo", [n/(n_colors) for n in range(n_colors)])
+    else:
+        markercolor = px.colors.sample_colorscale("turbo", [n/(n_colors -1) for n in range(n_colors)])
     
-    markercolor = px.colors.sample_colorscale("turbo", [n/(n_colors -1) for n in range(n_colors)])
     
     fig = px.scatter_3d(df, x='quaternion_b', y='quaternion_c', z='quaternion_d', color='genotype',   size_max = 20, opacity = 1.0)
 
@@ -425,49 +460,5 @@ if __name__ == '__main__':
 
 
 
-    ####################################################################
-    #Multi-dimension plots in ploty, color represents quaternion_a
-
-    #Set marker properties
-    #markercolor = data1['Ratio of cluster']
-    
-    #markercolor = dict(color = data1['label'])
     
 
-    
-    '''
-    fig = go.Figure()
-    
-    #Make Plotly figure
-    fig = go.Scatter3d(x=data1['quaternion_b'],
-                    y=data1['quaternion_c'],
-                    z=data1['quaternion_d'],
-                    marker=dict(color=data1['label'],
-                                opacity=1,
-                                reversescale=True,
-                                colorscale='Viridis',
-                                colorbar=dict(thickness=10),
-                                size=5),
-                    line=dict (width=0.02),
-                    mode='markers')
-    
-
-    
- 
-    #Make Plot.ly Layout
-    mylayout = go.Layout(scene=dict(xaxis=dict( title="quaternion_b"),
-                                yaxis=dict( title="quaternion_c"),
-                                zaxis=dict(title="quaternion_d")),)
-    
-
-    quaternion_4D = (current_path + 'avg_quaternion_4D.html')
-    
-    #Plot and save html
-    plotly.offline.plot({"data": [fig],
-                     "layout": mylayout},
-                     auto_open=False,
-                     filename=quaternion_4D)
-                     
-    '''
-    #fig = go.Scatter3d(data1, x = data1['quaternion_b'], y = data1['quaternion_c'], z = data1['quaternion_d'], color = data1['file_name'])
-    

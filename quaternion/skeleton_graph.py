@@ -13,7 +13,7 @@ USAGE
 
 #customized parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -th 0.21 -v 1
 
-#customized parameter: python3 skeleton_graph.py -p ~/example/pt_cloud/tiny/ -m1 tiny_skeleton.ply -v 1
+#customized parameter: python3 skeleton_graph.py -p ~/example/quaternion/tiny/ -m1 tiny_skeleton.ply -v 1
 
 
 argument:
@@ -1064,11 +1064,12 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             # get the rotation vector
             #rotVec = euler_to_rotVec(avg_euler[0], avg_euler[1], avg_euler[2])
             
-            
+            '''
             if rotVec[0] > 0:
                 rotVec = np.multiply(rotVec,-1)
                 #avg_quaternion = np.multiply(avg_quaternion,-1)
                 #avg_quaternion[0] = avg_quaternion[0]*(-1)
+            '''
             
             rotVec_rec.append(rotVec)
 

@@ -92,27 +92,28 @@ def skeleton_analysis_pipeline(file_path):
     file_path_full = file_path + '/'
 
     # python3 skeleton_graph.py -p ~/example/pt_cloud/tiny/ -m1 tiny_skeleton.ply
-    skeleton_analysis = "python3 skeleton_graph.py -p " + file_path_full + " -m1 " + model_skeleton_name
+    #skeleton_analysis = "python3 skeleton_graph.py -p " + file_path_full + " -m1 " + model_skeleton_name
     
-    '''
+    #execute_script(skeleton_analysis)
     ####################################################################
 
     filename = folder_name + '_quaternion.xlsx'
-    #filename = folder_name + '_his.png' 
-    #filename = folder_name + '_quaternion_4D.html'
+    batch_cmd = "cp " + file_path_full + filename + " /home/suxing/example/quaternion/B73_result/values/" 
+    execute_script(batch_cmd)
     
+    filename = folder_name + '_his.png' 
+    batch_cmd = "cp " + file_path_full + filename + " /home/suxing/example/quaternion/B73_result/histogram/" 
+    execute_script(batch_cmd)
     
-    #cp ~/example/B73_test/01/01_his.png ~/example/B73_resulls/histogram/  
-    skeleton_analysis = "cp " + file_path_full + filename + " /home/suxing/example/molly_3d_models_skeleton/HighN_result/quaternion_values/" 
-    #skeleton_analysis = "cp " + file_path_full + filename + " /home/suxing/example/molly_3d_models_skeleton/LowN_result/histogram/" 
-    #skeleton_analysis = "cp " + file_path_full + filename + " /home/suxing/example/molly_3d_models_skeleton/LowN_result/scatterplot/" 
+    filename = folder_name + '_quaternion_4D.html'
+    batch_cmd = "cp " + file_path_full + filename + " /home/suxing/example/quaternion/B73_result/scatterplot/" 
+    execute_script(batch_cmd)
     
-    #skeleton_analysis = "rm " + file_path_full + filename 
     ####################################################################
     #print(skeleton_analysis)
-    '''
     
-    execute_script(skeleton_analysis)
+    
+    
 
 
 def fast_scandir(dirname):
