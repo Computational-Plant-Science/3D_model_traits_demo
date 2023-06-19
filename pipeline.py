@@ -41,7 +41,7 @@ def execute_script(cmd_line):
 # execute pipeline scripts in order
 def model_analysis_pipeline(file_path, filename, basename):
 
-    
+    '''
     # step 1  python3 model_alignment.py -p ~/example/ -m test.ply
     print("Transform point cloud model to its rotation center and align its upright orientation with Z direction...\n")
 
@@ -50,7 +50,7 @@ def model_analysis_pipeline(file_path, filename, basename):
     #print(format_convert)
     
     execute_script(format_convert)
-    
+    '''
     
     # step 2 ./AdTree_compiled/Release/bin/AdTree ~/example/pt_cloud/test.xyz ~/example/pt_cloud/ 
     print("Compute structure and skeleton from point cloud model ...\n")

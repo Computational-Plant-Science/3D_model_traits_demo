@@ -85,15 +85,31 @@ def skeleton_analysis_pipeline(file_path):
     
     folder_name = os.path.basename(file_path)
 
-    model_skeleton_name = folder_name + '_skeleton.ply'
+    #model_skeleton_name = folder_name + '_skeleton.ply'
     
-    print("Processing folder '{}'...\n".format(model_skeleton_name))
+    model_skeleton_name = 'trait.xlsx' 
     
-    file_path_full = file_path + '/'
+    file_path_full = file_path + '/' + folder_name + '_trait.xlsx' 
+    
+    print("Processing folder {} in folder {}...\n".format(file_path_full, folder_name))
+    
+    '''
+    file_path_full_rename = file_path + '/' + folder_name + '_trait.xlsx' 
+    
+    batch_cmd = "mv " + file_path_full + ' '+ file_path_full_rename
+    
+    print(batch_cmd)
+    '''
+    
+    batch_cmd = "cp " + file_path_full + " /home/suxing/example/Tara_data/combined/" 
+    
+    execute_script(batch_cmd)
+    
 
     # python3 skeleton_graph.py -p ~/example/pt_cloud/tiny/ -m1 tiny_skeleton.ply
     #skeleton_analysis = "python3 skeleton_graph.py -p " + file_path_full + " -m1 " + model_skeleton_name
     
+    '''
     #execute_script(skeleton_analysis)
     ####################################################################
 
@@ -111,7 +127,7 @@ def skeleton_analysis_pipeline(file_path):
     
     ####################################################################
     #print(skeleton_analysis)
-    
+    '''
     
     
 

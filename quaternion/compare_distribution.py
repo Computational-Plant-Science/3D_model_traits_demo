@@ -17,6 +17,7 @@ Input:
 
 header:
     file_name    Ratio of cluster    quaternion_a    quaternion_b    quaternion_c    quaternion_d    rotVec_rec_0    rotVec_rec_1    rotVec_rec_2    genotype    genotype_label
+    'quaternion_Mahalanobis','quaternion_p','rotVec_Mahalanobis', 'rotVec_p'
 
 
 """
@@ -301,7 +302,8 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-ft", "--filetype", required = False, default = 'xlsx', help = "file type")
-    ap.add_argument("-v", "--visulize", required = False, type= int, default = 0, help = "Visualize rotation vector or not")
+    ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, 0 = average_quaternion, 1 = composition_quaternion")
+    ap.add_argument("-v", "--visualize", required = False, type= int, default = 0, help = "Visualize rotation vector or not")
     args = vars(ap.parse_args())
 
     
@@ -311,7 +313,7 @@ if __name__ == '__main__':
     
     file_path = current_path + '*.' + args['filetype']
     
-    
+    type_quaternion = args["type_quaternion"]
 
     # get the absolute path of all Excel files 
     ExcelFiles_list = glob.glob(file_path)
@@ -353,8 +355,13 @@ if __name__ == '__main__':
         data_v_arr = np.asarray(data_v)
 
         ################################################################
-        #get downsampled quarterunion values
-        cols_q = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d']
+        #get quarterunion values
+        
+        if type_quaternion == 0:
+            cols_q = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d']
+        elif type_quaternion == 1:
+            cols_q = ['composition_quaternion_a','composition_quaternion_b','composition_quaternion_c', 'composition_quaternion_d']
+        
         data_q = df[cols_q].values.tolist()
         
         # downsample along coloum direction, every 10th
@@ -565,7 +572,7 @@ if __name__ == '__main__':
     
 
     
-    '''
+    
     ###########################################################################
     #indices_HighN = np.where(genotype_label == 'HighN')
     
@@ -579,7 +586,7 @@ if __name__ == '__main__':
     #visualize rotation vectors
     #visualization_rotation_vector(np.asarray(normalized_data_v), genotype_label)
     
-    if args['visulize'] == 1:
+    if args['visualize'] == 1:
         
         visualization_rotation_vector(np.asarray(data_v_sel), np.asarray(data_q_arr), genotype_label_sel)
     
@@ -627,7 +634,7 @@ if __name__ == '__main__':
     
     plotly.offline.plot(fig, auto_open=False, filename=quaternion_4D)
     
-    '''
+    
 
 
 

@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 skeleton_loader_vis.py -p ~/example/ -m1 test_skeleton.ply -m2 test.ply
+    python3 skeleton_loader_vis.py -p ~/example/ -m1 test_skeleton.ply -m2 test.ply
 
 
 argument:
@@ -225,7 +225,7 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     mlab.figure("Structure_graph", size = (800, 800), bgcolor = (0, 0, 0))
     mlab.clf()
     
-    pts = mlab.points3d(X_skeleton, Y_skeleton, Z_skeleton, mode = 'point', scale_factor = 0.5)
+    #pts = mlab.points3d(X_skeleton, Y_skeleton, Z_skeleton, mode = 'point', scale_factor = 0.5)
     
     #pts = mlab.points3d(X_skeleton[end_vlist], Y_skeleton[end_vlist], Z_skeleton[end_vlist], color = (1,1,1), mode = 'sphere', scale_factor = 0.03)
     
@@ -266,6 +266,9 @@ def visualize_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     # The index of the current point in the total amount of points
     index = 0
+    
+    
+    N_edges_skeleton = 23698
     
     # Create each line one after the other in a loop
     for i in range(N_edges_skeleton):

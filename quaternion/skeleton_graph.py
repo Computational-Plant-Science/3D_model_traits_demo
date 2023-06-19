@@ -1,7 +1,7 @@
 """
 Version: 1.5
 
-Summary: compute the Quaternions representation of 3d model graph
+Summary: Analyze the 3d model using Graph representation and Quaternions  
 
 Author: suxing liu
 
@@ -85,7 +85,6 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 from matplotlib.ticker import PercentFormatter
 
-
 from pyquaternion import Quaternion
 
 #validation for average_quaternions
@@ -96,6 +95,10 @@ from sksurgerycore.algorithms.averagequaternions import average_quaternions
 from warnings import simplefilter
 # ignore all future warnings
 simplefilter(action='ignore', category=FutureWarning)
+
+
+
+
 
 
 # generate foloder to store the output results
@@ -621,7 +624,226 @@ def cluster_list(list_array, n_clusters):
 
 
 
+# get consecutive elements pairing in list:
+def pairwise(q_list):
+ 
+    # use itertools.tee to create two iterators from the list
+    a, b = itertools.tee(q_list)
+     
+    # advance the iterator by one element
+    next(b, None)
+     
+    # use zip to pair the elements from the two iterators
+    res = list(zip(a, b))  
+    
+    return res
+    
 
+
+# compute the distance between two quaternions accounting for the sign ambiguity.
+def quaternion_list_distance(q_list):
+
+    # get the pair of the elements from the list
+    res = pairwise(q_list)
+    
+    # Create a 4 element array containing the final quaternion mutltipy results
+    q_distance = []
+    
+    # make the column of the same length for easy operate
+    q_distance.append([0,0,0])
+     
+    #compute mutltipy of adjacent pair of quaternions and then loop all elements 
+    for idx, q_pair_value in enumerate(res):
+        
+        #Quaternion(numpy.array([a, b, c, d]))
+        
+        Q_Current = Quaternion(np.array(q_pair_value[0]))
+        Q_Next = Quaternion(np.array(q_pair_value[1]))
+        
+        #This function does not measure the distance on the hypersphere, 
+        #but it takes into account the fact that q and -q encode the same rotation. 
+        #It is thus a good indicator for rotation similarities.
+        # Quaternion absolute distance.
+        Q_D_absolute = Quaternion.absolute_distance(Q_Current, Q_Next)
+        
+        # Quaternion intrinsic distance.
+        #Although q0^(-1)*q1 != q1^(-1)*q0, the length of the path joining them is given by the logarithm of those product quaternions, the norm of which is the same.
+        Q_D_intrinsic = Quaternion.distance(Q_Current, Q_Next)
+        
+        # Quaternion symmetrized distance.
+        #Find the intrinsic symmetrized geodesic distance between q0 and q1.
+        Q_D_symmetrized = Quaternion.sym_distance(Q_Current, Q_Next)
+        
+        q_distance.append([Q_D_absolute, Q_D_intrinsic, Q_D_symmetrized])
+
+
+    #print(q_distance)
+    
+    return q_distance
+
+
+
+# compute mutltipy two quaternions in a pair:
+def quaternion_multiply(Q0, Q1):
+    """
+    Multiplies two quaternions.
+ 
+    Input
+    :param Q0: A 4 element array containing the first quaternion (q01,q11,q21,q31) 
+    :param Q1: A 4 element array containing the second quaternion (q02,q12,q22,q32) 
+ 
+    Output
+    :return: A 4 element array containing the final quaternion (q03,q13,q23,q33) 
+ 
+    """
+    
+    
+    # Extract the values from Q0
+    w0 = Q0[0]
+    x0 = Q0[1]
+    y0 = Q0[2]
+    z0 = Q0[3]
+     
+    # Extract the values from Q1
+    w1 = Q1[0]
+    x1 = Q1[1]
+    y1 = Q1[2]
+    z1 = Q1[3]
+     
+    # Computer the product of the two quaternions, term by term
+    Q0Q1_w = w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1
+    Q0Q1_x = w0 * x1 + x0 * w1 + y0 * z1 - z0 * y1
+    Q0Q1_y = w0 * y1 - x0 * z1 + y0 * w1 + z0 * x1
+    Q0Q1_z = w0 * z1 + x0 * y1 - y0 * x1 + z0 * w1
+     
+    # Create a 4 element array containing the final quaternion
+    final_quaternion = np.array([Q0Q1_w, Q0Q1_x, Q0Q1_y, Q0Q1_z])
+     
+    # Return a 4 element array containing the final quaternion (q02,q12,q22,q32) 
+    return final_quaternion
+
+
+
+# compute mutltipy of a list of quaternions:
+def quaternion_list_multiply(q_list):
+
+    # get the pair of the elements from the list
+    res = pairwise(q_list)
+    
+    # Create a 4 element array containing the final quaternion mutltipy results
+    q_mutiply = np.array([0, 0, 0, 0])
+     
+    #compute mutltipy of adjacent pair of quaternions and then loop all elements 
+    for idx, q_pair_value in enumerate(res):
+        
+        if idx < 1: 
+            q_mutiply = quaternion_multiply(res[0][0], res[0][1])
+        else:
+            q_mutiply = quaternion_multiply(q_mutiply, res[idx][1])
+
+    
+    return q_mutiply
+
+
+'''
+# Get the instantaneous quaternion derivative representing a quaternion rotating at a 3D rate vector
+def quaternion_list_differentiation(q_list):
+
+    # get the pair of the elements from the list
+    res = pairwise(q_list)
+    
+    # Create a 4 element array containing the final quaternion mutltipy results
+    q_distance = []
+    
+    # make the column of the same length for easy operate
+    q_distance.append([0,0,0])
+     
+    #compute mutltipy of adjacent pair of quaternions and then loop all elements 
+    for idx, q_pair_value in enumerate(res):
+        
+        #Quaternion(numpy.array([a, b, c, d]))
+        
+        Q_Current = Quaternion(np.array(q_pair_value[0]))
+        Q_Next = Quaternion(np.array(q_pair_value[1]))
+        
+        #This function does not measure the distance on the hypersphere, 
+        #but it takes into account the fact that q and -q encode the same rotation. 
+        #It is thus a good indicator for rotation similarities.
+        # Quaternion absolute distance.
+        Q_D_absolute = Quaternion.absolute_distance(Q_Current, Q_Next)
+        
+        # Quaternion intrinsic distance.
+        #Although q0^(-1)*q1 != q1^(-1)*q0, the length of the path joining them is given by the logarithm of those product quaternions, the norm of which is the same.
+        Q_D_intrinsic = Quaternion.distance(Q_Current, Q_Next)
+        
+        # Quaternion symmetrized distance.
+        #Find the intrinsic symmetrized geodesic distance between q0 and q1.
+        Q_D_symmetrized = Quaternion.sym_distance(Q_Current, Q_Next)
+        
+        q_distance.append([Q_D_absolute, Q_D_intrinsic, Q_D_symmetrized])
+
+
+    #print(q_distance)
+    
+    return q_distance
+'''
+
+
+# compute the distance between quaternions 
+def quaternion_list_distance(q_list):
+
+    # get the pair of the elements from the list
+    res = pairwise(q_list)
+    
+    # Create a 4 element array containing the final quaternion  results
+    q_distance = []
+    
+    # make the column of the same length for easy operate
+    q_distance.append([0,0,0])
+    
+    
+    #compute mutltipy of adjacent pair of quaternions and then loop all elements 
+    for idx, q_pair_value in enumerate(res):
+        
+        #Quaternion(numpy.array([a, b, c, d]))
+        
+        Q_Current = Quaternion(np.array(q_pair_value[0]))
+        Q_Next = Quaternion(np.array(q_pair_value[1]))
+        
+        #This function does not measure the distance on the hypersphere, 
+        #but it takes into account the fact that q and -q encode the same rotation. 
+        #It is thus a good indicator for rotation similarities.
+        # Quaternion absolute distance.
+        Q_D_absolute = Quaternion.absolute_distance(Q_Current, Q_Next)
+        
+        # Quaternion intrinsic distance.
+        #Although q0^(-1)*q1 != q1^(-1)*q0, the length of the path joining them is given by the logarithm of those product quaternions, the norm of which is the same.
+        Q_D_intrinsic = Quaternion.distance(Q_Current, Q_Next)
+        
+        # Quaternion symmetrized distance.
+        #Find the intrinsic symmetrized geodesic distance between q0 and q1.
+        Q_D_symmetrized = Quaternion.sym_distance(Q_Current, Q_Next)
+        
+        q_distance.append([Q_D_absolute, Q_D_intrinsic, Q_D_symmetrized])
+
+    
+    q_distance = np.array(q_distance)
+    
+    print(q_distance.shape)
+    
+    (sum_Q_D_absolute, sum_Q_D_intrinsic, sum_Q_D_symmetrized)  = q_distance.sum(axis = 0)
+    
+    
+    return sum_Q_D_absolute, sum_Q_D_intrinsic, sum_Q_D_symmetrized
+
+
+
+
+
+
+
+#######################################################################################################
+########################################################################################################
 # Skeleton analysis
 def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
@@ -928,6 +1150,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     vlist_path_rec = []
     
     quaternion_path_rec = []
+    composition_path_rec = []
+    distance_path_rec = []
+    
+    
     
     rotVec_rec = []
     
@@ -935,15 +1161,13 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     index_inv = []
     
-    
 
-    
 
     # loop over all paths and compute quaternions values
     for idx, end_v in enumerate(sub_branch_end_rec):
         
        
-        # Return the number of shortest paths from source to target.
+        # Count the number of shortest paths from source to target.
         n_paths = gt.count_shortest_paths(G_unordered, start_v, end_v)
         
         print("start_v = {} end_v = {} n_paths = {}\n".format(start_v, end_v, n_paths))
@@ -961,17 +1185,24 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                 
                 vlist_path_rec.append(vlist_path)
                 
-                # record current path length
+                # Compute current path length between nodes
                 path_length_N2N = path_length(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path])
                 
+                # record current path length
                 path_length_rec.append(path_length_N2N)
                 
+                ################################################################################
                 # Q is a Nx4 numpy matrix and contains the quaternions to average in the rows.
                 # The quaternions are arranged as (w,x,y,z), with w being the scalar
                 sum_quaternion = np.zeros([len(vlist_path), 4])
                 
                 #sum_euler = np.zeros([len(vlist_path), 3])
                 
+                list_quaternion = []
+                
+                
+                # Analyze each shortest path 
+                ####################################################################################
                 for i, v_path in enumerate(vlist_path):
                     
                     #print("closest_pts = {}\n".format(vlist_path[i]))
@@ -1006,6 +1237,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                                            
                         sum_quaternion[i,:] = quaternion_r_rearanged
                         
+                        list_quaternion.append(list(quaternion_r_rearanged))
+                        
                         #sum_euler[i,:] = euler_r
                         
                         #print("vlist_path = {} quaternion_r = {}".format(idx, quaternion_r))
@@ -1016,14 +1249,35 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z) with w being the scalar
             #avg_quaternion = averageQuaternions(sum_quaternion)
 
-            ###############################################################
 
+            # Average of quaternions
+            ###############################################################
             # compute average of quaternions from Quaternion averaging functions from scikit-surgerycore, The quaternions input are arranged as (w,x,y,z),
             avg_quaternion = average_quaternions(sum_quaternion)
             
             #avg_quaternion = np.absolute(avg_quaternion)
             
             #the signs of the output quaternion can be reversed, since q and -q describe the same orientation
+            
+            # compute average quaternion values from a list of quarternion along the path
+            avg_quaternion = avg_quaternion.flatten()
+            
+            # get Rotation matrix from quaternion
+            rot = R.from_quat(avg_quaternion)
+            
+            # get the rotation vector
+            rotVec = rot.as_rotvec()
+            
+            #avg_euler = rot.as_euler('xyz')
+            
+            # get the rotation vector
+            #rotVec = euler_to_rotVec(avg_euler[0], avg_euler[1], avg_euler[2])
+            
+            
+            rotVec_rec.append(rotVec)
+
+            quaternion_path_rec.append(avg_quaternion)
+            
             '''
             if avg_quaternion[0] < 0:
                 
@@ -1050,32 +1304,28 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                 avg_euler = rot.as_euler('xyz')
             '''
             
-            # compute average quaternion values from a list of quarternion along the path
-            avg_quaternion = avg_quaternion.flatten()
+            # Composition of quaternions
+            #################################################################
+            q_composition = quaternion_list_multiply(list_quaternion)
             
-            # get Rotation matrix from quaternion
-            rot = R.from_quat(avg_quaternion)
+            q_composition = q_composition.flatten()
             
-            # get the rotation vector
-            rotVec = rot.as_rotvec()
+            composition_path_rec.append(q_composition)
             
-            #avg_euler = rot.as_euler('xyz')
             
-            # get the rotation vector
-            #rotVec = euler_to_rotVec(avg_euler[0], avg_euler[1], avg_euler[2])
-            
-            '''
-            if rotVec[0] > 0:
-                rotVec = np.multiply(rotVec,-1)
-                #avg_quaternion = np.multiply(avg_quaternion,-1)
-                #avg_quaternion[0] = avg_quaternion[0]*(-1)
-            '''
-            
-            rotVec_rec.append(rotVec)
 
-            quaternion_path_rec.append(avg_quaternion)
+            # Distance of quaternions
+            #################################################################
+ 
+            (cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized) = quaternion_list_distance(list_quaternion)
             
-            print("vlist_path = {} avg_quaternion = {} rotVec = {}\n".format(idx, avg_quaternion, rotVec))
+            #distance_absolute_path_rec.append(cumulative_Q_D_absolute)
+            #distance_intrinsic_path_rec.append(cumulative_Q_D_intrinsic)
+            #distance_symmetrized_path_rec.append(cumulative_Q_D_symmetrized)
+            
+            distance_path_rec.append([cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized])
+
+            print("vlist_path = {} avg_quaternion = {} rotVec = {} q_composition = {}\n".format(idx, avg_quaternion, rotVec, q_composition))
                 
 
 
@@ -1088,17 +1338,34 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     ####################################################################
     #find the dominant cluster of the average quaternion as 4 dimensional vectors 
-    
     quaternion_path_rec_list = []
     
     for vector in quaternion_path_rec:
-        
         quaternion_path_rec_list.append(vector.reshape(4,1))
 
-
     quaternion_path_rec_list_reshape = np.asarray(quaternion_path_rec).reshape((len(vlist_path_rec),4))
-    
     print("quaternion_path_rec: {}\n".format((quaternion_path_rec_list_reshape.shape)))
+    
+    ####################################################################
+    #find the dominant cluster of the composition quaternion as 4 dimensional vectors 
+    composition_path_rec_list = []
+    
+    for vector in composition_path_rec:
+        composition_path_rec_list.append(vector.reshape(4,1))
+
+    composition_path_rec_list_reshape = np.asarray(composition_path_rec).reshape((len(vlist_path_rec),4))
+    print("composition_path_rec: {}\n".format((composition_path_rec_list_reshape.shape)))
+    
+    ####################################################################
+    #find the dominant cluster of the absolute distance quaternion as 4 dimensional vectors 
+    distance_path_rec_list = []
+    
+    for vector in distance_path_rec_list:
+        distance_path_rec_list.append(vector.reshape(3,1))
+
+    distance_path_rec_list_reshape = np.asarray(distance_path_rec).reshape((len(vlist_path_rec),3))
+    print("distance_path_rec: {}\n".format((distance_path_rec_list_reshape.shape)))
+    
     
     
     ###############################################################################
@@ -1135,8 +1402,15 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     kmeans = KMeans(n_clusters = number_cluster)
     
-    s = kmeans.fit(quaternion_path_rec_list_reshape)
-    
+    if type_quaternion == 0:
+        s = kmeans.fit(quaternion_path_rec_list_reshape)
+    elif type_quaternion == 1:
+        s = kmeans.fit(composition_path_rec_list_reshape)
+    elif type_quaternion == 2:
+        s = kmeans.fit(distance_path_rec_list_reshape)
+
+        
+        
     labels = kmeans.labels_
     
     labels = list(labels)
@@ -1173,6 +1447,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     quaternion_path_rec_dominant = [quaternion_path_rec[i] for i in index_dominant]
     
+    composition_path_rec_dominant = [composition_path_rec[i] for i in index_dominant]
+    
+    distance_path_rec_dominant = [distance_path_rec[i] for i in index_dominant]
+    
     rotVec_rec_dominant = [rotVec_rec[i] for i in index_dominant]
     
     path_length_rec_dominant = [path_length_rec[i] for i in index_dominant]
@@ -1185,6 +1463,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     quaternion_path_rec_dominant_2nd = [quaternion_path_rec[i] for i in index_dominant_2nd]
     
+    composition_path_rec_dominant_2nd = [composition_path_rec[i] for i in index_dominant_2nd]
+    
+    distance_path_rec_dominant_2nd = [distance_path_rec[i] for i in index_dominant_2nd]
+
     rotVec_rec_dominant_2nd = [rotVec_rec[i] for i in index_dominant_2nd]
     
     path_length_rec_2nd = [path_length_rec[i] for i in index_dominant_2nd]
@@ -1195,6 +1477,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     quaternion_path_rec_dominant_3rd = [quaternion_path_rec[i] for i in index_dominant_3rd]
     
+    composition_path_rec_dominant_3rd = [composition_path_rec[i] for i in index_dominant_3rd]
+    
+    distance_path_rec_dominant_3rd  = [distance_path_rec[i] for i in index_dominant_3rd]
+
+    
     rotVec_rec_dominant_3rd = [rotVec_rec[i] for i in index_dominant_3rd]
     
     path_length_rec_3rd = [path_length_rec[i] for i in index_dominant_3rd]
@@ -1202,11 +1489,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     print("sorted_idx_percent = {} percent = {}".format(sorted_idx_percent, percent))
     print("dominant path number = {}, 2nd dominant path number = {}, 3rd dominant path number = {}\n".format(len(path_length_rec_dominant),len(path_length_rec_2nd),len(path_length_rec_3rd)))
-    
-    
-    
-    
-    
     
 
     ############################################################################################
@@ -1501,11 +1783,56 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #return path_index, quaternion_path_rec, rotVec_rec, quaternion_path_rec_dominant, rotVec_rec_dominant, rotVec_rec_dominant_2nd, rotVec_rec_dominant
     
-    return    percent[sorted_idx_percent[0]], quaternion_path_rec_dominant, rotVec_rec_dominant,\
-      percent[sorted_idx_percent[1]], quaternion_path_rec_dominant_2nd, rotVec_rec_dominant_2nd,\
-      percent[sorted_idx_percent[2]], quaternion_path_rec_dominant_3rd,  rotVec_rec_dominant_3rd
+    return    percent[sorted_idx_percent[0]], quaternion_path_rec_dominant, composition_path_rec_dominant, distance_path_rec_dominant, rotVec_rec_dominant,\
+      percent[sorted_idx_percent[1]], quaternion_path_rec_dominant_2nd, composition_path_rec_dominant_2nd, distance_path_rec_dominant_2nd, rotVec_rec_dominant_2nd,\
+      percent[sorted_idx_percent[2]], quaternion_path_rec_dominant_3rd,  composition_path_rec_dominant_3rd, distance_path_rec_dominant_3rd, rotVec_rec_dominant_3rd
     
     
+
+
+
+
+def plot_quaternion_result(quaternion_path_all, percent_all, file_output):
+    
+    #print((quaternion_path_all.shape))
+
+    #data = pd.DataFrame(quaternion_path_all, columns = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d'])
+    
+    data = pd.DataFrame(quaternion_path_all, columns = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d'])
+
+    #Set marker properties
+    #markercolor = data['quaternion_a']
+    
+    markercolor = percent_all
+    
+    #Make Plotly figure
+    fig1 = go.Scatter3d(x=data['quaternion_b'],
+                    y=data['quaternion_c'],
+                    z=data['quaternion_d'],
+                    marker=dict(color=markercolor,
+                                opacity=1,
+                                reversescale=True,
+                                colorscale='Viridis',
+                                colorbar=dict(thickness=10),
+                                size=5),
+                    line=dict (width=0.02),
+                    mode='markers')
+    
+                 
+    #Make Plot.ly Layout
+    mylayout = go.Layout(scene=dict(xaxis=dict( title="quaternion_b"),
+                                yaxis=dict( title="quaternion_c"),
+                                zaxis=dict(title="quaternion_d")),)
+    
+    #Plot and save html
+    plotly.offline.plot({"data": [fig1],
+                     "layout": mylayout},
+                     auto_open=False,
+                     filename=file_output)
+
+
+
+
 
 
 if __name__ == '__main__':
@@ -1519,6 +1846,7 @@ if __name__ == '__main__':
     ap.add_argument("-n", "--n_cluster", required = False, type = int, default = 3, help = "Number of clusters to filter the small length paths")
     ap.add_argument("-th", "--thresh_join", required = False, type = float, default = 3.2, help = "threshhold value to join all disconnected graph nodes")
     ap.add_argument("-th_l", "--thresh_length", required = False, type = float, default = 0.05, help = "threshhold value to cluster path length")
+    ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, 0 = average_quaternion, 1 = composition_quaternion")
     ap.add_argument("-v", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult not display")
     args = vars(ap.parse_args())
 
@@ -1533,6 +1861,8 @@ if __name__ == '__main__':
     thresh_length = args["thresh_length"]
     number_cluster = args["n_cluster"]
     
+    type_quaternion = args["type_quaternion"]
+    
     if args["model_pcloud"] is None:
         filename_pcloud = None
     else:
@@ -1541,22 +1871,28 @@ if __name__ == '__main__':
     # analysis result path
     print ("results_folder: " + current_path + "\n")
     
-    
+
     
     result_list = []
     
-    (percent_dominant, quaternion_path_rec_dominant, rotVec_rec_dominant,\
-      percent_dominant_2nd, quaternion_path_rec_dominant_2nd, rotVec_rec_dominant_2nd,\
-      percent_dominant_3rd, quaternion_path_rec_dominant_3rd,  rotVec_rec_dominant_3rd) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+    (percent_dominant, quaternion_path_rec_dominant, composition_path_rec_dominant, distance_path_rec_dominant, rotVec_rec_dominant,\
+      percent_dominant_2nd, quaternion_path_rec_dominant_2nd, composition_path_rec_dominant_2nd, distance_path_rec_dominant_2nd, rotVec_rec_dominant_2nd,\
+      percent_dominant_3rd, quaternion_path_rec_dominant_3rd,  composition_path_rec_dominant_3rd, distance_path_rec_dominant_3rd, rotVec_rec_dominant_3rd) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
     
     
     quaternion_path_rec_dominant_arr = np.vstack(quaternion_path_rec_dominant)
+    composition_path_rec_dominant_arr = np.vstack(composition_path_rec_dominant)
+    distance_path_rec_dominant_arr = np.vstack(distance_path_rec_dominant)
     rotVec_rec_dominant_arr = np.vstack(rotVec_rec_dominant)
     
     quaternion_path_rec_dominant_2nd_arr = np.vstack(quaternion_path_rec_dominant_2nd)
+    composition_path_rec_dominant_2nd_arr = np.vstack(composition_path_rec_dominant_2nd)
+    distance_path_rec_dominant_2nd_arr = np.vstack(distance_path_rec_dominant_2nd)
     rotVec_rec_dominant_2nd_arr = np.vstack(rotVec_rec_dominant_2nd)
     
     quaternion_path_rec_dominant_3rd_arr = np.vstack(quaternion_path_rec_dominant_3rd)
+    composition_path_rec_dominant_3rd_arr = np.vstack(composition_path_rec_dominant_3rd)
+    distance_path_rec_dominant_3rd_arr = np.vstack(distance_path_rec_dominant_3rd)
     rotVec_rec_dominant_3rd_arr = np.vstack(rotVec_rec_dominant_3rd)
     
     percent_dominant_arr = np.repeat(percent_dominant, repeats = len(quaternion_path_rec_dominant_arr), axis = 0)
@@ -1568,20 +1904,26 @@ if __name__ == '__main__':
     result_dominant_2nd = []
     result_dominant_3rd = []
 
-    for i, (v0,v1,v2,v3,v4,v5,v6,v7) in enumerate(zip(percent_dominant_arr, quaternion_path_rec_dominant_arr[:,0], quaternion_path_rec_dominant_arr[:,1], quaternion_path_rec_dominant_arr[:,2], quaternion_path_rec_dominant_arr[:,3],\
+    for i, (v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11, v12,v13,v14) in enumerate(zip(percent_dominant_arr, quaternion_path_rec_dominant_arr[:,0], quaternion_path_rec_dominant_arr[:,1], quaternion_path_rec_dominant_arr[:,2], quaternion_path_rec_dominant_arr[:,3],\
+                                                        composition_path_rec_dominant_arr[:,0], composition_path_rec_dominant_arr[:,1], composition_path_rec_dominant_arr[:,2], composition_path_rec_dominant_arr[:,3],\
+                                                        distance_path_rec_dominant_arr[:,0], distance_path_rec_dominant_arr[:,1], distance_path_rec_dominant_arr[:,2],\
                                                         rotVec_rec_dominant_arr[:,0], rotVec_rec_dominant_arr[:,1], rotVec_rec_dominant_arr[:,2])):
     
-        result_dominant.append([v0,v1,v2,v3,v4,v5,v6,v7])
+        result_dominant.append([v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11, v12,v13,v14])
     
-    for i, (v0,v1,v2,v3,v4,v5,v6,v7) in enumerate(zip(percent_dominant_2nd_arr, quaternion_path_rec_dominant_2nd_arr[:,0], quaternion_path_rec_dominant_2nd_arr[:,1], quaternion_path_rec_dominant_2nd_arr[:,2], quaternion_path_rec_dominant_2nd_arr[:,3],\
+    for i, (v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11, v12,v13,v14) in enumerate(zip(percent_dominant_2nd_arr, quaternion_path_rec_dominant_2nd_arr[:,0], quaternion_path_rec_dominant_2nd_arr[:,1], quaternion_path_rec_dominant_2nd_arr[:,2], quaternion_path_rec_dominant_2nd_arr[:,3],\
+                                                        composition_path_rec_dominant_2nd_arr[:,0], composition_path_rec_dominant_2nd_arr[:,1], composition_path_rec_dominant_2nd_arr[:,2], composition_path_rec_dominant_2nd_arr[:,3],\
+                                                        distance_path_rec_dominant_2nd_arr[:,0], distance_path_rec_dominant_2nd_arr[:,1], distance_path_rec_dominant_2nd_arr[:,2],\
                                                         rotVec_rec_dominant_2nd_arr[:,0], rotVec_rec_dominant_2nd_arr[:,1], rotVec_rec_dominant_2nd_arr[:,2])):
     
-        result_dominant_2nd.append([v0,v1,v2,v3,v4,v5,v6,v7])
+        result_dominant_2nd.append([v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11, v12,v13,v14])
     
-    for i, (v0,v1,v2,v3,v4,v5,v6,v7) in enumerate(zip(percent_dominant_3rd_arr, quaternion_path_rec_dominant_3rd_arr[:,0], quaternion_path_rec_dominant_3rd_arr[:,1], quaternion_path_rec_dominant_3rd_arr[:,2], quaternion_path_rec_dominant_3rd_arr[:,3],\
+    for i, (v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11, v12,v13,v14) in enumerate(zip(percent_dominant_3rd_arr, quaternion_path_rec_dominant_3rd_arr[:,0], quaternion_path_rec_dominant_3rd_arr[:,1], quaternion_path_rec_dominant_3rd_arr[:,2], quaternion_path_rec_dominant_3rd_arr[:,3],\
+                                                        composition_path_rec_dominant_3rd_arr[:,0], composition_path_rec_dominant_3rd_arr[:,1], composition_path_rec_dominant_3rd_arr[:,2], composition_path_rec_dominant_3rd_arr[:,3],\
+                                                        distance_path_rec_dominant_3rd_arr[:,0], distance_path_rec_dominant_3rd_arr[:,1], distance_path_rec_dominant_3rd_arr[:,2],\
                                                         rotVec_rec_dominant_3rd_arr[:,0], rotVec_rec_dominant_3rd_arr[:,1], rotVec_rec_dominant_3rd_arr[:,2])):
     
-        result_dominant_3rd.append([v0,v1,v2,v3,v4,v5,v6,v7])
+        result_dominant_3rd.append([v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11, v12,v13,v14])
         
         
     
@@ -1628,41 +1970,76 @@ if __name__ == '__main__':
         sheet_quaternion_1.title = "sheet_quaternion_1"
 
         sheet_quaternion_1.cell(row = 1, column = 1).value = 'Ratio of cluster'
+        
         sheet_quaternion_1.cell(row = 1, column = 2).value = 'quaternion_a'
         sheet_quaternion_1.cell(row = 1, column = 3).value = 'quaternion_b'
         sheet_quaternion_1.cell(row = 1, column = 4).value = 'quaternion_c'
         sheet_quaternion_1.cell(row = 1, column = 5).value = 'quaternion_d'
-        sheet_quaternion_1.cell(row = 1, column = 6).value = 'rotVec_rec_0'
-        sheet_quaternion_1.cell(row = 1, column = 7).value = 'rotVec_rec_1'
-        sheet_quaternion_1.cell(row = 1, column = 8).value = 'rotVec_rec_2'
-              
         
+        sheet_quaternion_1.cell(row = 1, column = 6).value = 'composition_quaternion_a'
+        sheet_quaternion_1.cell(row = 1, column = 7).value = 'composition_quaternion_b'
+        sheet_quaternion_1.cell(row = 1, column = 8).value = 'composition_quaternion_c'
+        sheet_quaternion_1.cell(row = 1, column = 9).value = 'composition_quaternion_d'
+        
+        sheet_quaternion_1.cell(row = 1, column = 10).value = 'distance_absolute'
+        sheet_quaternion_1.cell(row = 1, column = 11).value = 'distance_intrinsic'
+        sheet_quaternion_1.cell(row = 1, column = 12).value = 'distance_symmetrized'
+        
+        sheet_quaternion_1.cell(row = 1, column = 13).value = 'rotVec_rec_0'
+        sheet_quaternion_1.cell(row = 1, column = 14).value = 'rotVec_rec_1'
+        sheet_quaternion_1.cell(row = 1, column = 15).value = 'rotVec_rec_2'
+
+
+
         sheet_quaternion_2 = wb.create_sheet()
         sheet_quaternion_2.title = "sheet_quaternion_2"
 
         sheet_quaternion_2.cell(row = 1, column = 1).value = 'Ratio of cluster'
+        
         sheet_quaternion_2.cell(row = 1, column = 2).value = 'quaternion_a'
         sheet_quaternion_2.cell(row = 1, column = 3).value = 'quaternion_b'
         sheet_quaternion_2.cell(row = 1, column = 4).value = 'quaternion_c'
         sheet_quaternion_2.cell(row = 1, column = 5).value = 'quaternion_d'
-        sheet_quaternion_2.cell(row = 1, column = 6).value = 'rotVec_rec_0'
-        sheet_quaternion_2.cell(row = 1, column = 7).value = 'rotVec_rec_1'
-        sheet_quaternion_2.cell(row = 1, column = 8).value = 'rotVec_rec_2'
+        
+        sheet_quaternion_2.cell(row = 1, column = 6).value = 'composition_quaternion_a'
+        sheet_quaternion_2.cell(row = 1, column = 7).value = 'composition_quaternion_b'
+        sheet_quaternion_2.cell(row = 1, column = 8).value = 'composition_quaternion_c'
+        sheet_quaternion_2.cell(row = 1, column = 9).value = 'composition_quaternion_d'
+
+        sheet_quaternion_2.cell(row = 1, column = 10).value = 'distance_absolute'
+        sheet_quaternion_2.cell(row = 1, column = 11).value = 'distance_intrinsic'
+        sheet_quaternion_2.cell(row = 1, column = 12).value = 'distance_symmetrized'
+        
+        sheet_quaternion_2.cell(row = 1, column = 13).value = 'rotVec_rec_0'
+        sheet_quaternion_2.cell(row = 1, column = 14).value = 'rotVec_rec_1'
+        sheet_quaternion_2.cell(row = 1, column = 15).value = 'rotVec_rec_2'
         
         
         sheet_quaternion_3 = wb.create_sheet()
         sheet_quaternion_3.title = "sheet_quaternion_3"
 
         sheet_quaternion_3.cell(row = 1, column = 1).value = 'Ratio of cluster'
+        
         sheet_quaternion_3.cell(row = 1, column = 2).value = 'quaternion_a'
         sheet_quaternion_3.cell(row = 1, column = 3).value = 'quaternion_b'
         sheet_quaternion_3.cell(row = 1, column = 4).value = 'quaternion_c'
         sheet_quaternion_3.cell(row = 1, column = 5).value = 'quaternion_d'
-        sheet_quaternion_3.cell(row = 1, column = 6).value = 'rotVec_rec_0'
-        sheet_quaternion_3.cell(row = 1, column = 7).value = 'rotVec_rec_1'
-        sheet_quaternion_3.cell(row = 1, column = 8).value = 'rotVec_rec_2'
         
+        sheet_quaternion_3.cell(row = 1, column = 6).value = 'composition_quaternion_a'
+        sheet_quaternion_3.cell(row = 1, column = 7).value = 'composition_quaternion_b'
+        sheet_quaternion_3.cell(row = 1, column = 8).value = 'composition_quaternion_c'
+        sheet_quaternion_3.cell(row = 1, column = 9).value = 'composition_quaternion_d'
         
+        sheet_quaternion_3.cell(row = 1, column = 10).value = 'distance_absolute'
+        sheet_quaternion_3.cell(row = 1, column = 11).value = 'distance_intrinsic'
+        sheet_quaternion_3.cell(row = 1, column = 12).value = 'distance_symmetrized'
+        
+        sheet_quaternion_3.cell(row = 1, column = 13).value = 'rotVec_rec_0'
+        sheet_quaternion_3.cell(row = 1, column = 14).value = 'rotVec_rec_1'
+        sheet_quaternion_3.cell(row = 1, column = 15).value = 'rotVec_rec_2'
+
+
+
     for row in result_dominant:
         sheet_quaternion_1.append(row)
         
@@ -1719,50 +2096,26 @@ if __name__ == '__main__':
     
     
     ####################################################################
-    #Multi-dimension plots in ploty, color represents quaternion_a
+    #Multi-dimension plots in ploty
 
-    
-    
-    quaternion_path_all = np.concatenate((quaternion_path_rec_dominant_arr, quaternion_path_rec_dominant_2nd_arr, quaternion_path_rec_dominant_3rd_arr), axis = 0)
-    
     percent_all = np.concatenate((percent_dominant_arr, percent_dominant_2nd_arr, percent_dominant_3rd_arr), axis = 0) 
     
     
-    #print((quaternion_path_all.shape))
-
-    data = pd.DataFrame(quaternion_path_all, columns = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d'])
-
-    #Set marker properties
-    #markercolor = data['quaternion_a']
+    #Quaternion representation of all paths in 3 clusters. Each path was computed as average of quaternion values 
+    quaternion_path_all = np.concatenate((quaternion_path_rec_dominant_arr, quaternion_path_rec_dominant_2nd_arr, quaternion_path_rec_dominant_3rd_arr), axis = 0)
     
-    markercolor = percent_all
+    plot_file = (current_path + folder_name + '_avg_quaternion.html')
+    plot_quaternion_result(quaternion_path_all, percent_all, plot_file)
     
-    #Make Plotly figure
-    fig1 = go.Scatter3d(x=data['quaternion_b'],
-                    y=data['quaternion_c'],
-                    z=data['quaternion_d'],
-                    marker=dict(color=markercolor,
-                                opacity=1,
-                                reversescale=True,
-                                colorscale='Viridis',
-                                colorbar=dict(thickness=10),
-                                size=5),
-                    line=dict (width=0.02),
-                    mode='markers')
     
-                 
-    #Make Plot.ly Layout
-    mylayout = go.Layout(scene=dict(xaxis=dict( title="quaternion_b"),
-                                yaxis=dict( title="quaternion_c"),
-                                zaxis=dict(title="quaternion_d")),)
+    #Composition of Quaternion representation of all paths in 3 clusters. Each path was computed as Composition of quaternion values 
+    composition_path_all = np.concatenate((composition_path_rec_dominant_arr, composition_path_rec_dominant_2nd_arr, composition_path_rec_dominant_3rd_arr), axis = 0)
+    
+    plot_file = (current_path + folder_name + '_composition_quaternion.html')
+    plot_quaternion_result(composition_path_all, percent_all, plot_file)
+    
     
 
-    quaternion_4D = (current_path + folder_name + '_quaternion_4D.html')
     
-    #Plot and save html
-    plotly.offline.plot({"data": [fig1],
-                     "layout": mylayout},
-                     auto_open=False,
-                     filename=quaternion_4D)
-    
+
     

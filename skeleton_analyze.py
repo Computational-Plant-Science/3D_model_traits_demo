@@ -9,9 +9,9 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-	python3 skeleton_analyze.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/slices/ -v 0
-	
-	python3 skeleton_analyze.py -p /srv/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 /srv/test/slices/ -v 0
+    python3 skeleton_analyze.py -p ~/example/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/slices/ -v 0
+    
+    python3 skeleton_analyze.py -p /srv/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 /srv/test/slices/ -v 0
 
 
 argument:
@@ -2101,7 +2101,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         N_sublist = len(sub_branch_list)
 
-        cmap = get_cmap(500)
+        cmap = get_cmap(100)
 
         #cmap = get_cmap(len(sub_branch_list))
         
@@ -2189,7 +2189,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             index = 0
             
             # Create each line one after the other in a loop
-            for i in range(500):
+            for i in range(10000):
             #for i in range(N_edges_skeleton):
             #for val in vlist_path:
 

@@ -403,7 +403,7 @@ def format_converter(current_path, model_name):
                     
                     else:
                         print("UUU")
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi/2 , 0, 0))
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) + np.pi/1 , 0, 0))
                         
                 else:
                     
@@ -413,7 +413,7 @@ def format_converter(current_path, model_name):
                         
                     elif abs(angle_z - 90) < 55:
                         print("VVV")
-                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - np.pi , 0, 0))
+                        R = pcd.get_rotation_matrix_from_xyz((-1*math.radians(angle_y_al) - 0*np.pi + np.pi/8 , 0, 0))
                         
                     elif abs(angle_z - 90) < 70:
                         print("WWW")

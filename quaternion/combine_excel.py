@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-    python3 combine_excel.py -p ~/cluster_test/syngenta_data/results/
+    python3 combine_excel.py -p ~/example/quaternion/species_comp/excels/
 
 
 argument:
@@ -122,3 +122,4 @@ if __name__ == '__main__':
     
 
     ####################################################################
+    
