@@ -85,13 +85,15 @@ def skeleton_analysis_pipeline(file_path):
     
     folder_name = os.path.basename(file_path)
 
-    #model_skeleton_name = folder_name + '_skeleton.ply'
+    model_skeleton_name = folder_name + '_skeleton.ply'
     
-    model_skeleton_name = 'trait.xlsx' 
+    #model_skeleton_name = 'trait.xlsx' 
     
-    file_path_full = file_path + '/' + folder_name + '_trait.xlsx' 
+    #file_path_full = file_path + '/' + folder_name + '_trait.xlsx' 
     
-    print("Processing folder {} in folder {}...\n".format(file_path_full, folder_name))
+    file_path_full = file_path + '/'
+    
+    print("Processing folder {} in folder {}...\n".format(file_path, folder_name))
     
     '''
     file_path_full_rename = file_path + '/' + folder_name + '_trait.xlsx' 
@@ -101,13 +103,17 @@ def skeleton_analysis_pipeline(file_path):
     print(batch_cmd)
     '''
     
-    batch_cmd = "cp " + file_path_full + " /home/suxing/example/Tara_data/combined/" 
+    #batch_cmd = "cp " + file_path_full + " /home/suxing/example/Tara_data/combined/" 
     
-    execute_script(batch_cmd)
-    
+    ################################################################################
 
+    
     # python3 skeleton_graph.py -p ~/example/pt_cloud/tiny/ -m1 tiny_skeleton.ply
-    #skeleton_analysis = "python3 skeleton_graph.py -p " + file_path_full + " -m1 " + model_skeleton_name
+    skeleton_analysis = "python3 skeleton_graph.py -p " + file_path_full + " -m1 " + model_skeleton_name + ' -tq  ' + str(type_quaternion)
+    
+    print(skeleton_analysis)
+    
+    execute_script(skeleton_analysis)
     
     '''
     #execute_script(skeleton_analysis)
@@ -126,7 +132,7 @@ def skeleton_analysis_pipeline(file_path):
     execute_script(batch_cmd)
     
     ####################################################################
-    #print(skeleton_analysis)
+    
     '''
     
     
@@ -144,6 +150,8 @@ if __name__ == '__main__':
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to individual folders")
+    ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
+
     args = vars(ap.parse_args())
     
     
@@ -181,7 +189,8 @@ if __name__ == '__main__':
     #parameter sets
     # path to individual folders
     current_path = args["path"]
-
+    type_quaternion = args["type_quaternion"]
+    
     subfolders = fast_scandir(current_path)
     
     #print("Processing folder in path '{}' ...\n".format(subfolders))

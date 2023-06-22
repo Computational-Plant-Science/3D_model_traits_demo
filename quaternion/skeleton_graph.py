@@ -15,6 +15,8 @@ USAGE
 
 #customized parameter: python3 skeleton_graph.py -p ~/example/quaternion/tiny/ -m1 tiny_skeleton.ply -v 1
 
+                        python3 skeleton_graph.py -p ~/example/quaternion/species_comp/Maize_B101/ -m1 B101_skeleton.ply -tq 0
+
 
 argument:
 ("-p", "--path", required=True,    help="path to *.ply model file")
@@ -1941,7 +1943,30 @@ if __name__ == '__main__':
         filename_pcloud = args["model_pcloud"]
     
     # analysis result path
-    print ("results_folder: " + current_path + "\n")
+    #print ("results_folder: " + current_path + "\n")
+    
+    
+    # save folder construction
+    abs_path = os.path.abspath(current_path)
+    
+    print(abs_path)
+    
+    
+    if type_quaternion == 0:
+        mkpath = abs_path +'/average'
+    elif type_quaternion == 1:
+        mkpath = abs_path +'/composition'
+    elif type_quaternion == 2:
+        mkpath = abs_path +'/diff'
+    elif type_quaternion == 3:
+        mkpath = abs_path +'/distance'
+        
+    print(mkpath)
+
+    mkdir(mkpath)
+    save_path = mkpath + '/'
+    print ("results_folder: " + save_path)
+    
     
 
     
@@ -2019,18 +2044,19 @@ if __name__ == '__main__':
     
     #save reuslt file
     ####################################################################
+
     
 
-    trait_path = os.path.dirname(current_path + filename_skeleton)
+    trait_path = os.path.dirname(save_path + filename_skeleton)
     
     folder_name = os.path.basename(trait_path)
     
     #print("current_path folder ={}".format(folder_name))
     
     # create trait file using sub folder name
-    trait_file = (current_path + folder_name + '_quaternion.xlsx')
+    trait_file = (save_path + folder_name + '_quaternion.xlsx')
     
-    #trait_file_csv = (current_path + folder_name + '_quaternion.csv')
+    #trait_file_csv = (save_path + folder_name + '_quaternion.csv')
     
     
     if os.path.isfile(trait_file):
@@ -2222,7 +2248,7 @@ if __name__ == '__main__':
     
     plt.savefig(quaternion_scatter)
     '''
-    
+
     
     ####################################################################
     #Multi-dimension plots in ploty
@@ -2233,21 +2259,21 @@ if __name__ == '__main__':
     #Quaternion representation of all paths in 3 clusters. Each path was computed as average of quaternion values 
     quaternion_path_all = np.concatenate((quaternion_path_rec_dominant_arr, quaternion_path_rec_dominant_2nd_arr, quaternion_path_rec_dominant_3rd_arr), axis = 0)
     
-    plot_file = (current_path + folder_name + '_avg_quaternion.html')
+    plot_file = (save_path + folder_name + '_avg_quaternion.html')
     plot_quaternion_result(quaternion_path_all, percent_all, plot_file)
     
     
     #Composition of Quaternion representation of all paths in 3 clusters. Each path was computed as Composition of quaternion values 
     composition_path_all = np.concatenate((composition_path_rec_dominant_arr, composition_path_rec_dominant_2nd_arr, composition_path_rec_dominant_3rd_arr), axis = 0)
     
-    plot_file = (current_path + folder_name + '_composition_quaternion.html')
+    plot_file = (save_path + folder_name + '_composition_quaternion.html')
     plot_quaternion_result(composition_path_all, percent_all, plot_file)
     
     
     #Composition of Quaternion representation of all paths in 3 clusters. Each path was computed as Composition of quaternion values 
     diff_path_all = np.concatenate((diff_path_rec_dominant_arr, diff_path_rec_dominant_2nd_arr, diff_path_rec_dominant_3rd_arr), axis = 0)
     
-    plot_file = (current_path + folder_name + '_diff_quaternion.html')
+    plot_file = (save_path + folder_name + '_diff_quaternion.html')
     plot_quaternion_result(diff_path_all, percent_all, plot_file)
     
 
