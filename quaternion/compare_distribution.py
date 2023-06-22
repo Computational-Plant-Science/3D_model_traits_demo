@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-    python3 compare_distribution.py -p ~/example/quaternion/species_comp/ -v 1
+    python3 compare_distribution.py -p ~/example/quaternion/species_comp/ -v 1 -tq
 
 
 Input:
@@ -302,8 +302,9 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-ft", "--filetype", required = False, default = 'xlsx', help = "file type")
-    ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, 0 = average_quaternion, 1 = composition_quaternion")
     ap.add_argument("-v", "--visualize", required = False, type= int, default = 0, help = "Visualize rotation vector or not")
+    ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
+
     args = vars(ap.parse_args())
 
     
@@ -345,7 +346,16 @@ if __name__ == '__main__':
         #get downsampled rotation vectors
         #rotVec = np.vstack((data['rotVec_rec_0'],data['rotVec_rec_1'],data['rotVec_rec_2'])).T
         
-        cols_vec = ['rotVec_rec_0','rotVec_rec_1','rotVec_rec_2']
+        if type_quaternion == 0:
+            cols_vec = ['rotVec_avg_0','rotVec_avg_1','rotVec_avg_2']
+        elif type_quaternion == 1:
+            cols_vec = ['rotVec_composition_0','rotVec_composition_1','rotVec_composition_2']
+        elif type_quaternion == 2:
+            cols_vec = ['rotVec_diff_0','rotVec_diff_1','rotVec_diff_2']
+        elif type_quaternion == 3:
+            cols_vec = ['rotVec_avg_0','rotVec_avg_1','rotVec_avg_2']
+        
+
         data_v = df[cols_vec].values.tolist()
         
 
@@ -361,6 +371,10 @@ if __name__ == '__main__':
             cols_q = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d']
         elif type_quaternion == 1:
             cols_q = ['composition_quaternion_a','composition_quaternion_b','composition_quaternion_c', 'composition_quaternion_d']
+        elif type_quaternion == 2:
+            cols_q = ['diff_quaternion_a','diff_quaternion_b','diff_quaternion_c', 'diff_quaternion_d']
+        elif type_quaternion == 3:
+            cols_q = ['distance_absolute','distance_intrinsic', 'distance_symmetrized']
         
         data_q = df[cols_q].values.tolist()
         
@@ -604,7 +618,47 @@ if __name__ == '__main__':
         markercolor = px.colors.sample_colorscale("turbo", [n/(n_colors -1) for n in range(n_colors)])
     
     
-    fig = px.scatter_3d(df, x='quaternion_b', y='quaternion_c', z='quaternion_d', color='genotype',   size_max = 20, opacity = 1.0)
+    if type_quaternion == 0:
+
+        X_col_q = 'quaternion_b'
+        Y_col_q = 'quaternion_c'
+        Z_col_q = 'quaternion_d'
+        
+        X_col_v = 'rotVec_avg_0'
+        Y_col_v = 'rotVec_avg_1'
+        Z_col_v = 'rotVec_avg_2'
+        
+        quaternion_4D = (current_path + 'avg_quaternion_4D.html')
+        
+    elif type_quaternion == 1:
+        
+        X_col_q = 'composition_quaternion_b'
+        Y_col_q = 'composition_quaternion_c'
+        Z_col_q = 'composition_quaternion_d'
+        
+        X_col_v = 'rotVec_composition_0'
+        Y_col_v = 'rotVec_composition_1'
+        Z_col_v = 'rotVec_composition_2'
+        
+        quaternion_4D = (current_path + 'composition_quaternion_4D.html')
+        
+    elif type_quaternion == 2:
+        
+        X_col_q = 'diff_quaternion_b'
+        Y_col_q = 'diff_quaternion_c'
+        Z_col_q = 'diff_quaternion_d'
+
+        X_col_v = 'rotVec_diff_0'
+        Y_col_v = 'rotVec_diff_1'
+        Z_col_v = 'rotVec_diff_2'
+        
+        quaternion_4D = (current_path + 'diff_quaternion_4D.html')
+        
+
+        
+
+    
+    fig = px.scatter_3d(df, x = X_col_q, y = Y_col_q, z = Z_col_q, color = 'genotype',   size_max = 20, opacity = 1.0)
 
     #fig = px.scatter_3d(df, x='quaternion_b', y='quaternion_c', z='quaternion_d', color='genotype',  color_discrete_sequence=markercolor,  symbol='genotype',  size = 'label', size_max = 20, opacity = 1.0)
 
@@ -617,20 +671,18 @@ if __name__ == '__main__':
 
     #fig.update_traces(marker_size = 10)
     
-    
-    quaternion_4D = (current_path + 'avg_quaternion_4D.html')
-    
+   
     plotly.offline.plot(fig, auto_open=False, filename=quaternion_4D)
 
     
     
     
     ######################################################################
-    fig = px.scatter_3d(df, x='rotVec_rec_0', y='rotVec_rec_1', z='rotVec_rec_2', color='genotype', size_max = 20, opacity = 1.0)
+    fig = px.scatter_3d(df, x = X_col_v, y = Y_col_v, z = Z_col_v, color='genotype', size_max = 20, opacity = 1.0)
     
     fig.update_traces(marker_size = 4)
     
-    quaternion_4D = (current_path + 'avg_rotation_vector.html')
+    
     
     plotly.offline.plot(fig, auto_open=False, filename=quaternion_4D)
     

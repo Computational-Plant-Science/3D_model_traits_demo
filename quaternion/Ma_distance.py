@@ -9,7 +9,8 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-    python3 Ma_distance.py -p ~/example/quaternion/tiny/ 
+    python3 Ma_distance.py -p ~/example/quaternion/species_comp/bean/average/ -gl 1 -gn maize -tq 0 
+
 
 
 argument:
@@ -76,132 +77,6 @@ def calculateMahalanobis(y=None, data=None, cov=None):
 
 
 
-
-# compute mutltipy two quaternions in a pair:
-def quaternion_multiply(Q0, Q1):
-    """
-    Multiplies two quaternions.
- 
-    Input
-    :param Q0: A 4 element array containing the first quaternion (q01,q11,q21,q31) 
-    :param Q1: A 4 element array containing the second quaternion (q02,q12,q22,q32) 
- 
-    Output
-    :return: A 4 element array containing the final quaternion (q03,q13,q23,q33) 
- 
-    """
-    
-    
-    # Extract the values from Q0
-    w0 = Q0[0]
-    x0 = Q0[1]
-    y0 = Q0[2]
-    z0 = Q0[3]
-     
-    # Extract the values from Q1
-    w1 = Q1[0]
-    x1 = Q1[1]
-    y1 = Q1[2]
-    z1 = Q1[3]
-     
-    # Computer the product of the two quaternions, term by term
-    Q0Q1_w = w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1
-    Q0Q1_x = w0 * x1 + x0 * w1 + y0 * z1 - z0 * y1
-    Q0Q1_y = w0 * y1 - x0 * z1 + y0 * w1 + z0 * x1
-    Q0Q1_z = w0 * z1 + x0 * y1 - y0 * x1 + z0 * w1
-     
-    # Create a 4 element array containing the final quaternion
-    final_quaternion = np.array([Q0Q1_w, Q0Q1_x, Q0Q1_y, Q0Q1_z])
-     
-    # Return a 4 element array containing the final quaternion (q02,q12,q22,q32) 
-    return final_quaternion
-
-
-
-# get consecutive elements pairing in list:
-def pairwise(q_list):
- 
-    # use itertools.tee to create two iterators from the list
-    a, b = itertools.tee(q_list)
-     
-    # advance the iterator by one element
-    next(b, None)
-     
-    # use zip to pair the elements from the two iterators
-    res = list(zip(a, b))  
-    
-    return res
-
-
-
-# compute mutltipy of a list of quaternions:
-def quaternion_list_multiply(q_list):
-
-    # get the pair of the elements from the list
-    res = pairwise(q_list)
-    
-    # Create a 4 element array containing the final quaternion mutltipy results
-    q_mutiply = np.array([0, 0, 0, 0])
-     
-    #compute mutltipy of adjacent pair of quaternions and then loop all elements 
-    for idx, q_pair_value in enumerate(res):
-        
-        if idx < 1: 
-            q_mutiply = quaternion_multiply(res[0][0], res[0][1])
-        else:
-            q_mutiply = quaternion_multiply(q_mutiply, res[idx][1])
-
-    
-    return q_mutiply
-
-
-# compute the distance between two quaternions accounting for the sign ambiguity.
-def quaternion_list_distance(q_list):
-
-    # get the pair of the elements from the list
-    res = pairwise(q_list)
-    
-    # Create a 4 element array containing the final quaternion mutltipy results
-    q_distance = []
-    
-    # make the column of the same length for easy operate
-    q_distance.append([0,0,0])
-     
-    #compute mutltipy of adjacent pair of quaternions and then loop all elements 
-    for idx, q_pair_value in enumerate(res):
-        
-        #Quaternion(numpy.array([a, b, c, d]))
-        
-        Q_Current = Quaternion(np.array(q_pair_value[0]))
-        Q_Next = Quaternion(np.array(q_pair_value[1]))
-        
-        #This function does not measure the distance on the hypersphere, 
-        #but it takes into account the fact that q and -q encode the same rotation. 
-        #It is thus a good indicator for rotation similarities.
-        # Quaternion absolute distance.
-        Q_D_absolute = Quaternion.absolute_distance(Q_Current, Q_Next)
-        
-        # Quaternion intrinsic distance.
-        #Although q0^(-1)*q1 != q1^(-1)*q0, the length of the path joining them is given by the logarithm of those product quaternions, the norm of which is the same.
-        Q_D_intrinsic = Quaternion.distance(Q_Current, Q_Next)
-        
-        # Quaternion symmetrized distance.
-        #Find the intrinsic symmetrized geodesic distance between q0 and q1.
-        Q_D_symmetrized = Quaternion.sym_distance(Q_Current, Q_Next)
-        
-        q_distance.append([Q_D_absolute, Q_D_intrinsic, Q_D_symmetrized])
-
-
-    #print(q_distance)
-    
-    return q_distance
-
-
-
-
-
-
-
 if __name__ == '__main__':
 
     # construct the argument and parse the arguments
@@ -209,7 +84,8 @@ if __name__ == '__main__':
     ap.add_argument("-p", "--path", required = True,    help = "path to excel file")
     ap.add_argument("-gl", "--genotype_label", required = True, type = int, help = "genotype_label, represented as integer")
     ap.add_argument("-gn", "--genotype_name", required = True, type = str, help = "genotype_name, represented as string")
-    ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, 0 = average_quaternion, 1 = composition_quaternion")
+    ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
+
     args = vars(ap.parse_args())
 
     ###################################################################
@@ -236,7 +112,7 @@ if __name__ == '__main__':
         
         base_name = filename.replace("_quaternion.xlsx", "")
         
-        print("Processing file '{}'...\n".format(base_name))
+        print("Processing file '{}'...\n".format(filename))
         
         mkpath = current_path +  base_name + '_Mahalanobis_p'
         mkdir(mkpath)
@@ -264,32 +140,19 @@ if __name__ == '__main__':
                 cols_q = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d']
             elif type_quaternion == 1:
                 cols_q = ['composition_quaternion_a','composition_quaternion_b','composition_quaternion_c', 'composition_quaternion_d']
+            elif type_quaternion == 2:
+                cols_q = ['diff_quaternion_a','diff_quaternion_b','diff_quaternion_c', 'diff_quaternion_d']
+            elif type_quaternion == 3:
+                cols_q = ['distance_absolute','distance_intrinsic', 'distance_symmetrized']
+            
+            
+            print(cols_q)
             
             data_q = df[cols_q]
             
-            data_q_list = data_q.values.tolist()
+            #data_q_list = data_q.values.tolist()
             
 
-            # quaternion distance 
-            ###########################################################################################
-            '''
-            q_composition = quaternion_list_multiply(data_q_list)
-            
-            print(q_composition)
-            
-            q_distance = quaternion_list_distance(data_q_list)
-            
-            q_distance_arr = np.vstack(q_distance)
-            
-            print(q_distance_arr.shape)
-            
-            #df['quaternion__composition'] = np.repeat(q_composition, len(q_distance_arr))
-            
-            # Creating a new column in the dataframe that holds the quaternion distance for each row
-            df['absolute_distance'] = q_distance_arr[:, 0]
-            df['intrinsic_distance'] = q_distance_arr[:, 1]
-            df['symmetrized_distance'] = q_distance_arr[:, 2]
-            '''
             
             # Mahalanobis distance
             #################################################################################################                        
@@ -319,12 +182,21 @@ if __name__ == '__main__':
     
             plotly.offline.plot(fig, auto_open = False, filename = Mahalanobis_p_file)
             
+            
             ############################################################
             # compute Mahalanobis distance of rotation vectors select specific columns 
-            cols_vec = ['rotVec_rec_0','rotVec_rec_1','rotVec_rec_2']
+            if type_quaternion == 0:
+                cols_vec = ['rotVec_avg_0','rotVec_avg_1','rotVec_avg_2']
+            elif type_quaternion == 1:
+                cols_vec = ['rotVec_composition_0','rotVec_composition_1','rotVec_composition_2']
+            elif type_quaternion == 2:
+                cols_vec = ['rotVec_diff_0','rotVec_diff_1','rotVec_diff_2']
+            elif type_quaternion == 3:
+                cols_vec = ['rotVec_avg_0','rotVec_avg_1','rotVec_avg_2']
+            
             data_vec = df[cols_vec]
             
-            #print(data_vec)
+            print(data_vec)
                                     
             # Creating a new column in the dataframe that holds the Mahalanobis distance for each row
             df['rotVec_Mahalanobis'] = calculateMahalanobis(y = data_vec, data = df[cols_vec])
@@ -360,8 +232,8 @@ if __name__ == '__main__':
             
             #############################################################################################
             # add genotype_label and genotype
-            df['genotype_label'] = np.repeat(genotype_label, len(data_q_list))
-            df['genotype'] = np.repeat(genotype_name, len(data_q_list))
+            df['genotype_label'] = np.repeat(genotype_label, len(data_q))
+            df['genotype'] = np.repeat(genotype_name, len(data_q))
             
             
             
@@ -378,7 +250,7 @@ if __name__ == '__main__':
          
             
         #####################################################
-        output_file = save_path + base_name + '_sel.xlsx'
+        output_file = save_path + base_name + '_Mahalanobis.xlsx'
         
         #print(output_file)
         

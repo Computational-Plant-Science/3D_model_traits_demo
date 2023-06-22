@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-    python3 combine_excel.py -p ~/example/quaternion/species_comp/excels/
+    python3 combine_excel.py -p ~/example/quaternion/species_comp/excels/ -tq 1
 
 
 argument:
@@ -60,7 +60,8 @@ if __name__ == '__main__':
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True,    help = "path to excel file")
-    #ap.add_argument("-f", "--filename", required = True, help = "data file name")
+    ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
+
     args = vars(ap.parse_args())
 
     ###################################################################
@@ -68,6 +69,8 @@ if __name__ == '__main__':
     current_path = args["path"]
     
     file_path = current_path + "*.xlsx"
+    
+    type_quaternion = args["type_quaternion"]
 
     # get the absolute path of all Excel files 
     ExcelFiles_list = glob.glob(file_path)
@@ -102,12 +105,22 @@ if __name__ == '__main__':
     # read all Excel files at once
     df = pd.concat(pd.read_excel(excelFile) for excelFile in ExcelFiles_list)
 
+
+    if type_quaternion == 0:
+        combined_file_name = 'average.xlsx'
+    elif type_quaternion == 1:
+        combined_file_name = 'composition.xlsx'
+    elif type_quaternion == 2:
+        combined_file_name = 'diff.xlsx'
+    elif type_quaternion == 3:
+        combined_file_name = 'distance.xlsx'
+    
     # save folder construction
     mkpath = os.path.dirname(current_path) +'/combined'
     mkdir(mkpath)
     save_path = mkpath + '/'
         
-    output_file = save_path + "combined.xlsx"
+    output_file = save_path + combined_file_name
     
     # create excel writer object
     #combined_excel = pd.ExcelWriter(output_file)
