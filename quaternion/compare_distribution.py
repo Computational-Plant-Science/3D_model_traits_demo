@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-    python3 compare_distribution.py -p ~/example/quaternion/species_comp/ -v 1 -tq
+    python3 compare_distribution.py -p ~/example/quaternion/species_comp/ -v 1 -tq 0
 
 
 Input:
@@ -232,7 +232,7 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label):
     
     N = len(rotVec_rec)
     
-    print(N)
+    #print(N)
 
     # Key point: set an integer for each point
     scalars = genotype_label
@@ -404,7 +404,9 @@ if __name__ == '__main__':
         
         genotype_unique = list(set(genotype_type))
         
-        print("Genotypes are {} , {}\n".format(genotype_unique[0], genotype_unique[1]))
+        #genotype_unique_arr = np.array(genotype_unique)
+        
+        print("Genotypes are {} \n".format(genotype_unique))
         
         ################################################################
         #get downsampled quarterunion values
