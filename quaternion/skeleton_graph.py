@@ -1345,7 +1345,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             distance_path_rec.append([cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized])
             
 
-            print("vlist_path = {} avg_quaternion = {} q_composition = {} q_diff = {}\n".format(idx, avg_quaternion, q_composition, q_diff))
+            #print("vlist_path = {} avg_quaternion = {} q_composition = {} q_diff = {}\n".format(idx, avg_quaternion, q_composition, q_diff))
                 
         if rotVec_r[2] < 0:
             index_inv.append(idx)
@@ -1460,10 +1460,19 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     labels = list(labels)
     
     #print((labels))
-
+    
+    # compute cluster center quaternion and related rotation vector
     centroid = kmeans.cluster_centers_
     
-    #print(centroid)
+    print("Centroid: {} \n".format(centroid))
+    
+    q_centroid_cluster = []
+    rotVec_centroid_cluster = []
+    for value in centroid:
+        q_centroid_cluster.append(value)
+        rotVec_centroid_cluster.append(rotVec_from_quaternion(value))
+    
+    #print("rotVec_centroid_cluster: {} \n".format(rotVec_centroid_cluster))
     
     # compute the ratio of each cluster
     percent = []
@@ -1504,7 +1513,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     path_length_cluster = []
     distance_cluster = []
     
-    
+
     
     #centroid
     
@@ -1837,7 +1846,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     return percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
             rotVec_average_cluster, rotVec_composition_cluster, rotVec_diff_cluster, \
-            distance_cluster, path_length_cluster
+            distance_cluster, path_length_cluster, rotVec_centroid_cluster, q_centroid_cluster
 
 
 
@@ -1998,10 +2007,13 @@ if __name__ == '__main__':
     
     (percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
             rotVec_average_cluster, rotVec_composition_cluster, rotVec_diff_cluster, \
-            distance_cluster, path_length_cluster) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+            distance_cluster, path_length_cluster, rotVec_centroid_cluster, q_centroid_cluster) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+    
     result_traits = []
     
     percent_arr_list = []
+    rotVec_centroid_arr_list = []
+    q_centroid_cluster_list = []
     path_len_arr_list = []
     
     q_average_arr_list = []
@@ -2032,6 +2044,11 @@ if __name__ == '__main__':
         q_distance_arr = np.vstack(distance_cluster[i])
         
         percent_arr = np.repeat(percent_sorted[i], repeats = len(q_average_arr), axis = 0)
+
+        rotVec_centroid_arr = np.tile(rotVec_centroid_cluster[i],(len(q_average_arr),1))
+        
+        q_centroid_arr = np.tile(q_centroid_cluster[i],(len(q_average_arr),1))
+        
         
         q_average_arr_list.append(q_average_arr)
         q_composition_arr_list.append(q_composition_arr)
@@ -2044,18 +2061,23 @@ if __name__ == '__main__':
         rotVec_diff_arr_list.append(rotVec_diff_arr)
         
         percent_arr_list.append(percent_arr)
+        rotVec_centroid_arr_list.append(rotVec_centroid_arr)
+        q_centroid_cluster_list.append(q_centroid_arr)
         path_len_arr_list.append(path_len_arr)
         
+        #print("rotVec_centroid_arr: {} \n".format(rotVec_centroid_arr))
         
-        for i, (v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24, v25) in enumerate(zip(percent_arr, q_average_arr[:,0], q_average_arr[:,1], q_average_arr[:,2], q_average_arr[:,3],\
+        for i, (v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24, v25, v26,v27,v28, v29,v30,v31,v32) in enumerate(zip(percent_arr, q_average_arr[:,0], q_average_arr[:,1], q_average_arr[:,2], q_average_arr[:,3],\
                                                         q_composition_arr[:,0], q_composition_arr[:,1], q_composition_arr[:,2], q_composition_arr[:,3],\
                                                         q_diff_arr[:,0], q_diff_arr[:,1], q_diff_arr[:,2], q_diff_arr[:,3],\
                                                         q_distance_arr[:,0], q_distance_arr[:,1], q_distance_arr[:,2],\
                                                         rotVec_avg_arr[:,0], rotVec_avg_arr[:,1], rotVec_avg_arr[:,2],\
                                                         rotVec_composition_arr[:,0], rotVec_composition_arr[:,1], rotVec_composition_arr[:,2],\
-                                                        rotVec_diff_arr[:,0], rotVec_diff_arr[:,1], rotVec_diff_arr[:,2], path_len_arr[:,0])):
+                                                        rotVec_diff_arr[:,0], rotVec_diff_arr[:,1], rotVec_diff_arr[:,2], path_len_arr[:,0], \
+                                                        rotVec_centroid_arr[:,0], rotVec_centroid_arr[:,1], rotVec_centroid_arr[:,2], \
+                                                        q_centroid_arr[:,0], q_centroid_arr[:,1], q_centroid_arr[:,2], q_centroid_arr[:,3])):
                                                             
-            traits_row.append([v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24, v25])
+            traits_row.append([v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24, v25, v26,v27,v28, v29,v30,v31,v32])
         
         result_traits.append(traits_row)
 
@@ -2137,8 +2159,16 @@ if __name__ == '__main__':
         
         sheet_quaternion_1.cell(row = 1, column = 26).value = 'path_length'
 
+        sheet_quaternion_1.cell(row = 1, column = 27).value = 'rotVec_centroid_0'
+        sheet_quaternion_1.cell(row = 1, column = 28).value = 'rotVec_centroid_1'
+        sheet_quaternion_1.cell(row = 1, column = 29).value = 'rotVec_centroid_2'
 
-
+        sheet_quaternion_1.cell(row = 1, column = 30).value = 'centroid_quaternion_a'
+        sheet_quaternion_1.cell(row = 1, column = 31).value = 'centroid_quaternion_b'
+        sheet_quaternion_1.cell(row = 1, column = 32).value = 'centroid_quaternion_c'
+        sheet_quaternion_1.cell(row = 1, column = 33).value = 'centroid_quaternion_d'
+        
+        #####################################################################################
         sheet_quaternion_2 = wb.create_sheet()
         sheet_quaternion_2.title = "sheet_quaternion_2"
 
@@ -2177,7 +2207,16 @@ if __name__ == '__main__':
         
         sheet_quaternion_2.cell(row = 1, column = 26).value = 'path_length'
         
+        sheet_quaternion_2.cell(row = 1, column = 27).value = 'rotVec_centroid_0'
+        sheet_quaternion_2.cell(row = 1, column = 28).value = 'rotVec_centroid_1'
+        sheet_quaternion_2.cell(row = 1, column = 29).value = 'rotVec_centroid_2'
+
+        sheet_quaternion_2.cell(row = 1, column = 30).value = 'centroid_quaternion_a'
+        sheet_quaternion_2.cell(row = 1, column = 31).value = 'centroid_quaternion_b'
+        sheet_quaternion_2.cell(row = 1, column = 32).value = 'centroid_quaternion_c'
+        sheet_quaternion_2.cell(row = 1, column = 33).value = 'centroid_quaternion_d'
         
+        #############################################################################
         sheet_quaternion_3 = wb.create_sheet()
         sheet_quaternion_3.title = "sheet_quaternion_3"
 
@@ -2215,6 +2254,15 @@ if __name__ == '__main__':
         sheet_quaternion_3.cell(row = 1, column = 25).value = 'rotVec_diff_2'
         
         sheet_quaternion_3.cell(row = 1, column = 26).value = 'path_length'
+
+        sheet_quaternion_3.cell(row = 1, column = 27).value = 'rotVec_centroid_0'
+        sheet_quaternion_3.cell(row = 1, column = 28).value = 'rotVec_centroid_1'
+        sheet_quaternion_3.cell(row = 1, column = 29).value = 'rotVec_centroid_2'
+
+        sheet_quaternion_3.cell(row = 1, column = 30).value = 'centroid_quaternion_a'
+        sheet_quaternion_3.cell(row = 1, column = 31).value = 'centroid_quaternion_b'
+        sheet_quaternion_3.cell(row = 1, column = 32).value = 'centroid_quaternion_c'
+        sheet_quaternion_3.cell(row = 1, column = 33).value = 'centroid_quaternion_d'
 
 
 
