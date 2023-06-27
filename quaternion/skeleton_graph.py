@@ -2068,15 +2068,15 @@ if __name__ == '__main__':
         percent_arr_list.append(percent_arr)
         path_len_arr_list.append(path_len_arr)
         
-        for i, (v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24) in enumerate(zip(percent_arr, q_average_arr[:,0], q_average_arr[:,1], q_average_arr[:,2], q_average_arr[:,3],\
+        for i, (v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24, v25) in enumerate(zip(percent_arr, q_average_arr[:,0], q_average_arr[:,1], q_average_arr[:,2], q_average_arr[:,3],\
                                                         q_composition_arr[:,0], q_composition_arr[:,1], q_composition_arr[:,2], q_composition_arr[:,3],\
                                                         q_diff_arr[:,0], q_diff_arr[:,1], q_diff_arr[:,2], q_diff_arr[:,3],\
                                                         q_distance_arr[:,0], q_distance_arr[:,1], q_distance_arr[:,2],\
                                                         rotVec_avg_arr[:,0], rotVec_avg_arr[:,1], rotVec_avg_arr[:,2],\
                                                         rotVec_composition_arr[:,0], rotVec_composition_arr[:,1], rotVec_composition_arr[:,2],\
-                                                        rotVec_diff_arr[:,0], rotVec_diff_arr[:,1], rotVec_diff_arr[:,2])):
+                                                        rotVec_diff_arr[:,0], rotVec_diff_arr[:,1], rotVec_diff_arr[:,2], path_len_arr)):
                                                             
-            traits_row.append([v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24])
+            traits_row.append([v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24, v25])
         
         result_traits.append(traits_row)
 
@@ -2155,6 +2155,8 @@ if __name__ == '__main__':
         sheet_quaternion_1.cell(row = 1, column = 23).value = 'rotVec_diff_0'
         sheet_quaternion_1.cell(row = 1, column = 24).value = 'rotVec_diff_1'
         sheet_quaternion_1.cell(row = 1, column = 25).value = 'rotVec_diff_2'
+        
+        sheet_quaternion_1.cell(row = 1, column = 26).value = 'path_length'
 
 
 
@@ -2194,6 +2196,8 @@ if __name__ == '__main__':
         sheet_quaternion_2.cell(row = 1, column = 24).value = 'rotVec_diff_1'
         sheet_quaternion_2.cell(row = 1, column = 25).value = 'rotVec_diff_2'
         
+        sheet_quaternion_2.cell(row = 1, column = 26).value = 'path_length'
+        
         
         sheet_quaternion_3 = wb.create_sheet()
         sheet_quaternion_3.title = "sheet_quaternion_3"
@@ -2230,6 +2234,8 @@ if __name__ == '__main__':
         sheet_quaternion_3.cell(row = 1, column = 23).value = 'rotVec_diff_0'
         sheet_quaternion_3.cell(row = 1, column = 24).value = 'rotVec_diff_1'
         sheet_quaternion_3.cell(row = 1, column = 25).value = 'rotVec_diff_2'
+        
+        sheet_quaternion_3.cell(row = 1, column = 26).value = 'path_length'
 
 
 
