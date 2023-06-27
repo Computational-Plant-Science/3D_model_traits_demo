@@ -9,13 +9,13 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-#default parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -v 1
+#default parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -v 1 -tq 0
 
-#customized parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -th 0.21 -v 1
+#customized parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -th 0.21 -v 1 -tq 0
 
-#customized parameter: python3 skeleton_graph.py -p ~/example/quaternion/tiny/ -m1 tiny_skeleton.ply -v 1
+#customized parameter: python3 skeleton_graph.py -p ~/example/quaternion/tiny/ -m1 tiny_skeleton.ply -v 1 -tq 0
 
-                        python3 skeleton_graph.py -p ~/example/quaternion/species_comp/Maize_B101/ -m1 B101_skeleton.ply -tq 0
+                    python3 skeleton_graph.py -p ~/example/quaternion/species_comp/Maize_B101/ -m1 B101_skeleton.ply -tq 0
 
 
 argument:
@@ -1485,7 +1485,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #print(centroid)
     
     # compute the ratio of each cluster
-    percent=[]
+    percent = []
     for i in range(len(centroid)):
         j = labels.count(i)
         j = j/(len(labels))
@@ -1500,73 +1500,70 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #reverse the order from accending to descending
     sorted_idx_percent = sorted_idx[::-1]
     
+    percent_sorted = []
+    for value in sorted_idx_percent:
+        percent_sorted.append(percent[value])
     
-
     
 
     ##########################################################################################
     # obtain the dominant cluster of quaternion vectors and related rotation vectors
-    index_dominant = [ index for index in range(len(labels))  if labels[index] == sorted_idx_percent[0]]
-    
-    quaternion_path_rec_dominant = [quaternion_path_rec[i] for i in index_dominant]
-    
-    composition_path_rec_dominant = [composition_path_rec[i] for i in index_dominant]
-    
-    diff_path_rec_dominant = [diff_path_rec[i] for i in index_dominant]
-    
-    distance_path_rec_dominant = [distance_path_rec[i] for i in index_dominant]
-    
-    rotVec_rec_avg_dominant = [rotVec_rec_avg[i] for i in index_dominant]
-    rotVec_rec_composition_dominant = [rotVec_rec_composition[i] for i in index_dominant]
-    rotVec_rec_diff_dominant = [rotVec_rec_diff[i] for i in index_dominant]
-    
-    path_length_rec_dominant = [path_length_rec[i] for i in index_dominant]
     
     
-    #print(quaternion_path_rec_dominant)
+    #quaternion_path_traits = ['average', 'composition', 'diff']
     
-    # obtain the second dominant cluster of quaternion vectors and related rotation vectors
-    index_dominant_2nd = [ index for index in range(len(labels))  if labels[index] == sorted_idx_percent[1]]
+    q_average_cluster = []
+    q_composition_cluster = []
+    q_diff_cluster = []
     
-    quaternion_path_rec_dominant_2nd = [quaternion_path_rec[i] for i in index_dominant_2nd]
+    rotVec_average_cluster = []
+    rotVec_composition_cluster = []
+    rotVec_diff_cluster = []
     
-    composition_path_rec_dominant_2nd = [composition_path_rec[i] for i in index_dominant_2nd]
+    path_length_cluster = []
+    distance_cluster = []
     
-    diff_path_rec_dominant_2nd = [diff_path_rec[i] for i in index_dominant_2nd]
     
-    distance_path_rec_dominant_2nd = [distance_path_rec[i] for i in index_dominant_2nd]
+    
+    #centroid
+    
+    for idx_value in sorted_idx_percent:
+        
+        index_selected = [index for index in range(len(labels))  if labels[index] == idx_value]
+        
+        average_path_q =  [quaternion_path_rec[i] for i in index_selected]
+        quaternion_path_q = [quaternion_path_rec[i] for i in index_selected]
+        diff_path_q = [diff_path_rec[i] for i in index_selected]
+        
+        rotVec_path_average = [rotVec_rec_avg[i] for i in index_selected]
+        rotVec_path_composition = [rotVec_rec_composition[i] for i in index_selected]
+        rotVec_path_diff = [rotVec_rec_diff[i] for i in index_selected]
+        
+        distance_path_value = [distance_path_rec[i] for i in index_selected]
 
-    rotVec_rec_avg_dominant_2nd = [rotVec_rec_avg[i] for i in index_dominant_2nd]
-    rotVec_rec_composition_dominant_2nd = [rotVec_rec_composition[i] for i in index_dominant_2nd]
-    rotVec_rec_diff_dominant_2nd = [rotVec_rec_diff[i] for i in index_dominant_2nd]
-    
-    path_length_rec_2nd = [path_length_rec[i] for i in index_dominant_2nd]
-    
-    
-    # obtain the 3rd dominant cluster of quaternion vectors and related rotation vectors
-    index_dominant_3rd = [ index for index in range(len(labels))  if labels[index] == sorted_idx_percent[2]]
-    
-    quaternion_path_rec_dominant_3rd = [quaternion_path_rec[i] for i in index_dominant_3rd]
-    
-    composition_path_rec_dominant_3rd = [composition_path_rec[i] for i in index_dominant_3rd]
-    
-    diff_path_rec_dominant_3rd = [diff_path_rec[i] for i in index_dominant_3rd]
-    
-    distance_path_rec_dominant_3rd  = [distance_path_rec[i] for i in index_dominant_3rd]
-    
-    rotVec_rec_avg_dominant_3rd = [rotVec_rec_avg[i] for i in index_dominant_3rd]
-    rotVec_rec_composition_dominant_3rd = [rotVec_rec_composition[i] for i in index_dominant_3rd]
-    rotVec_rec_diff_dominant_3rd = [rotVec_rec_diff[i] for i in index_dominant_3rd]
+        path_length_value = [path_length_rec[i] for i in index_selected]
+        
+        q_average_cluster.append(average_path_q)
+        q_composition_cluster.append(quaternion_path_q)
+        q_diff_cluster.append(diff_path_q)
+        
+        rotVec_average_cluster.append(rotVec_path_average)
+        rotVec_composition_cluster.append(rotVec_path_composition)
+        rotVec_diff_cluster.append(rotVec_path_diff)
 
-    path_length_rec_3rd = [path_length_rec[i] for i in index_dominant_3rd]
+        path_length_cluster.append(path_length_value)
+        
+        distance_cluster.append(distance_path_value)
+        
+        
+
     
-    
-    print("sorted_idx_percent = {} percent = {}".format(sorted_idx_percent, percent))
-    print("dominant path number = {}, 2nd dominant path number = {}, 3rd dominant path number = {}\n".format(len(path_length_rec_dominant),len(path_length_rec_2nd),len(path_length_rec_3rd)))
+    #print("sorted_idx_percent = {} percent = {}".format(sorted_idx_percent, percent))
+    #print("path number = {}\n".format(len(path_length_cluster)))
     
 
     ############################################################################################
-    color_array = np.repeat(np.array(percent).reshape(1,number_cluster), repeats = 4, axis = 0)
+    color_array = np.repeat(np.array(percent).reshape(1, number_cluster), repeats = 4, axis = 0)
 
     #text = "{} {}".format(range(len(centroid)), percent)
     fig = plt.pie(percent, colors = np.transpose(color_array), labels = np.arange(len(centroid)))
@@ -1580,15 +1577,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     ####################################################################
 
-    his_plot(path_length_rec_dominant, current_path, folder_name)
+    his_plot(path_length_cluster[0], current_path, folder_name)
     
     
     path_index = list(range(1,len(vlist_path_rec)+1))
     
 
     ###################################################################
-    #initialize parameters
-    pt_diameter_max=pt_diameter_min=pt_length=pt_diameter=pt_eccentricity=pt_stem_diameter=0
+
         
     #load aligned ply point cloud file
     if not (filename_pcloud is None):
@@ -1795,33 +1791,33 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         # Define color table (including alpha), which must be uint8 and [0,255]
         #colors = (np.random.random((N, 4))*255).astype(np.uint8)
         #colors[:,-1] = 255 # No transparency
+        
+        
+        if type_quaternion == 0:
+            rotVec_sel = rotVec_average_cluster
+            
+        elif type_quaternion == 1:
+            rotVec_sel = rotVec_composition_cluster
+            
+        elif type_quaternion == 2:
+            rotVec_sel = rotVec_diff_cluster
 
-        zeros = np.zeros(len(rotVec_rec_dominant))
+        
+        # draw all the rotation vectors in pipeline
+        color_cluser = [(1, 0, 0), (0, 1, 0), (0, 0, 1)]
+        
+        for i, vectors in enumerate(rotVec_sel):
+            
+            zeros = np.zeros(len(vectors))
 
+            pts = mlab.quiver3d(zeros, zeros, zeros, np.asarray(vectors)[:,0], np.asarray(vectors)[:,1], np.asarray(vectors)[:,2], color = color_cluser[i], mode = '2ddash')
+
+        
         # draw all the rotation vectors in pipeline
         #mlab.quiver3d( 0,0,0, Vec_arr[0], Vec_arr[1], Vec_arr[2], color = current_color)
-        pts = mlab.quiver3d(zeros, zeros, zeros, np.asarray(rotVec_rec_dominant)[:,0], np.asarray(rotVec_rec_dominant)[:,1], np.asarray(rotVec_rec_dominant)[:,2], color = (1, 0, 0), mode = '2ddash')
+        #pts = mlab.quiver3d(zeros, zeros, zeros, np.asarray(vector_dominant[0])[:,0], np.asarray(vector_dominant[0])[:,1], np.asarray(vector_dominant[0])[:,2], color = (1, 0, 0), mode = '2ddash')
 
-
-    
-        zeros = np.zeros(len(rotVec_rec_dominant_2nd))
-        
-        pts = mlab.quiver3d(zeros, zeros, zeros, np.asarray(rotVec_rec_dominant_2nd)[:,0], np.asarray(rotVec_rec_dominant_2nd)[:,1], np.asarray(rotVec_rec_dominant_2nd)[:,2], color = (0, 1, 0), mode = '2ddash')
-        
-        
-        zeros = np.zeros(len(rotVec_rec_dominant_3rd))
-        
-        pts = mlab.quiver3d(zeros, zeros, zeros, np.asarray(rotVec_rec_dominant_3rd)[:,0], np.asarray(rotVec_rec_dominant_3rd)[:,1], np.asarray(rotVec_rec_dominant_3rd)[:,2], color = (0, 0, 1), mode = '2ddash')
-        
-
-        
-        # Color by scalar
-        #pts.glyph.color_mode = 'color_by_scalar' 
-
-        # Set look-up table and redraw
-        #pts.module_manager.scalar_lut_manager.lut.table = colors
-
-
+   
         # draw one average rotation vector
         #pts = mlab.quiver3d(0,0,0, avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = (1, 0, 0), line_width = 15, scale_factor = 2)
            
@@ -1855,56 +1851,107 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                 
 
     
-    #return path_index, quaternion_path_rec, rotVec_rec, quaternion_path_rec_dominant, rotVec_rec_dominant, rotVec_rec_dominant_2nd, rotVec_rec_dominant
-    
-    return    percent[sorted_idx_percent[0]], quaternion_path_rec_dominant, composition_path_rec_dominant, diff_path_rec_dominant, distance_path_rec_dominant, rotVec_rec_avg_dominant, rotVec_rec_composition_dominant,rotVec_rec_diff_dominant,\
-      percent[sorted_idx_percent[1]], quaternion_path_rec_dominant_2nd, composition_path_rec_dominant_2nd, diff_path_rec_dominant_2nd, distance_path_rec_dominant_2nd, rotVec_rec_avg_dominant_2nd, rotVec_rec_composition_dominant_2nd, rotVec_rec_diff_dominant_2nd,\
-      percent[sorted_idx_percent[2]], quaternion_path_rec_dominant_3rd,  composition_path_rec_dominant_3rd, diff_path_rec_dominant_3rd, distance_path_rec_dominant_3rd, rotVec_rec_avg_dominant_3rd, rotVec_rec_composition_dominant_3rd, rotVec_rec_diff_dominant_3rd
-    
-    
+    return percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
+            rotVec_average_cluster, rotVec_composition_cluster, rotVec_diff_cluster, \
+            distance_cluster, path_length_cluster
 
 
 
-
-def plot_quaternion_result(quaternion_path_all, percent_all, file_output):
+def plot_quaternion_result(quaternion_path_all, percent_all, file_output, type_quaternion, dimension):
     
     #print((quaternion_path_all.shape))
 
     #data = pd.DataFrame(quaternion_path_all, columns = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d'])
     
-    data = pd.DataFrame(quaternion_path_all, columns = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d'])
 
-    #Set marker properties
-    #markercolor = data['quaternion_a']
     
-    markercolor = percent_all
     
-    #Make Plotly figure
-    fig1 = go.Scatter3d(x=data['quaternion_b'],
-                    y=data['quaternion_c'],
-                    z=data['quaternion_d'],
-                    marker=dict(color=markercolor,
-                                opacity=1,
-                                reversescale=True,
-                                colorscale='Viridis',
-                                colorbar=dict(thickness=10),
-                                size=5),
-                    line=dict (width=0.02),
-                    mode='markers')
-    
-                 
-    #Make Plot.ly Layout
-    mylayout = go.Layout(scene=dict(xaxis=dict( title="quaternion_b"),
-                                yaxis=dict( title="quaternion_c"),
-                                zaxis=dict(title="quaternion_d")),)
-    
-    #Plot and save html
-    plotly.offline.plot({"data": [fig1],
-                     "layout": mylayout},
-                     auto_open=False,
-                     filename=file_output)
+        
+    if dimension == 4:
 
+        if type_quaternion == 0:
+            cols_q = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d']
+        elif type_quaternion == 1:
+            cols_q = ['composition_quaternion_a','composition_quaternion_b','composition_quaternion_c', 'composition_quaternion_d']
+        elif type_quaternion == 2:
+            cols_q = ['diff_quaternion_a','diff_quaternion_b','diff_quaternion_c', 'diff_quaternion_d']
+        elif type_quaternion == 3:
+            cols_q = ['distance_absolute','distance_intrinsic', 'distance_symmetrized']
+        
+        data = pd.DataFrame(quaternion_path_all, columns = cols_q)
 
+        #Set marker properties
+        #markercolor = data['quaternion_a']
+        
+        markercolor = percent_all
+        
+        #Make Plotly figure
+        fig1 = go.Scatter3d(x=data[cols_q[1]],
+                        y=data[cols_q[2]],
+                        z=data[cols_q[3]],
+                        marker=dict(color=markercolor,
+                                    opacity=1,
+                                    reversescale=True,
+                                    colorscale='Viridis',
+                                    colorbar=dict(thickness=10),
+                                    size=5),
+                        line=dict (width=0.02),
+                        mode='markers')
+        
+                     
+        #Make Plot.ly Layout
+        mylayout = go.Layout(scene=dict(xaxis=dict( title=str(cols_q[1])), 
+                                        yaxis=dict( title=str(cols_q[2])),
+                                        zaxis=dict(title=str(cols_q[3]))),)
+        
+        #Plot and save html
+        plotly.offline.plot({"data": [fig1],
+                         "layout": mylayout},
+                         auto_open=False,
+                         filename=file_output)
+    elif dimension == 3:
+        
+        
+        if type_quaternion == 0:
+            cols_q = ['rotVec_avg_0','rotVec_avg_1','rotVec_avg_2']
+        elif type_quaternion == 1:
+            cols_q = ['rotVec_composition_0','rotVec_composition_1','rotVec_composition_2']
+        elif type_quaternion == 2:
+            cols_q = ['rotVec_diff_0','rotVec_diff_1','rotVec_diff_2']
+        elif type_quaternion == 3:
+            cols_q = ['distance_absolute','distance_intrinsic', 'distance_symmetrized']
+
+        data = pd.DataFrame(quaternion_path_all, columns = cols_q)
+
+        #Set marker properties
+        #markercolor = data['quaternion_a']
+        
+        markercolor = percent_all
+        
+        #Make Plotly figure
+        fig1 = go.Scatter3d(x=data[cols_q[0]],
+                        y=data[cols_q[1]],
+                        z=data[cols_q[2]],
+                        marker=dict(color=markercolor,
+                                    opacity=1,
+                                    reversescale=True,
+                                    colorscale='Viridis',
+                                    colorbar=dict(thickness=10),
+                                    size=5),
+                        line=dict (width=0.02),
+                        mode='markers')
+        
+                     
+        #Make Plot.ly Layout
+        mylayout = go.Layout(scene=dict(xaxis=dict( title=str(cols_q[0])),
+                                    yaxis=dict( title=str(cols_q[1])),
+                                    zaxis=dict(title=str(cols_q[2]))),)
+        
+        #Plot and save html
+        plotly.offline.plot({"data": [fig1],
+                         "layout": mylayout},
+                         auto_open=False,
+                         filename=file_output)
 
 
 
@@ -1972,76 +2019,67 @@ if __name__ == '__main__':
     
     result_list = []
     
-    (percent_dominant, quaternion_path_rec_dominant, composition_path_rec_dominant, diff_path_rec_dominant, distance_path_rec_dominant, rotVec_rec_avg_dominant, rotVec_rec_composition_dominant,rotVec_rec_diff_dominant,\
-      percent_dominant_2nd, quaternion_path_rec_dominant_2nd, composition_path_rec_dominant_2nd, diff_path_rec_dominant_2nd, distance_path_rec_dominant_2nd, rotVec_rec_avg_dominant_2nd, rotVec_rec_composition_dominant_2nd, rotVec_rec_diff_dominant_2nd,\
-      percent_dominant_3rd, quaternion_path_rec_dominant_3rd,  composition_path_rec_dominant_3rd, diff_path_rec_dominant_3rd, distance_path_rec_dominant_3rd, rotVec_rec_avg_dominant_3rd, rotVec_rec_composition_dominant_3rd, rotVec_rec_diff_dominant_3rd) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+    (percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
+            rotVec_average_cluster, rotVec_composition_cluster, rotVec_diff_cluster, \
+            distance_cluster, path_length_cluster) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+    result_traits = []
     
+    percent_arr_list = []
+    path_len_arr_list = []
     
-    quaternion_path_rec_dominant_arr = np.vstack(quaternion_path_rec_dominant)
-    composition_path_rec_dominant_arr = np.vstack(composition_path_rec_dominant)
-    diff_path_rec_dominant_arr = np.vstack(diff_path_rec_dominant)
-    distance_path_rec_dominant_arr = np.vstack(distance_path_rec_dominant)
-    rotVec_rec_avg_dominant_arr = np.vstack(rotVec_rec_avg_dominant)
-    rotVec_rec_composition_dominant_arr = np.vstack(rotVec_rec_composition_dominant)
-    rotVec_rec_diff_dominant_arr = np.vstack(rotVec_rec_diff_dominant)
+    q_average_arr_list = []
+    q_composition_arr_list = []
+    q_diff_arr_list = []
     
-    quaternion_path_rec_dominant_2nd_arr = np.vstack(quaternion_path_rec_dominant_2nd)
-    composition_path_rec_dominant_2nd_arr = np.vstack(composition_path_rec_dominant_2nd)
-    diff_path_rec_dominant_2nd_arr = np.vstack(diff_path_rec_dominant_2nd)
-    distance_path_rec_dominant_2nd_arr = np.vstack(distance_path_rec_dominant_2nd)
-    rotVec_rec_avg_dominant_2nd_arr = np.vstack(rotVec_rec_avg_dominant_2nd)
-    rotVec_rec_composition_dominant_2nd_arr = np.vstack(rotVec_rec_composition_dominant_2nd)
-    rotVec_rec_diff_dominant_2nd_arr = np.vstack(rotVec_rec_diff_dominant_2nd)
+    q_distance_arr_list = []
     
-    quaternion_path_rec_dominant_3rd_arr = np.vstack(quaternion_path_rec_dominant_3rd)
-    composition_path_rec_dominant_3rd_arr = np.vstack(composition_path_rec_dominant_3rd)
-    diff_path_rec_dominant_3rd_arr = np.vstack(diff_path_rec_dominant_3rd)
-    distance_path_rec_dominant_3rd_arr = np.vstack(distance_path_rec_dominant_3rd)
-    rotVec_rec_avg_dominant_3rd_arr = np.vstack(rotVec_rec_avg_dominant_3rd)
-    rotVec_rec_composition_dominant_3rd_arr = np.vstack(rotVec_rec_composition_dominant_3rd)
-    rotVec_rec_diff_dominant_3rd_arr = np.vstack(rotVec_rec_diff_dominant_3rd)
+    rotVec_avg_arr_list = []
+    rotVec_composition_arr_list = []
+    rotVec_diff_arr_list = []
     
-    percent_dominant_arr = np.repeat(percent_dominant, repeats = len(quaternion_path_rec_dominant_arr), axis = 0)
-    percent_dominant_2nd_arr = np.repeat(percent_dominant_2nd, repeats = len(quaternion_path_rec_dominant_2nd_arr), axis = 0)
-    percent_dominant_3rd_arr = np.repeat(percent_dominant_3rd, repeats = len(quaternion_path_rec_dominant_3rd_arr), axis = 0)
-    
-    
-    result_dominant = []
-    result_dominant_2nd = []
-    result_dominant_3rd = []
+    for i in range(number_cluster):
+        
+        traits_row = []
+        
+        q_average_arr = np.vstack(q_average_cluster[i])
+        q_composition_arr = np.vstack(q_composition_cluster[i])
+        q_diff_arr = np.vstack(q_diff_cluster[i])
+        
+        q_distance_arr = np.vstack(distance_cluster[i])
+        
+        rotVec_avg_arr = np.vstack(rotVec_average_cluster[i])
+        rotVec_composition_arr = np.vstack(rotVec_composition_cluster[i])
+        rotVec_diff_arr = np.vstack(rotVec_diff_cluster[i])
+        
+        percent_arr = np.repeat(percent_sorted[i], repeats = len(q_average_arr), axis = 0)
+        path_len_arr = np.repeat(path_length_cluster[i], repeats = len(q_average_arr), axis = 0)
+        
+        
+        q_average_arr_list.append(q_average_arr)
+        q_composition_arr_list.append(q_composition_arr)
+        q_diff_arr_list.append(q_diff_arr)
 
-    for i, (v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24) in enumerate(zip(percent_dominant_arr, quaternion_path_rec_dominant_arr[:,0], quaternion_path_rec_dominant_arr[:,1], quaternion_path_rec_dominant_arr[:,2], quaternion_path_rec_dominant_arr[:,3],\
-                                                        composition_path_rec_dominant_arr[:,0], composition_path_rec_dominant_arr[:,1], composition_path_rec_dominant_arr[:,2], composition_path_rec_dominant_arr[:,3],\
-                                                        diff_path_rec_dominant_arr[:,0], diff_path_rec_dominant_arr[:,1], diff_path_rec_dominant_arr[:,2], diff_path_rec_dominant_arr[:,3],\
-                                                        distance_path_rec_dominant_arr[:,0], distance_path_rec_dominant_arr[:,1], distance_path_rec_dominant_arr[:,2],\
-                                                        rotVec_rec_avg_dominant_arr[:,0], rotVec_rec_avg_dominant_arr[:,1], rotVec_rec_avg_dominant_arr[:,2],\
-                                                        rotVec_rec_composition_dominant_arr[:,0], rotVec_rec_composition_dominant_arr[:,1], rotVec_rec_composition_dominant_arr[:,2],\
-                                                        rotVec_rec_diff_dominant_arr[:,0], rotVec_rec_diff_dominant_arr[:,1], rotVec_rec_diff_dominant_arr[:,2])):
-    
-        result_dominant.append([v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24])
-    
-    for i, (v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24) in enumerate(zip(percent_dominant_2nd_arr, quaternion_path_rec_dominant_2nd_arr[:,0], quaternion_path_rec_dominant_2nd_arr[:,1], quaternion_path_rec_dominant_2nd_arr[:,2], quaternion_path_rec_dominant_2nd_arr[:,3],\
-                                                        composition_path_rec_dominant_2nd_arr[:,0], composition_path_rec_dominant_2nd_arr[:,1], composition_path_rec_dominant_2nd_arr[:,2], composition_path_rec_dominant_2nd_arr[:,3],\
-                                                        diff_path_rec_dominant_2nd_arr[:,0], diff_path_rec_dominant_2nd_arr[:,1], diff_path_rec_dominant_2nd_arr[:,2], diff_path_rec_dominant_2nd_arr[:,3],\
-                                                        distance_path_rec_dominant_2nd_arr[:,0], distance_path_rec_dominant_2nd_arr[:,1], distance_path_rec_dominant_2nd_arr[:,2],\
-                                                        rotVec_rec_avg_dominant_2nd_arr[:,0], rotVec_rec_avg_dominant_2nd_arr[:,1], rotVec_rec_avg_dominant_2nd_arr[:,2],\
-                                                        rotVec_rec_composition_dominant_2nd_arr[:,0], rotVec_rec_composition_dominant_2nd_arr[:,1], rotVec_rec_composition_dominant_2nd_arr[:,2],
-                                                        rotVec_rec_diff_dominant_2nd_arr[:,0], rotVec_rec_diff_dominant_2nd_arr[:,1], rotVec_rec_diff_dominant_2nd_arr[:,2])):
-    
-        result_dominant_2nd.append([v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24])
-    
-    for i, (v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24) in enumerate(zip(percent_dominant_3rd_arr, quaternion_path_rec_dominant_3rd_arr[:,0], quaternion_path_rec_dominant_3rd_arr[:,1], quaternion_path_rec_dominant_3rd_arr[:,2], quaternion_path_rec_dominant_3rd_arr[:,3],\
-                                                        composition_path_rec_dominant_3rd_arr[:,0], composition_path_rec_dominant_3rd_arr[:,1], composition_path_rec_dominant_3rd_arr[:,2], composition_path_rec_dominant_3rd_arr[:,3],\
-                                                        diff_path_rec_dominant_3rd_arr[:,0], diff_path_rec_dominant_3rd_arr[:,1], diff_path_rec_dominant_3rd_arr[:,2], diff_path_rec_dominant_3rd_arr[:,3],\
-                                                        distance_path_rec_dominant_3rd_arr[:,0], distance_path_rec_dominant_3rd_arr[:,1], distance_path_rec_dominant_3rd_arr[:,2],\
-                                                        rotVec_rec_avg_dominant_3rd_arr[:,0], rotVec_rec_avg_dominant_3rd_arr[:,1], rotVec_rec_avg_dominant_3rd_arr[:,2],\
-                                                        rotVec_rec_composition_dominant_3rd_arr[:,0], rotVec_rec_composition_dominant_3rd_arr[:,1], rotVec_rec_composition_dominant_3rd_arr[:,2],\
-                                                        rotVec_rec_diff_dominant_3rd_arr[:,0], rotVec_rec_diff_dominant_3rd_arr[:,1], rotVec_rec_diff_dominant_3rd_arr[:,2])):
-    
-        result_dominant_3rd.append([v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24])
+        q_distance_arr_list.append(q_distance_arr)
+
+        rotVec_avg_arr_list.append(rotVec_avg_arr)
+        rotVec_composition_arr_list.append(rotVec_composition_arr)
+        rotVec_diff_arr_list.append(rotVec_diff_arr)
         
+        percent_arr_list.append(percent_arr)
+        path_len_arr_list.append(path_len_arr)
         
-    
+        for i, (v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24) in enumerate(zip(percent_arr, q_average_arr[:,0], q_average_arr[:,1], q_average_arr[:,2], q_average_arr[:,3],\
+                                                        q_composition_arr[:,0], q_composition_arr[:,1], q_composition_arr[:,2], q_composition_arr[:,3],\
+                                                        q_diff_arr[:,0], q_diff_arr[:,1], q_diff_arr[:,2], q_diff_arr[:,3],\
+                                                        q_distance_arr[:,0], q_distance_arr[:,1], q_distance_arr[:,2],\
+                                                        rotVec_avg_arr[:,0], rotVec_avg_arr[:,1], rotVec_avg_arr[:,2],\
+                                                        rotVec_composition_arr[:,0], rotVec_composition_arr[:,1], rotVec_composition_arr[:,2],\
+                                                        rotVec_diff_arr[:,0], rotVec_diff_arr[:,1], rotVec_diff_arr[:,2])):
+                                                            
+            traits_row.append([v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24])
+        
+        result_traits.append(traits_row)
+
     #save reuslt file
     ####################################################################
 
@@ -2195,16 +2233,18 @@ if __name__ == '__main__':
 
 
 
-    for row in result_dominant:
+    for row in result_traits[0]:
         sheet_quaternion_1.append(row)
         
-    for row in result_dominant_2nd:
+    for row in result_traits[1]:
         sheet_quaternion_2.append(row)
    
-    for row in result_dominant_3rd:
+    for row in result_traits[2]:
         sheet_quaternion_3.append(row)
         
-           
+    
+    
+    
     #save the csv file
     wb.save(trait_file)
     
@@ -2252,29 +2292,45 @@ if __name__ == '__main__':
     
     ####################################################################
     #Multi-dimension plots in ploty
+    
+    percent_all = np.concatenate((percent_arr_list[0], percent_arr_list[1], percent_arr_list[2]), axis = 0)
+    
+    
+    if type_quaternion == 0:
+        
+        q_all = np.concatenate((q_average_arr_list[0], q_average_arr_list[1], q_average_arr_list[2]), axis = 0)
+        rotVec_all = np.concatenate((rotVec_avg_arr_list[0], rotVec_avg_arr_list[1], rotVec_avg_arr_list[2]), axis = 0)
+        
+        plot_file = (save_path + folder_name + '_avg_quaternion.html')
+        plot_file_rotVec = (save_path + folder_name + '_rotVec_avg.html')
+        
+    elif type_quaternion == 1:
+        
+        q_all = np.concatenate((q_composition_arr_list[0], q_composition_arr_list[1], q_composition_arr_list[2]), axis = 0)
+        rotVec_all = np.concatenate((rotVec_composition_arr_list[0], rotVec_composition_arr_list[1], rotVec_composition_arr_list[2]), axis = 0)
+        
+        plot_file = (save_path + folder_name + '_composition_quaternion.html')
+        plot_file_rotVec = (save_path + folder_name + '_rotVec_composition.html')
+        
+    elif type_quaternion == 2:
+        
+        q_all = np.concatenate((q_diff_arr_list[0], q_diff_arr_list[1], q_diff_arr_list[2]), axis = 0)
+        rotVec_all = np.concatenate((rotVec_diff_arr_list[0], rotVec_diff_arr_list[1], rotVec_diff_arr_list[2]), axis = 0)
+        
+        plot_file = (save_path + folder_name + '_diff_quaternion.html')
+        plot_file_rotVec = (save_path + folder_name + '_rotVec_diff.html')
+        
+    elif type_quaternion == 3:
+        q_average_all = np.concatenate((q_distance_arr_list[0], q_distance_arr_list[1], q_distance_arr_list[2]), axis = 0) 
+    
+    
+    
+    
+    plot_quaternion_result(q_all, percent_all, plot_file, type_quaternion, 4)
+    
+    plot_quaternion_result(rotVec_all, percent_all, plot_file_rotVec, type_quaternion, 3)
+    
+    
 
-    percent_all = np.concatenate((percent_dominant_arr, percent_dominant_2nd_arr, percent_dominant_3rd_arr), axis = 0) 
-    
-    
-    #Quaternion representation of all paths in 3 clusters. Each path was computed as average of quaternion values 
-    quaternion_path_all = np.concatenate((quaternion_path_rec_dominant_arr, quaternion_path_rec_dominant_2nd_arr, quaternion_path_rec_dominant_3rd_arr), axis = 0)
-    
-    plot_file = (save_path + folder_name + '_avg_quaternion.html')
-    plot_quaternion_result(quaternion_path_all, percent_all, plot_file)
-    
-    
-    #Composition of Quaternion representation of all paths in 3 clusters. Each path was computed as Composition of quaternion values 
-    composition_path_all = np.concatenate((composition_path_rec_dominant_arr, composition_path_rec_dominant_2nd_arr, composition_path_rec_dominant_3rd_arr), axis = 0)
-    
-    plot_file = (save_path + folder_name + '_composition_quaternion.html')
-    plot_quaternion_result(composition_path_all, percent_all, plot_file)
-    
-    
-    #Composition of Quaternion representation of all paths in 3 clusters. Each path was computed as Composition of quaternion values 
-    diff_path_all = np.concatenate((diff_path_rec_dominant_arr, diff_path_rec_dominant_2nd_arr, diff_path_rec_dominant_3rd_arr), axis = 0)
-    
-    plot_file = (save_path + folder_name + '_diff_quaternion.html')
-    plot_quaternion_result(diff_path_all, percent_all, plot_file)
-    
 
     

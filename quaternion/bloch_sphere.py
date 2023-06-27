@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-    python3 bloch_sphere.py -p ~/example/quaternion/tiny/ 
+    python3 bloch_sphere.py -p ~/example/quaternion/species_comp/ -v 1 -tq 0
 
 
 argument:
@@ -36,6 +36,8 @@ import plotly
 
 from qutip import *
 import matplotlib.pyplot as plt
+
+from sklearn.preprocessing import normalize
 
 
 def mkdir(path):
@@ -69,18 +71,22 @@ if __name__ == '__main__':
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True,    help = "path to excel file")
+    ap.add_argument("-v", "--visualize", required = False, type= int, default = 0, help = "Visualize rotation vector or not")
+    ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
+
     args = vars(ap.parse_args())
 
     ###################################################################
     
     current_path = args["path"]
+    type_quaternion = args["type_quaternion"]
     
     file_path = current_path + "*.xlsx"
-
+    
     # get the absolute path of all Excel files 
     ExcelFiles_list = glob.glob(file_path)
     
-    
+    '''
     b = qutip.Bloch()
     
     b.make_sphere()
@@ -88,13 +94,128 @@ if __name__ == '__main__':
     pnt = [1/np.sqrt(3), 1/np.sqrt(3), 1/np.sqrt(3)]
     b.add_points(pnt)
 
-    vec = [0, 1, 0]
+    vec = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
     b.add_vectors(vec)
 
     b.show()
     
     plt.show()
+    '''
+
+
+
+
+    ####################################################################
+    # loop over the list of excel files
+    data_q = []
     
+    data_v = []
+    
+    genotype_label = []
+    
+    #sample_rate = 100
+    
+    for f in ExcelFiles_list:
+        
+        filename = Path(f).name
+        
+        base_name = filename.replace(".xlsx", "")
+       
+        print("Processing file '{}'...\n".format(filename))
+        
+        # read the csv file
+        df = pd.read_excel(f)
+        ###############################################################
+        #get downsampled rotation vectors
+        #rotVec = np.vstack((data['rotVec_rec_0'],data['rotVec_rec_1'],data['rotVec_rec_2'])).T
+        
+        if type_quaternion == 0:
+            cols_vec = ['rotVec_avg_0','rotVec_avg_1','rotVec_avg_2']
+        elif type_quaternion == 1:
+            cols_vec = ['rotVec_composition_0','rotVec_composition_1','rotVec_composition_2']
+        elif type_quaternion == 2:
+            cols_vec = ['rotVec_diff_0','rotVec_diff_1','rotVec_diff_2']
+        elif type_quaternion == 3:
+            cols_vec = ['rotVec_avg_0','rotVec_avg_1','rotVec_avg_2']
+        
+
+        data_v = df[cols_vec].values.tolist()
+        
+
+        # downsample along coloum direction, every 10th
+        #data_v = np.asarray(data_v)[::sample_rate,:]
+        
+        data_v_arr = np.asarray(data_v)
+        
+        
+        ################################################################
+        #get downsampled genotype values
+        genotype_label = df['genotype_label'].values.tolist()
+
+        # downsample along coloum direction, every 10th
+        #genotype_label = genotype_v[::sample_rate,:]
+        #genotype_label = np.asarray(genotype_label)[::sample_rate]
+        
+        genotype_label_arr = np.asarray(genotype_label)
+        
+        
+        
+        ################################################################
+        genotype_type = df['genotype'].values.tolist()
+        
+        genotype_type_arr = np.asarray(genotype_label)
+        
+        genotype_unique = list(set(genotype_type))
+        
+        #genotype_unique_arr = np.array(genotype_unique)
+        
+        print("Genotypes are {} \n".format(genotype_unique))
+        
+        
+        
+        
+
+    ######################################################################
+    #normalize into unit vectors
+    normalized_data_v = []
+    
+    for vector in data_v:
+        
+        n_vector = normalize([vector])
+        
+        n_vector_1D = [item for sub_list in n_vector for item in sub_list]
+       
+        #print(type(n_vector_1D))
+        
+        normalized_data_v.append(n_vector_1D)
+        
+    #print(type(normalized_data_v))
+    
+    #print(data_v)
+    #print(normalized_data_v)
+    
+    #######################################################################
+    #visualize vectors in sphere 
+    
+    #vector_sphere = qutip.Bloch3d()
+    vector_sphere = qutip.Bloch()
+    
+    vector_sphere.make_sphere()
+    
+    #pnt = [1/np.sqrt(3), 1/np.sqrt(3), 1/np.sqrt(3)]
+    #vector_sphere.add_points(data_v_arr)
+
+    #vec = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+    vector_sphere.add_vectors(normalized_data_v)
+    
+    vector_sphere.vector_color = ['r']
+
+    vector_sphere.show()
+    
+    plt.show() 
+    
+    
+
     
     ########################################################################
     '''
@@ -154,138 +275,7 @@ if __name__ == '__main__':
 
     '''
     
-    '''
-    ####################################################################
-    # add filename to the first column of all excel files
-    # loop over the list of excel files
-    for f in ExcelFiles_list:
-        
-        filename = Path(f).name
-        
-        base_name = filename.replace("_quaternion.xlsx", "")
-        
-        print("Processing file '{}'...\n".format(base_name))
-        
-        mkpath = current_path +  base_name + '_Mahalanobis_p'
-        mkdir(mkpath)
-        save_path = mkpath + '/'
-        
-        
-        # read the csv file
-        xls = pd.ExcelFile(f)
-        
-        #sheet_name_list = ['sheet_quaternion_1', 'sheet_quaternion_2', 'sheet_quaternion_3']
-        
-        sheet_name_list = ['Sheet1']
-        
-        
-        
-        
-        df_list = []
-        
-        for sheet_name in sheet_name_list:
-            
-            df = pd.read_excel(xls, sheet_name)
-
-            ############################################################
-            # select specific columns 
-            cols_q = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d']
-            data_q = df[cols_q]
-            
-            #print(data_vec)
-                                    
-            # Creating a new column in the dataframe that holds the Mahalanobis distance for each row
-            df['quaternion_Mahalanobis'] = calculateMahalanobis(y = data_q, data = df[cols_q])
-            
-            # compute the p-value for every Mahalanobis distance of each observation of the dataset. 
-            # Creating a new column in the dataframe that calculates p-value for each mahalanobis distance
-            df['quaternion_p'] = 1 - chi2.cdf(df['quaternion_Mahalanobis'], 3)
-            
-            # draw Mahalanobis and p values as 2d scatter plot
-            cols_ma = ['quaternion_Mahalanobis','quaternion_p']
-            data_ma = df[cols_ma]
-            
-            fig = px.scatter(data_ma, x = "quaternion_Mahalanobis", y = "quaternion_p", color = 'quaternion_Mahalanobis')
-            
-            Mahalanobis_p_file = (save_path + base_name + sheet_name.replace("sheet_quaternion", "") +'_quaternion__Mahalanobis_p.html')
     
-            plotly.offline.plot(fig, auto_open = False, filename = Mahalanobis_p_file)
-            
-            
-            df_q = df[['quaternion_Mahalanobis']]
-            
-            fig = px.histogram(df_q, x = "quaternion_Mahalanobis", nbins=20)
-            
-            Mahalanobis_p_file = (save_path + base_name + sheet_name.replace("sheet_quaternion", "") +'_quaternion_Mahalanobis_his.html')
-    
-            plotly.offline.plot(fig, auto_open = False, filename = Mahalanobis_p_file)
-            
-            ############################################################
-            # compute Mahalanobis distance of rotation vectors
-            # select specific columns 
-            cols_vec = ['rotVec_rec_0','rotVec_rec_1','rotVec_rec_2']
-            data_vec = df[cols_vec]
-            
-            #print(data_vec)
-                                    
-            # Creating a new column in the dataframe that holds the Mahalanobis distance for each row
-            df['rotVec_Mahalanobis'] = calculateMahalanobis(y = data_vec, data = df[cols_vec])
-
-            # compute the p-value for every Mahalanobis distance of each observation of the dataset. 
-            # Creating a new column in the dataframe that calculates p-value for each mahalanobis distance
-            df['rotVec_p'] = 1 - chi2.cdf(df['rotVec_Mahalanobis'], 3)
-            
-            # note:
-            #the observation having a p-value less than 0.001 is assumed to be an outlier. 
-            
-            
-            # draw Mahalanobis and p values as 2d scatter plot
-            cols_ma = ['rotVec_Mahalanobis','rotVec_p']
-            data_ma = df[cols_ma]
-            
-            fig = px.scatter(data_ma, x = "rotVec_Mahalanobis", y = "rotVec_p", color = 'rotVec_Mahalanobis')
-            
-            Mahalanobis_p_file = (save_path + base_name + sheet_name.replace("sheet_quaternion", "") +'_rotVec_Mahalanobis_p.html')
-    
-            plotly.offline.plot(fig, auto_open = False, filename = Mahalanobis_p_file)
-
-
-            df_v = df[['rotVec_Mahalanobis']]
-            
-            fig = px.histogram(df_v, x = "rotVec_Mahalanobis", nbins = 20)
-            
-            Mahalanobis_p_file = (save_path + base_name + sheet_name.replace("sheet_quaternion", "") +'_rotVec_Mahalanobis_his.html')
-    
-            plotly.offline.plot(fig, auto_open = False, filename = Mahalanobis_p_file)
-            
-            #print(df)
-            
-            
-            ##########################################################################################
-            # filter data with p vlaue less than 0.001
-            p_thresh = 0.001
-        
-            df_sel = df.loc[(df["quaternion_p"] >= p_thresh) & (df["rotVec_p"] >= p_thresh)]
-            
-            df_list.append(df_sel)
-            
-            print("Original path number = {}, filtered path number = {}\n".format(df.shape[0], df_sel.shape[0]))
-         
-            
-        #####################################################
-        output_file = save_path + base_name + '_sel.xlsx'
-        
-        #print(output_file)
-        
-        with pd.ExcelWriter(output_file, engine = "openpyxl") as writer:
-        
-            for sheet_name_cur, df_cur in zip(sheet_name_list, df_list):
-                
-                #print(df_cur.shape[0])
-                
-                df_cur.to_excel(writer, sheet_name = sheet_name_cur)
-            
-     '''
 
 
 

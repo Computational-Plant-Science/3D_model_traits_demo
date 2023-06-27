@@ -159,14 +159,15 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label):
     
     #print(genotype_unique)
     
-
+    
+    
     for idx, genoype_value  in enumerate(genotype_unique):
         
         #print("genotype_ID = {}, genoype_value = {}".format(idx, genoype_value))
         
         index_sel = np.where(genotype_label == genotype_unique[idx])[0]
     
-        print(data_q_arr[index_sel])
+        #print(data_q_arr[index_sel])
         
         # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
         avg_quaternion = averageQuaternions(data_q_arr[index_sel])
@@ -182,11 +183,8 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label):
         avg_rotVec = averageVectors(avg_quaternion)
         
         avg_rotVec_list.append(avg_rotVec)
-        
-        
-   
-    print("{} genotypes in total, average roration vectors = {}\n".format(len(genotype_unique), avg_rotVec_list))
     
+
     ###############################################################################
     # Display a semi-transparent sphere
 
@@ -223,7 +221,9 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label):
     mlab.plot3d(x, y, z, color=(1, 1, 1), opacity=0.2, tube_radius=None)
     '''
     
-    
+   
+    ###########################################################################
+    # Visualzie vectors by genotypes, colored by different genotypes
     
     cm = plt.get_cmap('turbo')
     
@@ -244,8 +244,6 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label):
     
     zeros = np.zeros(N)
     
-    
-    #rotVec_rec = np.absolute(rotVec_rec)
 
     # draw all the rotation vectors in pipeline
     #mlab.quiver3d( 0,0,0, Vec_arr[0], Vec_arr[1], Vec_arr[2], color = current_color)
@@ -257,35 +255,21 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label):
     # Set look-up table and redraw
     sphere.module_manager.scalar_lut_manager.lut.table = colors
     
+        
+        
+        
+   
+    print("{} genotypes in total, average roration vectors = {}\n".format(len(genotype_unique), avg_rotVec_list))
     
     
+
     
+
     for idx, avg_rotVec  in enumerate(avg_rotVec_list):
         
         sphere = mlab.quiver3d(0,0,0, avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = (1, 0, 0), line_width = 15, mode = '2darrow')
-        
-    
-    '''
-    for idx, (Vec_arr, genoype_value)  in enumerate(zip(rotVec_rec, genotype_label)):
-        
-        #print(type(genoype_value.item()))
-            
-        if genoype_value == "LowN":
-            current_color = (1, 0, 0)
-        else:
-            current_color = (0, 1, 0)
-            
-        #mlab.quiver3d( 0,0,0, Vec_arr[0], Vec_arr[1], Vec_arr[2], color = current_color)
-        #pts = mlab.quiver3d(0,0,0, Vec_arr[0], Vec_arr[1], Vec_arr[2], scalars=scalars)
-        
-        magnitude = linalg.norm(Vec_arr)
-        
-        #print("genoype_value = {} Vector_length = {}".format(genoype_value, magnitude))
-    '''
-        
-    #rotVec_obj = (current_path + 'rotation_vector_sphere.obj')
-    
-    #mlab.savefig(rotVec_obj)
+
+
     
     mlab.show()
     
@@ -584,27 +568,15 @@ if __name__ == '__main__':
 
         
     
-    
-    
-
-    
-    
     ###########################################################################
     #indices_HighN = np.where(genotype_label == 'HighN')
-    
-    #genotype_label[indices_HighN] == 255
-    
-    data_v_sel = data_v_arr
-    genotype_label_sel = genotype_label_arr
-    
-    #print(genotype_label_sel)
     
     #visualize rotation vectors
     #visualization_rotation_vector(np.asarray(normalized_data_v), genotype_label)
     
     if args['visualize'] == 1:
         
-        visualization_rotation_vector(np.asarray(data_v_sel), np.asarray(data_q_arr), genotype_label_sel)
+        visualization_rotation_vector(np.asarray(data_v_arr), np.asarray(data_q_arr), genotype_label_arr)
     
 
     ###########################################################################################3
