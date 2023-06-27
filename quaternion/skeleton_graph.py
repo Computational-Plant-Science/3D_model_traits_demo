@@ -857,6 +857,22 @@ def quaternion_list_distance(q_list):
 
 
 
+# compute the rotation vector from a quaternion 
+def rotVec_from_quaternion(quaternion_value):
+
+    # get Rotation matrix from quaternion
+    rot = R.from_quat(quaternion_value)
+
+    # get the rotation vector
+    rotVec = rot.as_rotvec()
+    
+    return rotVec
+    
+
+
+
+
+
 
 
 
@@ -1168,7 +1184,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     vlist_path_rec = []
     
-    quaternion_path_rec = []
+    avg_quaternion_path_rec = []
     composition_path_rec = []
     distance_path_rec = []
     diff_path_rec = []
@@ -1291,44 +1307,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             # compute average quaternion values from a list of quarternion along the path
             avg_quaternion = avg_quaternion.flatten()
             
-            quaternion_path_rec.append(avg_quaternion)
-            
-            
-            # get Rotation matrix from quaternion
-            rot = R.from_quat(avg_quaternion)
+            avg_quaternion_path_rec.append(avg_quaternion)
             
             # get the rotation vector
-            rotVec = rot.as_rotvec()
-            
-            rotVec_rec_avg.append(rotVec)
+            rotVec_rec_avg.append(rotVec_from_quaternion(avg_quaternion))
 
-            
-            
-            '''
-            if avg_quaternion[0] < 0:
-                
-                q = Quaternion(avg_quaternion).inverse
-                avg_quaternion = q.elements
-                
-                #avg_quaternion = np.absolute(avg_quaternion)
-    
-                avg_quaternion = avg_quaternion.flatten()
-
-                rot = R.from_quat(avg_quaternion)
-                
-                #Invert this rotation.
-                rot_inv = rot.inv()
-                
-                avg_euler = rot_inv.as_euler('xyz')
-            
-            else:
-                
-                avg_quaternion = avg_quaternion.flatten()
-
-                rot = R.from_quat(avg_quaternion)
-                
-                avg_euler = rot.as_euler('xyz')
-            '''
             
             # Composition of quaternions
             #################################################################
@@ -1338,11 +1321,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             composition_path_rec.append(q_composition)
             
-            rot = R.from_quat(q_composition)
-            
-            rotVec = rot.as_rotvec()
-            
-            rotVec_rec_composition.append(rotVec)
+            # get the rotation vector
+            rotVec_rec_composition.append(rotVec_from_quaternion(q_composition))
             
             
             # Differential of quaternions
@@ -1352,49 +1332,40 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             diff_path_rec.append(q_diff)
             
-                        
-            rot = R.from_quat(q_diff)
+            # get the rotation vector
+            rotVec_rec_diff.append(rotVec_from_quaternion(q_diff))
             
-            rotVec = rot.as_rotvec()
-            
-            rotVec_rec_diff.append(rotVec)
+   
             
             # Distance of quaternions
             #################################################################
  
             (cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized) = quaternion_list_distance(list_quaternion)
             
-            #distance_absolute_path_rec.append(cumulative_Q_D_absolute)
-            #distance_intrinsic_path_rec.append(cumulative_Q_D_intrinsic)
-            #distance_symmetrized_path_rec.append(cumulative_Q_D_symmetrized)
-            
             distance_path_rec.append([cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized])
             
 
-            print("vlist_path = {} avg_quaternion = {} rotVec = {} q_composition = {}\n".format(idx, avg_quaternion, rotVec, q_composition))
+            print("vlist_path = {} avg_quaternion = {} q_composition = {} q_diff = {}\n".format(idx, avg_quaternion, q_composition, q_diff))
                 
-            
-            
-
         if rotVec_r[2] < 0:
             index_inv.append(idx)
                             
     print("Found {} shortest path \n".format(len(vlist_path_rec)))
     
-    
+    #print("Path length: {}\n".format(path_length_rec))
     
     
     #print("diff_path_rec = {} \n".format(len(diff_path_rec)))
     
     ####################################################################
     #find the dominant cluster of the average quaternion as 4 dimensional vectors 
-    quaternion_path_rec_list = []
+    avg_quaternion_path_rec_list = []
     
-    for vector in quaternion_path_rec:
-        quaternion_path_rec_list.append(vector.reshape(4,1))
+    for vector in avg_quaternion_path_rec:
+        avg_quaternion_path_rec_list.append(vector.reshape(4,1))
 
-    quaternion_path_rec_list_reshape = np.asarray(quaternion_path_rec).reshape((len(vlist_path_rec),4))
-    print("quaternion_path_rec_list_reshape: {}\n".format((quaternion_path_rec_list_reshape.shape)))
+    avg_quaternion_path_rec_list_reshape = np.asarray(avg_quaternion_path_rec).reshape((len(vlist_path_rec),4))
+    print("quaternion_path_rec_list_reshape: {}\n".format((avg_quaternion_path_rec_list_reshape.shape)))
     
     ####################################################################
     #find the dominant cluster of the composition quaternion as 4 dimensional vectors 
@@ -1437,12 +1408,22 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     folder_name = os.path.basename(trait_path)
     
     
+    if type_quaternion == 0:
+        data_list = avg_quaternion_path_rec_list_reshape
+    elif type_quaternion == 1:
+        data_list = composition_path_rec_list_reshape
+    elif type_quaternion == 2:
+        data_list = diff_path_rec_list_reshape
+    elif type_quaternion == 3:
+        data_list = distance_path_rec_list_reshape
+    
+    
     md=[]
     for i in range(1,21):
         
         kmeans = KMeans(n_clusters = i)
         
-        kmeans.fit(quaternion_path_rec_list_reshape)
+        kmeans.fit(data_list)
 
         md.append(kmeans.inertia_)
     #print(md)
@@ -1464,7 +1445,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     kmeans = KMeans(n_clusters = number_cluster)
     
     if type_quaternion == 0:
-        s = kmeans.fit(quaternion_path_rec_list_reshape)
+        s = kmeans.fit(avg_quaternion_path_rec_list_reshape)
     elif type_quaternion == 1:
         s = kmeans.fit(composition_path_rec_list_reshape)
     elif type_quaternion == 2:
@@ -1531,8 +1512,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         index_selected = [index for index in range(len(labels))  if labels[index] == idx_value]
         
-        average_path_q =  [quaternion_path_rec[i] for i in index_selected]
-        quaternion_path_q = [quaternion_path_rec[i] for i in index_selected]
+        average_path_q =  [avg_quaternion_path_rec[i] for i in index_selected]
+        omposition_path_q = [composition_path_rec[i] for i in index_selected]
         diff_path_q = [diff_path_rec[i] for i in index_selected]
         
         rotVec_path_average = [rotVec_rec_avg[i] for i in index_selected]
@@ -1544,7 +1525,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         path_length_value = [path_length_rec[i] for i in index_selected]
         
         q_average_cluster.append(average_path_q)
-        q_composition_cluster.append(quaternion_path_q)
+        q_composition_cluster.append(omposition_path_q)
         q_diff_cluster.append(diff_path_q)
         
         rotVec_average_cluster.append(rotVec_path_average)
@@ -1559,7 +1540,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     
     #print("sorted_idx_percent = {} percent = {}".format(sorted_idx_percent, percent))
-    #print("path number = {}\n".format(len(path_length_cluster)))
+    
+    for i in range(number_cluster):
+        
+        print("The {} cluster contains {} paths\n".format(i+1, len(path_length_cluster[i])))
     
 
     ############################################################################################
@@ -1859,13 +1843,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
 def plot_quaternion_result(quaternion_path_all, percent_all, file_output, type_quaternion, dimension):
     
-    #print((quaternion_path_all.shape))
-
-    #data = pd.DataFrame(quaternion_path_all, columns = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d'])
-    
-
-    
-    
         
     if dimension == 4:
 
@@ -2041,19 +2018,20 @@ if __name__ == '__main__':
         
         traits_row = []
         
+        
+        
         q_average_arr = np.vstack(q_average_cluster[i])
         q_composition_arr = np.vstack(q_composition_cluster[i])
         q_diff_arr = np.vstack(q_diff_cluster[i])
         
-        q_distance_arr = np.vstack(distance_cluster[i])
-        
         rotVec_avg_arr = np.vstack(rotVec_average_cluster[i])
         rotVec_composition_arr = np.vstack(rotVec_composition_cluster[i])
         rotVec_diff_arr = np.vstack(rotVec_diff_cluster[i])
+
+        path_len_arr = np.vstack(path_length_cluster[i])
+        q_distance_arr = np.vstack(distance_cluster[i])
         
         percent_arr = np.repeat(percent_sorted[i], repeats = len(q_average_arr), axis = 0)
-        path_len_arr = np.repeat(path_length_cluster[i], repeats = len(q_average_arr), axis = 0)
-        
         
         q_average_arr_list.append(q_average_arr)
         q_composition_arr_list.append(q_composition_arr)
@@ -2068,13 +2046,14 @@ if __name__ == '__main__':
         percent_arr_list.append(percent_arr)
         path_len_arr_list.append(path_len_arr)
         
+        
         for i, (v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24, v25) in enumerate(zip(percent_arr, q_average_arr[:,0], q_average_arr[:,1], q_average_arr[:,2], q_average_arr[:,3],\
                                                         q_composition_arr[:,0], q_composition_arr[:,1], q_composition_arr[:,2], q_composition_arr[:,3],\
                                                         q_diff_arr[:,0], q_diff_arr[:,1], q_diff_arr[:,2], q_diff_arr[:,3],\
                                                         q_distance_arr[:,0], q_distance_arr[:,1], q_distance_arr[:,2],\
                                                         rotVec_avg_arr[:,0], rotVec_avg_arr[:,1], rotVec_avg_arr[:,2],\
                                                         rotVec_composition_arr[:,0], rotVec_composition_arr[:,1], rotVec_composition_arr[:,2],\
-                                                        rotVec_diff_arr[:,0], rotVec_diff_arr[:,1], rotVec_diff_arr[:,2], path_len_arr)):
+                                                        rotVec_diff_arr[:,0], rotVec_diff_arr[:,1], rotVec_diff_arr[:,2], path_len_arr[:,0])):
                                                             
             traits_row.append([v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24, v25])
         
