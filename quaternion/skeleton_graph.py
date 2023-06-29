@@ -100,6 +100,62 @@ simplefilter(action='ignore', category=FutureWarning)
 
 
 
+def test_quiver3d():
+    
+    x, y, z = np.mgrid[-2:3, -2:3, -2:3]
+    
+    
+    print(type(x))
+    print(x.shape)
+    r = np.sqrt(x ** 2 + y ** 2 + z ** 4)
+    
+    u = y * np.sin(r) / (r + 0.001)
+    v = -x * np.sin(r) / (r + 0.001)
+    w = np.zeros_like(z)
+    
+        
+    print(type(u))
+    print(u.shape)
+    
+    
+    obj = mlab.quiver3d(x, y, z, u, v, w, line_width=3, scale_factor=1)
+    return obj
+    
+
+
+def graph_plot(x, y, z, start_idx, end_idx, color_rgb):
+    """ Show the graph edges using Mayavi
+
+        Parameters
+        -----------
+        x: ndarray
+            x coordinates of the points
+        y: ndarray
+            y coordinates of the points
+        z: ndarray
+            z coordinates of the points
+        edge_scalars: ndarray, optional
+            optional data to give the color of the edges.
+        kwargs:
+            extra keyword arguments are passed to quiver3d.
+    """
+    vec = mlab.quiver3d(x[start_idx],
+                        y[start_idx],
+                        z[start_idx],
+                        x[end_idx] - x[start_idx],
+                        y[end_idx] - y[start_idx],
+                        z[end_idx] - z[start_idx],
+                        color = color_rgb,
+                        mode = '2darrow',
+                        line_width = 1, 
+                        scale_factor = 1,
+                        opacity = 1.0)
+                        
+    #if edge_scalars is not None:
+        #vec.glyph.color_mode = 'color_by_scalar'
+    
+    return vec
+
 
 
 
@@ -1040,7 +1096,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         if sub_branch_length > thresh_length: 
         
             # save computed parameters for each branch
-            sub_branch_list.append(v_list)
+            sub_branch_list.append(int_v_list)
             sub_branch_length_rec.append(sub_branch_length)
             sub_branch_angle_rec.append(angle_sub_branch)
             sub_branch_start_rec.append(int_v_list[0])
@@ -1121,6 +1177,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     print("number of sub_branch_list_dominant is: {} \n".format(len(sub_branch_list_dominant)))
     '''
     
+    
+    '''
     # graph: find closest point pairs and connect close graph edges
     ####################################################################
     print("Converting skeleton to graph and connecting edges and vertices...\n")
@@ -1175,12 +1233,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     closest_pts_unique_sorted = sorted(closest_pts_unique)
     
     #print("closest_pts_unique_sorted = {}\n".format(closest_pts_unique_sorted))
+    '''
+ 
  
     #find shortest path between start and end vertex
     ####################################################################
     
     #define start and end vertex index
-    start_v = 0
+    #start_v = 0
     
     vlist_path_rec = []
     
@@ -1199,10 +1259,12 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     index_inv = []
     
-
+    list_quaternion = []
 
     # loop over all paths and compute quaternions values
-    for idx, end_v in enumerate(sub_branch_end_rec):
+    #for idx, end_v in enumerate(sub_branch_end_rec):
+        
+    for idx, (start_v, end_v) in enumerate(zip(sub_branch_start_rec, sub_branch_end_rec)):
         
        
         # Count the number of shortest paths from source to target.
@@ -1216,8 +1278,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             vlist_path = short_path_finder(G_unordered, start_v, end_v)
             
             # List of vertices from source to target in the shortest path was not empty
-            if len(vlist_path) > 0:
-            
+            if len(vlist_path) > 3:
+                
                 #path_count+=1
                 #print("Anayzing shortest path {}\n".format(vlist_path))
                 
@@ -1230,127 +1292,146 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                 path_length_rec.append(path_length_N2N)
                 
                 ################################################################################
-                # Q is a Nx4 numpy matrix and contains the quaternions to average in the rows.
-                # The quaternions are arranged as (w,x,y,z), with w being the scalar
-                sum_quaternion = np.zeros([len(vlist_path), 4])
+
                 
                 #sum_euler = np.zeros([len(vlist_path), 3])
                 
-                list_quaternion = []
-                
-                
-                # Analyze each shortest path 
-                ####################################################################################
-                for i, v_path in enumerate(vlist_path):
-                    
-                    #print("closest_pts = {}\n".format(vlist_path[i]))
-            
-                    if i + 2 < len(vlist_path):
-                        
-                        # get adjacent vector coordinates
-                        p1 = [X_skeleton[vlist_path[i]], Y_skeleton[vlist_path[i]], Z_skeleton[vlist_path[i]]]
-                        p2 = [X_skeleton[vlist_path[i + 1]], Y_skeleton[vlist_path[i + 1]], Z_skeleton[vlist_path[i + 1]]]
-                        p3 = [X_skeleton[vlist_path[i + 2]], Y_skeleton[vlist_path[i + 2]], Z_skeleton[vlist_path[i + 2]]]
-                
-                        # get adjacent directed vectors
-                        vector_12 = findVec(p1,p2)
-                        vector_23 = findVec(p2,p3)
-                        
-                        #print("p1 = {}, p2 = {}, p3 = {}, vector_12 = {}, vector_23 = {}\n".format(p1, p2, p3, vector_12, vector_23))
-                        
-                        # compoute rotation matrix between adjacent directed vectors
-                        mat = get_rotation_matrix(vec1 = vector_12, vec2 = vector_23)
-                        
-                        # compoute quaternion between adjacent directed vectors
-                        #The returned quaternion value is in scalar-last (x, y, z, w) format.
-                        quaternion_r = R.from_matrix(mat).as_quat()
-                        
-                        #compute rotation vector between adjacent directed vectors
-                        rotVec_r = R.from_matrix(mat).as_rotvec()
 
-                        # change the order of the quaternion_r value from (x, y, z, w)  to (w, x, y, z)
-                        quaternion_r_rearanged = np.hstack((quaternion_r[3], quaternion_r[0], quaternion_r[1], quaternion_r[2]))
-                        
-                        #euler_r = R.from_matrix(mat).as_euler('xyz', degrees = True)
-                                           
-                        sum_quaternion[i,:] = quaternion_r_rearanged
-                        
-                        list_quaternion.append(list(quaternion_r_rearanged))
-                        
-                        #sum_euler[i,:] = euler_r
-                        
-                        #print("vlist_path = {} quaternion_r = {}".format(idx, quaternion_r))
+                
+               #print("closest_pts = {}\n".format(vlist_path[i]))
+
+                # get all nodes pairs
+                node_pair = pairwise(vlist_path)
+
+                idx_pair_arr = np.vstack(node_pair)
+
+                start_idx = idx_pair_arr[:,0]
+                end_idx = idx_pair_arr[:,1]
+                
+                # compute all connected vectors in the path
+                vector_list = []
+                for idx, (s, e) in enumerate(zip(start_idx, end_idx)):
+
+                    p1 = [X_skeleton[s], Y_skeleton[s], Z_skeleton[s]]
+                    p2 = [X_skeleton[e], Y_skeleton[e], Z_skeleton[e]]
+
+                    vector_in_pair = findVec(p1,p2)
+                    vector_list.append(vector_in_pair)
+
+                # get index list pairs of adjacent vector 
+                vector_pair = pairwise(range(len(vector_list)))
+
+                
+                
+                sum_quaternion = np.zeros([len(vector_pair), 4])
+                
+                # loop over all adjacent vector pairs 
+                for i, value in enumerate(vector_pair):
                     
+                    start_vec_idx = list(value)[0]
+                    end_vec_idx = list(value)[1]
+
+                    # compoute rotation matrix between adjacent directed vectors
+                    mat = get_rotation_matrix(vec1 = vector_list[start_vec_idx], vec2 = vector_list[end_vec_idx])
+
+                    # compoute quaternion between adjacent directed vectors
+                    #The returned quaternion value is in scalar-last (x, y, z, w) format.
+                    quaternion_r = R.from_matrix(mat).as_quat()
+
+                    #compute rotation vector between adjacent directed vectors
+                    rotVec_r = R.from_matrix(mat).as_rotvec()
+
+                    # change the order of the quaternion_r value from (x, y, z, w)  to (w, x, y, z)
+                    quaternion_r_rearanged = np.hstack((quaternion_r[3], quaternion_r[0], quaternion_r[1], quaternion_r[2]))
+
+                    #euler_r = R.from_matrix(mat).as_euler('xyz', degrees = True)
+                       
+                    sum_quaternion[i,:] = quaternion_r_rearanged
+
+                    list_quaternion.append(list(quaternion_r_rearanged))
+                    
+                    #print("quaternion_r = {}".format(quaternion_r))
+                
+
+                #compute quaternion traits of the current path
+                ######################################################################
+                
+                # Average of quaternions
+                ###############################################################
+                # compute average of quaternions from Quaternion averaging functions from scikit-surgerycore, The quaternions input are arranged as (w,x,y,z),
+
+                #sample_list = ([0,0,0,0], [1,2,3,4], [1,2,3,4])
+
+                #avg_quaternion = quaternion_list_addition(list_quaternion)
+
+
+                #print("sum_quaternion = {}\n".format(sum_quaternion))
+
+
+                # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z) with w being the scalar
+                avg_quaternion = average_quaternions(sum_quaternion)
+
+                #avg_quaternion = np.absolute(avg_quaternion)
+
+                #the signs of the output quaternion can be reversed, since q and -q describe the same orientation
+
+                # compute average quaternion values from a list of quarternion along the path
+                avg_quaternion = avg_quaternion.flatten()
+
+                avg_quaternion_path_rec.append(avg_quaternion)
+
+                # get the rotation vector
+                rotVec_rec_avg.append(rotVec_from_quaternion(avg_quaternion))
+
+
+                # Composition of quaternions
+                #################################################################
+                q_composition = quaternion_list_multiply(list_quaternion)
+
+                q_composition = q_composition.flatten()
+
+                composition_path_rec.append(q_composition)
+
+                # get the rotation vector
+                rotVec_rec_composition.append(rotVec_from_quaternion(q_composition))
+
+
+                # Differential of quaternions
+                #################################################################
+
+                q_diff = quaternion_list_differential(list_quaternion)
+
+                diff_path_rec.append(q_diff)
+
+                # get the rotation vector
+                rotVec_rec_diff.append(rotVec_from_quaternion(q_diff))
+
+
+
+                # Distance of quaternions
+                #################################################################
+
+                (cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized) = quaternion_list_distance(list_quaternion)
+
+                distance_path_rec.append([cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized])
+
+
+                    #print("vlist_path = {} avg_quaternion = {} q_composition = {} q_diff = {}\n".format(idx, avg_quaternion, q_composition, q_diff))
+
             else:
-                sys.exit("Graph has no shortest path, quit!")
+                #sys.exit("Graph has no shortest path, quit!")
+                
+                print("Graph has no shortest path, quit!")
                 
             
-            # Average of quaternions
-            ###############################################################
-            # compute average of quaternions from Quaternion averaging functions from scikit-surgerycore, The quaternions input are arranged as (w,x,y,z),
-            
-            #sample_list = ([0,0,0,0], [1,2,3,4], [1,2,3,4])
-            
-            #avg_quaternion = quaternion_list_addition(list_quaternion)
-            
-            
-            #print("sum_quaternion = {}\n".format(sum_quaternion))
-            
-            
-            # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z) with w being the scalar
-            avg_quaternion = average_quaternions(sum_quaternion)
-            
-            #avg_quaternion = np.absolute(avg_quaternion)
-            
-            #the signs of the output quaternion can be reversed, since q and -q describe the same orientation
-            
-            # compute average quaternion values from a list of quarternion along the path
-            avg_quaternion = avg_quaternion.flatten()
-            
-            avg_quaternion_path_rec.append(avg_quaternion)
-            
-            # get the rotation vector
-            rotVec_rec_avg.append(rotVec_from_quaternion(avg_quaternion))
 
-            
-            # Composition of quaternions
-            #################################################################
-            q_composition = quaternion_list_multiply(list_quaternion)
-            
-            q_composition = q_composition.flatten()
-            
-            composition_path_rec.append(q_composition)
-            
-            # get the rotation vector
-            rotVec_rec_composition.append(rotVec_from_quaternion(q_composition))
-            
-            
-            # Differential of quaternions
-            #################################################################
- 
-            q_diff = quaternion_list_differential(list_quaternion)
-            
-            diff_path_rec.append(q_diff)
-            
-            # get the rotation vector
-            rotVec_rec_diff.append(rotVec_from_quaternion(q_diff))
-            
-   
-            
-            # Distance of quaternions
-            #################################################################
- 
-            (cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized) = quaternion_list_distance(list_quaternion)
-            
-            distance_path_rec.append([cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized])
-            
-
-            #print("vlist_path = {} avg_quaternion = {} q_composition = {} q_diff = {}\n".format(idx, avg_quaternion, q_composition, q_diff))
                 
         if rotVec_r[2] < 0:
             index_inv.append(idx)
                             
     print("Found {} shortest path \n".format(len(vlist_path_rec)))
+    
+    #print("Found {} avg_quaternion_path_rec path \n".format(len(avg_quaternion_path_rec)))
     
     #print("Path length: {}\n".format(path_length_rec))
     
@@ -1579,37 +1660,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     ###################################################################
 
         
-    #load aligned ply point cloud file
-    if not (filename_pcloud is None):
-        
-        model_pcloud = current_path + filename_pcloud
-        
-        print("Loading 3D point cloud {}...\n".format(filename_pcloud))
-        
-        model_pcloud_name_base = os.path.splitext(model_pcloud)[0]
-        
-        pcd = o3d.io.read_point_cloud(model_pcloud)
-        
-        Data_array_pcloud = np.asarray(pcd.points)
-        
-        #print(Data_array_pcloud.shape)
-        
-        if pcd.has_colors():
-            
-            print("Render colored point cloud\n")
-            
-            pcd_color = np.asarray(pcd.colors)
-            
-            if len(pcd_color) > 0: 
-                
-                pcd_color = np.rint(pcd_color * 255.0)
-            
-            #pcd_color = tuple(map(tuple, pcd_color))
-        else:
-            
-            print("Generate random color\n")
-        
-            pcd_color = np.random.randint(256, size = (len(Data_array_pcloud),3))
+
         
     
     
@@ -1618,19 +1669,150 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     # The number of points per line
     
     if args["visualize_model"]:
-    
+        
+        
+        ############################################################################
+        
+        #1 . Visualize  *.ply 3D point cloud model
+        if not (filename_pcloud is None):
+            
+            # load data coordinates
+            model_pcloud = current_path + filename_pcloud
+            
+            print("Loading 3D point cloud {}...\n".format(filename_pcloud))
+            
+            model_pcloud_name_base = os.path.splitext(model_pcloud)[0]
+            
+            #load model file
+            pcd = o3d.io.read_point_cloud(model_pcloud)
+            
+            Data_array_pcloud = np.asarray(pcd.points)
+            
+            #print(Data_array_pcloud.shape)
+            
+            #visualize point cloud model with color
+            if pcd.has_colors():
+                
+                print("Render colored point cloud\n")
+                
+                pcd_color = np.asarray(pcd.colors)
+                
+                if len(pcd_color) > 0: 
+                    
+                    pcd_color = np.rint(pcd_color * 255.0)
+                
+                #pcd_color = tuple(map(tuple, pcd_color))
+            else:
+                
+                print("Generate random color\n")
+            
+                pcd_color = np.random.randint(256, size = (len(Data_array_pcloud),3))
+        
+        
+            
+            x, y, z = Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2] 
+            
+            # visualize data coordinates
+            mlab.figure("Point cloud model", size = (800, 800), bgcolor = (0, 0, 0))
+        
+            mlab.clf()
+            
+            #pts = mlab.points3d(x,y,z, mode = 'point')
+            
+            pts = mlab.quiver3d(x,y,z)
+            
+            sc = tvtk.UnsignedCharArray()
+            
+            sc.from_array(pcd_color)
+
+            pts.mlab_source.dataset.point_data.scalars = sc
+            
+            pts.mlab_source.dataset.modified()
+        
+
+
+        #2. visualize skeleton model, edge, nodes
+        ####################################################################
         N = 2
         
         mlab.figure("Structure_graph", size = (800, 800), bgcolor = (0, 0, 0))
         
         mlab.clf()
         
+        #test_quiver3d()
         
-        #visualize paths found between root node and end notes
-        ############################################################################
+        '''
+        #############################################################
+        x = list()
+        y = list()
+        z = list()
+        s = list()
+        connections = list()
         
-        # visualize 3d points
+        # The index of the current point in the total amount of points
+        index = 0
         
+        # Create each line one after the other in a loop
+        for i in range(N_edges_skeleton):
+        #for val in vlist_path:
+            #if i in vertex_dominant:
+            if True:
+                #i = int(val)
+                #print("Edges {0} has nodes {1}, {2}\n".format(i, array_edges[i][0], array_edges[i][1]))
+              
+                x.append(X_skeleton[array_edges_skeleton[i][0]])
+                y.append(Y_skeleton[array_edges_skeleton[i][0]])
+                z.append(Z_skeleton[array_edges_skeleton[i][0]])
+                
+                x.append(X_skeleton[array_edges_skeleton[i][1]])
+                y.append(Y_skeleton[array_edges_skeleton[i][1]])
+                z.append(Z_skeleton[array_edges_skeleton[i][1]])
+                
+                # The scalar parameter for each line
+                s.append(array_edges_skeleton[i])
+                
+                # This is the tricky part: in a line, each point is connected
+                # to the one following it. We have to express this with the indices
+                # of the final set of points once all lines have been combined
+                # together, this is why we need to keep track of the total number of
+                # points already created (index)
+                #connections.append(np.vstack(array_edges[i]).T)
+                
+                connections.append(np.vstack(
+                               [np.arange(index,   index + N - 1.5),
+                                np.arange(index + 1, index + N - .5)]
+                                    ).T)
+                index += 2
+            
+            
+        # Now collapse all positions, scalars and connections in big arrays
+        x = np.hstack(x)
+        y = np.hstack(y)
+        z = np.hstack(z)
+        s = np.hstack(s)
+        #connections = np.vstack(connections)
+
+        # Create the points
+        src = mlab.pipeline.scalar_scatter(x, y, z, s)
+        
+        # Connect them
+        src.mlab_source.dataset.lines = connections
+        
+        #src.mlab_source.dataset.arrows = connections
+        
+        src.update()
+
+        # display the set of lines
+        mlab.pipeline.surface(src, colormap = 'Accent', line_width = 5, opacity = 0.7)
+
+        # And choose a nice view
+        #mlab.view(33.6, 106, 5.5, [0, 0, .05])
+        #mlab.roll(125)
+        #mlab.show()
+        
+        '''
+        ##############################################################################3
+        #visualize Graph, and shortest paths found between root node and end notes
         cmap = get_cmap(len(vlist_path_rec))
 
         for i, vlist_path in enumerate(vlist_path_rec):
@@ -1644,115 +1826,54 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             pts = mlab.points3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, mode = 'sphere', scale_factor = scale_factor_value)
             
+            #zeros = np.zeros(len(X_skeleton[vlist_path]))
+            #pts = mlab.quiver3d(zeros, zeros, zeros, X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, mode = 'sphere', scale_factor = scale_factor_value)
+
+            
             if i in index_inv:
             #pts = mlab.plot3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, tube_radius=0.025)
                 pts = mlab.text3d(X_skeleton[vlist_path[-1]], Y_skeleton[vlist_path[-1]], Z_skeleton[vlist_path[-1]], str("{:.0f}".format(i)), color = (0,1,0), scale = (0.04, 0.04, 0.04))
+        
+        '''
+        for i, vlist_path in enumerate(vlist_path_rec):
             
-        
-        
-        
-        
-        #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
-        ################################################################################################################
+            if i < 70:
+                idx_pair_arr = np.vstack(pairwise(vlist_path))
+
+                start_idx = idx_pair_arr[:,0]
+                end_idx = idx_pair_arr[:,1]
+                
+                graph_plot(X_skeleton, Y_skeleton, Z_skeleton, start_idx, end_idx)
+        '''
+        #sub_branch_list
+        cmap = get_cmap(len(sub_branch_list))
 
         
-        
-        #visualize point cloud model with color
-        ####################################################################
-        
-        if not (filename_pcloud is None):
+        for i, vlist_path in enumerate(sub_branch_list):
             
-            x, y, z = Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2] 
-            
-            
-            #pts = mlab.points3d(x,y,z, mode = 'point')
-            
-            pts = mlab.quiver3d(x,y,z)
-            
-            sc = tvtk.UnsignedCharArray()
-            
-            sc.from_array(pcd_color)
+            idx_pair_arr = np.vstack(pairwise(vlist_path))
 
-            pts.mlab_source.dataset.point_data.scalars = sc
-            
-            pts.mlab_source.dataset.modified()
-            
-        
-        #visualize skeleton model, edge, nodes
-        ####################################################################
-        if args["visualize_model"]:
-        
-            x = list()
-            y = list()
-            z = list()
-            s = list()
-            connections = list()
-            
-            # The index of the current point in the total amount of points
-            index = 0
-            
-            # Create each line one after the other in a loop
-            for i in range(N_edges_skeleton):
-            #for val in vlist_path:
-                #if i in vertex_dominant:
-                if True:
-                    #i = int(val)
-                    #print("Edges {0} has nodes {1}, {2}\n".format(i, array_edges[i][0], array_edges[i][1]))
-                  
-                    x.append(X_skeleton[array_edges_skeleton[i][0]])
-                    y.append(Y_skeleton[array_edges_skeleton[i][0]])
-                    z.append(Z_skeleton[array_edges_skeleton[i][0]])
-                    
-                    x.append(X_skeleton[array_edges_skeleton[i][1]])
-                    y.append(Y_skeleton[array_edges_skeleton[i][1]])
-                    z.append(Z_skeleton[array_edges_skeleton[i][1]])
-                    
-                    # The scalar parameter for each line
-                    s.append(array_edges_skeleton[i])
-                    
-                    # This is the tricky part: in a line, each point is connected
-                    # to the one following it. We have to express this with the indices
-                    # of the final set of points once all lines have been combined
-                    # together, this is why we need to keep track of the total number of
-                    # points already created (index)
-                    #connections.append(np.vstack(array_edges[i]).T)
-                    
-                    connections.append(np.vstack(
-                                   [np.arange(index,   index + N - 1.5),
-                                    np.arange(index + 1, index + N - .5)]
-                                        ).T)
-                    index += 2
-            
-            
-            # Now collapse all positions, scalars and connections in big arrays
-            x = np.hstack(x)
-            y = np.hstack(y)
-            z = np.hstack(z)
-            s = np.hstack(s)
-            #connections = np.vstack(connections)
+            start_idx = idx_pair_arr[:,0]
+            end_idx = idx_pair_arr[:,1]
 
-            # Create the points
-            src = mlab.pipeline.scalar_scatter(x, y, z, s)
+            path_color = cmap(i)[:len(cmap(i))-1]
+            graph_plot(X_skeleton, Y_skeleton, Z_skeleton, start_idx, end_idx, path_color)
 
-            # Connect them
-            src.mlab_source.dataset.lines = connections
-            src.update()
 
-            # display the set of lines
-            mlab.pipeline.surface(src, colormap = 'Accent', line_width = 5, opacity = 0.7)
-
-            # And choose a nice view
-            #mlab.view(33.6, 106, 5.5, [0, 0, .05])
-            #mlab.roll(125)
-            #mlab.show()
+        #sub_branch_start_rec.append(int_v_list[0])
+        #sub_branch_end_rec.append(int_v_list[-1])
         
         
-       
+        mlab.show()
+        
+        
+        '''
+        #3. visualize sphere and vectors
         ###############################################################################
+        
         # Display a semi-transparent sphere, for the surface of the Earth
-        
         mlab.figure("sphere_representation_rotation_vector", size = (800, 800), bgcolor = (0, 0, 0))
-        
+        mlab.clf()
         # We use a sphere Glyph, through the points3d mlab function, rather than
         # building the mesh ourselves, because it gives a better transparent
         # rendering.
@@ -1813,9 +1934,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
    
         # draw one average rotation vector
         #pts = mlab.quiver3d(0,0,0, avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = (1, 0, 0), line_width = 15, scale_factor = 2)
-           
+        
         ###############################################################################
-        '''
+        
         # Plot the equator and the tropiques
         theta = np.linspace(0, 2 * np.pi, 100)
         for angle in (- np.pi / 6, 0, np.pi / 6):
@@ -1834,14 +1955,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 1,0,0), color=(0,0,1))
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,1,0), color=(0,0,1))
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,0,1), color=(0,0,1))
-        '''
+        
         #################################################################################
         
         
         mlab.orientation_axes()
         
         mlab.show()
-                
+        '''
 
     
     return percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
@@ -1982,7 +2103,7 @@ if __name__ == '__main__':
     # save folder construction
     abs_path = os.path.abspath(current_path)
     
-    print(abs_path)
+    #print(abs_path)
     
     
     if type_quaternion == 0:
