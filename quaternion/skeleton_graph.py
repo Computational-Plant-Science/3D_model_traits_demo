@@ -945,6 +945,140 @@ def draw_nodes_index(X_skeleton, Y_skeleton, Z_skeleton, node_idx_list, color_rg
 
 
 
+def optimize_n_clusrer(data_list):
+
+    
+    ###############################################################################
+    #Use Elbow Method methods to determine this optimal value of number_cluster.
+    
+
+    
+    if type_quaternion == 0:
+        data_list = avg_quaternion_path_rec_list_reshape
+    elif type_quaternion == 1:
+        data_list = composition_path_rec_list_reshape
+    elif type_quaternion == 2:
+        data_list = diff_path_rec_list_reshape
+    elif type_quaternion == 3:
+        data_list = distance_path_rec_list_reshape
+    
+    
+    md=[]
+    for i in range(1,10):
+        
+        kmeans = KMeans(n_clusters = i)
+        
+        kmeans.fit(data_list)
+
+        md.append(kmeans.inertia_)
+    #print(md)
+    
+    plt.plot(list(np.arange(1,21)), md)
+
+    # create trait file using sub folder name
+    Elbow_chart = (current_path + folder_name + '_Elbow.png')
+    
+    plt.savefig(Elbow_chart)
+    
+    plt.close()
+    
+    return n_opt_clusrer
+    
+
+
+
+
+# using ploty to show the scatterplot of quaternion values
+def plot_quaternion_result(quaternion_path_all, percent_all, file_output, type_quaternion, dimension):
+    
+        
+    if dimension == 4:
+
+        if type_quaternion == 0:
+            cols_q = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d']
+        elif type_quaternion == 1:
+            cols_q = ['composition_quaternion_a','composition_quaternion_b','composition_quaternion_c', 'composition_quaternion_d']
+        elif type_quaternion == 2:
+            cols_q = ['diff_quaternion_a','diff_quaternion_b','diff_quaternion_c', 'diff_quaternion_d']
+        elif type_quaternion == 3:
+            cols_q = ['distance_absolute','distance_intrinsic', 'distance_symmetrized']
+        
+        data = pd.DataFrame(quaternion_path_all, columns = cols_q)
+
+        #Set marker properties
+        #markercolor = data['quaternion_a']
+        
+        markercolor = percent_all
+        
+        #Make Plotly figure
+        fig1 = go.Scatter3d(x=data[cols_q[1]],
+                        y=data[cols_q[2]],
+                        z=data[cols_q[3]],
+                        marker=dict(color=markercolor,
+                                    opacity=1,
+                                    reversescale=True,
+                                    colorscale='Viridis',
+                                    colorbar=dict(thickness=10),
+                                    size=5),
+                        line=dict (width=0.02),
+                        mode='markers')
+        
+                     
+        #Make Plot.ly Layout
+        mylayout = go.Layout(scene=dict(xaxis=dict( title=str(cols_q[1])), 
+                                        yaxis=dict( title=str(cols_q[2])),
+                                        zaxis=dict(title=str(cols_q[3]))),)
+        
+        #Plot and save html
+        plotly.offline.plot({"data": [fig1],
+                         "layout": mylayout},
+                         auto_open=False,
+                         filename=file_output)
+    elif dimension == 3:
+        
+        
+        if type_quaternion == 0:
+            cols_q = ['rotVec_avg_0','rotVec_avg_1','rotVec_avg_2']
+        elif type_quaternion == 1:
+            cols_q = ['rotVec_composition_0','rotVec_composition_1','rotVec_composition_2']
+        elif type_quaternion == 2:
+            cols_q = ['rotVec_diff_0','rotVec_diff_1','rotVec_diff_2']
+        elif type_quaternion == 3:
+            cols_q = ['distance_absolute','distance_intrinsic', 'distance_symmetrized']
+
+        data = pd.DataFrame(quaternion_path_all, columns = cols_q)
+
+        #Set marker properties
+        #markercolor = data['quaternion_a']
+        
+        markercolor = percent_all
+        
+        #Make Plotly figure
+        fig1 = go.Scatter3d(x=data[cols_q[0]],
+                        y=data[cols_q[1]],
+                        z=data[cols_q[2]],
+                        marker=dict(color=markercolor,
+                                    opacity=1,
+                                    reversescale=True,
+                                    colorscale='Viridis',
+                                    colorbar=dict(thickness=10),
+                                    size=5),
+                        line=dict (width=0.02),
+                        mode='markers')
+        
+                     
+        #Make Plot.ly Layout
+        mylayout = go.Layout(scene=dict(xaxis=dict( title=str(cols_q[0])),
+                                    yaxis=dict( title=str(cols_q[1])),
+                                    zaxis=dict(title=str(cols_q[2]))),)
+        
+        #Plot and save html
+        plotly.offline.plot({"data": [fig1],
+                         "layout": mylayout},
+                         auto_open=False,
+                         filename=file_output)
+
+
 
 
 
@@ -957,6 +1091,12 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     model_skeleton = current_path + filename_skeleton
     print("Loading 3D skeleton file {}...\n".format(filename_skeleton))
     model_skeleton_name_base = os.path.splitext(model_skeleton)[0]
+    
+    trait_path = os.path.dirname(current_path + filename_skeleton)
+    
+    folder_name = os.path.basename(trait_path)
+    
+    
     
     #load the ply format skeleton file 
     try:
@@ -1041,11 +1181,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                 end_vlist_offset.append(v+1)
                 
                 
-            
-    print("Number of End nodes in the graph: {} \n".format(len(end_vlist)))
-    
-    print("Number of start nodes in the graph: {} \n".format(len(start_vlist)))
-    
+    print("Number of start nodes {}, Number of End nodes in the graph: {} \n".format(len(start_vlist), len(end_vlist)))
+
     
     
     print("start_vlist = {} \n".format(start_vlist))
@@ -1213,7 +1350,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     dis_v_closest_pair_rec = []
     
-    dis_factor = 10
+    dis_factor = 60
     
     
                 
@@ -1224,15 +1361,15 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     # start, stop, step
     #for idx in range(0, 1):
         
-    test_branch_idx = 3
+    test_branch_idx = 1
     
     for idx, (sub_branch, start_v, end_v) in enumerate(zip(sub_branch_list, sub_branch_start_rec, sub_branch_end_rec)):
     
-    #for idx, (sub_branch, end_v) in enumerate(zip(sub_branch_list[test_branch_idx:(test_branch_idx+1)], sub_branch_end_rec)):
+    #for idx, (sub_branch, start_v, end_v) in enumerate(zip(sub_branch_list[test_branch_idx:(test_branch_idx+1)], sub_branch_start_rec[test_branch_idx:(test_branch_idx+1)], sub_branch_end_rec[test_branch_idx:(test_branch_idx+1)])):
         
         ####################################################################
         # find connection nodes along the longest path
-        print("Processing branch ID : {}".format(idx))
+        print("Processing branch ID : {}\n".format(idx))
         
         
         # curve of the edge in 3D
@@ -1243,84 +1380,100 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         point_set[:,2] = Z_skeleton[sub_branch]
         
         
+        #########################################
+        # ensure the width, height, and area are all neither too small
+        # nor too big
         
-        # loop over all the candidates to find connecting nodes along current path idx
+
+        
+        x_min = min(point_set[:,0])
+        x_max = max(point_set[:,0])
+        
+        y_min = min(point_set[:,1])
+        y_max = max(point_set[:,1])
+        
+        z_min = min(point_set[:,2])
+        z_max = max(point_set[:,2])
+        
+        
+        candidate_list = []
+        
         for idx_c, candidate_v in enumerate(end_vlist_offset):
-            
-            if start_v == candidate_v:
-                
-                print("self...\n")
-            
-            # start vertex of an edge
-            anchor_point = (X_skeleton[candidate_v], Y_skeleton[candidate_v], Z_skeleton[candidate_v])
-            
-            anchor_point_rec.append(candidate_v)
-            
-            (index_cp, value_cp) = closest_point(point_set, anchor_point)
-
-            v_closest_pair = [index_cp, candidate_v]
-
-            dis_v_closest_pair = path_length(X_skeleton[v_closest_pair], Y_skeleton[v_closest_pair], Z_skeleton[v_closest_pair])
-
-            #print("anchor_point: {}, sub_branch_list: [{} to {}]".format(candidate_v, idx_c, sub_branch[0],sub_branch[-1]))
-            
         
-            
-            #define distance threshold counted as connection nodes
-            is_close = (dis_v_closest_pair < avg_node_distance_rec[idx]*dis_factor) #and (dis_v_closest_pair > 0)
-            
-            if (is_close):
+            within_x_range = X_skeleton[candidate_v] >= x_min and X_skeleton[candidate_v] <= x_max
+            within_y_range = Y_skeleton[candidate_v] >= y_min and Y_skeleton[candidate_v] <= y_max
+            within_z_range = Z_skeleton[candidate_v] >= z_min and Z_skeleton[candidate_v] <= z_max
+        
+            if all((within_x_range, within_y_range, within_z_range)):
                 
-                closest_pts.append(sub_branch[index_cp])
+                candidate_list.append(candidate_v)
                 
-                dis_v_closest_pair_rec.append(dis_v_closest_pair)
+                if start_v != candidate_v:
                 
-                
-                
-                v_closest_pair_rec.append(v_closest_pair)
-                
-                #print("closest point pair: {0}".format(v_closest_pair))
-                
-                idx_visited_start.append(candidate_v)
-                
-                idx_visited_end.append(end_v)
-                
-                #connect graph edges
-                G_unordered.add_edge(sub_branch[index_cp], candidate_v)
+                    # start vertex of an edge
+                    anchor_point = (X_skeleton[candidate_v], Y_skeleton[candidate_v], Z_skeleton[candidate_v])
+                    
+                    anchor_point_rec.append(candidate_v)
+                    
+                    (index_cp, value_cp) = closest_point(point_set, anchor_point)
 
-                #print("v_closest_pair = {}, dis_v_closest_pair = {} avg_node_distance_rec = {} is_close = {}\n".format(v_closest_pair, \
-                                                                        #dis_v_closest_pair, avg_node_distance_rec[idx]*dis_factor, is_close))
+                    v_closest_pair = [index_cp, candidate_v]
+
+                    dis_v_closest_pair = path_length(X_skeleton[v_closest_pair], Y_skeleton[v_closest_pair], Z_skeleton[v_closest_pair])
+
+                    
+                    #define distance threshold counted as connection nodes
+
+                        
+                    closest_pts.append(sub_branch[index_cp])
+                    
+                    dis_v_closest_pair_rec.append(dis_v_closest_pair)
+
+                    v_closest_pair_rec.append(v_closest_pair)
+                    
+                    #print("closest point pair: {0}".format(v_closest_pair))
+                    
+                    idx_visited_start.append(candidate_v)
+                    
+                    idx_visited_end.append(end_v)
+                    
+                    #connect graph edges
+                    G_unordered.add_edge(sub_branch[index_cp], candidate_v)
         
-        #print("closest_pts = {}\n".format(closest_pts))
+        #print("candidate_list: {}\n".format(candidate_list))
         
+        
+
         
         
     
     ################################################################
         
     #sort tha data in the order of accending 
-    sorted_idx_len = np.argsort(dis_v_closest_pair_rec)
+    #sorted_idx_len = np.argsort(dis_v_closest_pair_rec)
 
     #sort all lists according 
-    dis_v_closest_pair_rec[:] = [dis_v_closest_pair_rec[i] for i in sorted_idx_len]
+    #dis_v_closest_pair_rec[:] = [dis_v_closest_pair_rec[i] for i in sorted_idx_len]
 
-    closest_pts[:] = [closest_pts[i] for i in sorted_idx_len]
+    #closest_pts[:] = [closest_pts[i] for i in sorted_idx_len]
     
+    closest_pts_sorted = list(set(closest_pts))
+    
+    idx_visited_start_sorted = list(set(idx_visited_start))
 
     dis_v_closest_pair_rec_sorted = list(set(dis_v_closest_pair_rec))
     
-    closest_pts_sorted = list(set(closest_pts))
+    
 
-    print("closest_pts_sorted = {} \n".format(closest_pts_sorted))
 
-    print("dis_v_closest_pair_rec = {} \n".format(dis_v_closest_pair_rec_sorted))
-    
-    
-    
+    #print("closest_pts = {} \n".format(closest_pts))
+    #print("visited_start = {} \n".format(idx_visited_start))
+    #print("dis_v_closest_pair_rec = {} \n".format(dis_v_closest_pair_rec))
+
     print("Number of connection points = {}\n".format(len(closest_pts_sorted)))
         
     
-
+    
 
     #find shortest path between start vertices and end vertices
     ####################################################################
@@ -1556,44 +1709,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     print("distance_path_rec_list_reshape: {}\n".format((distance_path_rec_list_reshape.shape)))
     
     
-    
-    ###############################################################################
-    #Use Elbow Method methods to determine this optimal value of number_cluster.
-    
-    trait_path = os.path.dirname(current_path + filename_skeleton)
-    
-    folder_name = os.path.basename(trait_path)
-    
-    
-    if type_quaternion == 0:
-        data_list = avg_quaternion_path_rec_list_reshape
-    elif type_quaternion == 1:
-        data_list = composition_path_rec_list_reshape
-    elif type_quaternion == 2:
-        data_list = diff_path_rec_list_reshape
-    elif type_quaternion == 3:
-        data_list = distance_path_rec_list_reshape
-    
-    '''
-    md=[]
-    for i in range(1,10):
-        
-        kmeans = KMeans(n_clusters = i)
-        
-        kmeans.fit(data_list)
 
-        md.append(kmeans.inertia_)
-    #print(md)
-    
-    plt.plot(list(np.arange(1,21)), md)
-
-    # create trait file using sub folder name
-    Elbow_chart = (current_path + folder_name + '_Elbow.png')
-    
-    plt.savefig(Elbow_chart)
-    
-    plt.close()
-    '''
 
     ################################################################################
     #Keman cluster of average of quaternion values for all the paths
@@ -1735,7 +1851,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     ###################################################################
 
-        
+    
 
         
     
@@ -1888,9 +2004,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         ####################################################################
         # draw graph using connected arrows
         
-        
-        
-
         cmap = get_cmap(len(vlist_path_rec))
 
         for i, vlist_path in enumerate(vlist_path_rec):
@@ -1915,8 +2028,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                                     scale = (sf_value, sf_value, sf_value))
 
         # show the root tip point
-        graph_vis = mlab.points3d(X_skeleton[start_vlist[0]], Y_skeleton[start_vlist[0]], Z_skeleton[start_vlist[0]], \
-                                    color = (1,1,1), mode = 'sphere', scale_factor = sf_value*1.5)
+        #graph_vis = mlab.points3d(X_skeleton[start_vlist[0]], Y_skeleton[start_vlist[0]], Z_skeleton[start_vlist[0]], \
+                                    #color = (1,1,1), mode = 'sphere', scale_factor = sf_value*1.5)
         
         
         '''
@@ -1950,9 +2063,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                                     #str("{:.0f}".format(end_v_offset)), color = (0,1,0), \
                                     #scale = (sf_value, sf_value, sf_value))
             
-        '''
+        
 
-                                    
+        '''
         ###################################################################################################
         '''
         # visualize all the start points
@@ -2089,96 +2202,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             rotVec_average_cluster, rotVec_composition_cluster, rotVec_diff_cluster, \
             distance_cluster, path_length_cluster, rotVec_centroid_cluster, q_centroid_cluster
 
-
-
-def plot_quaternion_result(quaternion_path_all, percent_all, file_output, type_quaternion, dimension):
     
-        
-    if dimension == 4:
-
-        if type_quaternion == 0:
-            cols_q = ['quaternion_a','quaternion_b','quaternion_c', 'quaternion_d']
-        elif type_quaternion == 1:
-            cols_q = ['composition_quaternion_a','composition_quaternion_b','composition_quaternion_c', 'composition_quaternion_d']
-        elif type_quaternion == 2:
-            cols_q = ['diff_quaternion_a','diff_quaternion_b','diff_quaternion_c', 'diff_quaternion_d']
-        elif type_quaternion == 3:
-            cols_q = ['distance_absolute','distance_intrinsic', 'distance_symmetrized']
-        
-        data = pd.DataFrame(quaternion_path_all, columns = cols_q)
-
-        #Set marker properties
-        #markercolor = data['quaternion_a']
-        
-        markercolor = percent_all
-        
-        #Make Plotly figure
-        fig1 = go.Scatter3d(x=data[cols_q[1]],
-                        y=data[cols_q[2]],
-                        z=data[cols_q[3]],
-                        marker=dict(color=markercolor,
-                                    opacity=1,
-                                    reversescale=True,
-                                    colorscale='Viridis',
-                                    colorbar=dict(thickness=10),
-                                    size=5),
-                        line=dict (width=0.02),
-                        mode='markers')
-        
-                     
-        #Make Plot.ly Layout
-        mylayout = go.Layout(scene=dict(xaxis=dict( title=str(cols_q[1])), 
-                                        yaxis=dict( title=str(cols_q[2])),
-                                        zaxis=dict(title=str(cols_q[3]))),)
-        
-        #Plot and save html
-        plotly.offline.plot({"data": [fig1],
-                         "layout": mylayout},
-                         auto_open=False,
-                         filename=file_output)
-    elif dimension == 3:
-        
-        
-        if type_quaternion == 0:
-            cols_q = ['rotVec_avg_0','rotVec_avg_1','rotVec_avg_2']
-        elif type_quaternion == 1:
-            cols_q = ['rotVec_composition_0','rotVec_composition_1','rotVec_composition_2']
-        elif type_quaternion == 2:
-            cols_q = ['rotVec_diff_0','rotVec_diff_1','rotVec_diff_2']
-        elif type_quaternion == 3:
-            cols_q = ['distance_absolute','distance_intrinsic', 'distance_symmetrized']
-
-        data = pd.DataFrame(quaternion_path_all, columns = cols_q)
-
-        #Set marker properties
-        #markercolor = data['quaternion_a']
-        
-        markercolor = percent_all
-        
-        #Make Plotly figure
-        fig1 = go.Scatter3d(x=data[cols_q[0]],
-                        y=data[cols_q[1]],
-                        z=data[cols_q[2]],
-                        marker=dict(color=markercolor,
-                                    opacity=1,
-                                    reversescale=True,
-                                    colorscale='Viridis',
-                                    colorbar=dict(thickness=10),
-                                    size=5),
-                        line=dict (width=0.02),
-                        mode='markers')
-        
-                     
-        #Make Plot.ly Layout
-        mylayout = go.Layout(scene=dict(xaxis=dict( title=str(cols_q[0])),
-                                    yaxis=dict( title=str(cols_q[1])),
-                                    zaxis=dict(title=str(cols_q[2]))),)
-        
-        #Plot and save html
-        plotly.offline.plot({"data": [fig1],
-                         "layout": mylayout},
-                         auto_open=False,
-                         filename=file_output)
 
 
 
@@ -2244,13 +2268,15 @@ if __name__ == '__main__':
     print ("results_folder: " + save_path)
     
     
-
+    
     
     result_list = []
     
     (percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
             rotVec_average_cluster, rotVec_composition_cluster, rotVec_diff_cluster, \
             distance_cluster, path_length_cluster, rotVec_centroid_cluster, q_centroid_cluster) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+    
+    
     
     result_traits = []
     
@@ -2579,6 +2605,6 @@ if __name__ == '__main__':
     plot_quaternion_result(rotVec_all, percent_all, plot_file_rotVec, type_quaternion, 3)
     
     
-
+    
 
     
