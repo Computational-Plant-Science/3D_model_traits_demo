@@ -215,7 +215,7 @@ def closest_point(point_set, anchor_point):
     
     #print("closest point:", point_set[i])
     
-    return  i, point_set[i]
+    return  (i, point_set[i])
 
 
 #colormap mapping
@@ -927,6 +927,26 @@ def orthonormal_vectors(k):
 
 
 
+def draw_nodes_index(X_skeleton, Y_skeleton, Z_skeleton, node_idx_list, color_rgb_value, scale_factor):
+    
+    #visualize all the connection points along the longest path
+    
+    # show the index of connection points
+    for i,  idx_pts in enumerate(node_idx_list):
+
+        graph_vis = mlab.text3d(X_skeleton[idx_pts], Y_skeleton[idx_pts], Z_skeleton[idx_pts], \
+                                str("{:.0f}".format(idx_pts)), color = color_rgb_value, scale = (scale_factor, scale_factor, scale_factor))
+
+    # visualize all the connection points
+    graph_vis = mlab.points3d(X_skeleton[node_idx_list], Y_skeleton[node_idx_list], Z_skeleton[node_idx_list], 
+                            color = color_rgb_value, mode = 'sphere', scale_factor = scale_factor)
+                            
+    return graph_vis
+
+
+
+
+
 
 
 #######################################################################################################
@@ -945,17 +965,18 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             num_vertex_skeleton = plydata_skeleton.elements[0].count
             N_edges_skeleton = len(plydata_skeleton['edge'].data['vertex_indices'])
             array_edges_skeleton = plydata_skeleton['edge'].data['vertex_indices']
-            
+
             print("Ply data structure: \n")
-            #print(plydata_skeleton)
+            print(plydata_skeleton)
             #print("\n")
             print("Number of 3D points in skeleton model: {0} \n".format(num_vertex_skeleton))
             print("Number of edges: {0} \n".format(N_edges_skeleton))
+            
 
-        
     except:
         sys.exit("Model skeleton file does not exist!")
     
+
     
     #Parse ply format skeleton file and Extract the data
     Data_array_skeleton = np.zeros((num_vertex_skeleton, 3))
@@ -968,27 +989,16 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     Y_skeleton = Data_array_skeleton[:,1]
     Z_skeleton = Data_array_skeleton[:,2]
     
-    '''
-    #load radius values
-    ####################################################################
-    #radius_skeleton = current_path + filename_skeleton
+    #radius of vertex
+    radius_skeleton = np.zeros((num_vertex_skeleton, 1))
+    radius_skeleton = plydata_skeleton['vertex'].data['radius']
     
-    base_name = os.path.splitext(os.path.basename(model_skeleton_name_base))[0]
-    txt_base_name = base_name.replace("_skeleton", "_avr.txt")
-    radius_file = current_path + txt_base_name
+    #print(radius_skeleton)
+    
+    #print(array_edges_skeleton)
+    #print("Number of array_edges_skeleton: {0} \n".format(len(array_edges_skeleton)))
+    
 
-    print("Loading 3D skeleton radius txt file {}...\n".format(radius_file))
-    
-    #check file exits
-    if os.path.isfile(radius_file):
-        
-        with open(radius_file) as file:
-            lines = file.readlines()
-            radius_vtx = [line.rstrip() for line in lines]
-    else:
-        
-        sys.exit("Could not load 3D skeleton radius txt file")  
-    '''
     
     # build directed graph from skeleton/structure data
     ####################################################################
@@ -1008,6 +1018,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     # find all end vertices by fast iteration of all vertices
     end_vlist = []
     
+    # for conecting all branches 
     end_vlist_offset = []
     
     start_vlist = []
@@ -1030,8 +1041,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                 end_vlist_offset.append(v+1)
                 
                 
-
-            
             
     print("Number of End nodes in the graph: {} \n".format(len(end_vlist)))
     
@@ -1039,9 +1048,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
     
-    #print("start_vlist = {} \n".format(start_vlist))
-    #print("end_vlist_offset = {} \n".format(end_vlist_offset))
-    #print("end_vlist = {} \n".format(end_vlist))
+    print("start_vlist = {} \n".format(start_vlist))
+    print("end_vlist_offset = {} \n".format(end_vlist_offset))
+    print("end_vlist = {} \n".format(end_vlist))
     
 
     
@@ -1064,7 +1073,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     sub_branch_start_rec = []
     sub_branch_end_rec = []
     
-    avg_node_len_rec = []
+    avg_node_distance_rec = []
     
     #sub_branch_projection_rec = []
     #sub_branch_radius_rec = []
@@ -1090,11 +1099,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         # current sub branch length
         sub_branch_length = path_length(X_skeleton[int_v_list], Y_skeleton[int_v_list], Z_skeleton[int_v_list])
         
-        avg_node_len = sub_branch_length/len(int_v_list)
+        avg_node_distance = sub_branch_length/(len(int_v_list)-1)
         
-        print("avg_node_len = {}, sub_branch_length = {}, n_nodes = {}\n".format(avg_node_len, sub_branch_length, len(int_v_list)))
+        #print("avg_node_distance = {}, sub_branch_length = {}, n_nodes = {}\n".format(avg_node_distance, sub_branch_length, len(int_v_list)))
         
-        avg_node_len_rec.append(avg_node_len)
+        avg_node_distance_rec.append(avg_node_distance)
         
         # current sub branch start and end points 
         start_v = [X_skeleton[int_v_list[0]], Y_skeleton[int_v_list[0]], Z_skeleton[int_v_list[0]]]
@@ -1148,7 +1157,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
     
-
+    '''
     # sort branches according to length feature in descending order
     ####################################################################
     sorted_idx_len = np.argsort(sub_branch_length_rec)
@@ -1183,8 +1192,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     
     print("number of sub_branch_end_rec is: {} \n".format(len(sub_branch_end_rec)))
-    
-
+    '''
     
     
     
@@ -1192,77 +1200,133 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     ####################################################################
     print("Converting skeleton to graph and connecting edges and vertices...\n")
     
+
     v_closest_pair_rec = []
-    
+
     closest_pts = []
+        
+    idx_visited_start = []
     
-  
+    idx_visited_end = []
+    
+    anchor_point_rec = []
+    
+    dis_v_closest_pair_rec = []
+    
+    dis_factor = 10
+    
+    
+                
+                
+    
     #find closest point set and connect graph edges
-    for idx, (sub_branch, anchor_point) in enumerate(zip(sub_branch_list, end_vlist_offset)):
+
+    # start, stop, step
+    #for idx in range(0, 1):
         
+    test_branch_idx = 3
+    
+    for idx, (sub_branch, start_v, end_v) in enumerate(zip(sub_branch_list, sub_branch_start_rec, sub_branch_end_rec)):
+    
+    #for idx, (sub_branch, end_v) in enumerate(zip(sub_branch_list[test_branch_idx:(test_branch_idx+1)], sub_branch_end_rec)):
         
-        # start vertex of an edge
-        anchor_point = (X_skeleton[end_vlist_offset[idx]], Y_skeleton[end_vlist_offset[idx]], Z_skeleton[end_vlist_offset[idx]])
+        ####################################################################
+        # find connection nodes along the longest path
+        print("Processing branch ID : {}".format(idx))
+        
         
         # curve of the edge in 3D
-        point_set = np.zeros((len(sub_branch_list[0]), 3))
+        point_set = np.zeros((len(sub_branch), 3))
         
-        point_set[:,0] = X_skeleton[sub_branch_list[0]]
-        point_set[:,1] = Y_skeleton[sub_branch_list[0]]
-        point_set[:,2] = Z_skeleton[sub_branch_list[0]]
-
-        
-        (index_cp, value_cp) = closest_point(point_set, anchor_point)
-
-        v_closest_pair = [index_cp, end_vlist_offset[idx]]
-
-        dis_v_closest_pair = path_length(X_skeleton[v_closest_pair], Y_skeleton[v_closest_pair], Z_skeleton[v_closest_pair])
-
-        #print("anchor_point = {} sub_branch_list: ID{} = {} to {}".format(end_vlist_offset[idx], idx, sub_branch_list[0][0], sub_branch_list[0][-1]))
-        #print("v_closest_pair = {} \n".format(v_closest_pair))
+        point_set[:,0] = X_skeleton[sub_branch]
+        point_set[:,1] = Y_skeleton[sub_branch]
+        point_set[:,2] = Z_skeleton[sub_branch]
         
         
-        #small threshold indicating close pair vetices
         
-        if (dis_v_closest_pair < avg_node_len_rec[idx]*3):
+        # loop over all the candidates to find connecting nodes along current path idx
+        for idx_c, candidate_v in enumerate(end_vlist_offset):
             
-            closest_pts.append(index_cp)
+            if start_v == candidate_v:
+                
+                print("self...\n")
             
-            #print("dis_v_closest_pair = {}".format(dis_v_closest_pair))
-            v_closest_pair_rec.append(v_closest_pair)
+            # start vertex of an edge
+            anchor_point = (X_skeleton[candidate_v], Y_skeleton[candidate_v], Z_skeleton[candidate_v])
             
-            #print("closest point pair: {0}".format(v_closest_pair))
+            anchor_point_rec.append(candidate_v)
             
-            #connect graph edges
-            G_unordered.add_edge(index_cp, end_vlist_offset[idx])
+            (index_cp, value_cp) = closest_point(point_set, anchor_point)
+
+            v_closest_pair = [index_cp, candidate_v]
+
+            dis_v_closest_pair = path_length(X_skeleton[v_closest_pair], Y_skeleton[v_closest_pair], Z_skeleton[v_closest_pair])
+
+            #print("anchor_point: {}, sub_branch_list: [{} to {}]".format(candidate_v, idx_c, sub_branch[0],sub_branch[-1]))
             
-    #print("v_closest_pair_rec = {}\n".format(v_closest_pair_rec))
+        
+            
+            #define distance threshold counted as connection nodes
+            is_close = (dis_v_closest_pair < avg_node_distance_rec[idx]*dis_factor) #and (dis_v_closest_pair > 0)
+            
+            if (is_close):
+                
+                closest_pts.append(sub_branch[index_cp])
+                
+                dis_v_closest_pair_rec.append(dis_v_closest_pair)
+                
+                
+                
+                v_closest_pair_rec.append(v_closest_pair)
+                
+                #print("closest point pair: {0}".format(v_closest_pair))
+                
+                idx_visited_start.append(candidate_v)
+                
+                idx_visited_end.append(end_v)
+                
+                #connect graph edges
+                G_unordered.add_edge(sub_branch[index_cp], candidate_v)
+
+                #print("v_closest_pair = {}, dis_v_closest_pair = {} avg_node_distance_rec = {} is_close = {}\n".format(v_closest_pair, \
+                                                                        #dis_v_closest_pair, avg_node_distance_rec[idx]*dis_factor, is_close))
+        
+        #print("closest_pts = {}\n".format(closest_pts))
+        
+        
+        
     
-    #get the unique values from the list
-    #closest_pts_unique = list(set(closest_pts))
-    
-    
-    
-    #print("closest_pts = {}\n".format(closest_pts))
-    
-    #keep repeat values for correct indexing order
-    closest_pts = list((closest_pts))
-    
-    closest_pts_sorted = sorted(closest_pts)
-    
-    #print("closest_pts = {}\n".format(closest_pts))
-    #print("closest_pts_sorted = {}\n".format(closest_pts_sorted))
+    ################################################################
+        
+    #sort tha data in the order of accending 
+    sorted_idx_len = np.argsort(dis_v_closest_pair_rec)
+
+    #sort all lists according 
+    dis_v_closest_pair_rec[:] = [dis_v_closest_pair_rec[i] for i in sorted_idx_len]
+
+    closest_pts[:] = [closest_pts[i] for i in sorted_idx_len]
     
 
-    print("Number of connection points = {}\n".format(len(list(set(closest_pts_sorted)))))
+    dis_v_closest_pair_rec_sorted = list(set(dis_v_closest_pair_rec))
     
- 
- 
+    closest_pts_sorted = list(set(closest_pts))
+
+    print("closest_pts_sorted = {} \n".format(closest_pts_sorted))
+
+    print("dis_v_closest_pair_rec = {} \n".format(dis_v_closest_pair_rec_sorted))
+    
+    
+    
+    print("Number of connection points = {}\n".format(len(closest_pts_sorted)))
+        
+    
+
+
     #find shortest path between start vertices and end vertices
     ####################################################################
     
     #define start and end vertex index
-    #start_v = 0
+    start_v = 0
     
     vlist_path_rec = []
     
@@ -1288,9 +1352,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
 
     # loop over all paths and compute quaternions values
-    for idx, (start_v, end_v) in enumerate(zip(sub_branch_start_rec, sub_branch_end_rec)):
+    #for idx, (start_v, end_v) in enumerate(zip(sub_branch_start_rec, sub_branch_end_rec)):
         
-    #for idx, (start_v, end_v) in enumerate(zip(start_v_common, sub_branch_end_rec)):
+    for idx, (start_v, end_v) in enumerate(zip(start_v_common, sub_branch_end_rec)):
         
        
         # Count the number of shortest paths from source to target.
@@ -1510,9 +1574,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     elif type_quaternion == 3:
         data_list = distance_path_rec_list_reshape
     
-    
+    '''
     md=[]
-    for i in range(1,21):
+    for i in range(1,10):
         
         kmeans = KMeans(n_clusters = i)
         
@@ -1529,7 +1593,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     plt.savefig(Elbow_chart)
     
     plt.close()
-
+    '''
 
     ################################################################################
     #Keman cluster of average of quaternion values for all the paths
@@ -1751,6 +1815,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         graph_vis = mlab.clf()
         
+        sf_value = 0.04
 
         '''
         #############################################################
@@ -1823,7 +1888,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         ####################################################################
         # draw graph using connected arrows
         
-        sf_value = 0.04
+        
         
 
         cmap = get_cmap(len(vlist_path_rec))
@@ -1873,53 +1938,56 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             # show the index of start and end node
             graph_vis = mlab.text3d(X_skeleton[start_v], Y_skeleton[start_v], Z_skeleton[start_v], \
-                                    str("{:.0f}".format(start_v)), color = (0,0,1), \
+                                    str("{:.0f}".format(start_v)), color = (1,1,0), \
                                     scale = (sf_value, sf_value, sf_value))
             
             graph_vis = mlab.text3d(X_skeleton[end_v], Y_skeleton[end_v], Z_skeleton[end_v], \
-                                    str("{:.0f}".format(end_v)), color = (1,0,0), \
+                                    str("{:.0f}".format(end_v)), color = (0,1,1), \
                                     scale = (sf_value, sf_value, sf_value))
             
-            graph_vis = mlab.text3d(X_skeleton[end_v_offset], Y_skeleton[end_v_offset], Z_skeleton[end_v_offset]-0.05, \
-                                    str("{:.0f}".format(end_v_offset)), color = (0,1,0), \
-                                    scale = (sf_value, sf_value, sf_value))
             
-        
+            #graph_vis = mlab.text3d(X_skeleton[end_v_offset], Y_skeleton[end_v_offset], Z_skeleton[end_v_offset]-0.05, \
+                                    #str("{:.0f}".format(end_v_offset)), color = (0,1,0), \
+                                    #scale = (sf_value, sf_value, sf_value))
+            
+        '''
+
+                                    
+        ###################################################################################################
+        '''
         # visualize all the start points
         graph_vis = mlab.points3d(X_skeleton[start_vlist], Y_skeleton[start_vlist], Z_skeleton[start_vlist], \
-                                    color = (0,0,1), mode = 'sphere', scale_factor = sf_value)
+                                    color = (1,0,0), mode = 'sphere', scale_factor = sf_value*1.5)
+        
+        
         
         # visualize all the end points
         graph_vis = mlab.points3d(X_skeleton[end_vlist], Y_skeleton[end_vlist], Z_skeleton[end_vlist], \
                                     color = (1,0,0), mode = 'sphere', scale_factor = sf_value)
                                     
-       
-        # show all the end_vlist_offset nodes
-        graph_vis = mlab.points3d(X_skeleton[end_vlist_offset], Y_skeleton[end_vlist_offset], Z_skeleton[end_vlist_offset], \
-                                    color = (0,1,0), mode = 'sphere', scale_factor = sf_value)
-                                    
-        
         '''
-        ###################################################################################################
+        
+        
+        #graph_vis = mlab.points3d(X_skeleton[sub_branch_list[0]], Y_skeleton[sub_branch_list[0]], Z_skeleton[sub_branch_list[0]], \
+                                    #color = (0,1,0), mode = 'sphere', scale_factor = sf_value)
+                                    
+        #graph_vis = mlab.points3d(X_skeleton[sub_branch_list[test_branch_idx]], Y_skeleton[sub_branch_list[test_branch_idx]], Z_skeleton[sub_branch_list[test_branch_idx]], \
+                                    #color = (0,0,1), mode = 'sphere', scale_factor = sf_value)
+        
         #visualize all the connection points along the longest path
+        graph_vis = draw_nodes_index(X_skeleton, Y_skeleton, Z_skeleton, closest_pts_sorted, color_rgb_value = (1,0,0), scale_factor = sf_value*1.5)
         
-        # show the index of connection points
-        for i,  idx_pts in enumerate(closest_pts_sorted):
-
-            graph_vis = mlab.text3d(X_skeleton[idx_pts], Y_skeleton[idx_pts], Z_skeleton[idx_pts], \
-                                    str("{:.0f}".format(idx_pts)), color = (1,0,0), scale = (sf_value, sf_value, sf_value))
-
-        # visualize all the connection points
-        graph_vis = mlab.points3d(X_skeleton[closest_pts_sorted], Y_skeleton[closest_pts_sorted], Z_skeleton[closest_pts_sorted], 
-                                color = (1,0,0), mode = 'sphere', scale_factor = sf_value)
         
-         
+        # show all the end_vlist_offset nodes
+        #graph_vis = draw_nodes_index(X_skeleton, Y_skeleton, Z_skeleton, idx_visited_start, color_rgb_value = (0,1,0), scale_factor = sf_value)
+        
+
         
         mlab.show()
         
 
         
-        
+        '''
         #3. visualize sphere and vectors
         ###############################################################################
         
@@ -2014,7 +2082,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         mlab.orientation_axes()
         
         mlab.show()
-        
+        '''
 
     
     return percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
