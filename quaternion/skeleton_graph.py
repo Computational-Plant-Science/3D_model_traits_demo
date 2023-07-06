@@ -1148,8 +1148,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     Z_skeleton = Data_array_skeleton[:,2]
     
     #radius of vertex
-    radius_skeleton = np.zeros((num_vertex_skeleton, 1))
-    radius_skeleton = plydata_skeleton['vertex'].data['radius']
+    #radius_skeleton = np.zeros((num_vertex_skeleton, 1))
+    #radius_skeleton = plydata_skeleton['vertex'].data['radius']
     
     #print(radius_skeleton)
     
