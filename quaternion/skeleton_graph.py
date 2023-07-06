@@ -48,6 +48,8 @@ from skimage.measure import regionprops
 from scipy.spatial import KDTree
 from scipy import ndimage
 from scipy.spatial.transform import Rotation as R
+from scipy.spatial import Delaunay
+
 
 import random
 
@@ -1080,6 +1082,22 @@ def plot_quaternion_result(quaternion_path_all, percent_all, file_output, type_q
 
 
 
+def in_hull(p, hull):
+    """
+    Test if points in `p` are in `hull`
+
+    `p` should be a `NxK` coordinates of `N` points in `K` dimensions
+    `hull` is either a scipy.spatial.Delaunay object or the `MxK` array of the 
+    coordinates of `M` points in `K`dimensions for which Delaunay triangulation
+    will be computed
+    """
+    
+    if not isinstance(hull,Delaunay):
+        hull = Delaunay(hull)
+
+    return hull.find_simplex(p)>=0
+
+
 
 
 
@@ -1333,7 +1351,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
     
-    # graph: find closest point pairs and connect close graph edges
+    # graph: find closest point pairs and connect graph nodes and edges, building a connected tree graph
     ####################################################################
     print("Converting skeleton to graph and connecting edges and vertices...\n")
     
@@ -1350,66 +1368,66 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     dis_v_closest_pair_rec = []
     
+    candidate_list = []
+    
+    # distance threshold for connecting branches less than 3 nodes
     dis_factor = 60
     
     
-                
-                
     
     #find closest point set and connect graph edges
 
     # start, stop, step
     #for idx in range(0, 1):
         
-    test_branch_idx = 1
+    #test_branch_idx = 3
+    
+    ####################################################################
+    # find connection nodes along each branches
     
     for idx, (sub_branch, start_v, end_v) in enumerate(zip(sub_branch_list, sub_branch_start_rec, sub_branch_end_rec)):
     
     #for idx, (sub_branch, start_v, end_v) in enumerate(zip(sub_branch_list[test_branch_idx:(test_branch_idx+1)], sub_branch_start_rec[test_branch_idx:(test_branch_idx+1)], sub_branch_end_rec[test_branch_idx:(test_branch_idx+1)])):
         
-        ####################################################################
-        # find connection nodes along the longest path
-        print("Processing branch ID : {}\n".format(idx))
+      
+        print("Processing branch ID : {}, contains {} nodes\n".format(idx, len(sub_branch)))
         
-        
-        # curve of the edge in 3D
+ 
+        # branch points in 3d 
         point_set = np.zeros((len(sub_branch), 3))
         
         point_set[:,0] = X_skeleton[sub_branch]
         point_set[:,1] = Y_skeleton[sub_branch]
         point_set[:,2] = Z_skeleton[sub_branch]
         
+        # all start points of branches
+        query_points = np.zeros((len(end_vlist_offset), 3))
         
-        #########################################
-        # ensure the width, height, and area are all neither too small
-        # nor too big
+        query_points[:,0] = X_skeleton[end_vlist_offset]
+        query_points[:,1] = Y_skeleton[end_vlist_offset]
+        query_points[:,2] = Z_skeleton[end_vlist_offset]
         
+        # convex hull cannot be built if branches less than 3 nodes 
+        if len(sub_branch) > 3:
+            
+            # test whether start points of branches that lie in the given convex hull built from point_set,
+            # It returns a boolean array where True values indicate points that lie in the given convex hull.
+            inside_idx = in_hull(query_points, point_set)
 
+            #print(in_hull(query_points, point_set))
+            
+            candidate_list = [end_vlist_offset[i] for i in range(len(end_vlist_offset)) if inside_idx[i]]
         
-        x_min = min(point_set[:,0])
-        x_max = max(point_set[:,0])
+            # search not visited nodes
+            #s = set(idx_visited_start)
+            #candidate_list = [x for x in end_vlist_offset if x not in s]
+            
+            #print(candidate_list)
         
-        y_min = min(point_set[:,1])
-        y_max = max(point_set[:,1])
-        
-        z_min = min(point_set[:,2])
-        z_max = max(point_set[:,2])
-        
-        
-        candidate_list = []
-        
-        for idx_c, candidate_v in enumerate(end_vlist_offset):
-        
-            within_x_range = X_skeleton[candidate_v] >= x_min and X_skeleton[candidate_v] <= x_max
-            within_y_range = Y_skeleton[candidate_v] >= y_min and Y_skeleton[candidate_v] <= y_max
-            within_z_range = Z_skeleton[candidate_v] >= z_min and Z_skeleton[candidate_v] <= z_max
-        
-            if all((within_x_range, within_y_range, within_z_range)):
-                
-                candidate_list.append(candidate_v)
+            for idx_c, candidate_v in enumerate(candidate_list):
                 
                 if start_v != candidate_v:
-                
+
                     # start vertex of an edge
                     anchor_point = (X_skeleton[candidate_v], Y_skeleton[candidate_v], Z_skeleton[candidate_v])
                     
@@ -1421,10 +1439,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
                     dis_v_closest_pair = path_length(X_skeleton[v_closest_pair], Y_skeleton[v_closest_pair], Z_skeleton[v_closest_pair])
 
-                    
                     #define distance threshold counted as connection nodes
+                    #is_close = (dis_v_closest_pair < avg_node_distance_rec[idx]*dis_factor) 
 
-                        
+                    #if is_close: 
+                    
                     closest_pts.append(sub_branch[index_cp])
                     
                     dis_v_closest_pair_rec.append(dis_v_closest_pair)
@@ -1439,13 +1458,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                     
                     #connect graph edges
                     G_unordered.add_edge(sub_branch[index_cp], candidate_v)
-        
-        #print("candidate_list: {}\n".format(candidate_list))
-        
-        
+                        
+                    
 
-        
-        
+       
     
     ################################################################
         
