@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-    python3 skeleton_graph.py -p ~/example/quaternion/tiny/ -m1 tiny_skeleton.ply -v 1 -tq 0
+    python3 skeleton_graph.py -p ~/example/quaternion/tiny/ -m1 tiny_skeleton.ply -v 1 -r 3 -tq 0
 
     python3 skeleton_graph.py -p ~/example/quaternion/species_comp/Maize_B101/ -m1 B101_skeleton.ply -r 50 -tq 0 
 
@@ -1107,6 +1107,134 @@ def in_hull(p, hull):
 
 
 
+def analyze_path_traits(vlist_path, Data_array_skeleton):
+    
+    X_skeleton = Data_array_skeleton[:,0]
+    Y_skeleton = Data_array_skeleton[:,1]
+    Z_skeleton = Data_array_skeleton[:,2]
+    
+    # Compute current path length between nodes
+    path_length_N2N = path_length(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path])
+    
+    rotVec_rec_avg = []
+    rotVec_rec_composition = []
+    rotVec_rec_diff = []
+    
+   
+    index_inv = []
+    
+    list_quaternion = []
+    
+    #print("closest_pts = {}\n".format(vlist_path[i]))
+
+    # get all nodes pairs
+    idx_pair_arr = np.vstack(pairwise(vlist_path))
+
+    start_idx = idx_pair_arr[:,0]
+    end_idx = idx_pair_arr[:,1]
+
+    # compute all connected vectors in the path
+    vector_list = []
+    for idx, (s, e) in enumerate(zip(start_idx, end_idx)):
+
+        p1 = [X_skeleton[s], Y_skeleton[s], Z_skeleton[s]]
+        p2 = [X_skeleton[e], Y_skeleton[e], Z_skeleton[e]]
+
+        vector_in_pair = findVec(p1,p2)
+        vector_list.append(vector_in_pair)
+
+    # get index list pairs of adjacent vector 
+    vector_pair = pairwise(range(len(vector_list)))
+
+
+    sum_quaternion = np.zeros([len(vector_pair), 4])
+
+    # loop over all adjacent vector pairs 
+    for i, value in enumerate(vector_pair):
+        
+        start_vec_idx = list(value)[0]
+        end_vec_idx = list(value)[1]
+
+        # compoute rotation matrix between adjacent directed vectors
+        mat = get_rotation_matrix(vec1 = vector_list[start_vec_idx], vec2 = vector_list[end_vec_idx])
+
+        # compoute quaternion between adjacent directed vectors
+        #The returned quaternion value is in scalar-last (x, y, z, w) format.
+        quaternion_r = R.from_matrix(mat).as_quat()
+
+        #compute rotation vector between adjacent directed vectors
+        rotVec_r = R.from_matrix(mat).as_rotvec()
+
+        # change the order of the quaternion_r value from (x, y, z, w)  to (w, x, y, z)
+        quaternion_r_rearanged = np.hstack((quaternion_r[3], quaternion_r[0], quaternion_r[1], quaternion_r[2]))
+
+        #euler_r = R.from_matrix(mat).as_euler('xyz', degrees = True)
+           
+        sum_quaternion[i,:] = quaternion_r_rearanged
+
+        list_quaternion.append(list(quaternion_r_rearanged))
+        
+        ##################################################
+
+
+    #compute quaternion traits of the current path
+    ######################################################################
+
+    # Average of quaternions
+    ###############################################################
+    # compute average of quaternions from Quaternion averaging functions from scikit-surgerycore, The quaternions input are arranged as (w,x,y,z),
+
+    #sample_list = ([0,0,0,0], [1,2,3,4], [1,2,3,4])
+
+    #avg_quaternion = quaternion_list_addition(list_quaternion)
+
+    #print("sum_quaternion = {}\n".format(sum_quaternion))
+
+    # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z) with w being the scalar
+    avg_quaternion = average_quaternions(sum_quaternion)
+
+
+    # Composition of quaternions
+    #################################################################
+    q_composition = quaternion_list_multiply(list_quaternion)
+
+    q_composition = q_composition.flatten()
+
+    #composition_path_rec.append(q_composition)
+
+    # get the rotation vector
+    #rotVec_rec_composition.append(rotVec_from_quaternion(q_composition))
+
+
+    # Differential of quaternions
+    #################################################################
+
+    q_diff = quaternion_list_differential(list_quaternion)
+
+    #diff_path_rec.append(q_diff)
+
+    # get the rotation vector
+    #rotVec_rec_diff.append(rotVec_from_quaternion(q_diff))
+
+
+
+    # Distance of quaternions
+    #################################################################
+
+    (cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized) = quaternion_list_distance(list_quaternion)
+
+    #distance_path_rec.append([cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized])
+
+
+    return  avg_quaternion, q_composition, q_diff, cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized, path_length_N2N
+
+
+
+
+
+
+
+
 #######################################################################################################
 ########################################################################################################
 # Skeleton analysis
@@ -1208,11 +1336,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     print("Number of start nodes {}, Number of End nodes in the graph: {} \n".format(len(start_vlist), len(end_vlist)))
 
     
-    
+    '''
     print("start_vlist = {} \n".format(start_vlist))
     print("end_vlist_offset = {} \n".format(end_vlist_offset))
     print("end_vlist = {} \n".format(end_vlist))
-    
+    '''
 
     
 
@@ -1523,10 +1651,13 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     start_v_common = np.repeat(0, repeats = len(sub_branch_end_rec), axis = 0)
     
-
+    
+    #import time
+    #t = time.process_time()
+    
     # loop over all paths and compute quaternions values
     #for idx, (start_v, end_v) in enumerate(zip(sub_branch_start_rec, sub_branch_end_rec)):
-        
+    
     for idx, (start_v, end_v) in enumerate(zip(start_v_common, sub_branch_end_rec)):
         
        
@@ -1544,149 +1675,58 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             if len(vlist_path) > 0:
                 
                 vlist_path_rec.append(vlist_path)
-                
-                # Compute current path length between nodes
-                path_length_N2N = path_length(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path])
-                
-                # record current path length
-                path_length_rec.append(path_length_N2N)
-                
-                print("Path {} properties: start_v = {} end_v = {}, number_nodes = {}, path_length = {}".format(idx, start_v, end_v, len(vlist_path), path_length_N2N))
-                ################################################################################
-
-                
-                #print("closest_pts = {}\n".format(vlist_path[i]))
-
-                # get all nodes pairs
-                idx_pair_arr = np.vstack(pairwise(vlist_path))
-
-                start_idx = idx_pair_arr[:,0]
-                end_idx = idx_pair_arr[:,1]
-                
-                # compute all connected vectors in the path
-                vector_list = []
-                for idx, (s, e) in enumerate(zip(start_idx, end_idx)):
-
-                    p1 = [X_skeleton[s], Y_skeleton[s], Z_skeleton[s]]
-                    p2 = [X_skeleton[e], Y_skeleton[e], Z_skeleton[e]]
-
-                    vector_in_pair = findVec(p1,p2)
-                    vector_list.append(vector_in_pair)
-
-                # get index list pairs of adjacent vector 
-                vector_pair = pairwise(range(len(vector_list)))
-
-                
-                sum_quaternion = np.zeros([len(vector_pair), 4])
-                
-                # loop over all adjacent vector pairs 
-                for i, value in enumerate(vector_pair):
-                    
-                    start_vec_idx = list(value)[0]
-                    end_vec_idx = list(value)[1]
-
-                    # compoute rotation matrix between adjacent directed vectors
-                    mat = get_rotation_matrix(vec1 = vector_list[start_vec_idx], vec2 = vector_list[end_vec_idx])
-
-                    # compoute quaternion between adjacent directed vectors
-                    #The returned quaternion value is in scalar-last (x, y, z, w) format.
-                    quaternion_r = R.from_matrix(mat).as_quat()
-
-                    #compute rotation vector between adjacent directed vectors
-                    rotVec_r = R.from_matrix(mat).as_rotvec()
-
-                    # change the order of the quaternion_r value from (x, y, z, w)  to (w, x, y, z)
-                    quaternion_r_rearanged = np.hstack((quaternion_r[3], quaternion_r[0], quaternion_r[1], quaternion_r[2]))
-
-                    #euler_r = R.from_matrix(mat).as_euler('xyz', degrees = True)
-                       
-                    sum_quaternion[i,:] = quaternion_r_rearanged
-
-                    list_quaternion.append(list(quaternion_r_rearanged))
-                    
-                    ##################################################
-                
-
-                #compute quaternion traits of the current path
-                ######################################################################
-
-                # Average of quaternions
-                ###############################################################
-                # compute average of quaternions from Quaternion averaging functions from scikit-surgerycore, The quaternions input are arranged as (w,x,y,z),
-
-                #sample_list = ([0,0,0,0], [1,2,3,4], [1,2,3,4])
-
-                #avg_quaternion = quaternion_list_addition(list_quaternion)
-
-
-                #print("sum_quaternion = {}\n".format(sum_quaternion))
-
-
-                # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z) with w being the scalar
-                avg_quaternion = average_quaternions(sum_quaternion)
-
-                #avg_quaternion = np.absolute(avg_quaternion)
-
-                #the signs of the output quaternion can be reversed, since q and -q describe the same orientation
-
-                # compute average quaternion values from a list of quarternion along the path
-                avg_quaternion = avg_quaternion.flatten()
-
-                avg_quaternion_path_rec.append(avg_quaternion)
-
-                # get the rotation vector
-                rotVec_rec_avg.append(rotVec_from_quaternion(avg_quaternion))
-
-
-                # Composition of quaternions
-                #################################################################
-                q_composition = quaternion_list_multiply(list_quaternion)
-
-                q_composition = q_composition.flatten()
-
-                composition_path_rec.append(q_composition)
-
-                # get the rotation vector
-                rotVec_rec_composition.append(rotVec_from_quaternion(q_composition))
-
-
-                # Differential of quaternions
-                #################################################################
-
-                q_diff = quaternion_list_differential(list_quaternion)
-
-                diff_path_rec.append(q_diff)
-
-                # get the rotation vector
-                rotVec_rec_diff.append(rotVec_from_quaternion(q_diff))
-
-
-
-                # Distance of quaternions
-                #################################################################
-
-                (cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized) = quaternion_list_distance(list_quaternion)
-
-                distance_path_rec.append([cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized])
-
-
-                    #print("vlist_path = {} avg_quaternion = {} q_composition = {} q_diff = {}\n".format(idx, avg_quaternion, q_composition, q_diff))
-
-            else:
-                #sys.exit("Graph has no shortest path, quit!")
-                
-                print("Graph has no shortest path, quit!")
-                
-
-                            
+    
     print("Found {} shortest path \n".format(len(vlist_path_rec)))
     
-
     
-    #print("Path length: {}\n".format(path_length_rec))
-
-
+    #elapsed_time = time.process_time() - t
+    #print("First loop time cost : {}\n".format(elapsed_time))
     
+    
+    for idx, vlist_path in enumerate(vlist_path_rec): 
+    
+        (avg_quaternion, q_composition, q_diff, cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized, path_length_N2N) = analyze_path_traits(vlist_path, Data_array_skeleton)
+        
+        # Average of quaternions
+        ###############################################################
+        # compute average of quaternions from Quaternion averaging functions from scikit-surgerycore, The quaternions input are arranged as (w,x,y,z),
+        
+        # compute average quaternion values from a list of quarternion along the path
+        avg_quaternion_path_rec.append(avg_quaternion)
+        
+        # get the rotation vector
+        rotVec_rec_avg.append(rotVec_from_quaternion(avg_quaternion))
+        
+        
+        # Composition of quaternions
+        #################################################################
+        composition_path_rec.append(q_composition)
+
+        # get the rotation vector
+        rotVec_rec_composition.append(rotVec_from_quaternion(q_composition))
+
+
+        # Differential of quaternions
+        #################################################################
+        diff_path_rec.append(q_diff)
+
+        # get the rotation vector
+        rotVec_rec_diff.append(rotVec_from_quaternion(q_diff))
+
+        # Distance of quaternions
+        #################################################################
+        #(cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized) = quaternion_list_distance(list_quaternion)
+
+        distance_path_rec.append([cumulative_Q_D_absolute, cumulative_Q_D_intrinsic, cumulative_Q_D_symmetrized])
+
+        
+        ####################################################################
+        # record current path length
+        path_length_rec.append(path_length_N2N)
+    
+
+
+
     ####################################################################
     #find the dominant cluster of the average quaternion as 4 dimensional vectors 
     avg_quaternion_path_rec_list = []
@@ -2120,7 +2160,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
 
         
-        
+        '''
         #3. visualize sphere and vectors
         ###############################################################################
         
@@ -2210,18 +2250,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         mlab.orientation_axes()
         
         
-        '''
-        mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 1,0,0), color=(0,0,1))
-        mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,1,0), color=(0,0,1))
-        mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,0,1), color=(0,0,1))
-        '''
+
         #################################################################################
         
         
         mlab.orientation_axes()
         
         mlab.show()
-        
+        '''
 
     
     return percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\

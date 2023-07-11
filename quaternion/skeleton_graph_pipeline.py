@@ -166,7 +166,7 @@ if __name__ == '__main__':
     
     #print("Processing folder in path '{}' ...\n".format(subfolders))
     
-    '''
+    
     #loop execute
     for subfolder_id, subfolder_path in enumerate(subfolders):
         
@@ -182,9 +182,9 @@ if __name__ == '__main__':
         
         skeleton_analysis_pipeline(subfolder_path)
     
+    
+    
     '''
-    
-    
     ###########################################################
     #parallel processing module
     
@@ -200,7 +200,7 @@ if __name__ == '__main__':
     with closing(Pool(processes = agents)) as pool:
         result = pool.map(skeleton_analysis_pipeline, subfolders)
         pool.terminate()
-    
+    '''
 
 
 
