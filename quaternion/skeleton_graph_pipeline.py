@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-    python3 skeleton_graph_pipeline.py -p ~/example/B73_test/
+    python3 skeleton_graph_pipeline.py -p ~/example/B73_test/ -tq 0
 
 """
 
@@ -156,6 +156,54 @@ if __name__ == '__main__':
     
     
     
+   
+    #parameter sets
+    # path to individual folders
+    current_path = args["path"]
+    type_quaternion = args["type_quaternion"]
+    
+    subfolders = fast_scandir(current_path)
+    
+    #print("Processing folder in path '{}' ...\n".format(subfolders))
+    
+    '''
+    #loop execute
+    for subfolder_id, subfolder_path in enumerate(subfolders):
+        
+        #folder_name = os.path.basename(subfolder_path)
+        
+        #model_skeleton_name = folder_name + '_skeleton.ply'
+        
+        #model_skeleton_name = folder_name + '_his.png'
+        
+        
+        
+        #print("Processing folder '{}'...\n".format(subfolder_path))
+        
+        skeleton_analysis_pipeline(subfolder_path)
+    
+    '''
+    
+    
+    ###########################################################
+    #parallel processing module
+    
+    # get cpu number for parallel processing
+    agents = psutil.cpu_count() - 2 
+    #agents = multiprocessing.cpu_count() 
+    #agents = 8
+    
+    print("Using {0} cores to perfrom parallel processing... \n".format(int(agents)))
+    
+    # Create a pool of processes. By default, one is created for each CPU in the machine.
+    # extract the bouding box for each image in file list
+    with closing(Pool(processes = agents)) as pool:
+        result = pool.map(skeleton_analysis_pipeline, subfolders)
+        pool.terminate()
+    
+
+
+
     '''
     ###################################################################
     current_path = args["path"]
@@ -185,48 +233,3 @@ if __name__ == '__main__':
     ####################################################################
     '''
     
-    
-    #parameter sets
-    # path to individual folders
-    current_path = args["path"]
-    type_quaternion = args["type_quaternion"]
-    
-    subfolders = fast_scandir(current_path)
-    
-    #print("Processing folder in path '{}' ...\n".format(subfolders))
-    
-    
-    #loop execute
-    for subfolder_id, subfolder_path in enumerate(subfolders):
-        
-        #folder_name = os.path.basename(subfolder_path)
-        
-        #model_skeleton_name = folder_name + '_skeleton.ply'
-        
-        #model_skeleton_name = folder_name + '_his.png'
-        
-        
-        
-        #print("Processing folder '{}'...\n".format(subfolder_path))
-        
-        skeleton_analysis_pipeline(subfolder_path)
-    
-
-    
-    '''
-    ###########################################################
-    #parallel processing module
-    
-    # get cpu number for parallel processing
-    agents = psutil.cpu_count() - 2 
-    #agents = multiprocessing.cpu_count() 
-    #agents = 8
-    
-    print("Using {0} cores to perfrom parallel processing... \n".format(int(agents)))
-    
-    # Create a pool of processes. By default, one is created for each CPU in the machine.
-    # extract the bouding box for each image in file list
-    with closing(Pool(processes = agents)) as pool:
-        result = pool.map(skeleton_analysis_pipeline, subfolders)
-        pool.terminate()
-    '''

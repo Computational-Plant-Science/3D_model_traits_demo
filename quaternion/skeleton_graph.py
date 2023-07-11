@@ -7,20 +7,12 @@ Author: suxing liu
 
 Author-email: suxingliu@gmail.com
 
-USAGE
+USAGE:
 
-#default parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -v 1 -tq 0
+    python3 skeleton_graph.py -p ~/example/quaternion/tiny/ -m1 tiny_skeleton.ply -v 1 -tq 0
 
-#customized parameter: python3 skeleton_graph.py -p ~/example/test/ -m1 test_skeleton.ply -m2 test_aligned.ply -th 0.21 -v 1 -tq 0
+    python3 skeleton_graph.py -p ~/example/quaternion/species_comp/Maize_B101/ -m1 B101_skeleton.ply -r 50 -tq 0 
 
-#customized parameter: python3 skeleton_graph.py -p ~/example/quaternion/tiny/ -m1 tiny_skeleton.ply -v 1 -tq 0
-
-                    python3 skeleton_graph.py -p ~/example/quaternion/species_comp/Maize_B101/ -m1 B101_skeleton.ply -tq 0
-
-
-argument:
-("-p", "--path", required=True,    help="path to *.ply model file")
-("-m", "--model", required=True,    help="file name")
 
 """
 #!/usr/bin/env python
@@ -928,11 +920,10 @@ def orthonormal_vectors(k):
 
 
 
-
+# visualize all the connection points along the longest path
 def draw_nodes_index(X_skeleton, Y_skeleton, Z_skeleton, node_idx_list, color_rgb_value, scale_factor):
     
-    #visualize all the connection points along the longest path
-    
+
     # show the index of connection points
     for i,  idx_pts in enumerate(node_idx_list):
 
@@ -944,6 +935,23 @@ def draw_nodes_index(X_skeleton, Y_skeleton, Z_skeleton, node_idx_list, color_rg
                             color = color_rgb_value, mode = 'sphere', scale_factor = scale_factor)
                             
     return graph_vis
+
+
+
+# visualize rotation vectors
+def draw_rotation_vectors(rotVec, color_vec, line_width_value):
+    
+    
+    for i, vectors in enumerate(rotVec):
+        
+        zeros = np.zeros(len(vectors))
+
+        vec_vis = mlab.quiver3d(zeros, zeros, zeros, np.asarray(vectors)[:,0], np.asarray(vectors)[:,1], np.asarray(vectors)[:,2], color = color_vec[i], mode = '2darrow', line_width = line_width_value)
+    
+                            
+    return vec_vis
+    
+    
 
 
 
@@ -1096,8 +1104,6 @@ def in_hull(p, hull):
         hull = Delaunay(hull)
 
     return hull.find_simplex(p)>=0
-
-
 
 
 
@@ -1370,8 +1376,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     candidate_list = []
     
-    # distance threshold for connecting branches less than 3 nodes
-    dis_factor = 60
+    # distance threshold for connecting branches, number of nodes in the shortest root path
+    dis_factor = len_ratio
     
     
     
@@ -1408,7 +1414,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         query_points[:,2] = Z_skeleton[end_vlist_offset]
         
         # convex hull cannot be built if branches less than 3 nodes 
-        if len(sub_branch) > 3:
+        if len(sub_branch) > dis_factor:
             
             # test whether start points of branches that lie in the given convex hull built from point_set,
             # It returns a boolean array where True values indicate points that lie in the given convex hull.
@@ -1488,8 +1494,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     print("Number of connection points = {}\n".format(len(closest_pts_sorted)))
         
-    
-    
 
     #find shortest path between start vertices and end vertices
     ####################################################################
@@ -2116,7 +2120,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
 
         
-        '''
+        
         #3. visualize sphere and vectors
         ###############################################################################
         
@@ -2157,32 +2161,38 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         
         if type_quaternion == 0:
-            rotVec_sel = rotVec_average_cluster
+            rotVec_sel = np.asarray(rotVec_average_cluster, dtype = object)
             
         elif type_quaternion == 1:
-            rotVec_sel = rotVec_composition_cluster
+            rotVec_sel = np.asarray(rotVec_composition_cluster, dtype = object)
             
         elif type_quaternion == 2:
-            rotVec_sel = rotVec_diff_cluster
+            rotVec_sel = np.asarray(rotVec_diff_cluster, dtype = object)
 
         
         # draw all the rotation vectors in pipeline
         color_cluser = [(1, 0, 0), (0, 1, 0), (0, 0, 1)]
         
-        for i, vectors in enumerate(rotVec_sel):
-            
-            zeros = np.zeros(len(vectors))
-
-            pts = mlab.quiver3d(zeros, zeros, zeros, np.asarray(vectors)[:,0], np.asarray(vectors)[:,1], np.asarray(vectors)[:,2], color = color_cluser[i], mode = '2ddash')
-
+        line_width_value = 2.0
         
-        # draw all the rotation vectors in pipeline
-        #mlab.quiver3d( 0,0,0, Vec_arr[0], Vec_arr[1], Vec_arr[2], color = current_color)
-        #pts = mlab.quiver3d(zeros, zeros, zeros, np.asarray(vector_dominant[0])[:,0], np.asarray(vector_dominant[0])[:,1], np.asarray(vector_dominant[0])[:,2], color = (1, 0, 0), mode = '2ddash')
+        #pts = draw_rotation_vectors(rotVec_sel, color_cluser, line_width_value)
+        
+        
+        #####################################################################33
+        # draw cluster center rotation vector
+        
+        
+        line_width_value = 6.0
+        
+        rotVec_centroid_list = [i for i in rotVec_centroid_cluster]
+        
+        #for i in range(len(rotVec_centroid_list)):
+        for i, vectors in enumerate(rotVec_centroid_list):
+                        
+            #print(rotVec_centroid_list[i])
+        
+            pts = mlab.quiver3d(0, 0, 0, np.asarray(vectors)[0], np.asarray(vectors)[1], np.asarray(vectors)[2], color = color_cluser[i], mode = '2darrow', line_width = line_width_value)
 
-   
-        # draw one average rotation vector
-        #pts = mlab.quiver3d(0,0,0, avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = (1, 0, 0), line_width = 15, scale_factor = 2)
         
         ###############################################################################
         
@@ -2200,18 +2210,18 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         mlab.orientation_axes()
         
         
-        
+        '''
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 1,0,0), color=(0,0,1))
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,1,0), color=(0,0,1))
         mlab.pipeline.vectors(mlab.pipeline.vector_scatter(0,0,0, 0,0,1), color=(0,0,1))
-        
+        '''
         #################################################################################
         
         
         mlab.orientation_axes()
         
         mlab.show()
-        '''
+        
 
     
     return percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
@@ -2232,7 +2242,7 @@ if __name__ == '__main__':
     ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
     ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
     ap.add_argument("-n", "--n_cluster", required = False, type = int, default = 3, help = "Number of clusters to filter the small length paths")
-    ap.add_argument("-r", "--len_ratio", required = False, type = float, default = 0.15, help = "Percentage of length threshold to filter the root legnth")
+    ap.add_argument("-r", "--len_ratio", required = False, type = int, default = 50, help = "length threshold to filter the roots, number of nodes in the shortest length path")
     ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
     ap.add_argument("-v", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult not display")
     args = vars(ap.parse_args())

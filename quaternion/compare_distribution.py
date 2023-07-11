@@ -148,7 +148,7 @@ def cMap(x):
     
     
     
-def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label):
+def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotype_label):
     
   
     #####################################################################
@@ -257,19 +257,34 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label):
     
         
         
-        
-   
+    '''
+    ###################################################################################################################
+    # visualize average rotation vector from average quaterunion
+    
     print("{} genotypes in total, average roration vectors = {}\n".format(len(genotype_unique), avg_rotVec_list))
     
     
-
+    color_cluser = [(1, 0, 0), (0, 1, 0), (0, 0, 1)]
     
-
+    
     for idx, avg_rotVec  in enumerate(avg_rotVec_list):
         
-        sphere = mlab.quiver3d(0,0,0, avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = (1, 0, 0), line_width = 15, mode = '2darrow')
+        sphere = mlab.quiver3d(0,0,0, avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = color_cluser[idx], mode = '2darrow', line_width = 15, )
 
-
+    '''
+    
+    ###################################################################################################################
+    # visualize cluster center rotation vector 
+    
+    color_cluser = [(1, 0, 0), (0, 1, 0), (0, 0, 1)]
+    
+    for i, vectors in enumerate(rotVec_center):
+                    
+        #print(rotVec_centroid_list[i])
+    
+        sphere = mlab.quiver3d(0, 0, 0, np.asarray(vectors)[0], np.asarray(vectors)[1], np.asarray(vectors)[2], color = color_cluser[i], mode = '2darrow', line_width = 15)
+    
+    
     
     mlab.show()
     
@@ -327,7 +342,7 @@ if __name__ == '__main__':
         # read the csv file
         df = pd.read_excel(f)
         ###############################################################
-        #get downsampled rotation vectors
+        #get all path related rotation vectors
         #rotVec = np.vstack((data['rotVec_rec_0'],data['rotVec_rec_1'],data['rotVec_rec_2'])).T
         
         if type_quaternion == 0:
@@ -342,12 +357,26 @@ if __name__ == '__main__':
 
         data_v = df[cols_vec].values.tolist()
         
-
-        # downsample along coloum direction, every 10th
-        #data_v = np.asarray(data_v)[::sample_rate,:]
         
         data_v_arr = np.asarray(data_v)
 
+
+        ###############################################################
+        #get clustered center rotation vectors
+        cols_vec = ['rotVec_centroid_0','rotVec_centroid_1','rotVec_centroid_2']
+        
+        data_vec_center = df[cols_vec].values.tolist()
+        
+        data_vec_c_arr = np.array([np.array(xi) for xi in data_vec_center])
+        
+        #print(data_vec_center)
+        
+        data_VecCenter_arr = np.unique(data_vec_c_arr, axis = 0)
+        
+        #print(data_VecCenter_arr.shape)
+        
+        
+        
         ################################################################
         #get quarterunion values
         
@@ -362,9 +391,6 @@ if __name__ == '__main__':
         
         data_q = df[cols_q].values.tolist()
         
-        # downsample along coloum direction, every 10th
-        #data_q = quarterunionVec[::sample_rate,:]
-        #data_q = np.asarray(data_q)[::sample_rate,:]
         
         data_q_arr = np.asarray(data_q)
         
@@ -576,7 +602,7 @@ if __name__ == '__main__':
     
     if args['visualize'] == 1:
         
-        visualization_rotation_vector(np.asarray(data_v_arr), np.asarray(data_q_arr), genotype_label_arr)
+        visualization_rotation_vector(np.asarray(data_v_arr), np.asarray(data_q_arr), data_VecCenter_arr, genotype_label_arr)
     
 
     ###########################################################################################3
