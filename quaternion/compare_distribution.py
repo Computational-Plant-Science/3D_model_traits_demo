@@ -63,6 +63,19 @@ from statistics import mean
 
 import seaborn as sns
 
+from collections import OrderedDict
+
+
+
+
+#colormap mapping
+def get_cmap(n, name = 'hsv'):
+    """get the color mapping""" 
+    #viridis, BrBG, hsv, copper, Spectral
+    #Returns a function that maps each index in 0, 1, ..., n-1 to a distinct 
+    #RGB color; the keyword argument name must be a standard mpl colormap name
+    return plt.cm.get_cmap(name,n+1)
+
 
 
 def euler_to_rotMat(yaw, pitch, roll):
@@ -148,24 +161,31 @@ def cMap(x):
     
     
     
-def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotype_label):
+def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotype_label, genotype_unique):
     
   
     #####################################################################
     #group quaternion values and rotation vectors by genotypes
     avg_rotVec_list = []
     
-    genotype_unique = np.unique(genotype_label)
+    #genotype_label_unique = np.unique(genotype_label)
     
-    #print(genotype_unique)
+    indexes = np.unique(genotype_label, return_index=True)[1]
+    
+    genotype_label_unique = [genotype_label[index] for index in sorted(indexes)]
+    
+   
+    print(genotype_label_unique)
+    
+    print(genotype_unique)
     
     
     
-    for idx, genoype_value  in enumerate(genotype_unique):
+    for idx, genoype_value  in enumerate(genotype_label_unique):
         
         #print("genotype_ID = {}, genoype_value = {}".format(idx, genoype_value))
         
-        index_sel = np.where(genotype_label == genotype_unique[idx])[0]
+        index_sel = np.where(genotype_label == genotype_label_unique[idx])[0]
     
         #print(data_q_arr[index_sel])
         
@@ -188,17 +208,17 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotyp
     ###############################################################################
     # Display a semi-transparent sphere
 
-    mlab.figure("sphere_representation_rotation_vector", size = (800, 800), bgcolor = (0, 0, 0))
+    mlab.figure("Rotation_vector_in_sphere", size = (800, 800), bgcolor = (0, 0, 0))
     
     # use a sphere Glyph, through the points3d mlab function, rather than
     # building the mesh ourselves, because it gives a better transparent
     # rendering.
-    sphere = mlab.points3d(0, 0, 0, scale_mode='none',
-                            scale_factor=2,
-                            color=(0.67, 0.77, 0.93),
-                            resolution=50,
-                            opacity=0.7,
-                            name='Sphere')
+    sphere = mlab.points3d(0, 0, 0, scale_mode = 'none',
+                            scale_factor = 2,
+                            color = (0.67, 0.77, 0.93),
+                            resolution = 50,
+                            opacity = 0.7,
+                            name = 'Sphere')
 
     # These parameters, as well as the color, where tweaked through the GUI,
     # with the record mode to produce lines of code usable in a script.
@@ -210,7 +230,7 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotyp
     
     #cmap = matplotlib.cm.get_cmap('viridis')
     
-    '''
+    
     # Plot the equator and the tropiques
     theta = np.linspace(0, 2 * np.pi, 100)
     for angle in (- np.pi / 6, 0, np.pi / 6):
@@ -218,10 +238,10 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotyp
         y = np.sin(theta) * np.cos(angle)
         z = np.ones_like(theta) * np.sin(angle)
 
-    mlab.plot3d(x, y, z, color=(1, 1, 1), opacity=0.2, tube_radius=None)
-    '''
+    mlab.plot3d(x, y, z, color = (1, 1, 1), opacity = 0.2, tube_radius = None)
     
-   
+    
+    '''
     ###########################################################################
     # Visualzie vectors by genotypes, colored by different genotypes
     
@@ -255,24 +275,36 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotyp
     # Set look-up table and redraw
     sphere.module_manager.scalar_lut_manager.lut.table = colors
     
-        
-        
     '''
+
+    
     ###################################################################################################################
     # visualize average rotation vector from average quaterunion
     
-    print("{} genotypes in total, average roration vectors = {}\n".format(len(genotype_unique), avg_rotVec_list))
+    print("{} genotypes in total, average roration vectors = {}\n".format(len(genotype_label_unique), avg_rotVec_list))
     
+    cmap = get_cmap(len(avg_rotVec_list))
     
     color_cluser = [(1, 0, 0), (0, 1, 0), (0, 0, 1)]
+    
+    sf_value = 0.03
     
     
     for idx, avg_rotVec  in enumerate(avg_rotVec_list):
         
-        sphere = mlab.quiver3d(0,0,0, avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = color_cluser[idx], mode = '2darrow', line_width = 15, )
-
+        vec_color = cmap(idx)[:len(cmap(idx))-1]
+        
+        normalized_avg_rotVec = avg_rotVec/np.linalg.norm(avg_rotVec)
+        
+        #print("normalized_avg_rotVec = {}\n".format(normalized_avg_rotVec))
+        
+        sphere = mlab.quiver3d(0,0,0, normalized_avg_rotVec[0], normalized_avg_rotVec[1], normalized_avg_rotVec[2], color = vec_color, mode = '2darrow', line_width = 10)
+                            
+        sphere = mlab.points3d(normalized_avg_rotVec[0], normalized_avg_rotVec[1], normalized_avg_rotVec[2], color = vec_color, mode = 'sphere', scale_factor = sf_value)
+        
+        sphere = mlab.text3d(normalized_avg_rotVec[0], normalized_avg_rotVec[1], normalized_avg_rotVec[2], str("{}".format(genotype_unique[idx])), color = vec_color, scale = (sf_value, sf_value, sf_value))
+                                
     '''
-    
     ###################################################################################################################
     # visualize cluster center rotation vector 
     
@@ -285,7 +317,7 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotyp
         sphere = mlab.quiver3d(0, 0, 0, np.asarray(vectors)[0], np.asarray(vectors)[1], np.asarray(vectors)[2], color = color_cluser[i], mode = '2darrow', line_width = 15)
     
     
-    
+    '''
     mlab.show()
     
     
@@ -361,6 +393,7 @@ if __name__ == '__main__':
         data_v_arr = np.asarray(data_v)
 
 
+        '''
         ###############################################################
         #get clustered center rotation vectors
         cols_vec = ['rotVec_centroid_0','rotVec_centroid_1','rotVec_centroid_2']
@@ -374,7 +407,7 @@ if __name__ == '__main__':
         data_VecCenter_arr = np.unique(data_vec_c_arr, axis = 0)
         
         #print(data_VecCenter_arr.shape)
-        
+        '''
         
         
         ################################################################
@@ -398,25 +431,30 @@ if __name__ == '__main__':
         ################################################################
         #get downsampled genotype values
         genotype_label = df['genotype_label'].values.tolist()
+        
+        genotype_label_arr = np.asarray(genotype_label)
+        
+        #print("genotype_label are {} \n".format(genotype_label))
 
         # downsample along coloum direction, every 10th
         #genotype_label = genotype_v[::sample_rate,:]
         #genotype_label = np.asarray(genotype_label)[::sample_rate]
         
-        genotype_label_arr = np.asarray(genotype_label)
-        
-        
-        
+
         ################################################################
         genotype_type = df['genotype'].values.tolist()
         
-        genotype_type_arr = np.asarray(genotype_label)
+        genotype_name_arr = np.asarray(genotype_type)
         
-        genotype_unique = list(set(genotype_type))
+        #genotype_unique = list(set(genotype_name_arr))
         
-        #genotype_unique_arr = np.array(genotype_unique)
+
+        # not sorted unique 
+        genotype_unique = list(OrderedDict.fromkeys(genotype_name_arr))
         
         print("Genotypes are {} \n".format(genotype_unique))
+        
+        
         
         ################################################################
         #get downsampled quarterunion values
@@ -536,61 +574,6 @@ if __name__ == '__main__':
         
         
     
-    '''
-    q_ma_list = []
-    
-    genotype_unique = np.unique(genotype_label_arr)
-    
-    genotype_unique_list = genotype_unique.tolist()
-    
-    print(type(genotype_unique))
-     
-    for idx, genoype_value  in enumerate(genotype_unique):
-        
-        print("genotype_ID = {}, genoype_value = {}".format(idx, genoype_value))
-        
-        index_sel = np.where(genotype_label_arr == genotype_unique[idx])[0]
-
-        ma_arr = data_ma_arr[index_sel][:,0]
-        
-        #print(index_sel)
-        
-        #print(ma_arr)
-        
-        q_ma_list.append(ma_arr)
-            
-    
-    
-    diff_list = [0] * abs(len(q_ma_list[0]) - len(q_ma_list[1]))
-
-    extend_list = []
-
-    if len(q_ma_list[0]) > len(q_ma_list[1]):
-        extend_list.extend(q_ma_list[1])
-        
-    else:
-        extend_list.extend(q_ma_list[0])
-    
-    extend_list.extend(diff_list)
-    
-    
-    print(len(extend_list), len(q_ma_list[0]), len(q_ma_list[1]))
-
-
-    df = pd.DataFrame({'maize': q_ma_list[0], 'bean': extend_list, }, columns=['maize', 'bean'])
-
-    df['maize'].hist()
-    
-    df['bean'].hist()
-
-
-    #df4 = pd.DataFrame({'maize': q_ma_list[0], 'bean': q_ma_list[1], }, columns=['maize', 'bean'])
-
-    #fig = df.plot(kind='scatter', alpha=0.5)
-    
-    plt.show()
-    '''
-            
 
         
     
@@ -602,7 +585,7 @@ if __name__ == '__main__':
     
     if args['visualize'] == 1:
         
-        visualization_rotation_vector(np.asarray(data_v_arr), np.asarray(data_q_arr), data_VecCenter_arr, genotype_label_arr)
+        visualization_rotation_vector(np.asarray(data_v_arr), np.asarray(data_q_arr), data_v_arr, genotype_label_arr, genotype_unique)
     
 
     ###########################################################################################3

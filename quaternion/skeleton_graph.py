@@ -11,7 +11,7 @@ USAGE:
 
     python3 skeleton_graph.py -p ~/example/quaternion/tiny/ -m1 tiny_skeleton.ply -v 1 -r 3 -tq 0
 
-    python3 skeleton_graph.py -p ~/example/quaternion/species_comp/Maize_B101/ -m1 B101_skeleton.ply -r 50 -tq 0 
+    python3 skeleton_graph.py -p ~/example/quaternion/species_comp/Maize_B101/ -m1 B101_skeleton.ply -r 50 -tq 0
 
 
 """
@@ -1385,6 +1385,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         # change type to interger 
         int_v_list = [int(i) for i in v_list]
         
+        
+        
         # current sub branch length
         sub_branch_length = path_length(X_skeleton[int_v_list], Y_skeleton[int_v_list], Z_skeleton[int_v_list])
         
@@ -1417,7 +1419,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         sub_branch_zs = Z_skeleton[int_v_list[0]]
         
         # apply thersh length threshold
-        if sub_branch_length > 0: 
+        #if sub_branch_length > 0: 
+        
+        if len(int_v_list) > len_ratio:
         #if sub_branch_length > thresh_length: 
         
             # save computed parameters for each branch
@@ -1504,8 +1508,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     candidate_list = []
     
-    # distance threshold for connecting branches, number of nodes in the shortest root path
-    dis_factor = len_ratio
+
     
     
     
@@ -1541,8 +1544,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         query_points[:,1] = Y_skeleton[end_vlist_offset]
         query_points[:,2] = Z_skeleton[end_vlist_offset]
         
-        # convex hull cannot be built if branches less than 3 nodes 
-        if len(sub_branch) > dis_factor:
+        # convex hull cannot be built if branches less than 3 nodes
+        
+        # distance threshold for connecting branches, number of nodes in the shortest root path
+        if len(sub_branch) > len_ratio:
             
             # test whether start points of branches that lie in the given convex hull built from point_set,
             # It returns a boolean array where True values indicate points that lie in the given convex hull.
@@ -2262,7 +2267,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     return percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
             rotVec_average_cluster, rotVec_composition_cluster, rotVec_diff_cluster, \
-            distance_cluster, path_length_cluster, rotVec_centroid_cluster, q_centroid_cluster
+            distance_cluster, path_length_cluster
+            #, rotVec_centroid_cluster, q_centroid_cluster
 
     
 
@@ -2336,15 +2342,17 @@ if __name__ == '__main__':
     
     (percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
             rotVec_average_cluster, rotVec_composition_cluster, rotVec_diff_cluster, \
-            distance_cluster, path_length_cluster, rotVec_centroid_cluster, q_centroid_cluster) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+            distance_cluster, path_length_cluster) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
     
     
     
     result_traits = []
     
     percent_arr_list = []
-    rotVec_centroid_arr_list = []
-    q_centroid_cluster_list = []
+    
+    #rotVec_centroid_arr_list = []
+    #q_centroid_cluster_list = []
+    
     path_len_arr_list = []
     
     q_average_arr_list = []
@@ -2376,9 +2384,9 @@ if __name__ == '__main__':
         
         percent_arr = np.repeat(percent_sorted[i], repeats = len(q_average_arr), axis = 0)
 
-        rotVec_centroid_arr = np.tile(rotVec_centroid_cluster[i],(len(q_average_arr),1))
+        #rotVec_centroid_arr = np.tile(rotVec_centroid_cluster[i],(len(q_average_arr),1))
         
-        q_centroid_arr = np.tile(q_centroid_cluster[i],(len(q_average_arr),1))
+        #q_centroid_arr = np.tile(q_centroid_cluster[i],(len(q_average_arr),1))
         
         
         q_average_arr_list.append(q_average_arr)
@@ -2392,23 +2400,23 @@ if __name__ == '__main__':
         rotVec_diff_arr_list.append(rotVec_diff_arr)
         
         percent_arr_list.append(percent_arr)
-        rotVec_centroid_arr_list.append(rotVec_centroid_arr)
-        q_centroid_cluster_list.append(q_centroid_arr)
+        #rotVec_centroid_arr_list.append(rotVec_centroid_arr)
+        #q_centroid_cluster_list.append(q_centroid_arr)
         path_len_arr_list.append(path_len_arr)
         
         #print("rotVec_centroid_arr: {} \n".format(rotVec_centroid_arr))
         
-        for i, (v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24, v25, v26,v27,v28, v29,v30,v31,v32) in enumerate(zip(percent_arr, q_average_arr[:,0], q_average_arr[:,1], q_average_arr[:,2], q_average_arr[:,3],\
+        for i, (v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24, v25) in enumerate(zip(percent_arr, q_average_arr[:,0], q_average_arr[:,1], q_average_arr[:,2], q_average_arr[:,3],\
                                                         q_composition_arr[:,0], q_composition_arr[:,1], q_composition_arr[:,2], q_composition_arr[:,3],\
                                                         q_diff_arr[:,0], q_diff_arr[:,1], q_diff_arr[:,2], q_diff_arr[:,3],\
                                                         q_distance_arr[:,0], q_distance_arr[:,1], q_distance_arr[:,2],\
                                                         rotVec_avg_arr[:,0], rotVec_avg_arr[:,1], rotVec_avg_arr[:,2],\
                                                         rotVec_composition_arr[:,0], rotVec_composition_arr[:,1], rotVec_composition_arr[:,2],\
-                                                        rotVec_diff_arr[:,0], rotVec_diff_arr[:,1], rotVec_diff_arr[:,2], path_len_arr[:,0], \
-                                                        rotVec_centroid_arr[:,0], rotVec_centroid_arr[:,1], rotVec_centroid_arr[:,2], \
-                                                        q_centroid_arr[:,0], q_centroid_arr[:,1], q_centroid_arr[:,2], q_centroid_arr[:,3])):
+                                                        rotVec_diff_arr[:,0], rotVec_diff_arr[:,1], rotVec_diff_arr[:,2], path_len_arr[:,0])):
+                                                        #rotVec_centroid_arr[:,0], rotVec_centroid_arr[:,1], rotVec_centroid_arr[:,2], \
+                                                        #q_centroid_arr[:,0], q_centroid_arr[:,1], q_centroid_arr[:,2], q_centroid_arr[:,3])):
                                                             
-            traits_row.append([v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24, v25, v26,v27,v28, v29,v30,v31,v32])
+            traits_row.append([v0, v1,v2,v3,v4, v5,v6,v7,v8, v9,v10,v11,v12, v13,v14,v15, v16,v17,v18, v19,v20,v21, v22,v23,v24, v25])
         
         result_traits.append(traits_row)
 
@@ -2490,14 +2498,7 @@ if __name__ == '__main__':
         
         sheet_quaternion_1.cell(row = 1, column = 26).value = 'path_length'
 
-        sheet_quaternion_1.cell(row = 1, column = 27).value = 'rotVec_centroid_0'
-        sheet_quaternion_1.cell(row = 1, column = 28).value = 'rotVec_centroid_1'
-        sheet_quaternion_1.cell(row = 1, column = 29).value = 'rotVec_centroid_2'
 
-        sheet_quaternion_1.cell(row = 1, column = 30).value = 'centroid_quaternion_a'
-        sheet_quaternion_1.cell(row = 1, column = 31).value = 'centroid_quaternion_b'
-        sheet_quaternion_1.cell(row = 1, column = 32).value = 'centroid_quaternion_c'
-        sheet_quaternion_1.cell(row = 1, column = 33).value = 'centroid_quaternion_d'
         
         #####################################################################################
         sheet_quaternion_2 = wb.create_sheet()
@@ -2537,15 +2538,7 @@ if __name__ == '__main__':
         sheet_quaternion_2.cell(row = 1, column = 25).value = 'rotVec_diff_2'
         
         sheet_quaternion_2.cell(row = 1, column = 26).value = 'path_length'
-        
-        sheet_quaternion_2.cell(row = 1, column = 27).value = 'rotVec_centroid_0'
-        sheet_quaternion_2.cell(row = 1, column = 28).value = 'rotVec_centroid_1'
-        sheet_quaternion_2.cell(row = 1, column = 29).value = 'rotVec_centroid_2'
 
-        sheet_quaternion_2.cell(row = 1, column = 30).value = 'centroid_quaternion_a'
-        sheet_quaternion_2.cell(row = 1, column = 31).value = 'centroid_quaternion_b'
-        sheet_quaternion_2.cell(row = 1, column = 32).value = 'centroid_quaternion_c'
-        sheet_quaternion_2.cell(row = 1, column = 33).value = 'centroid_quaternion_d'
         
         #############################################################################
         sheet_quaternion_3 = wb.create_sheet()
@@ -2586,16 +2579,6 @@ if __name__ == '__main__':
         
         sheet_quaternion_3.cell(row = 1, column = 26).value = 'path_length'
 
-        sheet_quaternion_3.cell(row = 1, column = 27).value = 'rotVec_centroid_0'
-        sheet_quaternion_3.cell(row = 1, column = 28).value = 'rotVec_centroid_1'
-        sheet_quaternion_3.cell(row = 1, column = 29).value = 'rotVec_centroid_2'
-
-        sheet_quaternion_3.cell(row = 1, column = 30).value = 'centroid_quaternion_a'
-        sheet_quaternion_3.cell(row = 1, column = 31).value = 'centroid_quaternion_b'
-        sheet_quaternion_3.cell(row = 1, column = 32).value = 'centroid_quaternion_c'
-        sheet_quaternion_3.cell(row = 1, column = 33).value = 'centroid_quaternion_d'
-
-
 
     for row in result_traits[0]:
         sheet_quaternion_1.append(row)
@@ -2606,8 +2589,6 @@ if __name__ == '__main__':
     for row in result_traits[2]:
         sheet_quaternion_3.append(row)
         
-    
-    
     
     #save the csv file
     wb.save(trait_file)

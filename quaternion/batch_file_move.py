@@ -20,6 +20,7 @@ import numpy as np
 import pathlib
 import os
 import glob
+import shutil
 
 import psutil
 import concurrent.futures
@@ -83,14 +84,29 @@ def execute_script(cmd_line):
 # execute pipeline scripts in order
 def file_move(source_file_path, target_file_path):
     
-    filename = folder_name + '_quaternion.xlsx'
+    file_path = folder_name + '_quaternion.xlsx'
+    
     batch_cmd = "cp " + source_file_path + " " + target_file_path
     
     print(batch_cmd)
     
     execute_script(batch_cmd)
 
+
+
+
+# execute pipeline scripts in order
+def folder_delete(file_path):
     
+    isExists = os.path.exists(file_path)
+    
+    if isExists:
+        
+        shutil.rmtree(file_path)
+    else:
+        print("Path {} not exist!\n".format(file_path))
+        
+
 
 
 
@@ -148,10 +164,14 @@ if __name__ == '__main__':
 
         target_file = target_path + folder_name + '_' + tq_file 
         
-        #print("Processing folder '{}'...\n".format(target_file))
+        print("Processing folder '{}'...\n".format(target_file))
         
         file_move(source_file, target_file)
-    
+        
+        #############################################
+        #file_path = subfolder_path + '/' + tq_folder + '/'
+        
+        #folder_delete(file_path)
 
     
     '''

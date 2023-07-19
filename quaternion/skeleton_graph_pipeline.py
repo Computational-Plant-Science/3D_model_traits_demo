@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-    python3 skeleton_graph_pipeline.py -p ~/example/B73_test/ -tq 0
+    python3 skeleton_graph_pipeline.py -p ~/example/B73_test/ -r 20 -tq 0
 
 """
 
@@ -95,45 +95,19 @@ def skeleton_analysis_pipeline(file_path):
     
     print("Processing folder {} in folder {}...\n".format(file_path, folder_name))
     
-    '''
-    file_path_full_rename = file_path + '/' + folder_name + '_trait.xlsx' 
-    
-    batch_cmd = "mv " + file_path_full + ' '+ file_path_full_rename
-    
-    print(batch_cmd)
-    '''
-    
-    #batch_cmd = "cp " + file_path_full + " /home/suxing/example/Tara_data/combined/" 
+
     
     ################################################################################
 
     
     # python3 skeleton_graph.py -p ~/example/pt_cloud/tiny/ -m1 tiny_skeleton.ply
-    skeleton_analysis = "python3 skeleton_graph.py -p " + file_path_full + " -m1 " + model_skeleton_name + ' -tq  ' + str(type_quaternion)
+    skeleton_analysis = "python3 skeleton_graph.py -p " + file_path_full + " -m1 " + model_skeleton_name + ' -r ' + str(len_ratio) + ' -tq  ' + str(type_quaternion)
     
     print(skeleton_analysis)
     
     execute_script(skeleton_analysis)
-    
-    '''
-    #execute_script(skeleton_analysis)
-    ####################################################################
 
-    filename = folder_name + '_quaternion.xlsx'
-    batch_cmd = "cp " + file_path_full + filename + " /home/suxing/example/quaternion/B73_result/values/" 
-    execute_script(batch_cmd)
     
-    filename = folder_name + '_his.png' 
-    batch_cmd = "cp " + file_path_full + filename + " /home/suxing/example/quaternion/B73_result/histogram/" 
-    execute_script(batch_cmd)
-    
-    filename = folder_name + '_quaternion_4D.html'
-    batch_cmd = "cp " + file_path_full + filename + " /home/suxing/example/quaternion/B73_result/scatterplot/" 
-    execute_script(batch_cmd)
-    
-    ####################################################################
-    
-    '''
     
     
 
@@ -150,6 +124,7 @@ if __name__ == '__main__':
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to individual folders")
+    ap.add_argument("-r", "--len_ratio", required = False, type = int, default = 50, help = "length threshold to filter the roots, number of nodes in the shortest length path")
     ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
 
     args = vars(ap.parse_args())
@@ -161,12 +136,13 @@ if __name__ == '__main__':
     # path to individual folders
     current_path = args["path"]
     type_quaternion = args["type_quaternion"]
+    len_ratio = args["len_ratio"]
     
     subfolders = fast_scandir(current_path)
     
     #print("Processing folder in path '{}' ...\n".format(subfolders))
     
-    
+    '''
     #loop execute
     for subfolder_id, subfolder_path in enumerate(subfolders):
         
@@ -182,16 +158,16 @@ if __name__ == '__main__':
         
         skeleton_analysis_pipeline(subfolder_path)
     
-    
-    
     '''
+    
+    
     ###########################################################
     #parallel processing module
     
     # get cpu number for parallel processing
-    agents = psutil.cpu_count() - 2 
+    #agents = psutil.cpu_count() - 2 
     #agents = multiprocessing.cpu_count() 
-    #agents = 8
+    agents = 8
     
     print("Using {0} cores to perfrom parallel processing... \n".format(int(agents)))
     
@@ -200,9 +176,9 @@ if __name__ == '__main__':
     with closing(Pool(processes = agents)) as pool:
         result = pool.map(skeleton_analysis_pipeline, subfolders)
         pool.terminate()
-    '''
+    
 
-
+    
 
     '''
     ###################################################################
