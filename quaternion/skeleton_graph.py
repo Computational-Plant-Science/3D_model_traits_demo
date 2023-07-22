@@ -1598,10 +1598,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                     #connect graph edges
                     G_unordered.add_edge(sub_branch[index_cp], candidate_v)
                         
-                    
 
-       
-    
     ################################################################
         
     #sort tha data in the order of accending 
@@ -1618,8 +1615,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     dis_v_closest_pair_rec_sorted = list(set(dis_v_closest_pair_rec))
     
-    
-
 
     #print("closest_pts = {} \n".format(closest_pts))
     #print("visited_start = {} \n".format(idx_visited_start))

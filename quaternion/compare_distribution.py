@@ -25,37 +25,39 @@ header:
 import glob
 from pathlib import Path
 
-
 from mayavi import mlab
 from tvtk.api import tvtk
 
 import argparse
 import pandas as pd
 
-import numpy as np 
+import numpy as np
+from numpy import arctan2, sqrt
+import numexpr as ne
+  
 import plotly
 import plotly.graph_objs as go
 import plotly.express as px
-
-
-import matplotlib
-matplotlib.use('Agg')
-
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-
-import math
 
 import plotly as py
 import plotly.tools as tls
 import plotly.figure_factory as ff
 
+
+import matplotlib
+#matplotlib.use('Agg')
+
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+
+import math
 import random
+import itertools
 
 from scipy import linalg 
 from scipy.spatial.transform import Rotation as R
-
 from scipy.stats import kstest
+from scipy.spatial.distance import mahalanobis
 
 from sklearn.preprocessing import normalize
 
@@ -115,6 +117,40 @@ def euler_to_rotVec(yaw, pitch, roll):
     return rx, ry, rz
 
 
+
+#get rotation matrix between two vectors using scipy
+def get_rotation_matrix(vec2, vec1):
+    """ Find the rotation matrix that aligns vec1 to vec2
+    :param vec1: A 3d "source" vector
+    :param vec2: A 3d "destination" vector
+    :return mat: A transform matrix (3x3) which when applied to vec1, aligns it with vec2.
+    """
+    
+    
+    vec1 = np.reshape(vec1, (1, -1))
+    
+    vec2 = np.reshape(vec2, (1, -1))
+    
+    r = R.align_vectors(vec2, vec1)
+        
+    return r[0].as_matrix()
+    
+    '''
+    a, b = (vec1 / np.linalg.norm(vec1)).reshape(3), (vec2 / np.linalg.norm(vec2)).reshape(3)
+    v = np.cross(a, b)
+    if any(v): #if not all zeros then 
+        c = np.dot(a, b)
+        s = np.linalg.norm(v)
+        kmat = np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
+        return np.eye(3) + kmat + kmat.dot(kmat) * ((1 - c) / (s ** 2))
+
+    else:
+        return numpy.eye(3) #cross of all zeros only occurs on identical directions
+    '''
+
+
+    
+
 # Q is a Nx4 numpy matrix and contains the quaternions to average in the rows.
 # The quaternions are arranged as (w,x,y,z), with w being the scalar
 # The result will be the average quaternion of the input. Note that the signs
@@ -158,10 +194,82 @@ def cMap(x):
     #whatever logic you want for colors
     return [random.random() for i in x]
     
+
+
+def cart2sph(x,y,z, ceval=ne.evaluate):
+    """ x, y, z :  ndarray coordinates
+        ceval: backend to use: 
+              - eval :  pure Numpy
+              - numexpr.evaluate:  Numexpr """
+    azimuth = ceval('arctan2(y,x)')
     
+    xy2 = ceval('x**2 + y**2')
     
+    elevation = ceval('arctan2(z, sqrt(xy2))')
     
-def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotype_label, genotype_unique):
+    r = eval('sqrt(xy2 + z**2)')
+    
+    return azimuth, elevation, r
+
+
+
+
+def plot_rotated_axes(ax, r, name=None, offset=(0, 0, 0), scale=1):
+
+    colors = ("#FF6666", "#005533", "#1199EE")  # Colorblind-safe RGB
+
+    loc = np.array([offset, offset])
+
+    for i, (axis, c) in enumerate(zip((ax.xaxis, ax.yaxis, ax.zaxis), colors)):
+
+        axlabel = axis.axis_name
+
+        axis.set_label_text(axlabel)
+
+        axis.label.set_color(c)
+
+        axis.line.set_color(c)
+
+        axis.set_tick_params(colors=c)
+
+        line = np.zeros((2, 3))
+
+        line[1, i] = scale
+
+        line_rot = r.apply(line)
+
+        line_plot = line_rot + loc
+
+        ax.plot(line_plot[:, 0], line_plot[:, 1], line_plot[:, 2], c)
+
+        text_loc = line[1]*1.2
+
+        text_loc_rot = r.apply(text_loc)
+
+        text_plot = text_loc_rot + loc[0]
+
+        ax.text(*text_plot, axlabel.upper(), color=c, va="center", ha="center")
+
+    ax.text(*offset, name, color="k", va="center", ha="center", bbox={"fc": "w", "alpha": 0.8, "boxstyle": "circle"})
+
+
+
+# compute Mahalanobis Distance between the point x1 and the distribution X
+def mahalanobis_p2cluster(X, x1):
+    
+    # Calculate the mean vector and covariance matrix of the dataset
+    mu = np.mean(X, axis=0)
+    sigma = np.cov(X.T)
+
+    # Calculate the Mahalanobis Distance between two points
+    dist_mahalanobis = mahalanobis(x1, mu, np.linalg.inv(sigma))
+
+    return dist_mahalanobis
+
+
+
+  
+def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label, genotype_unique):
     
   
     #####################################################################
@@ -174,12 +282,21 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotyp
     
     genotype_label_unique = [genotype_label[index] for index in sorted(indexes)]
     
+    '''
+    rotVec_rec_norm = []
+    
+    for idx, rotVec  in enumerate(rotVec_rec):
+        
+        normalized_rotVec = rotVec/np.linalg.norm(rotVec)
+        rotVec_rec_norm.append(rotVec_rec_norm)
+    
+    rotVec_rec_norm = np.asarray(rotVec_rec_norm)
+    '''
    
     print(genotype_label_unique)
-    
     print(genotype_unique)
     
-    
+    rotVec_list = []
     
     for idx, genoype_value  in enumerate(genotype_label_unique):
         
@@ -188,6 +305,9 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotyp
         index_sel = np.where(genotype_label == genotype_label_unique[idx])[0]
     
         #print(data_q_arr[index_sel])
+        
+       
+        rotVec_list.append(rotVec_rec[index_sel])
         
         # use eigenvalues to compute average of quaternions, The quaternions input are arranged as (w,x,y,z),
         avg_quaternion = averageQuaternions(data_q_arr[index_sel])
@@ -202,7 +322,128 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotyp
         
         avg_rotVec = averageVectors(avg_quaternion)
         
-        avg_rotVec_list.append(avg_rotVec)
+        normalized_avg_rotVec = avg_rotVec/np.linalg.norm(avg_rotVec)
+        
+        #print("normalized_avg_rotVec = {}\n".format(normalized_avg_rotVec))
+        
+        avg_rotVec_list.append(normalized_avg_rotVec)
+    
+    
+    
+    
+    
+    ###############################################################################
+    #print(rotVec_list)
+
+    ###############################################################################
+    # Generate all possible two-element combinations 
+    # Convert the resulting iterator to a list
+    combinations = list(itertools.combinations(genotype_label_unique, 2))
+
+    # Print the list of combinations to the console
+    print("There are {} Genotype combinations in total\n".format(len(combinations)))
+
+    
+    genotype_pair = []
+    rot_mat_pair = []
+    euler_r_pair = []
+    quaternion_r_pair = []
+    
+    #dis_mahalanobis_avg = []
+    dis_mahalanobis_cluster = []
+    
+    # loop over all adjacent vector pairs 
+    for i, value in enumerate(combinations):
+        
+        vec1_idx = list(value)[0]
+        vec2_idx = list(value)[1]
+        
+        #print(avg_rotVec_list[vec1_idx-1], avg_rotVec_list[vec2_idx-1])
+
+        # compoute rotation matrix between adjacent directed vectors
+        mat_r = get_rotation_matrix(vec1 = avg_rotVec_list[vec1_idx-1], vec2 = avg_rotVec_list[vec2_idx-1])
+
+        # compoute quaternion between adjacent directed vectors
+        #The returned quaternion value is in scalar-last (x, y, z, w) format.
+        quaternion_r = R.from_matrix(mat_r).as_quat()
+
+        #compute rotation vector between adjacent directed vectors
+        #rotVec_r = R.from_matrix(mat).as_rotvec()
+
+        # change the order of the quaternion_r value from (x, y, z, w)  to (w, x, y, z)
+        quaternion_r_rearanged = np.hstack((quaternion_r[3], quaternion_r[0], quaternion_r[1], quaternion_r[2]))
+        
+         #compute rotation angles in euler coordinates
+        euler_r = R.from_matrix(mat_r).as_euler('xyz', degrees = True)
+           
+        
+        #################################################################
+
+        
+        # compute Mahalanobis Distance between the average vector and the paired distribution in current combination
+        dis_mahalanobis = mahalanobis_p2cluster(rotVec_list[vec1_idx-1], avg_rotVec_list[vec2_idx-1])
+        
+        dis_mahalanobis_cluster.append(dis_mahalanobis)
+        
+        ###################################################################
+        genotype_pair.append([genotype_unique[vec1_idx-1], genotype_unique[vec2_idx-1]])
+        rot_mat_pair.append(mat_r)
+        euler_r_pair.append(euler_r)
+        quaternion_r_pair.append(list(quaternion_r_rearanged))
+
+    
+        print("genotype pair {} and {}: euler roration angles = {}\n".format(genotype_unique[vec1_idx-1], genotype_unique[vec2_idx-1], euler_r))
+
+
+
+    #print("dis_mahalanobis_cluster = {}\n".format((dis_mahalanobis_cluster)))
+    
+
+    #################################################################################
+
+    ########################################################################################
+    
+    r0 = R.identity()
+
+    ax = plt.figure().add_subplot(projection = "3d", proj_type = "ortho")
+    
+    plot_rotated_axes(ax, r0, name = "r0", offset = (0, 0, 0))
+
+    for i, (euler_r, genotype_pair_name) in enumerate(zip(euler_r_pair, genotype_pair)):
+        
+        if i < 2:
+            
+            r = R.from_euler("XYZ", euler_r, degrees = True)
+            
+            name = str("r{}".format(i+1))
+            
+            plot_rotated_axes(ax, r, name, offset = ((i+1)*3, 0, 0))
+            
+    _ = ax.annotate("r0: Identity Rotation\n"
+                    "\n"
+                    "r1: Euler Rotation between" + str("{}".format(genotype_pair[0])) + " (XYZ)\n"
+                    "\n"
+                    "r1: Euler Rotation between" + str("{}".format(genotype_pair[1])) + " (XYZ)\n", 
+                    xy = (0.6, 0.7), xycoords = "axes fraction", ha = "left")
+
+
+    #ax.set(xlim=(-1.25, 7.25), ylim=(-1.25, 1.25), zlim=(-1.25, 1.25))
+
+    #ax.set(xticks=range(-1, 8), yticks=[-1, 0, 1], zticks=[-1, 0, 1])
+
+    ax.set_aspect("equal", adjustable="box")
+
+    ax.figure.set_size_inches(12, 10)
+
+    plt.tight_layout()
+    
+    result_path = current_path + 'vector_rotation.png'
+    print("result file was saved as {}\n".format(result_path))
+    plt.savefig(result_path, bbox_inches='tight', dpi=1000)
+    plt.close()
+    #plt.show()
+    
+    ##########################################################################################
     
 
     ###############################################################################
@@ -230,16 +471,7 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotyp
     
     #cmap = matplotlib.cm.get_cmap('viridis')
     
-    
-    # Plot the equator and the tropiques
-    theta = np.linspace(0, 2 * np.pi, 100)
-    for angle in (- np.pi / 6, 0, np.pi / 6):
-        x = np.cos(theta) * np.cos(angle)
-        y = np.sin(theta) * np.cos(angle)
-        z = np.ones_like(theta) * np.sin(angle)
 
-    mlab.plot3d(x, y, z, color = (1, 1, 1), opacity = 0.2, tube_radius = None)
-    
     
     '''
     ###########################################################################
@@ -250,7 +482,7 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotyp
     # Primitives
     #N = len(np.unique(genotype_label)) 
     
-    N = len(rotVec_rec)
+    N = len(rotVec_rec_norm)
     
     #print(N)
 
@@ -267,57 +499,40 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, rotVec_center, genotyp
 
     # draw all the rotation vectors in pipeline
     #mlab.quiver3d( 0,0,0, Vec_arr[0], Vec_arr[1], Vec_arr[2], color = current_color)
-    sphere = mlab.quiver3d(zeros,zeros,zeros, rotVec_rec[:,0], rotVec_rec[:,1], rotVec_rec[:,2], scalars=scalars, mode = '2ddash')
+    sphere = mlab.quiver3d(zeros,zeros,zeros, rotVec_rec_norm[:,0], rotVec_rec_norm[:,1], rotVec_rec_norm[:,2], scalars=scalars, mode = '2ddash')
     
     # Color by scalar
     sphere.glyph.color_mode = 'color_by_scalar' 
 
     # Set look-up table and redraw
     sphere.module_manager.scalar_lut_manager.lut.table = colors
-    
     '''
+    
 
     
     ###################################################################################################################
     # visualize average rotation vector from average quaterunion
     
-    print("{} genotypes in total, average roration vectors = {}\n".format(len(genotype_label_unique), avg_rotVec_list))
+    print("{} genotypes in total, representative roration vectors  = {}\n".format(len(genotype_label_unique), avg_rotVec_list))
     
     cmap = get_cmap(len(avg_rotVec_list))
     
-    color_cluser = [(1, 0, 0), (0, 1, 0), (0, 0, 1)]
+    #color_cluser = [(1, 0, 0), (0, 1, 0), (0, 0, 1)]
     
-    sf_value = 0.03
+    sf_value = 0.02
     
     
     for idx, avg_rotVec  in enumerate(avg_rotVec_list):
         
         vec_color = cmap(idx)[:len(cmap(idx))-1]
         
-        normalized_avg_rotVec = avg_rotVec/np.linalg.norm(avg_rotVec)
-        
-        #print("normalized_avg_rotVec = {}\n".format(normalized_avg_rotVec))
-        
-        sphere = mlab.quiver3d(0,0,0, normalized_avg_rotVec[0], normalized_avg_rotVec[1], normalized_avg_rotVec[2], color = vec_color, mode = '2darrow', line_width = 10)
+        sphere = mlab.quiver3d(0,0,0, avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = vec_color, mode = '2darrow', line_width = 10)
                             
-        sphere = mlab.points3d(normalized_avg_rotVec[0], normalized_avg_rotVec[1], normalized_avg_rotVec[2], color = vec_color, mode = 'sphere', scale_factor = sf_value)
+        sphere = mlab.points3d(avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = vec_color, mode = 'sphere', scale_factor = sf_value)
         
-        sphere = mlab.text3d(normalized_avg_rotVec[0], normalized_avg_rotVec[1], normalized_avg_rotVec[2], str("{}".format(genotype_unique[idx])), color = vec_color, scale = (sf_value, sf_value, sf_value))
+        sphere = mlab.text3d(avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], str("{}".format(genotype_unique[idx])), color = vec_color, scale = (sf_value, sf_value, sf_value))
                                 
-    '''
-    ###################################################################################################################
-    # visualize cluster center rotation vector 
-    
-    color_cluser = [(1, 0, 0), (0, 1, 0), (0, 0, 1)]
-    
-    for i, vectors in enumerate(rotVec_center):
-                    
-        #print(rotVec_centroid_list[i])
-    
-        sphere = mlab.quiver3d(0, 0, 0, np.asarray(vectors)[0], np.asarray(vectors)[1], np.asarray(vectors)[2], color = color_cluser[i], mode = '2darrow', line_width = 15)
-    
-    
-    '''
+
     mlab.show()
     
     
@@ -585,7 +800,7 @@ if __name__ == '__main__':
     
     if args['visualize'] == 1:
         
-        visualization_rotation_vector(np.asarray(data_v_arr), np.asarray(data_q_arr), data_v_arr, genotype_label_arr, genotype_unique)
+        visualization_rotation_vector(np.asarray(data_v_arr), np.asarray(data_q_arr), genotype_label_arr, genotype_unique)
     
 
     ###########################################################################################3
