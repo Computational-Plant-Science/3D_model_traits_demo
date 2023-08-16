@@ -84,7 +84,9 @@ def execute_script(cmd_line):
 # execute pipeline scripts in order
 def file_move(source_file_path, target_file_path):
     
-    file_path = folder_name + '_quaternion.xlsx'
+    #file_path = folder_name + '_quaternion.xlsx'
+    
+    #file_path = folder_name + '_seg.png'
     
     batch_cmd = "cp " + source_file_path + " " + target_file_path
     
@@ -159,7 +161,8 @@ if __name__ == '__main__':
     for subfolder_id, subfolder_path in enumerate(subfolders):
         
         folder_name = os.path.basename(subfolder_path)
-
+        
+        
         source_file = subfolder_path + '/' + tq_folder + '/' + tq_file
 
         target_file = target_path + folder_name + '_' + tq_file 
@@ -168,10 +171,16 @@ if __name__ == '__main__':
         
         file_move(source_file, target_file)
         
+        '''
         #############################################
-        #file_path = subfolder_path + '/' + tq_folder + '/'
+        label = 'pie_color.png'
         
-        #folder_delete(file_path)
+        source_file = subfolder_path + '/leaf1/' + label
+        
+        target_file = target_path + '/' + folder_name + '_' +label
+        
+        file_move(source_file, target_file)
+        '''
 
     
     '''
