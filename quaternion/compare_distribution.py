@@ -59,7 +59,10 @@ from scipy.spatial.transform import Rotation as R
 from scipy.stats import kstest
 from scipy.spatial.distance import mahalanobis
 
-from sklearn.preprocessing import normalize
+from sklearn.preprocessing import normalize, StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+
 
 from statistics import mean 
 
@@ -328,7 +331,7 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label, genoty
         
         avg_rotVec_list.append(normalized_avg_rotVec)
     
-    
+        
     
     
     
@@ -421,9 +424,9 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label, genoty
             
     _ = ax.annotate("r0: Identity Rotation\n"
                     "\n"
-                    "r1: Euler Rotation between" + str("{}".format(genotype_pair[0])) + " (XYZ)\n"
-                    "\n"
-                    "r1: Euler Rotation between" + str("{}".format(genotype_pair[1])) + " (XYZ)\n", 
+                    "r1: Euler Rotation between" + str("{}".format(genotype_pair[0])) + " (XYZ)\n",
+                    #"\n"
+                    #"r1: Euler Rotation between" + str("{}".format(genotype_pair[1])) + " (XYZ)\n", 
                     xy = (0.6, 0.7), xycoords = "axes fraction", ha = "left")
 
 
@@ -477,6 +480,8 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label, genoty
     ###########################################################################
     # Visualzie vectors by genotypes, colored by different genotypes
     
+    rotVec_rec_norm = rotVec_rec
+    
     cm = plt.get_cmap('turbo')
     
     # Primitives
@@ -506,8 +511,8 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label, genoty
 
     # Set look-up table and redraw
     sphere.module_manager.scalar_lut_manager.lut.table = colors
-    '''
     
+    '''
 
     
     ###################################################################################################################
@@ -528,7 +533,7 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label, genoty
         
         sphere = mlab.quiver3d(0,0,0, avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = vec_color, mode = '2darrow', line_width = 10)
                             
-        sphere = mlab.points3d(avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = vec_color, mode = 'sphere', scale_factor = sf_value)
+        sphere = mlab.points3d(avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], color = vec_color, mode = 'sphere', scale_factor = sf_value*2)
         
         sphere = mlab.text3d(avg_rotVec[0], avg_rotVec[1], avg_rotVec[2], str("{}".format(genotype_unique[idx])), color = vec_color, scale = (sf_value, sf_value, sf_value))
                                 
@@ -537,10 +542,10 @@ def visualization_rotation_vector(rotVec_rec, data_q_arr, genotype_label, genoty
     
     
     
-    
-    
-    
-    
+
+
+
+
 if __name__ == '__main__':
     
     
@@ -566,6 +571,7 @@ if __name__ == '__main__':
     ExcelFiles_list = glob.glob(file_path)
     
     
+    #test_Mahalanobis(0, 0, 0)
 
     
     ####################################################################
@@ -588,6 +594,9 @@ if __name__ == '__main__':
         
         # read the csv file
         df = pd.read_excel(f)
+        
+
+        
         ###############################################################
         #get all path related rotation vectors
         #rotVec = np.vstack((data['rotVec_rec_0'],data['rotVec_rec_1'],data['rotVec_rec_2'])).T
@@ -643,8 +652,113 @@ if __name__ == '__main__':
         data_q_arr = np.asarray(data_q)
         
     
+    
+        #################################################################################
+
+        #fig = px.scatter(df, x = "quaternion_Mahalanobis", y = "rotVec_Mahalanobis", color = "genotype", symbol = "genotype")
+        #plotly.offline.plot(fig, auto_open = False, filename = current_path + 'Mahalanobis_q_rotVec.html')
+        
+        
+        #PCA Visualize all the original dimensions
+        features = cols_q
+
+        fig = px.scatter_matrix(df, dimensions = features, color = "genotype")
+        fig.update_traces(diagonal_visible=False)
+        plotly.offline.plot(fig, auto_open = False, filename = current_path + 'PCA_quaternion.html')
+        
+        
+        #Visualize all the principal components
+        pca = PCA()
+        
+        components = pca.fit_transform(df[features])
+        
+        labels = {
+        str(i): f"PC {i+1} ({var:.1f}%)"
+        for i, var in enumerate(pca.explained_variance_ratio_ * 100)
+        }
+
+        fig = px.scatter_matrix(components, labels = labels, dimensions = range(4), color = df["genotype"])
+        
+        fig.update_traces(diagonal_visible = False)
+        
+        plotly.offline.plot(fig, auto_open = False, filename = current_path + 'PCA_quaternion_components.html')
+        
+        
+        # 2D PCA Scatter Plot and Loadings
+        X = df[features]
+
+        pca = PCA(n_components=2)
+        
+        components = pca.fit_transform(X)
+
+        loadings = pca.components_.T * np.sqrt(pca.explained_variance_)
+
+        fig = px.scatter(components, x = 0, y = 1, color = df['genotype'])
+
+        for i, feature in enumerate(features):
+            fig.add_annotation(
+                ax = 0, ay = 0,
+                axref = "x", ayref = "y",
+                x = loadings[i, 0],
+                y = loadings[i, 1],
+                showarrow = True,
+                arrowsize = 2,
+                arrowhead = 2,
+                xanchor = "right",
+                yanchor = "top"
+            )
+            fig.add_annotation(
+                x = loadings[i, 0],
+                y = loadings[i, 1],
+                ax = 0, ay = 0,
+                xanchor = "center",
+                yanchor = "bottom",
+                text = feature,
+                yshift = 5,
+            )
+        
+        plotly.offline.plot(fig, auto_open = False, filename = current_path + 'PCA_Loadings.html')
+        
+
+        #histogram
+        #fig = px.histogram(df, x = "quaternion_Mahalanobis", y = "rotVec_Mahalanobis", color = "genotype",  marginal="box", hover_data=df.columns)# or violin, rug
+                       
+        fig = px.histogram(df, x = "quaternion_Mahalanobis", color = "genotype", marginal = "box", hover_data = df.columns)
+        
+        plotly.offline.plot(fig, auto_open = False, filename = current_path + 'Mahalanobis_histogram.html')
+        
+        
+        # Group data together
+        #x1 = df.loc[df.genotype==genotype_unique[0], 'quaternion_Mahalanobis'].values
+        #x2 = df.loc[df.genotype==genotype_unique[1], 'quaternion_Mahalanobis'].values
+        #hist_data = [x1, x2]
+        #group_labels = ['bean', 'maize']
+
+        # Create distplot with custom bin_size
+        #fig = ff.create_distplot(hist_data, group_labels, bin_size=.2)
+        #plotly.offline.plot(fig, auto_open = False, filename = current_path + 'Mahalanobis_histogram_group.html')
+        
+        
+        
+        #Project data into 2D with t-SNE and px.scatter
+        #feature_col = ['quaternion_Mahalanobis','quaternion_p','rotVec_Mahalanobis', 'rotVec_p']
+        
+        feature_col = ['quaternion_Mahalanobis', 'rotVec_Mahalanobis']
+        
+        features_data = df[feature_col]
+
+        tsne = TSNE(n_components = 2, random_state = 0)
+        
+        projections = tsne.fit_transform(features_data)
+
+        fig = px.scatter(projections, x = 0, y = 1, color = df.genotype, labels = {'color': 'genotype'})
+        
+        plotly.offline.plot(fig, auto_open = False, filename = current_path + 'Mahalanobis_TSNE.html')
+        
+    
+    
         ################################################################
-        #get downsampled genotype values
+        #get genotype and label values
         genotype_label = df['genotype_label'].values.tolist()
         
         genotype_label_arr = np.asarray(genotype_label)
@@ -672,12 +786,13 @@ if __name__ == '__main__':
         
         
         ################################################################
-        #get downsampled quarterunion values
+        #get Mahalanobis distance values
         cols_ma = ['quaternion_Mahalanobis','quaternion_p','rotVec_Mahalanobis', 'rotVec_p']
         data_ma = df[cols_ma].values.tolist()
         
         data_ma_arr = np.asarray(data_ma)
         
+       
         
         #The center of the box represents the median while the borders represent the first (Q1) and third quartile (Q3), respectively. 
         #sns.boxplot(data = data, x = 'quaternion_Mahalanobis', y = 'genotype')
@@ -702,11 +817,11 @@ if __name__ == '__main__':
         
         #Kernel Density
         fig = plt.plot(figsize =(10, 7), tight_layout = True)
-        sns.kdeplot(x='quaternion_Mahalanobis', data=df, hue='genotype', common_norm=False)
+        sns.kdeplot(x='quaternion_Mahalanobis', data = df, hue='genotype', common_norm = False)
         plt.title("Kernel Density Function")
         result_path = current_path + base_name + '_Kernel_Density.png'
         print("result file was saved as {}\n".format(result_path))
-        plt.savefig(result_path, bbox_inches='tight', dpi=1000)
+        plt.savefig(result_path, bbox_inches = 'tight', dpi = 1000)
         plt.close()
         
         #sns.histplot(x='quaternion_Mahalanobis', data=df, hue='genotype', bins=len(df), stat="density", element="step", fill=False, cumulative=True, common_norm=False);
@@ -714,11 +829,8 @@ if __name__ == '__main__':
 
 
         
-        
-        
+        ###########################################################################################
         q_m = df['quaternion_Mahalanobis'].values
-        
-        
         
         q_type_1 = df.loc[df.genotype==genotype_unique[0], 'quaternion_Mahalanobis'].values
         q_type_2 = df.loc[df.genotype==genotype_unique[1], 'quaternion_Mahalanobis'].values

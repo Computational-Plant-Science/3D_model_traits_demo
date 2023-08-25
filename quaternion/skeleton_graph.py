@@ -2127,28 +2127,28 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
         '''
         ###################################################################################################
-        '''
+        
         # visualize all the start points
-        graph_vis = mlab.points3d(X_skeleton[start_vlist], Y_skeleton[start_vlist], Z_skeleton[start_vlist], \
-                                    color = (1,0,0), mode = 'sphere', scale_factor = sf_value*1.5)
+        #graph_vis = mlab.points3d(X_skeleton[start_vlist], Y_skeleton[start_vlist], Z_skeleton[start_vlist], \
+                                    #color = (1,0,0), mode = 'sphere', scale_factor = sf_value*1.5)
         
         
         
         # visualize all the end points
-        graph_vis = mlab.points3d(X_skeleton[end_vlist], Y_skeleton[end_vlist], Z_skeleton[end_vlist], \
-                                    color = (1,0,0), mode = 'sphere', scale_factor = sf_value)
+        #graph_vis = mlab.points3d(X_skeleton[end_vlist], Y_skeleton[end_vlist], Z_skeleton[end_vlist], \
+                                    #color = (1,0,0), mode = 'sphere', scale_factor = sf_value)
                                     
-        '''
         
         
-        #graph_vis = mlab.points3d(X_skeleton[sub_branch_list[0]], Y_skeleton[sub_branch_list[0]], Z_skeleton[sub_branch_list[0]], \
-                                    #color = (0,1,0), mode = 'sphere', scale_factor = sf_value)
+        
+        graph_vis = mlab.points3d(X_skeleton[sub_branch_list[0]], Y_skeleton[sub_branch_list[0]], Z_skeleton[sub_branch_list[0]], \
+                                    color = (0,1,1), mode = 'sphere', scale_factor = sf_value*0.5)
                                     
         #graph_vis = mlab.points3d(X_skeleton[sub_branch_list[test_branch_idx]], Y_skeleton[sub_branch_list[test_branch_idx]], Z_skeleton[sub_branch_list[test_branch_idx]], \
                                     #color = (0,0,1), mode = 'sphere', scale_factor = sf_value)
         
         #visualize all the connection points along the longest path
-        graph_vis = draw_nodes_index(X_skeleton, Y_skeleton, Z_skeleton, closest_pts_sorted, color_rgb_value = (1,0,0), scale_factor = sf_value*1.5)
+        #graph_vis = draw_nodes_index(X_skeleton, Y_skeleton, Z_skeleton, closest_pts_sorted, color_rgb_value = (1,0,0), scale_factor = sf_value*1.5)
         
         
         # show all the end_vlist_offset nodes
