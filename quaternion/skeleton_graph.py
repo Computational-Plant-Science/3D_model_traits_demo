@@ -29,8 +29,10 @@ from numpy import interp
 from sklearn import preprocessing
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
 from operator import itemgetter
 import argparse
+    
 
 from skimage.segmentation import watershed
 from skimage.feature import peak_local_max
@@ -93,6 +95,12 @@ from warnings import simplefilter
 simplefilter(action='ignore', category=FutureWarning)
 
 
+
+from sklearn import metrics
+
+from spherecluster import SphericalKMeans
+from spherecluster import VonMisesFisherMixture
+from spherecluster import sample_vMF
 
 
 def graph_plot(x, y, z, start_idx, end_idx, color_rgb):
@@ -955,45 +963,31 @@ def draw_rotation_vectors(rotVec, color_vec, line_width_value):
 
 
 
-def optimize_n_clusrer(data_list):
+def optimize_n_clusters(data_list):
 
     
     ###############################################################################
-    #Use Elbow Method methods to determine this optimal value of number_cluster.
+    #Use Elbow Method methods to determine optimal value of number_cluster.
     
 
+    silhouette_avg = []
     
-    if type_quaternion == 0:
-        data_list = avg_quaternion_path_rec_list_reshape
-    elif type_quaternion == 1:
-        data_list = composition_path_rec_list_reshape
-    elif type_quaternion == 2:
-        data_list = diff_path_rec_list_reshape
-    elif type_quaternion == 3:
-        data_list = distance_path_rec_list_reshape
-    
-    
-    md=[]
-    for i in range(1,10):
+    for num_clusters in list(range(2,20)):
         
-        kmeans = KMeans(n_clusters = i)
+        kmeans = KMeans(n_clusters = num_clusters, init = "k-means++", n_init = 10)
         
-        kmeans.fit(data_list)
+        kmeans.fit_predict(data_list)
+        
+        score = silhouette_score(data_list, kmeans.labels_)
+        
+        silhouette_avg.append(score)
 
-        md.append(kmeans.inertia_)
-    #print(md)
-    
-    plt.plot(list(np.arange(1,21)), md)
 
-    # create trait file using sub folder name
-    Elbow_chart = (current_path + folder_name + '_Elbow.png')
+    best_k = np.argmax(silhouette_avg) + 2
     
-    plt.savefig(Elbow_chart)
+    print ("Best K: {}".format(best_k))
     
-    plt.close()
-    
-    return n_opt_clusrer
-    
+    return best_k
 
 
 
@@ -1770,12 +1764,16 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
 
-
+    
     ################################################################################
-    #Keman cluster of average of quaternion values for all the paths
+    #Keman cluster of quaternion values for all the paths
+
+    #find the best number of clusters
+    number_cluster = optimize_n_clusters(avg_quaternion_path_rec_list_reshape)
     
     
-    kmeans = KMeans(n_clusters = number_cluster)
+
+    kmeans = KMeans(init = "k-means++", n_clusters = number_cluster)
     
     if type_quaternion == 0:
         s = kmeans.fit(avg_quaternion_path_rec_list_reshape)
@@ -1828,9 +1826,68 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         percent_sorted.append(percent[value])
     
     
+    '''
+    ################################################################################
+    #Mixture of von Mises Fisher clustering (soft)
+    
+    
+    vmf_soft = VonMisesFisherMixture(n_clusters = number_cluster, posterior_type = 'soft', n_init=20)
+    
+    
+    if type_quaternion == 0:
+        s = vmf_soft.fit(avg_quaternion_path_rec_list_reshape)
+    elif type_quaternion == 1:
+        s = vmf_soft.fit(composition_path_rec_list_reshape)
+    elif type_quaternion == 2:
+        s = vmf_soft.fit(diff_path_rec_list_reshape)
+    elif type_quaternion == 3:
+        s = vmf_soft.fit(distance_path_rec_list_reshape)
+
+        
+    labels = s.labels_
+    
+    labels = list(labels)
+    
+    
+    #print((labels))
+    
+    # compute cluster center quaternion and related rotation vector
+    centroid = s.centers
+    
+    #print("Centroid: {} \n".format(centroid))
+    
+    q_centroid_cluster = []
+    rotVec_centroid_cluster = []
+    for value in centroid:
+        q_centroid_cluster.append(value)
+        rotVec_centroid_cluster.append(rotVec_from_quaternion(value))
+    
+    #print("rotVec_centroid_cluster: {} \n".format(rotVec_centroid_cluster))
+    
+    # compute the ratio of each cluster
+    percent = []
+    for i in range(len(centroid)):
+        j = labels.count(i)
+        j = j/(len(labels))
+        percent.append(j)
+        
+    #print(percent)
+    
+
+    #descending order sorting as per frequency count
+    sorted_idx = np.argsort(percent)
+    
+    #reverse the order from accending to descending
+    sorted_idx_percent = sorted_idx[::-1]
+    
+    percent_sorted = []
+    for value in sorted_idx_percent:
+        percent_sorted.append(percent[value])
+
+    '''
 
     ##########################################################################################
-    # obtain the dominant cluster of quaternion vectors and related rotation vectors
+    # compute the dominant cluster of quaternion vectors and related rotation vectors
     
     
     #quaternion_path_traits = ['average', 'composition', 'diff']
@@ -1855,7 +1912,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         index_selected = [index for index in range(len(labels))  if labels[index] == idx_value]
         
         average_path_q =  [avg_quaternion_path_rec[i] for i in index_selected]
-        omposition_path_q = [composition_path_rec[i] for i in index_selected]
+        composition_path_q = [composition_path_rec[i] for i in index_selected]
         diff_path_q = [diff_path_rec[i] for i in index_selected]
         
         rotVec_path_average = [rotVec_rec_avg[i] for i in index_selected]
@@ -1867,7 +1924,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         path_length_value = [path_length_rec[i] for i in index_selected]
         
         q_average_cluster.append(average_path_q)
-        q_composition_cluster.append(omposition_path_q)
+        q_composition_cluster.append(composition_path_q)
         q_diff_cluster.append(diff_path_q)
         
         rotVec_average_cluster.append(rotVec_path_average)
@@ -2260,7 +2317,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         '''
 
     
-    return percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
+    return number_cluster, percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
             rotVec_average_cluster, rotVec_composition_cluster, rotVec_diff_cluster, \
             distance_cluster, path_length_cluster
             #, rotVec_centroid_cluster, q_centroid_cluster
@@ -2278,7 +2335,7 @@ if __name__ == '__main__':
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
     ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
-    ap.add_argument("-n", "--n_cluster", required = False, type = int, default = 3, help = "Number of clusters to filter the small length paths")
+    #ap.add_argument("-n", "--n_cluster", required = False, type = int, default = 3, help = "Number of clusters to filter the small length paths")
     ap.add_argument("-r", "--len_ratio", required = False, type = int, default = 50, help = "length threshold to filter the roots, number of nodes in the shortest length path")
     ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
     ap.add_argument("-v", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult not display")
@@ -2296,7 +2353,7 @@ if __name__ == '__main__':
     
     len_ratio = args["len_ratio"]
     
-    number_cluster = args["n_cluster"]
+    #number_cluster = args["n_cluster"]
     
     type_quaternion = args["type_quaternion"]
     
@@ -2335,7 +2392,7 @@ if __name__ == '__main__':
     
     result_list = []
     
-    (percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
+    (number_cluster, percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
             rotVec_average_cluster, rotVec_composition_cluster, rotVec_diff_cluster, \
             distance_cluster, path_length_cluster) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
     
@@ -2444,17 +2501,19 @@ if __name__ == '__main__':
         sheet_quaternion_1.delete_rows(2, sheet_quaternion_1.max_row + 1) # for entire sheet
         
         #Get the current Active Sheet
-        sheet_quaternion_2 = wb['sheet_quaternion_2']
-        sheet_quaternion_2.delete_rows(2, sheet_quaternion_2.max_row + 1) # for entire sheet
+        #sheet_quaternion_2 = wb['sheet_quaternion_2']
+        #sheet_quaternion_2.delete_rows(2, sheet_quaternion_2.max_row + 1) # for entire sheet
         
         #Get the current Active Sheet
-        sheet_quaternion_3 = wb['sheet_quaternion_3']
-        sheet_quaternion_3.delete_rows(2, sheet_quaternion_3.max_row + 1) # for entire sheet
+        #sheet_quaternion_3 = wb['sheet_quaternion_3']
+        #sheet_quaternion_3.delete_rows(2, sheet_quaternion_3.max_row + 1) # for entire sheet
         
     else:
         # Keep presets
         # Keep presets
         wb = openpyxl.Workbook()
+       
+        
         sheet_quaternion_1 = wb.active
         sheet_quaternion_1.title = "sheet_quaternion_1"
 
@@ -2494,7 +2553,7 @@ if __name__ == '__main__':
         sheet_quaternion_1.cell(row = 1, column = 26).value = 'path_length'
 
 
-        
+        '''
         #####################################################################################
         sheet_quaternion_2 = wb.create_sheet()
         sheet_quaternion_2.title = "sheet_quaternion_2"
@@ -2573,17 +2632,18 @@ if __name__ == '__main__':
         sheet_quaternion_3.cell(row = 1, column = 25).value = 'rotVec_diff_2'
         
         sheet_quaternion_3.cell(row = 1, column = 26).value = 'path_length'
-
+        '''
 
     for row in result_traits[0]:
         sheet_quaternion_1.append(row)
-        
+    
+    '''
     for row in result_traits[1]:
         sheet_quaternion_2.append(row)
    
     for row in result_traits[2]:
         sheet_quaternion_3.append(row)
-        
+    '''
     
     #save the csv file
     wb.save(trait_file)
@@ -2601,11 +2661,13 @@ if __name__ == '__main__':
     sh = wb.active 
     
 
-    
+    '''
     ####################################################################
     #Multi-dimension plots in ploty
     
     percent_all = np.concatenate((percent_arr_list[0], percent_arr_list[1], percent_arr_list[2]), axis = 0)
+    
+    #percent_all = np.concatenate((percent_arr_list[0], percent_arr_list[1]), axis = 0)
     
     
     if type_quaternion == 0:
@@ -2642,7 +2704,7 @@ if __name__ == '__main__':
     
     plot_quaternion_result(rotVec_all, percent_all, plot_file_rotVec, type_quaternion, 3)
     
-    
+    '''
     
 
     

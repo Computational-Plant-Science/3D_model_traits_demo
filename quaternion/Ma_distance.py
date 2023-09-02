@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-    python3 Ma_distance.py -p ~/example/quaternion/species_comp/bean/average/ -gl 1 -gn maize -tq 0 
+    python3 Ma_distance.py -p ~/example/quaternion/species_comp/bean/average/ -tq 0 
 
 
 
@@ -82,8 +82,8 @@ if __name__ == '__main__':
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True,    help = "path to excel file")
-    ap.add_argument("-gl", "--genotype_label", required = True, type = int, help = "genotype_label, represented as integer")
-    ap.add_argument("-gn", "--genotype_name", required = True, type = str, help = "genotype_name, represented as string")
+    #ap.add_argument("-gl", "--genotype_label", required = True, type = int, help = "genotype_label, represented as integer")
+    #ap.add_argument("-gn", "--genotype_name", required = True, type = str, help = "genotype_name, represented as string")
     ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
 
     args = vars(ap.parse_args())
@@ -91,32 +91,55 @@ if __name__ == '__main__':
     ###################################################################
     
     current_path = args["path"]
-    genotype_label = args["genotype_label"]
-    genotype_name = args["genotype_name"]
+    #genotype_label = args["genotype_label"]
+    #genotype_name = args["genotype_name"]
     
     type_quaternion = args["type_quaternion"]
     
     file_path = current_path + "*.xlsx"
 
     # get the absolute path of all Excel files 
-    ExcelFiles_list = glob.glob(file_path)
+    ExcelFiles_list = sorted(glob.glob(file_path))
+    '''
+    if type_quaternion == 0:
+        str_replace = '_average.xlsx'
+    elif type_quaternion == 1:
+        str_replace = '_composition.xlsx'
+    elif type_quaternion == 2:
+        str_replace = '_diff.xlsx'
+    elif type_quaternion == 3:
+        str_replace = '_distance.xlsx'
+    '''
+    str_replace = '.xlsx'
     
-    
-
     ####################################################################
     # add filename to the first column of all excel files
     # loop over the list of excel files
-    for f in ExcelFiles_list:
+    for f_id, f in enumerate(ExcelFiles_list):
         
         filename = Path(f).name
         
-        base_name = filename.replace("_quaternion.xlsx", "")
+        base_name = filename.replace(str_replace, "")
         
         print("Processing file '{}'...\n".format(filename))
         
-        mkpath = current_path +  base_name + '_Mahalanobis_p'
+        mkpath = current_path + base_name + '_Mahalanobis'
         mkdir(mkpath)
         save_path = mkpath + '/'
+        
+        
+        
+        genotype_name = base_name
+
+        genotype_label = f_id
+        
+        print("genotype_name = {} genotype_label = {}\n".format(genotype_name, genotype_label))
+        
+        #output_file = save_path + base_name + '_Mahalanobis.xlsx'
+        
+        #print("output_file '{}'...\n".format(output_file))
+        
+       
         
         
         # read the csv file
@@ -146,7 +169,7 @@ if __name__ == '__main__':
                 cols_q = ['distance_absolute','distance_intrinsic', 'distance_symmetrized']
             
             
-            print(cols_q)
+            print("Extracting data '{}'...\n".format(cols_q))
             
             data_q = df[cols_q]
             
@@ -169,7 +192,7 @@ if __name__ == '__main__':
             
             fig = px.scatter(data_ma, x = "quaternion_Mahalanobis", y = "quaternion_p", color = 'quaternion_Mahalanobis')
             
-            Mahalanobis_p_file = (save_path + base_name + sheet_name.replace("sheet_quaternion", "") +'_quaternion__Mahalanobis_p.html')
+            Mahalanobis_p_file = (save_path + base_name + sheet_name.replace("Sheet1", "") +'_quaternion_Mahalanobis_p.html')
     
             plotly.offline.plot(fig, auto_open = False, filename = Mahalanobis_p_file)
             
@@ -178,13 +201,13 @@ if __name__ == '__main__':
             
             fig = px.histogram(df_q, x = "quaternion_Mahalanobis", nbins=20)
             
-            Mahalanobis_p_file = (save_path + base_name + sheet_name.replace("sheet_quaternion", "") +'_quaternion_Mahalanobis_his.html')
+            Mahalanobis_p_file = (save_path + base_name + sheet_name.replace("Sheet1", "") +'_quaternion_Mahalanobis_his.html')
     
             plotly.offline.plot(fig, auto_open = False, filename = Mahalanobis_p_file)
             
             
             ############################################################
-            # compute Mahalanobis distance of rotation vectors select specific columns 
+            # compute Mahalanobis distance of rotation vectors 
             if type_quaternion == 0:
                 cols_vec = ['rotVec_avg_0','rotVec_avg_1','rotVec_avg_2']
             elif type_quaternion == 1:
@@ -215,7 +238,7 @@ if __name__ == '__main__':
             
             fig = px.scatter(data_ma, x = "rotVec_Mahalanobis", y = "rotVec_p", color = 'rotVec_Mahalanobis')
             
-            Mahalanobis_p_file = (save_path + base_name + sheet_name.replace("sheet_quaternion", "") +'_rotVec_Mahalanobis_p.html')
+            Mahalanobis_p_file = (save_path + base_name + sheet_name.replace("Sheet1", "") +'_rotVec_Mahalanobis_p.html')
     
             plotly.offline.plot(fig, auto_open = False, filename = Mahalanobis_p_file)
 
@@ -224,7 +247,7 @@ if __name__ == '__main__':
             
             fig = px.histogram(df_v, x = "rotVec_Mahalanobis", nbins = 20)
             
-            Mahalanobis_p_file = (save_path + base_name + sheet_name.replace("sheet_quaternion", "") +'_rotVec_Mahalanobis_his.html')
+            Mahalanobis_p_file = (save_path + base_name + sheet_name.replace("Sheet1", "") +'_rotVec_Mahalanobis_his.html')
     
             plotly.offline.plot(fig, auto_open = False, filename = Mahalanobis_p_file)
             
@@ -262,7 +285,7 @@ if __name__ == '__main__':
                 
                 df_cur.to_excel(writer, sheet_name = sheet_name_cur)
             
-            
+       
 
 
 

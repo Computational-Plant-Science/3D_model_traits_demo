@@ -160,18 +160,42 @@ if __name__ == '__main__':
     #loop execute
     for subfolder_id, subfolder_path in enumerate(subfolders):
         
+        '''
         folder_name = os.path.basename(subfolder_path)
-        
-        
+
         source_file = subfolder_path + '/' + tq_folder + '/' + tq_file
 
         target_file = target_path + folder_name + '_' + tq_file 
         
-        print("Processing folder '{}'...\n".format(target_file))
+        print("Moving file '{}' to {}\n".format(source_file, target_file))
+        
+        file_move(source_file, target_file)
+        '''
+        
+        folder_name = os.path.basename(subfolder_path)
+        
+        print(folder_name)
+        
+        source_file = subfolder_path + '/' + folder_name + '.xlsx' 
+
+        target_file = target_path 
+        
+        print("Moving file '{}' to {}\n".format(source_file, target_file))
         
         file_move(source_file, target_file)
         
+        
         '''
+        ##################################################
+        #Delete folder
+        
+        #target_folder = subfolder_path + '/' + tq_folder + '/'
+        
+        print("Deleting folder '{}'\n".format(target_folder))
+
+        #folder_delete(target_folder)
+        
+
         #############################################
         label = 'pie_color.png'
         
