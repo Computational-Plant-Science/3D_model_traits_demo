@@ -11,7 +11,7 @@ USAGE:
 
     python3 Ma_distance.py -p ~/example/quaternion/species_comp/bean/average/ -tq 0 
 
-
+    python3 Ma_distance.py -p ~/example/quaternion/species_comp/bean/average/ -gl 1 -gn bean -tq 0 
 
 argument:
 ("-p", "--path", required = True,    help = "path to image file")
@@ -82,8 +82,8 @@ if __name__ == '__main__':
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True,    help = "path to excel file")
-    #ap.add_argument("-gl", "--genotype_label", required = True, type = int, help = "genotype_label, represented as integer")
-    #ap.add_argument("-gn", "--genotype_name", required = True, type = str, help = "genotype_name, represented as string")
+    ap.add_argument("-gl", "--genotype_label", required = True, type = int, default = -1, help = "genotype_label, represented as integer")
+    ap.add_argument("-gn", "--genotype_name", required = True, type = str, default = 'empty', help = "genotype_name, represented as string")
     ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
 
     args = vars(ap.parse_args())
@@ -91,8 +91,17 @@ if __name__ == '__main__':
     ###################################################################
     
     current_path = args["path"]
-    #genotype_label = args["genotype_label"]
-    #genotype_name = args["genotype_name"]
+    
+    if args["genotype_label"] == -1:
+        print("No genotype_label was assigned!\n")
+    else:
+        genotype_label = args["genotype_label"]
+    
+    if args["genotype_name"] == 'empty':
+        print("No genotype_name was assigned!\n")
+    else:
+        genotype_name = args["genotype_name"]
+    
     
     type_quaternion = args["type_quaternion"]
     
@@ -128,10 +137,19 @@ if __name__ == '__main__':
         save_path = mkpath + '/'
         
         
+        if args["genotype_label"] == -1:
+            print("No genotype_label was assigned!\n")
+            genotype_label = f_id + 0
+        else:
+            genotype_label = args["genotype_label"]
         
-        genotype_name = base_name
-
-        genotype_label = f_id
+        if args["genotype_name"] == 'empty':
+            print("No genotype_name was assigned!\n")
+            genotype_name = base_name
+        else:
+            genotype_name = args["genotype_name"]
+        
+        
         
         print("genotype_name = {} genotype_label = {}\n".format(genotype_name, genotype_label))
         

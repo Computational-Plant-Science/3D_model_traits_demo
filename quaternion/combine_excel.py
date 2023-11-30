@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-    python3 combine_excel.py -p ~/example/quaternion/species_comp/excels/ -tq 1
+    python3 combine_excel.py -p ~/example/quaternion/species_comp/excels/ 
 
 
 argument:
@@ -136,7 +136,7 @@ if __name__ == '__main__':
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True,    help = "path to excel file")
-    ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
+    #ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
 
     args = vars(ap.parse_args())
 
@@ -146,7 +146,7 @@ if __name__ == '__main__':
     
     file_path = current_path + "*.xlsx"
     
-    type_quaternion = args["type_quaternion"]
+    #type_quaternion = args["type_quaternion"]
     
     #folder_name = os.path.basename(current_path)
     

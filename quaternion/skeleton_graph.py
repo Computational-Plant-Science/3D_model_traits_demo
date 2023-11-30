@@ -1099,6 +1099,8 @@ def in_hull(p, hull):
 
     return hull.find_simplex(p)>=0
 
+    
+
 
 
 def analyze_path_traits(vlist_path, Data_array_skeleton):
@@ -1545,12 +1547,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             # test whether start points of branches that lie in the given convex hull built from point_set,
             # It returns a boolean array where True values indicate points that lie in the given convex hull.
-            inside_idx = in_hull(query_points, point_set)
+            #inside_idx = in_hull(query_points, point_set)
 
             #print(in_hull(query_points, point_set))
+            #if len(inside_idx) > 0:
+                #candidate_list = [end_vlist_offset[i] for i in range(len(end_vlist_offset)) if inside_idx[i]]
             
-            candidate_list = [end_vlist_offset[i] for i in range(len(end_vlist_offset)) if inside_idx[i]]
-        
+            candidate_list = end_vlist_offset
+
             # search not visited nodes
             #s = set(idx_visited_start)
             #candidate_list = [x for x in end_vlist_offset if x not in s]
@@ -1769,7 +1773,13 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #Keman cluster of quaternion values for all the paths
 
     #find the best number of clusters
-    number_cluster = optimize_n_clusters(avg_quaternion_path_rec_list_reshape)
+    
+    if args["n_cluster"] > 0:
+        
+        number_cluster = args["n_cluster"]
+    else:
+        
+        number_cluster = optimize_n_clusters(avg_quaternion_path_rec_list_reshape)
     
     
 
@@ -1981,6 +1991,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         
         ############################################################################
+        graph_vis = mlab.figure("Structure_graph", size = (800, 800), bgcolor = (0, 0, 0))
+        
+        graph_vis = mlab.clf()
+        
         
         #1 . Visualize  *.ply 3D point cloud model
         if not (filename_pcloud is None):
@@ -2022,21 +2036,21 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             x, y, z = Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2] 
             
             # visualize data coordinates
-            mlab.figure("Point cloud model", size = (800, 800), bgcolor = (0, 0, 0))
+            #mlab.figure("Point cloud model", size = (800, 800), bgcolor = (0, 0, 0))
         
-            mlab.clf()
+            #mlab.clf()
             
-            #pts = mlab.points3d(x,y,z, mode = 'point')
+            graph_vis = mlab.points3d(x,y,z, mode = 'point')
             
-            pts = mlab.quiver3d(x,y,z)
+            #pts = mlab.quiver3d(x,y,z)
             
             sc = tvtk.UnsignedCharArray()
             
             sc.from_array(pcd_color)
 
-            pts.mlab_source.dataset.point_data.scalars = sc
+            graph_vis.mlab_source.dataset.point_data.scalars = sc
             
-            pts.mlab_source.dataset.modified()
+            graph_vis.mlab_source.dataset.modified()
         
 
 
@@ -2044,9 +2058,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         ####################################################################
         N = 2
         
-        graph_vis = mlab.figure("Structure_graph", size = (800, 800), bgcolor = (0, 0, 0))
+        #graph_vis = mlab.figure("Structure_graph", size = (800, 800), bgcolor = (0, 0, 0))
         
-        graph_vis = mlab.clf()
+        #graph_vis = mlab.clf()
         
         sf_value = 0.04
 
@@ -2140,9 +2154,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                     #color = path_color, mode = 'sphere', scale_factor = sf_value)
             
             # show the index of path
-            graph_vis = mlab.text3d(X_skeleton[vlist_path[-1]], Y_skeleton[vlist_path[-1]], Z_skeleton[vlist_path[-1]], \
-                                    str("{:.0f}".format(i)), color = (0,1,0), \
-                                    scale = (sf_value, sf_value, sf_value))
+            #graph_vis = mlab.text3d(X_skeleton[vlist_path[-1]], Y_skeleton[vlist_path[-1]], Z_skeleton[vlist_path[-1]], \
+                                    #str("{:.0f}".format(i)), color = (0,1,0), \
+                                    #scale = (sf_value, sf_value, sf_value))
 
         # show the root tip point
         #graph_vis = mlab.points3d(X_skeleton[start_vlist[0]], Y_skeleton[start_vlist[0]], Z_skeleton[start_vlist[0]], \
@@ -2184,7 +2198,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
         '''
         ###################################################################################################
-        
+        '''
         # visualize all the start points
         #graph_vis = mlab.points3d(X_skeleton[start_vlist], Y_skeleton[start_vlist], Z_skeleton[start_vlist], \
                                     #color = (1,0,0), mode = 'sphere', scale_factor = sf_value*1.5)
@@ -2217,7 +2231,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
 
         
-        '''
+        
         #3. visualize sphere and vectors
         ###############################################################################
         
@@ -2272,7 +2286,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         
         line_width_value = 2.0
         
-        #pts = draw_rotation_vectors(rotVec_sel, color_cluser, line_width_value)
+        pts = draw_rotation_vectors(rotVec_sel, color_cluser, line_width_value)
         
         
         #####################################################################33
@@ -2289,7 +2303,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             #print(rotVec_centroid_list[i])
         
             pts = mlab.quiver3d(0, 0, 0, np.asarray(vectors)[0], np.asarray(vectors)[1], np.asarray(vectors)[2], color = color_cluser[i], mode = '2darrow', line_width = line_width_value)
-
+        
         
         ###############################################################################
         
@@ -2305,7 +2319,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         mlab.view(63.4, 73.8, 4, [-0.05, 0, 0])
     
         mlab.orientation_axes()
-        
+        '''
         
 
         #################################################################################
@@ -2314,7 +2328,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         mlab.orientation_axes()
         
         mlab.show()
-        '''
+        
 
     
     return number_cluster, percent_sorted, q_average_cluster, q_composition_cluster, q_diff_cluster,\
@@ -2335,7 +2349,7 @@ if __name__ == '__main__':
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
     ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
-    #ap.add_argument("-n", "--n_cluster", required = False, type = int, default = 3, help = "Number of clusters to filter the small length paths")
+    ap.add_argument("-n", "--n_cluster", required = False, type = int, default = 0, help = "Number of clusters to filter the small length paths")
     ap.add_argument("-r", "--len_ratio", required = False, type = int, default = 50, help = "length threshold to filter the roots, number of nodes in the shortest length path")
     ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
     ap.add_argument("-v", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult not display")

@@ -9,17 +9,18 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-python3 model_filter.py -p ~/example/ -m test.ply -fr 0.1 -fd 100
+    python3 model_filter.py -p ~/example/ -fr 0.1 -fd 100
 
 
 argument:
-("-p", "--path", required=True,    help="path to *.ply model file")
-("-m", "--model", required=True,    help="file name")
+    ("-p", "--path", required=True,    help="path to *.ply model file")
+    ("-m", "--model", required=True,    help="file name")
+    ("-fr", "--filter_ratio", required = False, type = float, default = 5, help = "filter ratio, The lower this number the more aggressive the filter will be")
+    ("-fd", "--filter_radius", required = False, type = int, default = 100, help = "number of neighbors are to calculate the average distance for a given point")
 
 
 output:
-*.xyz: xyz format file only has 3D coordinates of points 
-
+    filtered 3D model file in ply format
 """
 #!/usr/bin/env python
 
@@ -28,7 +29,7 @@ output:
 # import the necessary packages
 import numpy as np 
 import argparse
-
+import glob
 import os
 import sys
 import open3d as o3d
@@ -37,7 +38,42 @@ import copy
 import math
 import pathlib
 
+import psutil
+import concurrent.futures
+import multiprocessing
+from multiprocessing import Pool
+from contextlib import closing
 
+
+# generate folder to store the output results
+def mkdir(path):
+    # import module
+    import os
+ 
+    # remove space at the beginning
+    path=path.strip()
+    # remove slash at the end
+    path=path.rstrip("\\")
+ 
+    # path exist?   # True  # False
+    isExists=os.path.exists(path)
+ 
+    # process
+    if not isExists:
+        # construct the path and folder
+        #print path + ' folder constructed!'
+        # make dir
+        os.makedirs(path)
+        return True
+    else:
+        # if exists, return 
+        print (path+' path exists!')
+        return False
+
+
+
+
+# visualization of 3d models
 def display_inlier_outlier(cloud, ind):
     inlier_cloud = cloud.select_by_index(ind)
     outlier_cloud = cloud.select_by_index(ind, invert=True)
@@ -48,12 +84,15 @@ def display_inlier_outlier(cloud, ind):
     o3d.visualization.draw_geometries([inlier_cloud, outlier_cloud])
 
 
-def format_converter(current_path, model_name):
+
+
+# ofilter the ply model using lier removal 
+def model_filter(model_file):
     
-    model_file = current_path + model_name
+    
     
     if os.path.isfile(model_file):
-        print("Filtering 3D point cloud model {}...\n".format(model_name))
+        print("Filtering 3D point cloud model {}...\n".format(model_file))
     else:
         print("File not exist")
         sys.exit()
@@ -77,13 +116,13 @@ def format_converter(current_path, model_name):
     
     
     # get the model center postion
-    model_center = pcd_r.get_center()
+    #model_center = pcd_r.get_center()
     
     # geometry points are translated directly to the model_center position
-    pcd_r.translate(-1*(model_center))
+    #pcd_r.translate(-1*(model_center))
     
-    print("Downsample the point cloud with a voxel of 0.02")
-    voxel_down_pcd = pcd_r.voxel_down_sample(voxel_size=0.015)
+    #print("Downsample the point cloud with a voxel of 0.02")
+    #voxel_down_pcd = pcd_r.voxel_down_sample(voxel_size=0.015)
 
 
     # Statistical oulier removal
@@ -98,27 +137,29 @@ def format_converter(current_path, model_name):
     #display_inlier_outlier(pcd_r, ind)
     
     print("Radius oulier removal")
-    cl, ind = voxel_down_pcd.remove_radius_outlier(nb_points=16, radius=0.00005)
-    #display_inlier_outlier(voxel_down_pcd, ind)
+    cl, ind = pcd_r.remove_radius_outlier(nb_points=16, radius=0.00005)
+    #display_inlier_outlier(pcd_r, ind)
     ####################################################################
     
     #Save model file as ascii format in ply
-    filename = current_path + base_name + '_filtered.xyz'
+    filename = save_path + base_name + '_filtered.ply'
     
     #write out point cloud file
-    o3d.io.write_point_cloud(filename, voxel_down_pcd, write_ascii = True)
+    o3d.io.write_point_cloud(filename, pcd_r, write_ascii = True)
     
- 
-    
+
     # check saved file
     if os.path.exists(filename):
-        print("Converted 3d model was saved at {0}\n".format(filename))
+        print("Filtered 3D model was saved at {0}\n".format(filename))
         return True
     else:
         return False
-        print("Model file converter failed!\n")
+        print("Model filter failed!\n")
         sys.exit(0)
     
+
+
+
 
 if __name__ == '__main__':
     
@@ -126,7 +167,6 @@ if __name__ == '__main__':
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
-    ap.add_argument("-m", "--model", required = False, help = "model file name")
     ap.add_argument("-fr", "--filter_ratio", required = False, type = float, default = 5, help = "filter ratio, The lower this number the more aggressive the filter will be")
     ap.add_argument("-fd", "--filter_radius", required = False, type = int, default = 100, help = "number of neighbors are to calculate the average distance for a given point")
     ap.add_argument("-t", "--test", required = False, default = False, help = "if using test setup")
@@ -135,25 +175,57 @@ if __name__ == '__main__':
 
     # setting path to model file 
     current_path = args["path"]
-    filename = args["model"]
    
     filter_radius = args["filter_radius"]
     filter_ratio = args["filter_ratio"]
     
-    if args["model"] is None:
-        
-        filename = pathlib.PurePath(current_path).name + ".xyz"
-        
-        print("Default file name is {}".format(filename))
-    
-    else:
-        
-        filename = args["model"]
-    
-    file_path = current_path + filename
+    # create result folder 
+    mkpath = os.path.dirname(current_path) + '/result'
+    mkdir(mkpath)
+    save_path = mkpath + '/'
     
 
+    # path to all ply file 
+    filetype = '*.ply' 
+    model_file_path = current_path + "/" + filetype
+    
+    # accquire ply file list
+    model_List = sorted(glob.glob(model_file_path))
+    
+    #print(model_List)
+    
+    # number of all ply files
+    n_models = len(model_List)
+    
+    result_list = []
+    
+    
+    
+    # loop execute
+    ###############################################################################
+    
+    for m_id, model_file in enumerate(model_List):
+        
 
-    format_converter(current_path, filename)
+        result_list.append(model_filter(model_file))
+        
+    
+    
+    # parallel processing
+    ########################################################################
+    '''
+    # get cpu number for parallel processing
+    agents = psutil.cpu_count()-2
+    #agents = multiprocessing.cpu_count() 
+    #agents = 8
+    
+    print("Using {0} cores to perfrom parallel processing... \n".format(int(agents)))
+    
+    # Create a pool of processes. By default, one is created for each CPU in the machine.
+    # extract the bouding box for each image in file list
+    with closing(Pool(processes = agents)) as pool:
+        result = pool.map(model_filter, model_List)
+        pool.terminate()
+    '''
 
  

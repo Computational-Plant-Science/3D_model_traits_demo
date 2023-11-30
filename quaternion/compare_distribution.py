@@ -766,6 +766,7 @@ if __name__  ==  '__main__':
         #Project data into 2D with t-SNE and px.scatter
         #feature_col = ['quaternion_Mahalanobis','quaternion_p','rotVec_Mahalanobis', 'rotVec_p']
         
+        
         feature_col = ['quaternion_Mahalanobis', 'rotVec_Mahalanobis']
         
         features_data = df[feature_col]
@@ -979,24 +980,24 @@ if __name__  ==  '__main__':
     
     result_matrix = []
     
-
+    if len(genotype_unique) == 12:
     
-    #B101	B112	DKIB014	LH123HT	Pa762	PHZ51	DKPB80_3IIH6	H96_3IIH6	LH59_PHG29	Pa762_3IIH6	PHG50_PHG47	PHZ51_LH59
-    # 0      1      2        5      10      8       3               4           6           11          7           9       
-    for i, value in enumerate(dis_mahalanobis_split):
-        
+        #B101	B112	DKIB014	LH123HT	Pa762	PHZ51	DKPB80_3IIH6	H96_3IIH6	LH59_PHG29	Pa762_3IIH6	PHG50_PHG47	PHZ51_LH59
+        # 0      1      2        5      10      8       3               4           6           11          7           9       
+        for i, value in enumerate(dis_mahalanobis_split):
+            
 
-        #genotype_row = [genotype_pair[0], genotype_pair[1], genotype_pair[4], genotype_pair[9], genotype_pair[7], genotype_pair[2], genotype_pair[3], genotype_pair[5], genotype_pair[10], genotype_pair[6], genotype_pair[8]]
-        
-        #print(genotype_row)
-        
-        matrix_row = [value[0], value[1], value[4], value[9], value[7], value[2], value[3], value[5], value[10], value[6], value[8]]
+            genotype_row = [genotype_pair[0], genotype_pair[1], genotype_pair[4], genotype_pair[9], genotype_pair[7], genotype_pair[2], genotype_pair[3], genotype_pair[5], genotype_pair[10], genotype_pair[6], genotype_pair[8]]
+            
+            #print(genotype_row)
+            
+            matrix_row = [value[0], value[1], value[4], value[9], value[7], value[2], value[3], value[5], value[10], value[6], value[8]]
 
-        matrix_row.insert(int(i), 0)
-        
-        #print(matrix_row)
-        
-        result_matrix.append(matrix_row)
+            matrix_row.insert(int(i), 0)
+            
+            #print(matrix_row)
+            
+            result_matrix.append(matrix_row)
         
 
     ###############################################################################

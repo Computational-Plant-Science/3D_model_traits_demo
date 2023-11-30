@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-    python3 skeleton_graph_pipeline.py -p ~/example/B73_test/ -r 20 -tq 0
+    python3 skeleton_graph_pipeline.py -p ~/example/B73_test/ -n 4 -r 20 -tq 0
 
 """
 
@@ -101,8 +101,13 @@ def skeleton_analysis_pipeline(file_path):
 
     
     # python3 skeleton_graph.py -p ~/example/pt_cloud/tiny/ -m1 tiny_skeleton.ply
-    skeleton_analysis = "python3 skeleton_graph.py -p " + file_path_full + " -m1 " + model_skeleton_name + ' -r ' + str(len_ratio) + ' -tq  ' + str(type_quaternion)
-    
+    if args["n_cluster"] > 0:
+        
+        skeleton_analysis = "python3 skeleton_graph.py -p " + file_path_full + " -m1 " + model_skeleton_name + ' -n ' + str(args["n_cluster"]) + ' -r ' + str(len_ratio) + ' -tq  ' + str(type_quaternion)
+    else:
+        skeleton_analysis = "python3 skeleton_graph.py -p " + file_path_full + " -m1 " + model_skeleton_name + ' -r ' + str(len_ratio) + ' -tq  ' + str(type_quaternion)
+
+        
     print(skeleton_analysis)
     
     execute_script(skeleton_analysis)
@@ -125,6 +130,7 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to individual folders")
     ap.add_argument("-r", "--len_ratio", required = False, type = int, default = 50, help = "length threshold to filter the roots, number of nodes in the shortest length path")
+    ap.add_argument("-n", "--n_cluster", required = False, type = int, default = 0, help = "Number of clusters to filter the small length paths")
     ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
 
     args = vars(ap.parse_args())
@@ -167,7 +173,7 @@ if __name__ == '__main__':
     # get cpu number for parallel processing
     #agents = psutil.cpu_count() - 2 
     #agents = multiprocessing.cpu_count() 
-    agents = 8
+    agents = 10
     
     print("Using {0} cores to perfrom parallel processing... \n".format(int(agents)))
     

@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-python3 bbox_seg_mask.py -p ~/example/test/ -ft jpg 
+    python3 bbox_seg_mask.py -p ~/example/test/ -ft jpg 
 
 
 argument:
@@ -43,6 +43,9 @@ import resource
 import os
 
 from pathlib import Path 
+
+from rembg import remove
+
 
 
 # create result folder
@@ -282,8 +285,18 @@ def foreground_substractor(image_file):
     else:
         crop_img = combined_fg_bk[start_y:crop_height, start_x:crop_width]
         #crop_img = masked_fg_contour[start_y:crop_height, start_x:crop_width]
-        
-    cv2.imwrite(result_img_path, crop_img)
+    
+    
+    # PhotoRoom Remove Background API
+    ai_crop = remove(crop_img).copy()
+
+    #orig = roi_image.copy()
+    if ai_crop.shape[2] > 3:
+
+        ai_crop = cv2.cvtColor(ai_crop, cv2.COLOR_RGBA2RGB)
+    
+    
+    cv2.imwrite(result_img_path, ai_crop)
     
     
     #return int(x),int(y),int(w),int(h), int(img_width), int(img_height)
