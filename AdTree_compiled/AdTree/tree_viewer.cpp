@@ -156,7 +156,11 @@ bool TreeViewer::key_press_event(int key, int modifiers)
 
 
 std::string TreeViewer::usage() const {
-    return Viewer::usage() + std::string(
+    return 				
+		"-----------------------------------------------\n" + 
+		Viewer::usage() + std::string(
+				"-----------------------------------------------\n"
+				"AdTree shortcuts:                              \n"
                 "  Shift + P:       Show/Hide point cloud       \n"
                 "  Shift + G:       Show/Hide skeleton          \n"
                 "  Shift + B:       Show/Hide branches          \n"
@@ -212,12 +216,8 @@ void TreeViewer::export_skeleton() const {
         return;
     }
 
-#if 0
+#if 0 // save the simplified skeleton, for which each edge can have a radius.
     const ::Graph& skeleton = skeleton_->get_simplified_skeleton();
-#else
-    const ::Graph& skeleton = skeleton_->get_smoothed_skeleton();
-#endif
-
     if (boost::num_edges(skeleton) == 0) {
         std::cerr << "skeleton has 0 edges" << std::endl;
         return;
@@ -244,11 +244,53 @@ void TreeViewer::export_skeleton() const {
     }
 
     auto egs = boost::edges(skeleton);
+    auto edgeRadius = g.add_edge_property<float>("e:radius");
     for (SGraphEdgeIterator iter = egs.first; iter != egs.second; ++iter) {
+        SGraphVertexDescriptor s = boost::source(*iter, skeleton);
+        SGraphVertexDescriptor t = boost::target(*iter, skeleton);
+        auto e = g.add_edge(vvmap[s], vvmap[t]);
+        edgeRadius[e] = skeleton[*iter].nRadius;
+    }
+#else // save the smoothed skeleton into a PLY file (where each vertex has a radius)
+    const ::Graph& skeleton = skeleton_->get_smoothed_skeleton();
+        if (boost::num_edges(skeleton) == 0) {
+        std::cerr << "skeleton has 0 edges" << std::endl;
+        return;
+    }
+
+    const std::vector<std::string> filetypes = {"*.ply"};
+    const std::string& initial_name = file_system::base_name(cloud()->name()) + "_skeleton.ply";
+    const std::string& file_name = FileDialog::save(filetypes, initial_name);
+    if (file_name.empty())
+        return;
+
+    // convert the boost graph to Graph (avoid modifying easy3d's GraphIO, or writing IO for boost graph)
+
+    std::unordered_map<SGraphVertexDescriptor, easy3d::Graph::Vertex>  vvmap;
+    easy3d::Graph g;
+
+    auto vertexRadius = g.add_vertex_property<float>("v:radius");
+    auto vts = boost::vertices(skeleton);
+    for (SGraphVertexIterator iter = vts.first; iter != vts.second; ++iter) {
+        SGraphVertexDescriptor vd = *iter;
+        if (boost::degree(vd, skeleton) != 0 ) { // ignore isolated vertices
+            const vec3& vp = skeleton[vd].cVert;
+            auto v = g.add_vertex(vp);
+            vertexRadius[v] = skeleton[vd].radius;
+            vvmap[vd] = v;
+        }
+    }
+
+    auto egs = boost::edges(skeleton);
+    for (SGraphEdgeIterator iter = egs.first; iter != egs.second; ++iter) {
+        SGraphEdgeDescriptor ed = *iter;    // the edge descriptor
+        SGraphEdgeProp ep = skeleton[ed];   // the edge property
+
         SGraphVertexDescriptor s = boost::source(*iter, skeleton);
         SGraphVertexDescriptor t = boost::target(*iter, skeleton);
         g.add_edge(vvmap[s], vvmap[t]);
     }
+#endif
 
     auto offset = cloud()->get_model_property<dvec3>("translation");
     if (offset) {

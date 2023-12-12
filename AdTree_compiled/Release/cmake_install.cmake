@@ -1,4 +1,4 @@
-# Install script for directory: /home/suxing/3D_model_traits_demo/AdTree
+# Install script for directory: /home/suxing/AdTree
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -37,10 +37,15 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
   set(CMAKE_CROSSCOMPILING "FALSE")
 endif()
 
+# Set default install directory permissions.
+if(NOT DEFINED CMAKE_OBJDUMP)
+  set(CMAKE_OBJDUMP "/usr/bin/objdump")
+endif()
+
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/suxing/3D_model_traits_demo/AdTree/Release/3rd_party/cmake_install.cmake")
-  include("/home/suxing/3D_model_traits_demo/AdTree/Release/AdTree/cmake_install.cmake")
+  include("/home/suxing/AdTree/Release/3rd_party/cmake_install.cmake")
+  include("/home/suxing/AdTree/Release/AdTree/cmake_install.cmake")
 
 endif()
 
@@ -52,5 +57,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/suxing/3D_model_traits_demo/AdTree/Release/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/suxing/AdTree/Release/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../lib/libeasy3d_util.a CMakeFiles/easy3d_util.dir/dialogs.cpp.o CMakeFiles/easy3d_util.dir/file_system.cpp.o CMakeFiles/easy3d_util.dir/chrono_watch.cpp.o CMakeFiles/easy3d_util.dir/stop_watch.cpp.o CMakeFiles/easy3d_util.dir/string.cpp.o
+/usr/bin/ranlib ../../../lib/libeasy3d_util.a
