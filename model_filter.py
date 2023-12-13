@@ -112,7 +112,7 @@ def model_filter(model_file):
     
 
     # copy original point cloud for rotation
-    pcd_r = copy.deepcopy(pcd)
+    #pcd_r = copy.deepcopy(pcd)
     
     
     # get the model center postion
@@ -122,7 +122,7 @@ def model_filter(model_file):
     #pcd_r.translate(-1*(model_center))
     
     #print("Downsample the point cloud with a voxel of 0.02")
-    #voxel_down_pcd = pcd_r.voxel_down_sample(voxel_size=0.015)
+    voxel_down_pcd = pcd.voxel_down_sample(voxel_size=0.0015)
 
 
     # Statistical oulier removal
@@ -130,22 +130,24 @@ def model_filter(model_file):
     #std_ratio, which allows setting the threshold level based on the standard deviation of the average distances across the point cloud. 
     #The lower this number the more aggressive the filter will be.
     
-    
+
     # visualize the oulier removal point cloud
     print("Statistical oulier removal\n")
-    #cl, ind = pcd_r.remove_statistical_outlier(nb_neighbors = filter_radius, std_ratio = filter_ratio)
-    #display_inlier_outlier(pcd_r, ind)
+    cl, ind = voxel_down_pcd.remove_statistical_outlier(nb_neighbors = filter_radius, std_ratio = filter_ratio)
+    #display_inlier_outlier(voxel_down_pcd, ind)
     
-    print("Radius oulier removal")
-    cl, ind = pcd_r.remove_radius_outlier(nb_points=16, radius=0.00005)
-    #display_inlier_outlier(pcd_r, ind)
+    #print("Radius oulier removal")
+    #cl, ind = pcd.remove_radius_outlier(nb_points = filter_radius, radius = filter_ratio)
+    #display_inlier_outlier(pcd, ind)
     ####################################################################
     
     #Save model file as ascii format in ply
     filename = save_path + base_name + '_filtered.ply'
     
     #write out point cloud file
-    o3d.io.write_point_cloud(filename, pcd_r, write_ascii = True)
+    #o3d.io.write_point_cloud(filename, pcd)
+    
+    o3d.io.write_point_cloud(filename, voxel_down_pcd, write_ascii = True)
     
 
     # check saved file
@@ -167,7 +169,7 @@ if __name__ == '__main__':
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
-    ap.add_argument("-fr", "--filter_ratio", required = False, type = float, default = 5, help = "filter ratio, The lower this number the more aggressive the filter will be")
+    ap.add_argument("-fr", "--filter_ratio", required = False, type = float, default = 0.01, help = "filter ratio, The lower this number the more aggressive the filter will be")
     ap.add_argument("-fd", "--filter_radius", required = False, type = int, default = 100, help = "number of neighbors are to calculate the average distance for a given point")
     ap.add_argument("-t", "--test", required = False, default = False, help = "if using test setup")
     args = vars(ap.parse_args())
