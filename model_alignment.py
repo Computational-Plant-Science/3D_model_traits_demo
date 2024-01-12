@@ -313,7 +313,7 @@ def format_converter(current_path, model_name):
             
             elif angle_y_al < 45:
                 print("CCC")
-                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) - 0.0*np.pi , 0, 0))
+                R = pcd.get_rotation_matrix_from_xyz((1*math.radians(angle_y_al) - 0.5*np.pi , 0, 0))
            
             else:
                 print("DDD")
