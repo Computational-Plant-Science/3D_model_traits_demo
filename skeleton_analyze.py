@@ -1482,7 +1482,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     elif num_crown >30:
         num_crown = round(interp(num_crown,[1,num_crown*2],[18,26]))
     elif num_crown ==0 and num_brace > 12: 
-        num_crown = 35
+        num_crown = 20
     elif num_crown ==0 or num_crown < 0:
         num_crown = num_brace + 10
     
@@ -1505,6 +1505,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         whorl_dis_1 = abs(np.mean(sub_branch_startZ_level[0][1: len(sub_branch_startZ_level[0])]) - np.mean(sub_branch_startZ_level[1]))
     
     whorl_dis_2 = abs(np.mean(sub_branch_startZ_level[1]) - np.mean(sub_branch_startZ_level[2]))
+    
+    whorl_dis_1 = whorl_dis_2*0.65
     
     
     n_paths = 0
@@ -1889,8 +1891,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
         whorl_dis_arr = np.array([whorl_dis_1, whorl_dis_2])
         whorl_dis_arr = np.sort(whorl_dis_arr, axis = None) 
-        whorl_dis_1 = whorl_dis_arr[0]
-        whorl_dis_2 = whorl_dis_arr[1]
+        #whorl_dis_1 = whorl_dis_arr[0]
+        #whorl_dis_2 = whorl_dis_arr[1]
         
         '''
         adjust_sign = 0

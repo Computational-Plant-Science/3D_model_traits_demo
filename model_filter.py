@@ -142,7 +142,7 @@ def model_filter(model_file):
     ####################################################################
     
     #Save model file as ascii format in ply
-    filename = save_path + base_name + '_filtered.ply'
+    filename = save_path + base_name + '_filtered.' + ext
     
     #write out point cloud file
     #o3d.io.write_point_cloud(filename, pcd)
@@ -169,6 +169,7 @@ if __name__ == '__main__':
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
+    ap.add_argument("-ft", "--filetype", required = False,  default = 'ply',  help = "3D model filetype")
     ap.add_argument("-fr", "--filter_ratio", required = False, type = float, default = 0.01, help = "filter ratio, The lower this number the more aggressive the filter will be")
     ap.add_argument("-fd", "--filter_radius", required = False, type = int, default = 100, help = "number of neighbors are to calculate the average distance for a given point")
     ap.add_argument("-t", "--test", required = False, default = False, help = "if using test setup")
@@ -177,6 +178,8 @@ if __name__ == '__main__':
 
     # setting path to model file 
     current_path = args["path"]
+    
+    ext = args['filetype']
    
     filter_radius = args["filter_radius"]
     filter_ratio = args["filter_ratio"]
@@ -188,7 +191,7 @@ if __name__ == '__main__':
     
 
     # path to all ply file 
-    filetype = '*.ply' 
+    filetype = '*.' + ext
     model_file_path = current_path + "/" + filetype
     
     # accquire ply file list
