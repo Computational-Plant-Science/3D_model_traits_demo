@@ -2189,7 +2189,7 @@ if __name__ == '__main__':
         
         if n_images == 0:
             print(f"Could not load image {slice_image_path}, skipping")
-            exit()
+            #exit()
         
         print("Processing {} slices from cross section of the 3d model\n".format(n_images))
     

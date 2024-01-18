@@ -38,6 +38,8 @@ def execute_script(cmd_line):
         
         print("Failed ...!\n")
 
+
+
 # execute pipeline scripts in order
 def model_analysis_pipeline(file_path, filename, basename):
 
@@ -73,7 +75,7 @@ def model_analysis_pipeline(file_path, filename, basename):
 
     traits_computation = "python3 skeleton_analyze.py -p " + file_path + " -m1 " + basename + "_skeleton.ply " + " -m2 " + basename + "_aligned.ply " + " -m3 " + file_path + "slices/ " + "-v " + str(args["visualize_model"])
     
-    #print(traits_computation)
+    print(traits_computation)
     
     execute_script(traits_computation)
     
@@ -89,7 +91,7 @@ if __name__ == '__main__':
     ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
     ap.add_argument("-m", "--model", required = False, help = "model file name")
     ap.add_argument("-t", "--test", required = False, type = int, default = 0, help = "if using test setup")
-    ap.add_argument("-n", "--n_slices", required = False, type = int, default = 500 , help = 'Number of slices for 3d model.')
+    ap.add_argument("-n", "--n_slices", required = False, type = int, default = 100 , help = 'Number of slices for 3d model.')
     ap.add_argument("-v", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult as no due to headless display in cluster")
     
     args = vars(ap.parse_args())

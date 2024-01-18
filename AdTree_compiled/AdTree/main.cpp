@@ -195,7 +195,7 @@ int main(int argc, char *argv[]) {
 
         if (export_skeleton) {
             std::cout << "You have requested to save the reconstructed tree skeleton(s) in PLY format into the output directory." << std::endl;
-            std::cout << "The skeleton file(s) can be visualized using Easy3D: https://github.com/LiangliangNan/Easy3D" << std::endl;
+            //std::cout << "The skeleton file(s) can be visualized using Easy3D: https://github.com/LiangliangNan/Easy3D" << std::endl;
         }
         else
             std::cout << "Tree skeleton(s) will not be saved (append '-s' or '-skeleton' in commandline to enable it)" << std::endl;
