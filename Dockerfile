@@ -78,9 +78,7 @@ RUN apt update
 RUN apt install python3-graph-tool -y
 
 
-RUN cd /opt/3D_model_traits_demo/AdTree_compiled/ && rm -rf Release/ && mkdir Release && cd Release && cmake -DCMAKE_BUILD_TYPE=Release ..   && make 
 
-RUN cd /opt/3D_model_traits_demo/
 
 
 
