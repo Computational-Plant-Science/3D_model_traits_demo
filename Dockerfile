@@ -37,9 +37,6 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt-get install -y \
     xorg-dev 
      
 
-RUN cd /opt/code/compiled/ && rm -rf Release && mkdir Release && cd Release && cmake -DCMAKE_BUILD_TYPE=Release ..   && make
-
-
 RUN pip3 install --upgrade pip && \
     pip3 install numpy \
     numexpr \
