@@ -1021,20 +1021,7 @@ def short_path_finder(G_unordered, start_v, end_v):
     int_vlist_path = [int(i) for i in vlist_path]
     
     #print(int_vlist_path)
-    '''
-    if len(vlist_path) > 0: 
-        
-        print("Shortest path found in graph! \n")
-        
-        print("vlist_path = {} \n".format(int_vlist_path))
-    
-        #curve_length = path_length(X_skeleton[int_vlist_path], Y_skeleton[int_vlist_path], Z_skeleton[int_vlist_path])
-    
-        #print("curve_length = {} \n".format(curve_length))
-        
-    else:
-        print("No shortest path found in graph...\n")
-    '''
+
     return int_vlist_path
 
 

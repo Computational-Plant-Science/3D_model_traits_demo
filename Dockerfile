@@ -2,14 +2,21 @@ FROM ubuntu:20.04
 
 LABEL maintainer='Suxing Liu, Wes Bonelli'
 
-COPY ./ /opt/3D_model_traits_demo
-WORKDIR /opt/3D_model_traits_demo
+COPY ./ /opt/code
+WORKDIR /opt/code
 
 
 RUN apt update
 RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt-get install -y \
     build-essential \
     aptitude \
+    libglu1-mesa-dev \
+    mesa-common-dev \
+    libxrandr-dev \
+    libxinerama-dev \
+    libxcursor-dev \
+    libxi-dev \
+    libboost-all-dev \
     python3-setuptools \
     python3-pip \
     python3 \
@@ -19,13 +26,6 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt-get install -y \
     libsm6 \
     libxext6 \
     cmake-gui \
-    libglu1-mesa-dev \
-    mesa-common-dev \
-    libxrandr-dev \
-    libxinerama-dev \
-    libxcursor-dev \
-    libxi-dev \
-    libboost-all-dev \
     freeglut3-dev \
     freeglut3 \
     libopengl0 -y \
@@ -34,11 +34,10 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="America/New_York" apt-get install -y \
     libcairo2 \
     python3-cairo \
     nano \
-    xorg-dev \
-    libboost-all-dev 
+    xorg-dev 
+     
 
-
-
+RUN cd /opt/code/compiled/ && rm -rf Release && mkdir Release && cd Release && cmake -DCMAKE_BUILD_TYPE=Release ..   && make
 
 
 RUN pip3 install --upgrade pip && \
@@ -66,7 +65,8 @@ RUN pip3 install --upgrade pip && \
     click \
     PyYAML \
     imutils 
-    
+
+
 RUN pip3 install --upgrade numpy
 
 RUN apt-key adv --keyserver keys.openpgp.org --recv-key 612DEFB798507F25
@@ -79,14 +79,10 @@ RUN apt install python3-graph-tool -y
 
 
 
+RUN chmod +x /opt/code/shim.sh 
 
 
-
-RUN chmod +x /opt/3D_model_traits_demo/shim.sh 
-
-
-
-ENV PYTHONPATH=$PYTHONPATH:/opt/3D_model_traits_demo/
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/3D_model_traits_demo/
+ENV PYTHONPATH=$PYTHONPATH:/opt/code/
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/code/
 
 
