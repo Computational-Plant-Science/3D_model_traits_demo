@@ -7,4 +7,6 @@ find . -type f -name "*.jpg" -exec cp {} $WORKDIR \;
 find . -type f -name "*.csv" -exec cp {} $WORKDIR \;
 find . -type f -name "*.txt" -exec cp {} $WORKDIR \;
 find . -type f -name "*.stl" -exec cp {} $WORKDIR \;
+find . -type f -name "*.xyz" -exec cp {} $WORKDIR \;
+find . -type f -name "*.ply" -exec cp {} $WORKDIR \;
 find . -type f -name "*.xlsx" -exec cp {} $WORKDIR \;
