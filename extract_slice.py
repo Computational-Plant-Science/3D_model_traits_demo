@@ -74,13 +74,14 @@ def mkdir(path):
         return False
 
 
-def OBJ2STL(current_path, model_name):
+# change format from from obj to stl
+def OBJ2STL(current_path, model_name, base_name, result_path):
     
     model_file = current_path + model_name
     
     print("Converting file format for 3D point cloud model {}...\n".format(model_name))
     
-    model_name_base = os.path.splitext(model_file)[0]
+    #model_name_base = os.path.splitext(model_file)[0]
     
     mesh = o3d.io.read_triangle_mesh(model_file)
     
@@ -88,7 +89,9 @@ def OBJ2STL(current_path, model_name):
     
     stl_mesh = o3d.geometry.TriangleMesh.compute_triangle_normals(mesh)
     
-    stl_output = model_name_base + '.stl'
+    #stl_output = model_name_base + '.stl'
+    
+    stl_output = result_path + base_name + '.stl'
     
     #print(stl_output)
     
@@ -293,9 +296,10 @@ def slice_model(file_model, n_slices, save_path):
 if __name__ == '__main__':
     
     ap = argparse.ArgumentParser()
-    ap.add_argument("-p", "--path", required = True,    help = "path to stl file")
-    ap.add_argument("-f", "--filename", required = True,  help = "model file name, in obj format")
-    ap.add_argument('-n', '--num_slices', required = False, type = int, default = 500,  help = 'Number of slices')
+    ap.add_argument("-p", "--path", dest = "path", required = True, type = str, help = "path to stl file")
+    ap.add_argument("-f", "--filename", dest = "filename", required = True,  type = str, help = "model file name, in obj format")
+    ap.add_argument("-o", "--output_path", dest = "output_path", type = str, required = False, help = "result path")
+    ap.add_argument('-n', '--num_slices', dest = "num_slices", required = False, type = int, default = 100,  help = 'Number of slices')
  
     args = vars(ap.parse_args())
     
@@ -306,16 +310,42 @@ if __name__ == '__main__':
     #model file full path
     model_file = file_path + file_name
     
-    model_name_base = os.path.splitext(model_file)[0]
+    # output input file info
+    if os.path.isfile(model_file):
+        print("Converting file format for 3D point cloud model {}...\n".format(model_file))
+    else:
+        print("File not exist")
+        sys.exit()
+    
+    #model_name_base = os.path.splitext(model_file)[0]
+    abs_path = os.path.abspath(model_file)
+    filename, file_extension = os.path.splitext(abs_path)
+    base_name = os.path.splitext(os.path.basename(filename))[0]
+    
+    
+    print(base_name)
+    
+    
+    # output path
+    result_path = args["output_path"] if args["output_path"] is not None else os.getcwd()
+    
+    result_path = os.path.join(result_path, '')
+    
+    # result path
+    print("results_folder: {}\n".format(result_path))
+    
     
     #create result file folder
-    mkpath = os.path.dirname(file_path) +'/slices'
+    mkpath = os.path.dirname(result_path) +'/slices'
     mkdir(mkpath)
     save_path = mkpath + '/'
+
     
-    stl_mesh = OBJ2STL(file_path, file_name)
+    stl_mesh = OBJ2STL(file_path, file_name, base_name, result_path)
     
-    stl_model_file = model_name_base + '.stl'
+    stl_model_file = result_path + base_name + '.stl'
+    
+    print("stl_model_file: {}\n".format(stl_model_file))
     
     slice_model(stl_model_file, args['num_slices'], save_path)
     

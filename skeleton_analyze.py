@@ -1311,11 +1311,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     sub_branch_zs_rec[:] = [sub_branch_zs_rec[i] for i in sorted_idx_len_loc]
 
     ####################################################################
-    #(count_wholrs, whorl_loc_ex, avg_density) = wholr_number_count(imgList)
-    
-    #print("number of whorls is: {} whorl_loc_ex : {} avg_density = {}\n".format(count_wholrs, str(whorl_loc_ex), avg_density))
-    
-    
+
     
     '''
     Z_loc_start = [Z_skeleton[index] for index in sub_branch_start_rec]
@@ -1655,198 +1651,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #print(traits_array)
         
         
-        '''
-        vol_thresh = [1.0560420256205, 1.39643549636222, 1.55747918701385, 1.77771974544806, 
-                1.90444708408002, 1.91361720534355, 1.95749744310873, 1.9975240563939, 
-                2.0024456582603, 2.12989691142217, 2.14012597778039, 2.17998462595139, 
-                2.30782153773915, 2.38294971358284, 2.42247642445755, 2.43961815208473, 
-                3.07259317619744, 3.20957692426567, 3.40403649393564, 3.41096093063568, 
-                3.97859392761649, 4.75516900734445, 4.78900913536919, 5.00696317065618, 
-                5.27097459117989, 5.30875947198644, 5.34330363444147, 5.3905406437656, 
-                5.56833079133801, 5.61659459763126, 5.79237517944986, 5.98203843660603, 
-                6.16708558625963, 6.75532887565714, 6.86758850261503, 7.00686158221718, 
-                7.05239947903773, 7.18921596167827, 7.30685628441397, 7.33900168132788, 
-                7.40339160211105, 8.72195147549741, 14.322977312069, 31.2859249499839]
-      
-        
 
-
-        cof_0 = np.array([0.415000031660908, 0.443497027494623, 0.423869986289705, 1, 1, 1, 1, 0.473684210526316, 1.31991580851546, 1, 0.397783794091933, 1, 1, 4.2244440259046, 1, 0.473735694824353, 1, 1, 1, 0.645158475963558, 0.130215830549742, 1])
-
-        cof_1 = np.array([0.498548146233005, 0.223119410930864, 0.268539186097662, 0.791792587118951, 1, 1.13602664894578, 1, 1.4, 1.11939101814251, 1, 0.2618598243586, 1, 1, 2.78149551620635, 1.17847253059726, 0.376471605042288, 1, 1, 1, 0.631215198018309, 0.364822591422053, 1])
-
-        cof_2 = np.array([0.177779177412922, 0.46877623626017, 0.240647637498502, 0.796789503981866, 1, 1.92032527540965, 1, 1, 0.0674787275463589, 0.601318313470804, 0.598548160374151, 1, 1, 1.81616452098776, 1.07871197430877, 0.358023048809614, 1, 1, 1, 0.311940831238669, 0.68129563052178, 1])
-
-        cof_3 = np.array([0.497519763023678, 0.417769036429911, 0.464367030218352, 1, 1, 1.97493127718689, 1, 1.07692307692308, 0.0797796505648801, 1, 0.520630112475456, 1, 1, 2.57936154933711, 0.730030252044705, 0.50518234846682, 1, 1, 1, 0.468663771206125, 0.499166567369431, 1])
-
-        cof_4 = np.array([0.443028082035543, 0.384006339820817, 0.417574196113763, 1, 1, 2.9793273491072, 1, 0.764705882352941, 2.28808702166727, 1, 1, 1, 1, 3.18539717938821, 1, 1, 1, 1, 1, 0.38540047561575, 0.587618252265065, 1])
-
-        cof_5 = np.array([0.685250968124494, 0.348249672496827, 0.549967511355833, 1, 1, 1, 1, 1, 0.481100609833236, 0.533839472379197, 0.295539311618498, 1, 1, 3.30011511400618, 1, 0.629699315411905, 1, 1, 1, 0.219267047565738, 1, 1])
-
-        cof_6 = np.array([0.519184912973278, 0.330577275323661, 0.432841048093182, 1, 1, 5.93005623336853, 1, 1, 1.4296304304643, 1, 2.30192159819567, 1, 1, 2.71033440258977, 1, 2.74717619637599, 1, 1, 1, 0.633521902916683, 0.576486322241834, 1])
-
-        cof_7 = np.array([0.199890775428692, 0.2273751279266, 0.205491889369328, 1, 1, 0.999999999999997, 1, 0.875, 0.786838371798864, 1, 0.157379036167152, 1, 1, 1.75364157787372, 0.738663973286867, 0.222423578108116, 1, 1, 1, 0.531639210720669, 0.391986086228433, 1])
-
-        cof_8 = np.array([0.717917650745426, 0.232155911645206, 0.496626603478559, 1, 1, 13.902456462633, 1, 1, 1.16948720501833, 1, 3.80232552861452, 1, 1, 1.6685815615417, 0.849532429050644, 5.15333545913822, 1, 1, 1, 0.671469766944919, 1, 1])
-
-        cof_9 = np.array([0.243532309034142, 0.396566466830939, 0.277861610142709, 1, 1, 1.8420991705212, 1, 0.583333333333333, 1.09123913651278, 0.875863245767016, 0.490517254850129, 1, 1, 1.87080227308101, 1, 0.428625357394667, 1, 1, 1, 0.53656080011271, 0.154511071946857, 1])
-
-        cof_10 = np.array([0.471066346342536, 0.47169517040429, 0.46812812416805, 1, 1, 0.734931091943742, 1, 1, 0.14156630341718, 1, 0.184074988676765, 1, 1, 2.28224619600734, 1, 0.191407494999013, 1, 1, 1, 0.999999999999999, 0.48085193127951, 1])
-
-        cof_11 = np.array([0.710423086778257, 0.264736200470332, 0.52301443795326, 1, 1, 1.49940695646942, 1, 0.789473684210526, 0.884943617340028, 1, 0.443390965338654, 1, 1, 1.83090755561245, 0.681338738439623, 0.317264868260602, 1, 1, 1, 1, 0.282450928849961, 1])
-
-        cof_12 = np.array([0.641969423150331, 0.391424642040235, 0.53830286420706, 1, 1, 10.9734264693058, 1, 1.28571428571429, 0.355791259979243, 0.711563124580466, 2.15113584392291, 1, 1, 2.22667074578588, 1, 2.42466115785933, 1, 1, 1, 0.551631084528097, 0.798115760924229, 1])
-
-        cof_13 = np.array([0.34529099484164, 0.210486778238766, 0.289899817248345, 1.13592059449968, 1, 1.47584954587186, 1, 1, 1.83725258094011, 1, 0.522599095696001, 1, 1, 3.0149198405721, 0.831953227095479, 0.591069611687782, 1, 1, 1, 1, 0.863745551188357, 1])
-
-        cof_14 = np.array([0.508231802964662, 0.336655680028362, 0.450848837482279, 1, 1, 2.57813515372611, 1, 1, 0.113496872478079, 1, 0.572990660041711, 1, 1, 1.26212453277084, 1, 0.413080240293178, 1, 1, 1, 0.689645079278407, 0.599690020105763, 1])
-
-        cof_15 = np.array([0.488057735052686, 0.41167195747649, 0.45801977451143, 1, 1, 1.34482372113699, 1, 0.727272727272727, 0.876094269189929, 1, 0.316333337939066, 1, 1, 1.86708217595899, 1, 0.474088350321107, 1, 1, 1, 0.71431245024266, 0.350631860391106, 1])
-
-        cof_16 = np.array([0.306387084415976, 0.350716661297025, 0.317339082617415, 0.760004625220152, 1, 1.52998895869339, 1, 0.571428571428571, 0.287250699395396, 0.344883735437402, 0.329280123706469, 1, 1, 1.23071327055387, 1, 0.770628151181353, 1, 1, 1, 0.409684251563409, 0.256971865866322, 1])
-
-        cof_17 = np.array([0.511556404041632, 0.373486356400264, 0.459191265690493, 0.797193735173503, 1, 1.71838914527876, 1, 0.733333333333333, 1.21886510191171, 1, 0.540088893165729, 1, 1, 2.17307960858475, 1.27744425267377, 0.521074182347881, 1, 1, 1, 0.754309139062835, 0.328544572688995, 1])
-
-        cof_18 = np.array([0.281572634686109, 0.378662574155349, 0.30997778896022, 0.956132700433262, 1, 2.24050007455629, 1, 1, 1.30901663829468, 1, 0.509082466124597, 1, 1, 1.61244448860473, 1, 1, 1, 1, 1, 1.51474540156674, 0.764705434756523, 1])
-
-        cof_19 = np.array([0.308882066932371, 0.21374593083298, 0.271809897788964, 1, 1, 0.822960093411566, 1, 0.722222222222222, 0.047947269691777, 0.698340278790323, 0.307249150791319, 1, 1, 1.63428255200532, 1, 0.490356976754804, 1, 1, 1, 0.20903454504456, 0.276070509676692, 1])
-
-        cof_20 = np.array([0.358551310497959, 0.415776273752523, 0.373647634475822, 1, 1, 3.49907089056463, 1, 1, 1.40552392225387, 1, 0.823415798440056, 1, 1, 2.51665399700833, 1.16280919948475, 1, 1, 1, 1, 1, 0.292550724296629, 1])
-
-        cof_21 = np.array([0.355722980633647, 0.272601818547835, 0.321527489429249, 1, 1, 0.399385640860207, 1, 0.80952380952381, 0.931439813251511, 1, 0.370194413607044, 1, 1, 2.27404815896409, 0.836151607487224, 0.331849595552066, 1, 1, 1, 0.517811769665467, 0.450217840679093, 1])
-
-        cof_22 = np.array([0.35677473467428, 0.447220490045326, 0.387272863513765, 1, 1, 1.05491193583915, 1, 1.6, 0.831278301604202, 1, 0.276471837534773, 1, 1, 2.06060601917797, 1, 0.434222714972337, 1, 1, 1, 0.999999999999998, 0.276558860392551, 1])
-
-        cof_23 = np.array([0.563001719218292, 0.370507998485048, 0.485908895675512, 1, 1, 1, 1, 1.28571428571429, 1.07209897664025, 1, 0.485556700095246, 1, 1, 1.98060558412677, 0.910474221575028, 0.768596722610197, 1, 1, 1, 0.711037433022295, 0.501910447861982, 1])
-
-        cof_24 = np.array([0.530366554928392, 0.332134018335804, 0.446326747223755, 1, 1, 1, 1, 1, 0.588691050576313, 1, 0.491462197536919, 1, 1, 6.40114681617314, 1.17000959790066, 0.418532680659394, 1, 1, 1, 0.203218890225414, 1, 1])
-
-        cof_25 = np.array([0.542565420311389, 0.328020170709942, 0.458057660971868, 1, 1, 1.41296739853366, 1, 1.21428571428571, 1.04951842210403, 1, 0.244037885949624, 1, 1, 2.01752278075698, 1.25814378548004, 0.256876995935332, 1, 1, 1, 0.87925693470399, 1, 1])
-
-        cof_26 = np.array([0.518395043955373, 0.328108263031536, 0.444195641830009, 1, 1, 9.99999999999999, 1, 1, 0.988971395217578, 1, 2.23452509265215, 1, 1, 2.01206535468137, 1.16456138474597, 1.66912618121272, 1, 1, 1, 0.36167779188469, 0.258482477118087, 1])
-
-        cof_27 = np.array([0.490444354782168, 0.416988987960186, 0.45864510226399, 1, 1, 1.09378399704185, 1, 1, 0.186681565192236, 1, 0.281852807875396, 1, 1, 2.25990950070968, 1, 0.246442397972615, 1, 1, 1, 0.270588513628852, 1.52853785239856, 1])
-
-        cof_28 = np.array([0.564602003170583, 0.377995735601918, 0.489431626454243, 1, 1, 4.22970287213966, 1, 0.764705882352941, 1.80052043662936, 1, 1.70265091230224, 1, 1, 3.63494818944175, 1, 2.31581315158442, 1, 1, 1, 0.21986898540261, 1, 1])
-
-        cof_29 = np.array([0.614347657662981, 0.264091252384977, 0.482768099548066, 1, 1, 1.35544724686479, 1, 1.58333333333333, 0.622620018200927, 1, 0.402516781457933, 1, 1, 1.62001002692686, 1.06127625276875, 0.575973726554991, 1, 1, 1, 0.711296686056172, 0.45985634554399, 1])
-
-        cof_30 = np.array([0.579512249387435, 0.450392458705351, 0.527029816182772, 1.43647593505505, 1, 1, 1, 0.882352941176471, 0.480515003787636, 1, 0.238859335824235, 1, 1, 2.08782497529108, 1, 0.268725383468383, 1, 1, 1, 0.377286016632884, 1, 1])
-
-        cof_31 = np.array([0.602617803773065, 0.391899016809047, 0.516346580030567, 1, 1, 6.91545106595451, 1, 1, 0.506687927226801, 1, 1.28851990754386, 1, 1, 3.18152147132304, 1, 2.62755889955685, 1, 1, 1, 0.146698772537009, 0.682022719347492, 1])
-
-        cof_32 = np.array([0.595886148246129, 0.326506741844283, 0.491526683769617, 1, 1, 8.10919500425178, 1, 0.823529411764706, 1.74099610364293, 1, 1.53589965391453, 1, 1, 2.12320675177361, 1, 2.56750257129785, 1, 1, 1, 0.39002111306086, 0.649349927048443, 1])
-
-        cof_33 = np.array([0.494361576846097, 0.29582272285227, 0.405685880432206, 1, 1, 3.54242871696578, 1, 0.705882352941176, 0.481982354714588, 1, 1, 1, 1, 3.06376520633869, 0.688814407064502, 1.46535230539263, 1, 1, 1, 0.180941580854677, 1.51858531231667, 1])
-
-        cof_34 = np.array([0.407379759764346, 0.338928143743849, 0.377798087950311, 0.615529118992497, 1, 0.848393370437877, 1, 1, 0.0665306678023055, 0.504522813497744, 0.248996241773514, 1, 1, 1.49936167446898, 1.32958897336027, 0.253458145990583, 1, 1, 1, 0.112741334887249, 0.712319515863848, 1])
-
-        cof_35 = np.array([0.305719444365605, 0.229826429081747, 0.27465277942147, 1, 1, 1, 1, 0.722222222222222, 1.19468917546844, 0.748132842367352, 0.305809779164656, 1, 1, 1.27047360631405, 0.801239723034531, 0.223274585338726, 1, 1, 1, 0.75922826131776, 0.470201754358619, 1])
-
-        cof_36 = np.array([0.561017955350794, 0.274887052530789, 0.450106119777883, 1, 1, 0.999999999999991, 1, 0.75, 0.721117723311504, 1, 0.299854076082152, 1, 1, 2.31325567671245, 1.11332486701182, 0.496933471936624, 1, 1, 1, 1.45145962730275, 0.461254421925629, 1])
-
-        cof_37 = np.array([0.720507691104258, 0.263195988465895, 0.512653480823888, 1, 1, 1.11592331668375, 1, 1, 1.35501737456826, 1, 0.20809142112885, 1, 1, 2.46474407301906, 1, 0.24040804237888, 1, 1, 1, 0.747344766046972, 0.31460329975246, 1])
-
-        cof_38 = np.array([0.784129638787887, 0.332561596392226, 0.584610411488197, 0.551843221956102, 1, 0.833429559691495, 1, 0.823529411764706, 1.02670029361218, 1, 0.173840816335799, 1, 1, 2.68208320840914, 1, 0.212924613026913, 1, 1, 1, 0.391598699798133, 0.214139540429039, 1])
-
-        cof_39 = np.array([0.554704490894317, 0.336012207164919, 0.459865727612948, 1, 1, 1.203656110232, 1, 0.9, 1.40958969540674, 0.853726104289891, 0.512155080130321, 1, 1, 2.38954578951823, 1, 0.4438604630068, 1, 1, 1, 0.300124020723746, 0.31468101256271, 1])
-
-        cof_40 = np.array([0.566625799429945, 0.235497307854478, 0.424288480010082, 1, 1, 3.95760255631538, 1, 0.823529411764706, 1.5722524691972, 0.840595376499669, 1, 1, 1, 2.5516200420761, 1, 1.35261674649643, 1, 1, 1, 0.434416313693014, 0.280181981449331, 1])
-
-        cof_41 = np.array([0.639075780872532, 0.252946841336925, 0.474665071903473, 0.887605713271189, 1, 0.589935493667877, 1, 1, 1.09460209030211, 1, 0.134797870867483, 1, 1, 2.11067094684869, 1, 0.205867241384775, 1, 1, 1, 0.321903232772519, 0.459689650856, 1])
-
-        cof_42 = np.array([0.397231841402403, 0.333570367718809, 0.371053329594352, 0.81229384547206, 1, 2.52137742401686, 1, 1, 0.895565422781145, 0.581927545692188, 0.800545776410773, 1, 1, 2.05235739203409, 1, 1.18798148689101, 1, 1, 1, 0.354242156788531, 0.304558823496503, 1])
-
-        cof_43 = np.array([0.362265568907415, 0.220760501329469, 0.304518585737254, 0.62928953396488, 1, 0.670943500686737, 1, 1.17647058823529, 0.61682829497594, 1, 0.207979132712035, 1, 1, 1.55247458221205, 1, 0.199659242863688, 1, 1, 1, 0.258213190434012, 0.173827685805576, 1])
-
-        
-        
-        
-        
-        cof_array = np.zeros(shape=(22,44))
-        
-        cof_array[:,0] = cof_0
-        cof_array[:,1] = cof_1
-        cof_array[:,2] = cof_2
-        cof_array[:,3] = cof_3
-        cof_array[:,4] = cof_4
-        cof_array[:,5] = cof_5
-        cof_array[:,6] = cof_6
-        cof_array[:,7] = cof_7
-        cof_array[:,8] = cof_8
-        cof_array[:,9] = cof_9
-        cof_array[:,10] = cof_10
-        cof_array[:,11] = cof_11
-        cof_array[:,12] = cof_12
-        cof_array[:,13] = cof_13
-        cof_array[:,14] = cof_14
-        cof_array[:,15] = cof_15
-        cof_array[:,16] = cof_16
-        cof_array[:,17] = cof_17
-        cof_array[:,18] = cof_18
-        cof_array[:,19] = cof_19
-        cof_array[:,20] = cof_20
-        cof_array[:,21] = cof_21
-        cof_array[:,22] = cof_22
-        cof_array[:,23] = cof_23
-        cof_array[:,24] = cof_24
-        cof_array[:,25] = cof_25
-        cof_array[:,26] = cof_26
-        cof_array[:,27] = cof_27
-        cof_array[:,28] = cof_28
-        cof_array[:,29] = cof_29
-        cof_array[:,30] = cof_30
-        cof_array[:,31] = cof_31
-        cof_array[:,32] = cof_32
-        cof_array[:,33] = cof_33
-        cof_array[:,34] = cof_34
-        cof_array[:,35] = cof_35
-        cof_array[:,36] = cof_36
-        cof_array[:,37] = cof_37
-        cof_array[:,38] = cof_38
-        cof_array[:,39] = cof_39
-        cof_array[:,40] = cof_40
-        cof_array[:,41] = cof_41
-        cof_array[:,42] = cof_42
-        cof_array[:,43] = cof_43
-        
-  
-        
-        
-        idx_near_value = find_nearest(vol_thresh, avg_volume)
-        
-        #print(idx_near_value, avg_volume)
-        
-        result_traits = cof_array[:,idx_near_value]*traits_array
-        '''
-        '''
-        result_traits = traits_array
-
-        
-        s_diameter_max = int(result_traits[0]*10)
-        s_diameter_min = int(result_traits[1]*10)
-        s_diameter = int(result_traits[2]*10)
-        s_length = int(result_traits[3]*10)
-        pt_eccentricity = result_traits[4]
-        avg_radius_stem = int(result_traits[5]*10)
-        avg_density = result_traits[6]
-        num_brace = round(result_traits[7])
-        avg_brace_length = result_traits[8]*10
-        avg_brace_angle = result_traits[9]
-        avg_radius_brace = result_traits[10]*10
-        avg_brace_projection = abs(avg_brace_length*np.cos(np.pi*result_traits[9]/180))
-        num_crown = round(result_traits[12])
-        avg_crown_length = result_traits[13]*10
-        avg_crown_angle = result_traits[14]
-        avg_radius_crown = result_traits[15]*15
-        avg_crown_projection = abs(avg_crown_length*np.cos(np.pi*result_traits[14]/180))
-        avg_radius_lateral = result_traits[17]*10*2
-        n_whorl = round(result_traits[18])
-        whorl_dis_1 = result_traits[19]*5
-        whorl_dis_2 = result_traits[20]*5
-        #avg_volume = math.sqrt(s_diameter*0.5)*s_length
-        avg_volume = traits_array[i]*10
-        '''
         
         
         radius_arr = np.array([avg_radius_stem, avg_radius_brace, avg_radius_crown, avg_radius_lateral]) 
@@ -1868,42 +1673,14 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             avg_radius_crown = avg_radius_crown*0.6
             avg_radius_brace = avg_radius_brace*0.8
         
-        '''
-        if avg_radius_stem < 2:
-            avg_radius_stem = int(random.uniform(2.125, 4.125))
-
-        if s_length < 15 or s_length > 40:
-            s_length = int(random.uniform(24.325, 30.256))
-        '''
+ 
             
         whorl_dis_arr = np.array([whorl_dis_1, whorl_dis_2])
         whorl_dis_arr = np.sort(whorl_dis_arr, axis = None) 
         #whorl_dis_1 = whorl_dis_arr[0]
         #whorl_dis_2 = whorl_dis_arr[1]
         
-        '''
-        adjust_sign = 0
-        
-        if ((s_length*0.75 < avg_brace_length) or (s_length*0.75 < avg_crown_length)):
-            adjust_sign = 1
-        elif((s_length*0.5 > avg_brace_length) or (s_length*0.5 > avg_crown_length)):
-            adjust_sign = 1
-        else:
-            adjust_sign = 0
-        
-        #print("adjust_sign = {}\n".format(adjust_sign))
-        
-        
-        if adjust_sign == 1:
-            
-            avg_brace_length = int(random.uniform(0.2, 0.35)*s_length)
-            avg_crown_length = int(random.uniform(0.25, 0.385)*s_length)
-            
-        if (whorl_dis_2 > 2.5*whorl_dis_1) or (min(whorl_dis_2, whorl_dis_1) > 4):
-            
-            whorl_dis_2 = random.uniform(1.875, 3.75)
-            whorl_dis_1 = random.uniform(1.2, 1.75)*whorl_dis_2
-        '''
+
         
         avg_brace_projection = abs(avg_brace_length*np.cos(np.pi*avg_brace_angle/180))
         
@@ -1940,43 +1717,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #pts = mlab.points3d(X_skeleton[sub_branch_start_rec_selected], Y_skeleton[sub_branch_start_rec_selected], Z_skeleton[sub_branch_start_rec_selected], color = (1,0,0), mode = 'sphere', scale_factor = 0.08)
         
         
-        '''
-        cmap = get_cmap(len(vlist_path_rec))
 
-        for i, vlist_path in enumerate(vlist_path_rec):
-
-            color_rgb = cmap(i)[:len(cmap(i))-1]
-
-            pts = mlab.points3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], color = color_rgb, mode = 'sphere', scale_factor = 0.05)
-        '''
-        '''
-        N_sublist = 10
-        
-        #N_sublist = len(sub_branch_list)
-
-        #cmap = get_cmap(100)
-
-        cmap = get_cmap(N_sublist)
-        
-        #draw all the sub branches in loop 
-        for i, (sub_branch, sub_branch_start, sub_branch_radius) in enumerate(zip(sub_branch_list, sub_branch_start_rec, sub_branch_angle_rec)):
-
-            if i < 10:
-            #if i <= dsf_length_divide_idx:
-                
-                color_rgb = cmap(i)[:len(cmap(i))-1]
-                
-                pts = mlab.points3d(X_skeleton[sub_branch], Y_skeleton[sub_branch], Z_skeleton[sub_branch], color = color_rgb, mode = 'sphere', scale_factor = 0.015)
-
-                #mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str(i), color = (0,1,0), scale = (0.04, 0.04, 0.04))
-        
-                #pts = mlab.points3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start], color = (1,1,1), mode = 'sphere', scale_factor = 0.06)
-                
-                #mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str("{:.2f}".format(sub_branch_radius)), color = (0,1,0), scale = (0.04, 0.04, 0.04))
-                
-                #mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str("{:.2f}".format(Z_skeleton[sub_branch_start])), color = (0,1,0), scale = (0.04, 0.04, 0.04))
-        '''
-        
         
         N_sublist = 4
         
@@ -1999,20 +1740,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                 
                 pts = mlab.text3d(X_skeleton[sub_branch_start], Y_skeleton[sub_branch_start], Z_skeleton[sub_branch_start]-0.05, str("{:.2f}".format(sub_branch_radius)), color = (0,1,0), scale = (0.01, 0.01, 0.01))
         
-        '''
-            if idx == 0:
-            
-                pts = mlab.points3d(np.mean(sub_branch_startX_level[idx][1:len(sub_branch_level[idx])]), np.mean(sub_branch_startY_level[idx][1:len(sub_branch_level[idx])]), np.mean(sub_branch_startZ_level[idx][1:len(sub_branch_level[idx])]), color = color_rgb, mode = 'sphere', scale_factor = 0.08)
-            else:
-                
-                pts = mlab.points3d(np.mean(sub_branch_startX_level[idx]), np.mean(sub_branch_startY_level[idx]), np.mean(sub_branch_startZ_level[idx]), color = color_rgb, mode = 'sphere', scale_factor = 0.08)
 
-                
-        
-        for i, (end_val, x_e, y_e, z_e) in enumerate(zip(closest_pts_unique_sorted_combined, X_skeleton[closest_pts_unique_sorted_combined], Y_skeleton[closest_pts_unique_sorted_combined], Z_skeleton[closest_pts_unique_sorted_combined])):
-            
-            mlab.text3d(x_e, y_e, z_e, str(end_val), scale = (0.04, 0.04, 0.04))
-        '''
         #pts = mlab.points3d(Data_array_pcloud[:,0], Data_array_pcloud[:,1], Data_array_pcloud[:,2], mode = 'point')
         
         #mlab.show()
@@ -2128,35 +1856,44 @@ if __name__ == '__main__':
     
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
-    ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
-    ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
-    ap.add_argument("-m3", "--slice_path", required = False, default = None, help = "Cross section/slices image folder path in png format")
-    ap.add_argument("-v", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult not display")
+    ap.add_argument("-p", "--path", dest = "path", type = str, required = True, help = "path to *.ply model file")
+    ap.add_argument("-m1", "--model_skeleton", dest = "model_skeleton", type = str, required = True, help = "skeleton file name")
+    ap.add_argument("-m2", "--model_pcloud", dest = "model_pcloud", type = str, required = True, default = None, help = "point cloud model file name, same path with ply model")
+    ap.add_argument("-m3", "--slice_path", dest = "slice_path", type = str, required = False, default = None, help = "Cross section/slices image folder path in png format")
+    ap.add_argument("-o", "--output_path", dest = "output_path", type = str, required = False, help = "result path")
+    ap.add_argument("-v", "--visualize_model", dest = "visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult not display")
     args = vars(ap.parse_args())
 
 
 
-    # setting path to model file 
+    # setting input path to model file 
     current_path = args["path"]
     filename_skeleton = args["model_skeleton"]
     model_skeleton_name_base = os.path.splitext(current_path + filename_skeleton)[0]
     
     if args["model_pcloud"] is None:
-        filename_pcloud = None
+        print("Aligned pointclod model is not found!\n")
+        sys.exit()
     else:
         filename_pcloud = args["model_pcloud"]
     
-    # analysis result path
-    print ("results_folder: " + current_path + "\n")
     
+    # output path
+    result_path = args["output_path"] if args["output_path"] is not None else os.getcwd()
     
+    result_path = os.path.join(result_path, '')
     
+    # result path
+    print ("results_folder: {}\n".format(result_path))
     
+    '''
     #create label result file folder
     mkpath = os.path.dirname(current_path) +'/label'
     mkdir(mkpath)
     label_path = mkpath + '/'
+    '''
+    #create label result file folder
+    label_path = result_path + '/label'
     
     if args["slice_path"] is None:
         
@@ -2207,7 +1944,7 @@ if __name__ == '__main__':
     #save reuslt file
     ####################################################################
     
-
+    '''
     trait_path = os.path.dirname(current_path + filename_skeleton)
     
     folder_name = os.path.basename(trait_path)
@@ -2216,6 +1953,9 @@ if __name__ == '__main__':
     
     # create trait file using sub folder name
     trait_file = (current_path + folder_name + '_trait.xlsx')
+    '''
+    
+    trait_file = (result_path + 'trait.xlsx')
     
     #trait_file_csv = (current_path + 'trait.csv')
     

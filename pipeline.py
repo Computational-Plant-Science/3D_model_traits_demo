@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-    python3 pipeline.py -p ~/example/ -m test.ply
+    python3 pipeline.py -p ~/example/ -m test.ply -o ~/example/result/
 
 """
 
@@ -41,39 +41,43 @@ def execute_script(cmd_line):
 
 
 # execute pipeline scripts in order
-def model_analysis_pipeline(file_path, filename, basename):
+def model_analysis_pipeline(file_path, filename, basename, result_path):
 
     
-    # step 1  python3 model_alignment.py -p ~/example/ -m test.ply
+    # step 1  python3 model_alignment.py -p ~/example/ -m test.ply  -o ~/example/result/
     print("Transform point cloud model to its rotation center and align its upright orientation with Z direction...\n")
 
-    format_convert = "python3 model_alignment.py -p " + file_path + " -m " + filename + " -t " + str(args["test"])
+    format_convert = "python3 model_alignment.py -p " + file_path + " -m " + filename + " -o " + result_path
     
-    #print(format_convert)
+    print(format_convert)
     
     execute_script(format_convert)
     
     
-    # step 2 ./compiled/Release/bin/AdTree ~/example/pt_cloud/test.xyz ~/example/pt_cloud/ -s
+    # step 2 ./compiled/Release/bin/AdTree ~/example/result/test.xyz ~/example/result/ -s
     print("Compute structure and skeleton from point cloud model ...\n")
     
-    skeleton_graph = "./compiled/Release/bin/AdTree " + file_path + basename + ".xyz " + file_path + " -s"
+    skeleton_graph = "./compiled/Release/bin/AdTree " + result_path + basename + ".xyz " + result_path + " -s"
+    
+    print(skeleton_graph)
     
     execute_script(skeleton_graph)
     
     
-    # step 3  python3 extract_slice.py -p ~/example/pt_cloud/ -f test_branches.obj -n 500 
+    # step 3  python3 extract_slice.py -p ~/example/result/ -f test_branches.obj -o ~/example/result/ -n 500 
     print("Generate cross section sequence ...\n")
    
-    cross_section_scan = "python3 extract_slice.py -p " + file_path + " -f " + basename + "_branches.obj " + "-n " + str(n_slices)
-
+    cross_section_scan = "python3 extract_slice.py -p " + result_path + " -f " + basename + "_branches.obj " + " -o " + result_path + " -n " + str(n_slices)
+    
+    print(cross_section_scan)
+    
     execute_script(cross_section_scan)
     
     
-    # step 4 python3 skeleton_analyze.py -p ~/example/pt_cloud/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 ~/example/pt_cloud/slices/ -v 0
+    # step 4 python3 skeleton_analyze.py -p ~/example/result/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 -o ~/example/result/ -v 0
     print("Compute all the traits...\n")
 
-    traits_computation = "python3 skeleton_analyze.py -p " + file_path + " -m1 " + basename + "_skeleton.ply " + " -m2 " + basename + "_aligned.ply " + " -m3 " + file_path + "slices/ " + "-v " + str(args["visualize_model"])
+    traits_computation = "python3 skeleton_analyze.py -p " + result_path + " -m1 " + basename + "_skeleton.ply " + " -m2 " + basename + "_aligned.ply " + " -o " + result_path + " -v " + str(args["visualize_model"])
     
     print(traits_computation)
     
@@ -88,19 +92,20 @@ if __name__ == '__main__':
     
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
-    ap.add_argument("-m", "--model", required = False, help = "model file name")
-    ap.add_argument("-t", "--test", required = False, type = int, default = 0, help = "if using test setup")
-    ap.add_argument("-n", "--n_slices", required = False, type = int, default = 100 , help = 'Number of slices for 3d model.')
-    ap.add_argument("-v", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult as no due to headless display in cluster")
+    ap.add_argument("-p", "--path", dest = "path", required = True, type = str, help = "path to *.ply model file")
+    ap.add_argument("-m", "--model", dest = "model", required = False, type = str, help = "model file name")
+    ap.add_argument("-o", "--output_path", dest = "output_path", required = False, type = str, help = "result path")
+    ap.add_argument("-t", "--test", dest = "test", required = False, type = int, default = 0, help = "if using test setup")
+    ap.add_argument("-n", "--n_slices", dest = "n_slices", required = False, type = int, default = 500 , help = 'Number of slices for 3d model.')
+    ap.add_argument("-v", "--visualize_model", dest = "visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult as no due to headless display in cluster")
     
     args = vars(ap.parse_args())
     
     
-    #parameter sets
+    
     # path to model file 
     file_path = args["path"]
-    #filename = args["model"]
+
     
     if args["model"] is None:
         
@@ -112,13 +117,26 @@ if __name__ == '__main__':
         
         filename = args["model"]
     
-    #ratio = args["ratio"]
-    #angle = args["angle"]
+    # input model file path
     file_full_path = file_path + filename
     
+    
+    # output path
+    result_path = args["output_path"] if args["output_path"] is not None else os.getcwd()
+
+    #result_path += '/'
+    
+    result_path = os.path.join(result_path, '')
+    
+    # result path
+    print ("results_folder: {}\n".format(result_path))
+    
+    
+    
+    #parameters inilization
     #print(file_full_path)
     
-    file_base_name = os.path.basename(file_full_path).split('.')[0]
+    basename = os.path.basename(file_full_path).split('.')[0]
 
     print("Processing 3d model point cloud file '{}' ...\n".format(file_full_path))
     
@@ -132,6 +150,8 @@ if __name__ == '__main__':
     else:
         print("Skip Visualization steps... \n")
     
-    model_analysis_pipeline(file_path, filename, file_base_name)
+    model_analysis_pipeline(file_path, filename, basename, result_path)
     
     
+    
+

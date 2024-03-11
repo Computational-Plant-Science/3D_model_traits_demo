@@ -9,15 +9,16 @@ Author-email: suxingliu@gmail.com
 
 USAGE
 
-    python3 model_alignment.py -p ~/example/ -m test.ply
+    python3 model_alignment.py -p ~/example/ -m test.ply -o ~/example/result/
 
 
 argument:
-("-p", "--path", required = True, help = "path to *.ply model file")
-("-m", "--model", required = False, help = "model file name")
-("-a", "--angle", required = False, type = int, default = 1, help = "rotation_angle")
-("-r", "--ratio", required = False, type = float, default = 0.01, help = "outlier remove ratio")
-("-t", "--test", required = False, type = int, default = 0, help = "if using test setup")
+("-p", "--path", dest = "path", type = str, required = True, help = "path to *.ply model file")
+("-m", "--model", dest = "model", type = str, required = False, help = "model file name")
+("-o", "--output_path", dest = "output_path", type = str, required = False, help = "result path")
+("-a", "--angle", dest = "angle", type = int, default = 1,  required = False, help = "rotation_angle")
+("-r", "--ratio", dest = "ratio", type = float, default = 0.01, required = False, help = "outlier remove ratio")
+("-t", "--test", dest = "test", type = int, default = 0, required = False, help = "if using test setup")
 
 
 output:
@@ -182,20 +183,9 @@ def rotation_angle_matrix(pcd_r):
     
 
 
-def format_converter(current_path, model_name):
+def format_converter(model_file, result_path):
     
-    model_file = current_path + model_name
-    
-    if os.path.isfile(model_file):
-        print("Converting file format for 3D point cloud model {}...\n".format(model_name))
-    else:
-        print("File not exist")
-        sys.exit()
-    
-        
-    abs_path = os.path.abspath(model_file)
-    filename, file_extension = os.path.splitext(abs_path)
-    base_name = os.path.splitext(os.path.basename(filename))[0]
+
     
      
     # Pass xyz to Open3D.o3d.geometry.PointCloud 
@@ -621,15 +611,19 @@ def format_converter(current_path, model_name):
    
     
     ####################################################################
+    abs_path = os.path.abspath(model_file)
+    filename, file_extension = os.path.splitext(abs_path)
+    base_name = os.path.splitext(os.path.basename(filename))[0]
+    
     
     #Save model file as ascii format in ply
-    filename = current_path + base_name + '_aligned.ply'
+    filename = result_path + base_name + '_aligned.ply'
     
     #write out point cloud file
     o3d.io.write_point_cloud(filename, pcd_r, write_ascii = True)
     
     #Save modelfilea as ascii format in xyz
-    filename = current_path + base_name + '.xyz'
+    filename = result_path + base_name + '.xyz'
     o3d.io.write_point_cloud(filename, pcd_r, write_ascii = True)
     
     
@@ -648,11 +642,12 @@ if __name__ == '__main__':
     
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
-    ap.add_argument("-m", "--model", required = False, help = "model file name")
-    ap.add_argument("-a", "--angle", required = False, type = int, default = 1, help = "rotation_angle")
-    ap.add_argument("-r", "--ratio", required = False, type = float, default = 0.01, help = "outlier remove ratio")
-    ap.add_argument("-t", "--test", required = False, type = int, default = 0, help = "if using test setup")
+    ap.add_argument("-p", "--path", dest = "path", type = str, required = True, help = "path to *.ply model file")
+    ap.add_argument("-m", "--model", dest = "model", type = str, required = False, help = "model file name")
+    ap.add_argument("-o", "--output_path", dest = "output_path", type = str, required = False, help = "result path")
+    ap.add_argument("-a", "--angle", dest = "angle", type = int, default = 1,  required = False, help = "rotation_angle")
+    ap.add_argument("-r", "--ratio", dest = "ratio", type = float, default = 0.01, required = False, help = "outlier remove ratio")
+    ap.add_argument("-t", "--test", dest = "test", type = int, default = 0, required = False, help = "if using test setup")
     args = vars(ap.parse_args())
 
 
@@ -663,7 +658,7 @@ if __name__ == '__main__':
     ratio = args["ratio"]
     
     
-    
+    # default model file name if empty input
     if args["model"] is None:
         
         filename = pathlib.PurePath(current_path).name + ".ply"
@@ -673,14 +668,38 @@ if __name__ == '__main__':
     else:
         
         filename = args["model"]
+
+        model_file = current_path + filename
     
     
-    file_path = current_path + filename
+    # output input file info
+    if os.path.isfile(model_file):
+        print("Converting file format for 3D point cloud model {}...\n".format(model_file))
+    else:
+        print("File not exist")
+        sys.exit()
+    
+    
+    # output path
+    result_path = args["output_path"] if args["output_path"] is not None else os.getcwd()
+    
+    result_path = os.path.join(result_path, '')
+    
+    # result path
+    print ("results_folder: {}\n".format(result_path))
+    
+    
+    # model alignment 
+    format_converter(model_file, result_path)
+    
+    
+    
+    #file_path = current_path + filename
     
     #rotation_angle = args["angle"]
 
     #print ("results_folder: " + current_path)
 
-    format_converter(current_path, filename)
+    #format_converter(current_path, filename)
 
  
