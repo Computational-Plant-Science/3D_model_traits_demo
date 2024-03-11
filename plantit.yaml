@@ -15,14 +15,7 @@ output:
       - xyz
       - ply
       - stl
-<<<<<<< HEAD
       - obj
-=======
-      - xyz
-      - ply
-      - txt
-      - csv
->>>>>>> ea3ba77405bf516f9f3c54c27fcbc0099d420693
       - xlsx
 logo: media/DIRTX-3D.png
 env:
