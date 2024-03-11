@@ -5,11 +5,11 @@ Function: Compute 3D root traits from 3D root model for field-grown maize roots
 
 
 
-![Optional Text](../master/media/image1.png)
+![Optional Text](../main/media/image1.png)
 
 Example of computed root structure v.s. 3D root point cloud model
 
-![Optional Text](../master/media/image2_1.gif)
+![Optional Text](../main/media/image2_1.gif)
 
 
 

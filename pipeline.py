@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-    python3 pipeline.py -p ~/example/ -m test.ply -o ~/example/result/
+    python3 /opt/code/pipeline.py -p ~/example/ -m test.ply -o ~/example/result/
 
 """
 
@@ -47,7 +47,7 @@ def model_analysis_pipeline(file_path, filename, basename, result_path):
     # step 1  python3 model_alignment.py -p ~/example/ -m test.ply  -o ~/example/result/
     print("Transform point cloud model to its rotation center and align its upright orientation with Z direction...\n")
 
-    format_convert = "python3 model_alignment.py -p " + file_path + " -m " + filename + " -o " + result_path
+    format_convert = "python3 /opt/code/model_alignment.py -p " + file_path + " -m " + filename + " -o " + result_path
     
     print(format_convert)
     
@@ -57,7 +57,7 @@ def model_analysis_pipeline(file_path, filename, basename, result_path):
     # step 2 ./compiled/Release/bin/AdTree ~/example/result/test.xyz ~/example/result/ -s
     print("Compute structure and skeleton from point cloud model ...\n")
     
-    skeleton_graph = "./compiled/Release/bin/AdTree " + result_path + basename + ".xyz " + result_path + " -s"
+    skeleton_graph = "/opt/code/compiled/Release/bin/AdTree " + result_path + basename + ".xyz " + result_path + " -s"
     
     print(skeleton_graph)
     
@@ -67,7 +67,7 @@ def model_analysis_pipeline(file_path, filename, basename, result_path):
     # step 3  python3 extract_slice.py -p ~/example/result/ -f test_branches.obj -o ~/example/result/ -n 500 
     print("Generate cross section sequence ...\n")
    
-    cross_section_scan = "python3 extract_slice.py -p " + result_path + " -f " + basename + "_branches.obj " + " -o " + result_path + " -n " + str(n_slices)
+    cross_section_scan = "python3 /opt/code/extract_slice.py -p " + result_path + " -f " + basename + "_branches.obj " + " -o " + result_path + " -n " + str(n_slices)
     
     print(cross_section_scan)
     
@@ -77,7 +77,7 @@ def model_analysis_pipeline(file_path, filename, basename, result_path):
     # step 4 python3 skeleton_analyze.py -p ~/example/result/ -m1 test_skeleton.ply -m2 test_aligned.ply -m3 -o ~/example/result/ -v 0
     print("Compute all the traits...\n")
 
-    traits_computation = "python3 skeleton_analyze.py -p " + result_path + " -m1 " + basename + "_skeleton.ply " + " -m2 " + basename + "_aligned.ply " + " -o " + result_path + " -v " + str(args["visualize_model"])
+    traits_computation = "python3 /opt/code/skeleton_analyze.py -p " + result_path + " -m1 " + basename + "_skeleton.ply " + " -m2 " + basename + "_aligned.ply " + " -o " + result_path + " -v " + str(args["visualize_model"])
     
     print(traits_computation)
     
