@@ -53,7 +53,7 @@ def model_analysis_pipeline(file_path, filename, basename, result_path):
     
     execute_script(format_convert)
     
-    
+    '''
     # step 2 ./compiled/Release/bin/AdTree ~/example/result/test.xyz ~/example/result/ -s
     print("Compute structure and skeleton from point cloud model ...\n")
     
@@ -82,7 +82,7 @@ def model_analysis_pipeline(file_path, filename, basename, result_path):
     print(traits_computation)
     
     execute_script(traits_computation)
-    
+    '''
     
    
     

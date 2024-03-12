@@ -14,9 +14,7 @@ output:
     patterns:
       - xyz
       - ply
-      - stl
-      - obj
-      - xlsx
+
 logo: media/DIRTX-3D.png
 env:
   - LC_ALL=C.UTF-8
