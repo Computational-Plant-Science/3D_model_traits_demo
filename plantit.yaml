@@ -5,15 +5,22 @@ public: True
 commands: /opt/code/shim.sh
 doi:
   - 10.1093/plphys/kiab311
+  
 input:
-  kind: file
+  kind: directory
+  path:
   filetypes:
     - ply
+
 output:
+  path:
   include:
     patterns:
       - xyz
       - ply
+      - stl
+      - obj
+      - xlsx
 
 logo: media/DIRTX-3D.png
 env:
