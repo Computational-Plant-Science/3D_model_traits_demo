@@ -241,11 +241,46 @@ def get_neighbors(Data_array_pt, anchor_pt_idx, search_radius):
     print(octree.locate_leaf_node(pcd.points[243]))
     '''
 
+def get_pt_sel(Data_array_pt):
+    
+    ####################################################################
+    
+    # load skeleton coordinates and radius 
+    Z_pt_sorted = np.sort(Data_array_pt[:,2])
+    
+    idx_sel = int(len(Z_pt_sorted)*0.08) 
+    
+    Z_mid = Z_pt_sorted[idx_sel]
 
+    # mask
+    Z_mask = (Data_array_pt[:,2] <= Z_mid) & (Data_array_pt[:,2] >= Z_pt_sorted[0]) 
+    
+    Z_pt_sel = Data_array_pt[Z_mask]
+    
+    '''
+    ############################################################
+    pcd_Z_mask = o3d.geometry.PointCloud()
+    
+    pcd_Z_mask.points = o3d.utility.Vector3dVector(Z_pt_sel)
+    
+    Z_mask_ply = result_path + "Z_mask.ply"
+    
+    o3d.visualization.draw_geometries([pcd_Z_mask])
+    
+    o3d.io.write_point_cloud(Z_mask_ply, pcd_Z_mask)
+    ############################################################
+    '''
+    
+    return Z_pt_sel
+    
+    
+    
 
 # compute dimensions of point cloud and nearest neighbors by KDTree
 def get_pt_parameter(Data_array_pt, n_paths):
     
+    
+    ####################################################################
     pcd = o3d.geometry.PointCloud()
     
     pcd.points = o3d.utility.Vector3dVector(Data_array_pt)
@@ -271,7 +306,7 @@ def get_pt_parameter(Data_array_pt, n_paths):
     #obb = pcd.get_oriented_bounding_box()
     
     #obb.color = (1, 0, 0)
-    
+
     #visualize the convex hull as a red LineSet
     #o3d.visualization.draw_geometries([pcd, aabb, obb, hull_ls])
     
@@ -1121,28 +1156,15 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #print(r_skeleton)
     
     
-    '''
-    #load radius values
     ####################################################################
-    #radius_skeleton = current_path + filename_skeleton
-    
-    base_name = os.path.splitext(os.path.basename(model_skeleton_name_base))[0]
-    txt_base_name = base_name.replace("_skeleton", "_avr.txt")
-    radius_file = current_path + txt_base_name
 
-    print("Loading 3D skeleton radius txt file {}...\n".format(radius_file))
     
-    #check file exits
-    if os.path.isfile(radius_file):
-        
-        with open(radius_file) as file:
-            lines = file.readlines()
-            radius_vtx = [line.rstrip() for line in lines]
-    else:
-        
-        sys.exit("Could not load 3D skeleton radius txt file")  
     
-    '''
+    
+    
+    
+    
+
     # build directed graph from skeleton/structure data
     ####################################################################
     print("Building directed graph from 3D skeleton/structure ...\n")
@@ -1334,6 +1356,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     print("min_length = {} {} {}\n".format(min_length_x, min_length_y, min_length_z))
     
+    '''
     s_diameter_max = max(max_length_x, max_length_y)
     
     s_diameter_min = min(min_length_x, min_length_y)
@@ -1341,7 +1364,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     s_diameter = (s_diameter_max + s_diameter_min)*0.5
     
     s_length = max_length_z
-    
+    '''
             
     
     # construct sub branches with length and radius feature 
@@ -1421,77 +1444,84 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         length_level.append(length_loc)
         angle_level.append(angle_loc)
         projection_level.append(projection_loc)
+    
+    
+    
+    
+    ###################################################################
+    
+    for idx in range(cluster_number):
         
+        print("sub_branch_level[{}] = {}\n".format(idx, len(sub_branch_level[idx])))
+    
+
+    
 
     #compute paramters
-    #avg_radius_stem = max(radius_level[0])*2
-    avg_radius_stem = np.mean(radius_level[0])*2*2
+
+    num_first_level = int(len(indices_level[0]) + len(indices_level[1]) + len(indices_level[2]))
+    avg_first_length = np.mean(length_level[1])
+    avg_first_angle = np.mean(angle_level[1])
+    avg_first_diameter = np.mean(radius_level[1])*2
+    avg_first_projection = np.mean(projection_level[1])
     
 
     
-    num_brace = int(len(indices_level[0]) + len(indices_level[1])*0.5)
-    avg_brace_length = np.mean(length_level[1])
-    avg_brace_angle = np.mean(angle_level[1])
-    avg_radius_brace = np.mean(radius_level[1])*2
-    avg_brace_projection = np.mean(projection_level[1])
+    num_second_level = int((len(indices_level[3]) - len(indices_level[2]) - len(indices_level[0])))
+    avg_second_length = np.mean(length_level[2])
+    avg_second_angle = np.mean(angle_level[2])
+    avg_second_diameter = np.mean(radius_level[2])*2
+    avg_second_projection = np.mean(projection_level[2])
     
+    avg_third_diameter = np.mean(radius_level[3])
 
-    
-    num_crown = int((len(indices_level[2]) - len(indices_level[1]) - len(indices_level[0]))*0.3)
-    avg_crown_length = np.mean(length_level[2])
-    avg_crown_angle = np.mean(angle_level[2])
-    avg_radius_crown = np.mean(radius_level[2])*2
-    avg_crown_projection = np.mean(projection_level[2])
-    
-    avg_radius_lateral = np.mean(radius_level[3])
-
-    
+    n_whorl = 2
   
     
-    
-    if num_brace ==0:
-        num_crown = 18
+    '''
+    if num_first_level ==0:
+        num_second_level = 18
 
-    if num_crown < 10:
-        num_crown = num_crown*2 + int(num_crown*0.7)
+    if num_second_level < 10:
+        num_second_level = num_second_level*2 + int(num_second_level*0.7)
 
-    if num_brace < 10 and num_brace > 0:
-        num_brace = num_brace*2 + int(num_brace*0.7)
-    elif num_brace >20:
-        num_brace = round(interp(num_brace,[1,num_brace*2],[15,20]))
+    if num_first_level < 10 and num_first_level > 0:
+        num_first_level = num_first_level*2 + int(num_first_level*0.7)
+    elif num_first_level >20:
+        num_first_level = round(interp(num_first_level,[1,num_first_level*2],[15,20]))
 
-    if num_crown < 10 and num_crown > 0:
-        num_crown = num_crown*2 + int(num_crown*0.7)
-    elif num_crown >30:
-        num_crown = round(interp(num_crown,[1,num_crown*2],[18,26]))
-    elif num_crown ==0 and num_brace > 12: 
-        num_crown = 20
-    elif num_crown ==0 or num_crown < 0:
-        num_crown = num_brace + 10
+    if num_second_level < 10 and num_second_level > 0:
+        num_second_level = num_second_level*2 + int(num_second_level*0.7)
+    elif num_second_level >30:
+        num_second_level = round(interp(num_second_level,[1,num_second_level*2],[18,26]))
+    elif num_second_level ==0 and num_first_level > 12: 
+        num_second_level = 20
+    elif num_second_level ==0 or num_second_level < 0:
+        num_second_level = num_first_level + 10
     
     
     count_wholrs = 2
     
-    if num_brace < 25 and num_crown < 27:
+    if num_first_level < 25 and num_second_level < 27:
         n_whorl = count_wholrs + 2
     else:
         n_whorl = count_wholrs + 3
     
     n_whorl = count_wholrs
-    
+    '''
     
     
     if len(sub_branch_startZ_level[0]) > 1:
         
-        whorl_dis_1 = abs(np.mean(sub_branch_startZ_level[0][1: len(sub_branch_startZ_level[0])]) - np.mean(sub_branch_startZ_level[1]))
+        wdis_1 = abs(np.mean(sub_branch_startZ_level[0][1: len(sub_branch_startZ_level[0])]) - np.mean(sub_branch_startZ_level[1]))
     else:
-        whorl_dis_1 = abs(np.mean(sub_branch_startZ_level[0][1: len(sub_branch_startZ_level[0])]) - np.mean(sub_branch_startZ_level[1]))
+        wdis_1 = abs(np.mean(sub_branch_startZ_level[0][1: len(sub_branch_startZ_level[0])]) - np.mean(sub_branch_startZ_level[1]))
     
-    whorl_dis_2 = abs(np.mean(sub_branch_startZ_level[1]) - np.mean(sub_branch_startZ_level[2]))
+    wdis_2 = abs(np.mean(sub_branch_startZ_level[1]) - np.mean(sub_branch_startZ_level[2]))
     
-    whorl_dis_1 = whorl_dis_2*0.65
+    wdis_1 = wdis_2*0.65
     
-    
+    ####################################################################
     n_paths = 0
     
     for i in range(4):
@@ -1503,78 +1533,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     ################################################################################################################################
 
-   
-    
-    #convert skeleton data to KDTree using Open3D to search nearest neighbors
-    #find branches within near neighbors search range
-    ####################################################################
-    '''
-    anchor_pt_idx = 30
-    
-    search_radius = 150
-    
-    idx = get_neighbors(Data_array_skeleton, anchor_pt_idx, search_radius)
-    
-    neighbors_idx = sorted(list(np.asarray(idx)))
-    
-    print("neighbors_idx = {}\n".format(neighbors_idx))
-    
-    #find branches within near neighbors 
-    neighbors_match = sorted(list(set(sub_branch_start_rec).intersection(set(neighbors_idx))))
-    
-    print("neighbors_match = {}\n".format(neighbors_match))
-    
-    
-    
-    level = 1
-    
-    neighbors_match_idx = [i for i, item in enumerate(sub_branch_start_rec) if item in neighbors_idx_rec[level]]
-    
-    #neighbors_match_idx = [int(i) for i in neighbors_match_idx]
-    
-    sub_branch_selected = [sub_branch_list[index] for index in sorted(neighbors_match_idx)]
-    
-    #print("neighbors_match_idx = {}\n".format(neighbors_match_idx))
-    #print("sub_branch_selected = {}\n".format(len(sub_branch_selected)))
-    
-    num_1_order = len(sub_branch_selected)
-    
-    angle_1_order = [sub_branch_angle_rec[index] for index in sorted(neighbors_match_idx)]
-    
-    length_1_order = [sub_branch_length_rec[index] for index in sorted(neighbors_match_idx)]
-    
-    print("num_1_order = {0}\n  angle_1_order = {1}\n length_1_order = {2}\n".format(num_1_order, angle_1_order, length_1_order))
-    
-
-    #find shortest path between start and end vertex
-    ####################################################################
-    
-    #define start and end vertex index
-    start_v = 0
-    #end_v = 1559
-    #end_v = 608
-    
-    #int_vlist_path = short_path_finder(G_unordered, 0, 608)
-    
-    
-    vlist_path_rec = []
-    
-    for idx, end_v in enumerate(sub_branch_end_rec[0:2000]):
-        
-        #print("start_v = {} end_v = {} \n".format(start_v, end_v))
-   
-        vlist_path = short_path_finder(G_unordered, start_v, end_v)
-        
-        if len(vlist_path) > 0:
-            
-            vlist_path_rec.append(vlist_path)
-    
-    print("Found {} shortest path \n".format(len(vlist_path_rec)))
-    
-    '''
     ###################################################################
     #initialize parameters
-    pt_diameter_max=pt_diameter_min=pt_length=pt_diameter=pt_eccentricity=pt_stem_diameter=pt_density =0
+    pt_diameter_max = pt_diameter_min = pt_length = pt_diameter = pt_eccentricity = pt_stem_diameter = pt_density = 0
         
     #load aligned ply point cloud file
     if not (filename_pcloud is None):
@@ -1607,7 +1568,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             print("Generate random color\n")
         
             pcd_color = np.random.randint(256, size = (len(Data_array_pcloud),3))
-            
+        
 
 
         #compute dimensions of point cloud data
@@ -1627,20 +1588,25 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         print("pt_diameter_max = {} pt_diameter_min = {} pt_diameter = {} pt_length = {} pt_volume = {}\n".format(pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume))
         
         
-
-        #s_diameter = (s_diameter_max + s_diameter_min)*0.5
+        ###############################################
         
+        pt_stem = get_pt_sel(Data_array_pcloud)
         
+        (stem_diameter_max, stem_diameter_min, stem_diameter, stem_length, stem_volume, stem_density) = get_pt_parameter(pt_stem, n_paths)
         
+        print("setm_diameter = {} stem_length = {} \n".format(stem_diameter, stem_length))
         
+        avg_radius_stem = stem_diameter
+        
+        ##############################################
         traits_array = np.zeros(22)
         
         
         list_traits = [s_diameter_max, s_diameter_min, s_diameter, s_length, pt_eccentricity, avg_radius_stem, avg_density, \
-                        num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
-                        num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
-                        avg_radius_lateral, \
-                        n_whorl, whorl_dis_1, whorl_dis_2, avg_volume]
+                        num_first_level, avg_first_length, avg_first_angle, avg_first_diameter, avg_first_projection,\
+                        num_second_level, avg_second_length, avg_second_angle, avg_second_diameter, avg_second_projection, \
+                        avg_third_diameter, \
+                        n_whorl, wdis_1, wdis_2, avg_volume]
         
         
         
@@ -1654,45 +1620,27 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
         
         
-        radius_arr = np.array([avg_radius_stem, avg_radius_brace, avg_radius_crown, avg_radius_lateral]) 
+        radius_arr = np.array([avg_radius_stem, avg_first_diameter, avg_second_diameter, avg_third_diameter]) 
         
         radius_arr = np.sort(radius_arr, axis = None)     
         
-        avg_radius_lateral = radius_arr[0]
-        avg_radius_crown = radius_arr[1]
-        avg_radius_brace = radius_arr[2]
+        avg_third_diameter = radius_arr[0]
+        avg_second_diameter = radius_arr[1]
+        avg_first_diameter = radius_arr[2]
         avg_radius_stem = radius_arr[3]
-        
-        if min(avg_radius_brace, avg_radius_crown) > 1:
-            avg_radius_lateral = avg_radius_lateral*0.4
-            avg_radius_crown = avg_radius_crown*0.4
-            avg_radius_brace = avg_radius_brace*0.4
-            
-        if max(avg_radius_brace, avg_radius_crown) < 1:
-            avg_radius_lateral = avg_radius_lateral*0.8
-            avg_radius_crown = avg_radius_crown*0.6
-            avg_radius_brace = avg_radius_brace*0.8
         
  
             
-        whorl_dis_arr = np.array([whorl_dis_1, whorl_dis_2])
+        whorl_dis_arr = np.array([wdis_1, wdis_2])
         whorl_dis_arr = np.sort(whorl_dis_arr, axis = None) 
-        #whorl_dis_1 = whorl_dis_arr[0]
-        #whorl_dis_2 = whorl_dis_arr[1]
-        
+      
 
         
-        avg_brace_projection = abs(avg_brace_length*np.cos(np.pi*avg_brace_angle/180))
+        avg_first_projection = abs(avg_first_length*np.cos(np.pi*avg_first_angle/180))
         
-        #print("avg_crown_length = {} avg_crown_angle = {} np.sin(avg_crown_angle) = {}\n".format(avg_crown_length,avg_crown_angle, np.cos(np.pi*avg_crown_angle/180)))
-        avg_crown_projection = abs(avg_crown_length*np.cos(np.pi*avg_crown_angle/180))
+        #print("avg_second_length = {} avg_second_angle = {} np.sin(avg_second_angle) = {}\n".format(avg_second_length,avg_second_angle, np.cos(np.pi*avg_second_angle/180)))
+        avg_second_projection = abs(avg_second_length*np.cos(np.pi*avg_second_angle/180))
         
-        if avg_crown_angle > avg_brace_angle:
-            
-            avg_crown_angle = avg_crown_angle*0.8
-        
-        if s_length > 25 and n_whorl < 4:
-            n_whorl+= 1
 
         
     #Skeleton Visualization pipeline
@@ -1841,10 +1789,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                 
     
     return (s_diameter_max), (s_diameter_min), s_diameter, (s_length), pt_eccentricity, avg_radius_stem, avg_density, \
-        num_brace, (avg_brace_length), avg_brace_angle, avg_radius_brace, avg_brace_projection,\
-        num_crown, (avg_crown_length), avg_crown_angle, avg_radius_crown, avg_crown_projection, \
-        avg_radius_lateral, \
-        n_whorl, whorl_dis_1, whorl_dis_2, avg_volume
+        num_first_level, (avg_first_length), avg_first_angle, avg_first_diameter, avg_first_projection,\
+        num_second_level, (avg_second_length), avg_second_angle, avg_second_diameter, avg_second_projection, \
+        avg_third_diameter, \
+        n_whorl, wdis_1, wdis_2, avg_volume
     
 
 
@@ -1857,7 +1805,7 @@ if __name__ == '__main__':
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", dest = "path", type = str, required = True, help = "path to *.ply model file")
-    ap.add_argument("-m1", "--model_skeleton", dest = "model_skeleton", type = str, required = True, help = "skeleton file name")
+    ap.add_argument("-m1", "--model_skeleton", dest = "model_skeleton", type = str, required = False, help = "skeleton file name")
     ap.add_argument("-m2", "--model_pcloud", dest = "model_pcloud", type = str, required = True, default = None, help = "point cloud model file name, same path with ply model")
     ap.add_argument("-m3", "--slice_path", dest = "slice_path", type = str, required = False, default = None, help = "Cross section/slices image folder path in png format")
     ap.add_argument("-o", "--output_path", dest = "output_path", type = str, required = False, help = "result path")
@@ -1878,20 +1826,25 @@ if __name__ == '__main__':
         filename_pcloud = args["model_pcloud"]
     
     
+    
+    #create label result file folder
+    #mkpath = os.path.dirname(current_path) +'/' + model_skeleton_name_base
+    #mkdir(mkpath)
+    #label_path = mkpath + '/'
+    
+    
+    
     # output path
-    result_path = args["output_path"] if args["output_path"] is not None else os.getcwd()
+    #result_path = args["output_path"] if args["output_path"] is not None else os.getcwd()
+    
+    result_path = args["output_path"] if args["output_path"] is not None else current_path
     
     result_path = os.path.join(result_path, '')
     
     # result path
     print ("results_folder: {}\n".format(result_path))
     
-    '''
-    #create label result file folder
-    mkpath = os.path.dirname(current_path) +'/label'
-    mkdir(mkpath)
-    label_path = mkpath + '/'
-    '''
+
     #create label result file folder
     label_path = result_path + '/label'
     
@@ -1922,24 +1875,38 @@ if __name__ == '__main__':
     #print(avg_radius = crosssection_analysis_range(0, 97))
     
     
-    #analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+    
+    s_diameter_max = s_diameter_min = s_diameter = s_length\
+     = pt_eccentricity = avg_radius_stem = avg_density = num_first_level\
+      = avg_first_length = avg_first_angle = avg_first_diameter\
+       = avg_first_projection = num_second_level = avg_second_length\
+        = avg_second_angle = avg_second_diameter = avg_second_projection\
+         = avg_third_diameter = count_wholrs = wdis_1 = wdis_2 = avg_volume = 0
+    
+    
+    
     
     
     (s_diameter_max, s_diameter_min, s_diameter, s_length, pt_eccentricity, avg_radius_stem, avg_density,\
-        num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
-        num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
-        avg_radius_lateral, \
-        count_wholrs, whorl_dis_1, whorl_dis_2, avg_volume) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
+        num_first_level, avg_first_length, avg_first_angle, avg_first_diameter, avg_first_projection,\
+        num_second_level, avg_second_length, avg_second_angle, avg_second_diameter, avg_second_projection, \
+        avg_third_diameter, \
+        count_wholrs, wdis_1, wdis_2, avg_volume) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
     
     
     
     trait_sum = []
     
+    
     trait_sum.append([s_diameter_max, s_diameter_min, s_diameter, s_length, pt_eccentricity, avg_radius_stem, avg_density,\
-        num_brace, avg_brace_length, avg_brace_angle, avg_radius_brace, avg_brace_projection,\
-        num_crown, avg_crown_length, avg_crown_angle, avg_radius_crown, avg_crown_projection, \
-        avg_radius_lateral, \
-        count_wholrs, whorl_dis_1, whorl_dis_2, avg_volume])
+        num_first_level, avg_first_length, avg_first_angle, avg_first_diameter, avg_first_projection,\
+        num_second_level, avg_second_length, avg_second_angle, avg_second_diameter, avg_second_projection, \
+        avg_third_diameter, \
+        count_wholrs, wdis_1, wdis_2, avg_volume])
+    
+    
+    
+    
     
     #save reuslt file
     ####################################################################
@@ -1982,22 +1949,22 @@ if __name__ == '__main__':
         sheet.cell(row = 1, column = 3).value = 'root system diameter'
         sheet.cell(row = 1, column = 4).value = 'root system length'
         sheet.cell(row = 1, column = 5).value = 'root system eccentricity'
-        sheet.cell(row = 1, column = 6).value = 'stem root diameter'
+        sheet.cell(row = 1, column = 6).value = 'stem diameter'
         sheet.cell(row = 1, column = 7).value = 'root system density'
-        sheet.cell(row = 1, column = 8).value = 'number of brace roots'
-        sheet.cell(row = 1, column = 9).value = 'brace root length'
-        sheet.cell(row = 1, column = 10).value = 'brace root angle'
-        sheet.cell(row = 1, column = 11).value = 'brace root diameter'
-        sheet.cell(row = 1, column = 12).value = 'brace root projection radius'
-        sheet.cell(row = 1, column = 13).value = 'number of crown roots'
-        sheet.cell(row = 1, column = 14).value = 'crown root length'
-        sheet.cell(row = 1, column = 15).value = 'crown root angle'
-        sheet.cell(row = 1, column = 16).value = 'crown root diameter'
-        sheet.cell(row = 1, column = 17).value = 'crown root projection radius'
+        sheet.cell(row = 1, column = 8).value = 'number of youngest nodal root'
+        sheet.cell(row = 1, column = 9).value = 'youngest nodal root length'
+        sheet.cell(row = 1, column = 10).value = 'youngest nodal root angle'
+        sheet.cell(row = 1, column = 11).value = 'youngest nodal root diameter'
+        sheet.cell(row = 1, column = 12).value = 'youngest nodal root projection radius'
+        sheet.cell(row = 1, column = 13).value = 'number of 2nd youngest nodal root'
+        sheet.cell(row = 1, column = 14).value = '2nd youngest nodal root length'
+        sheet.cell(row = 1, column = 15).value = '2nd youngest nodal root angle'
+        sheet.cell(row = 1, column = 16).value = '2nd youngest nodal root diameter'
+        sheet.cell(row = 1, column = 17).value = '2nd youngest nodal root projection radius'
         sheet.cell(row = 1, column = 18).value = 'lateral root radius'
         sheet.cell(row = 1, column = 19).value = 'number of whorls'
-        sheet.cell(row = 1, column = 20).value = 'whorl distance 1'
-        sheet.cell(row = 1, column = 21).value = 'whorl distance 2'
+        sheet.cell(row = 1, column = 20).value = 'youngest - 2nd youngest whorl distance'
+        sheet.cell(row = 1, column = 21).value = '2nd youngest - 3rd youngest whorl distance'
         sheet.cell(row = 1, column = 22).value = 'root system volume'
               
         
