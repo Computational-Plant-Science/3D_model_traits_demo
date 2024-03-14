@@ -1461,39 +1461,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     n_whorl = 2
   
     
-    '''
-    if num_first_level ==0:
-        num_second_level = 18
 
-    if num_second_level < 10:
-        num_second_level = num_second_level*2 + int(num_second_level*0.7)
-
-    if num_first_level < 10 and num_first_level > 0:
-        num_first_level = num_first_level*2 + int(num_first_level*0.7)
-    elif num_first_level >20:
-        num_first_level = round(interp(num_first_level,[1,num_first_level*2],[15,20]))
-
-    if num_second_level < 10 and num_second_level > 0:
-        num_second_level = num_second_level*2 + int(num_second_level*0.7)
-    elif num_second_level >30:
-        num_second_level = round(interp(num_second_level,[1,num_second_level*2],[18,26]))
-    elif num_second_level ==0 and num_first_level > 12: 
-        num_second_level = 20
-    elif num_second_level ==0 or num_second_level < 0:
-        num_second_level = num_first_level + 10
-    
-    
-    count_wholrs = 2
-    
-    if num_first_level < 25 and num_second_level < 27:
-        n_whorl = count_wholrs + 2
-    else:
-        n_whorl = count_wholrs + 3
-    
-    n_whorl = count_wholrs
-    '''
-    
-    
     if len(sub_branch_startZ_level[0]) > 1:
         
         wdis_1 = abs(np.mean(sub_branch_startZ_level[0][1: len(sub_branch_startZ_level[0])]) - np.mean(sub_branch_startZ_level[1]))
@@ -1769,7 +1737,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         mlab.show()
         
     
-    
+
 
     return s_diameter_max, s_diameter_min, s_diameter, s_length, pt_eccentricity, avg_radius_stem, avg_density, \
         num_first_level, avg_first_length, avg_first_angle, avg_first_diameter, avg_first_projection,\
