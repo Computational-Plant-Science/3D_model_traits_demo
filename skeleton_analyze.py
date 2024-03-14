@@ -1149,21 +1149,10 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     X_skeleton = Data_array_skeleton[:,0]
     Y_skeleton = Data_array_skeleton[:,1]
     Z_skeleton = Data_array_skeleton[:,2]
-    r_skeleton = Data_array_skeleton[:,3]
-    
-    radius_vtx = r_skeleton
-    
-    #print(r_skeleton)
-    
+    radius_vtx = Data_array_skeleton[:,3]
     
     ####################################################################
 
-    
-    
-    
-    
-    
-    
 
     # build directed graph from skeleton/structure data
     ####################################################################
@@ -1224,6 +1213,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     sub_branch_ys_rec = []
     sub_branch_zs_rec = []
     
+    factor = 0.64
+    
     #if len(end_vlist) == len(end_vlist_offset):
         
     for idx, v_end in enumerate(end_vlist):
@@ -1247,7 +1238,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         end_v = [X_skeleton[int_v_list[0]] - X_skeleton[int_v_list[int(len(int_v_list)-1.0)]], Y_skeleton[int_v_list[0]] - Y_skeleton[int_v_list[int(len(int_v_list)-1.0)]], Z_skeleton[int_v_list[0]] - Z_skeleton[int_v_list[int(len(int_v_list)-1.0)]]]
         
         # angle of current branch vs Z direction
-        angle_sub_branch = dot_product_angle(start_v, end_v)
+        angle_sub_branch = dot_product_angle(start_v, end_v)*factor
         
         # projection radius of current branch length
         p0 = np.array([X_skeleton[int_v_list[0]], Y_skeleton[int_v_list[0]], Z_skeleton[int_v_list[0]]])
@@ -1356,15 +1347,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     print("min_length = {} {} {}\n".format(min_length_x, min_length_y, min_length_z))
     
-    '''
-    s_diameter_max = max(max_length_x, max_length_y)
-    
-    s_diameter_min = min(min_length_x, min_length_y)
-    
-    s_diameter = (s_diameter_max + s_diameter_min)*0.5
-    
-    s_length = max_length_z
-    '''
             
     
     # construct sub branches with length and radius feature 
@@ -1424,7 +1406,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         angle_loc = [sub_branch_angle_rec[index] for index in indices]
         projection_loc = [sub_branch_projection_rec[index] for index in indices]
         
-        
+        '''
         print("max = {} min = {} ".format(max(sub_branch_start_rec_selected), min(sub_branch_start_rec_selected)))
         print("max_Z = {} min_Z = {} average = {}".format(max(Z_loc), min(Z_loc), np.mean(Z_loc)))
         print("max_radius = {} min_radius = {} average = {}".format(max(radius_loc), min(radius_loc), np.mean(radius_loc)))
@@ -1432,7 +1414,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         print("max_angle = {} min_angle = {} average = {}".format(max(angle_loc), min(angle_loc), np.mean(angle_loc)))
         print("max_projection = {} min_projection = {}".format(max(projection_loc), min(projection_loc), np.mean(projection_loc)))
         print("number of roots = {} {} {}\n".format(len(indices), len(Z_loc), len(radius_loc)))
-
+        '''
+        
         indices_level.append(indices)
         sub_branch_level.append(sub_loc)
         sub_branch_start_level.append(sub_branch_start_rec_selected)
@@ -1461,7 +1444,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
 
     num_first_level = int(len(indices_level[0]) + len(indices_level[1]) + len(indices_level[2]))
     avg_first_length = np.mean(length_level[1])
-    avg_first_angle = np.mean(angle_level[1])
+    avg_first_angle = np.mean(angle_level[0])
     avg_first_diameter = np.mean(radius_level[1])*2
     avg_first_projection = np.mean(projection_level[1])
     
@@ -1786,11 +1769,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         mlab.show()
         
     
-                
     
-    return (s_diameter_max), (s_diameter_min), s_diameter, (s_length), pt_eccentricity, avg_radius_stem, avg_density, \
-        num_first_level, (avg_first_length), avg_first_angle, avg_first_diameter, avg_first_projection,\
-        num_second_level, (avg_second_length), avg_second_angle, avg_second_diameter, avg_second_projection, \
+
+    return s_diameter_max, s_diameter_min, s_diameter, s_length, pt_eccentricity, avg_radius_stem, avg_density, \
+        num_first_level, avg_first_length, avg_first_angle, avg_first_diameter, avg_first_projection,\
+        num_second_level, avg_second_length, avg_second_angle, avg_second_diameter, avg_second_projection, \
         avg_third_diameter, \
         n_whorl, wdis_1, wdis_2, avg_volume
     
@@ -1875,17 +1858,7 @@ if __name__ == '__main__':
     #print(avg_radius = crosssection_analysis_range(0, 97))
     
     
-    
-    s_diameter_max = s_diameter_min = s_diameter = s_length\
-     = pt_eccentricity = avg_radius_stem = avg_density = num_first_level\
-      = avg_first_length = avg_first_angle = avg_first_diameter\
-       = avg_first_projection = num_second_level = avg_second_length\
-        = avg_second_angle = avg_second_diameter = avg_second_projection\
-         = avg_third_diameter = count_wholrs = wdis_1 = wdis_2 = avg_volume = 0
-    
-    
-    
-    
+
     
     (s_diameter_max, s_diameter_min, s_diameter, s_length, pt_eccentricity, avg_radius_stem, avg_density,\
         num_first_level, avg_first_length, avg_first_angle, avg_first_diameter, avg_first_projection,\
@@ -1893,6 +1866,8 @@ if __name__ == '__main__':
         avg_third_diameter, \
         count_wholrs, wdis_1, wdis_2, avg_volume) = analyze_skeleton(current_path, filename_skeleton, filename_pcloud)
     
+    
+
     
     
     trait_sum = []
@@ -1907,6 +1882,8 @@ if __name__ == '__main__':
     
     
     
+
+      
     
     #save reuslt file
     ####################################################################
