@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../lib/libeasy3d_core.a CMakeFiles/easy3d_core.dir/graph.cpp.o CMakeFiles/easy3d_core.dir/point_cloud.cpp.o CMakeFiles/easy3d_core.dir/surface_mesh.cpp.o
+/usr/bin/ranlib ../../../lib/libeasy3d_core.a

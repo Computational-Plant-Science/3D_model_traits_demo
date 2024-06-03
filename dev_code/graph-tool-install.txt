@@ -1,0 +1,12 @@
+Installation via package managers
+
+
+Debian & Ubuntu
+For Debian or Ubuntu, add the following line to your /etc/apt/sources.list,
+deb [ arch=amd64 ] https://downloads.skewed.de/apt DISTRIBUTION main
+where DISTRIBUTION can be any one of
+bullseye, buster, sid, bionic, eoan, focal, groovy
+You should then download the public key 612DEFB798507F25 to verify the packages, with the command:
+apt-key adv --keyserver keys.openpgp.org --recv-key 612DEFB798507F25
+After running apt-get update, the package can be installed with
+apt-get install python3-graph-tool

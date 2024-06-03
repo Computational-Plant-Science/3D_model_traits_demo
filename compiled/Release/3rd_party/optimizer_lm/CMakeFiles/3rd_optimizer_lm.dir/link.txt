@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../lib/lib3rd_optimizer_lm.a CMakeFiles/3rd_optimizer_lm.dir/optimizer_lm.cpp.o
+/usr/bin/ranlib ../../lib/lib3rd_optimizer_lm.a

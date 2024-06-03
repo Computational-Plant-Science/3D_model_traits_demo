@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../lib/lib3rd_tetgen.a CMakeFiles/3rd_tetgen.dir/tetgen.cxx.o CMakeFiles/3rd_tetgen.dir/predicates.cxx.o
+/usr/bin/ranlib ../../lib/lib3rd_tetgen.a

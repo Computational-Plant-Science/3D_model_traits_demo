@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../lib/libeasy3d_fileio.a CMakeFiles/easy3d_fileio.dir/graph_io.cpp.o CMakeFiles/easy3d_fileio.dir/graph_io_ply.cpp.o CMakeFiles/easy3d_fileio.dir/ply_reader_writer.cpp.o CMakeFiles/easy3d_fileio.dir/point_cloud_io.cpp.o CMakeFiles/easy3d_fileio.dir/point_cloud_io_xyz.cpp.o CMakeFiles/easy3d_fileio.dir/surface_mesh_io.cpp.o CMakeFiles/easy3d_fileio.dir/surface_mesh_io_obj.cpp.o
+/usr/bin/ranlib ../../../lib/libeasy3d_fileio.a
