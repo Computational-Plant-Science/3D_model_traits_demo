@@ -54,7 +54,6 @@ import open3d as o3d
 import copy
 import shutil
 import argparse
-from dev_code import par_config
 import openpyxl
 from openpyxl import Workbook
 from openpyxl import load_workbook
@@ -310,14 +309,7 @@ def get_pt_parameter(Data_array_pt, n_paths):
         
     pt_diameter = (pt_diameter_max + pt_diameter_min)*0.5
     
-    pt_diameter_max*=par_config.match_par(min_distance_value, par_config.md_list, par_config.List_Par).distance_tracking_max
-    pt_diameter_min*=par_config.match_par(min_distance_value, par_config.md_list, par_config.List_Par).distance_tracking_min
     
-    if n_paths > 0:
-        pt_diameter*=par_config.match_par(min_distance_value, par_config.md_list, par_config.List_Par).distance_tracking_avg
-    else:
-        pt_diameter*=par_config.match_par(min_distance_value, par_config.md_list, par_config.List_Par).thresh_distance_ratio
-        
     return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume, pt_density
     
     
@@ -1185,9 +1177,11 @@ def get_radius(radius_arr):
 
     radius_arr = np.sort(radius_arr, axis = None)     
 
-    avg_third_diameter = radius_arr[0]*par_config.match_par(min_distance_value, par_config.md_list, par_config.List_Par).snake_speed_min
-    avg_second_diameter = radius_arr[1]*par_config.match_par(min_distance_value, par_config.md_list, par_config.List_Par).snake_speed_min
-    avg_first_diameter = radius_arr[2]*par_config.match_par(min_distance_value, par_config.md_list, par_config.List_Par).snake_speed_max
+
+    avg_third_diameter = radius_arr[0]
+    avg_second_diameter = radius_arr[1]
+    avg_first_diameter = radius_arr[2]
+    
     
     return avg_first_diameter, avg_second_diameter, avg_third_diameter
     
@@ -1348,7 +1342,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
         end_v = [X_skeleton[int_v_list[0]] - X_skeleton[int_v_list[int(len(int_v_list)-1.0)]], Y_skeleton[int_v_list[0]] - Y_skeleton[int_v_list[int(len(int_v_list)-1.0)]], Z_skeleton[int_v_list[0]] - Z_skeleton[int_v_list[int(len(int_v_list)-1.0)]]]
         
         # angle of current branch vs Z direction
-        angle_sub_branch = dot_product_angle(start_v, end_v)*par_config.match_par(min_distance_value, par_config.md_list, par_config.List_Par).dis_tracking_ratio
+        angle_sub_branch = dot_product_angle(start_v, end_v)
         
         # projection radius of current branch length
         p0 = np.array([X_skeleton[int_v_list[0]], Y_skeleton[int_v_list[0]], Z_skeleton[int_v_list[0]]])
@@ -1645,9 +1639,9 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
         
         avg_volume = pt_volume
         
-        wdis_1 = R_1*pt_length*par_config.match_par(min_distance_value, par_config.md_list, par_config.List_Par).kernel_max_radius
+        wdis_1 = R_1
         
-        wdis_2 = R_2*pt_length*par_config.match_par(min_distance_value, par_config.md_list, par_config.List_Par).kernel_min_radius
+        wdis_2 = R_2
         
         #print("pt_diameter_max = {} pt_diameter_min = {} pt_diameter = {} pt_length = {} pt_volume = {}\n".format(pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume))
         
@@ -1942,17 +1936,8 @@ if __name__ == '__main__':
         print("Could not load cross-section image in {}\n".format(slice_image_path))
         sys.exit()
 
-    ############################################################################################################
+    
 
-    
-    (idx_list, min_distance_value) = (closest(par_config.md_list, args['min_dis'] ))
-    
-    span = args['span']
-    
-    print("Matched Min dis = {}\n".format(min_distance_value))
- 
-
-    
     #############################################################################################
     
     (s_diameter_max, s_diameter_min, s_diameter, avg_radius_stem, \
