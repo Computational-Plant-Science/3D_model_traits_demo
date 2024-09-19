@@ -222,7 +222,158 @@ def get_neighbors(Data_array_pt, anchor_pt_idx, search_radius):
 
     return idx
 '''
-           
+
+
+# compute the center coordinates of a 3d point cloud by slicing it into n_plane segments
+def get_pt_sel_parameter(Data_array_pt, n_plane):
+    
+    ####################################################################
+    
+    # load skeleton coordinates and radius 
+    Z_pt_sorted = np.sort(Data_array_pt[:,2])
+    
+    pt_plane = []
+    
+    
+    # initialize paramters
+    pt_plane_center = []
+    
+    pt_plane_diameter_max = []
+    
+    pt_plane_diameter_min = []
+    
+    pt_plane_diameter_avg = []
+    
+
+    
+    filter_plane_center = []
+    
+    filter_plane_volume = []
+    
+    filter_plane_eccentricity = []
+    
+    #filter_plane_bushiness = []
+    
+    
+    # slicing models based number of planes along Z axis
+    for idx, x in enumerate(range(n_plane)):
+        
+        ratio_s = idx/n_plane
+        ratio_e = (idx+1)/n_plane
+        
+        print("ratio_s ratio_e {} {}\n".format(ratio_s, ratio_e))
+        
+        # index of end plane 
+        idx_sel_e = int(len(Z_pt_sorted)*ratio_e) 
+    
+        Z_e = Z_pt_sorted[idx_sel_e]  if idx_sel_e < len(Data_array_pt) else (len(Data_array_pt) - 1)
+        
+        # index of start plane
+        idx_sel_s = int(len(Z_pt_sorted)*ratio_s) 
+    
+        Z_s = Z_pt_sorted[idx_sel_s]
+
+        # mask between the start and end plane
+        Z_mask = (Data_array_pt[:,2] <= Z_e) & (Data_array_pt[:,2] >= Z_s) 
+        
+        Z_pt_sel = Data_array_pt[Z_mask]
+        
+        
+        #print(Z_pt_sel.shape)
+        
+        # initialize the o3d object
+        pcd_Z_mask = o3d.geometry.PointCloud()
+    
+        pcd_Z_mask.points = o3d.utility.Vector3dVector(Z_pt_sel)
+        
+        
+        # get the diameter of the sliced model 
+        (pt_diameter_max, pt_diameter_min, pt_diameter_avg, pt_length, pt_volume, pt_density) = get_pt_parameter(pcd_Z_mask, 0)
+        
+        print("Current slice diameter_max = {}, diameter_min = {}, diameter_avg = {}\n".format(pt_diameter_max, pt_diameter_min, pt_diameter_avg))
+        
+        # get the model center position
+        model_center = pcd_Z_mask.get_center()
+
+        pt_plane.append(pcd_Z_mask)
+        
+        pt_plane_center.append(model_center)
+        
+        #pt_plane_diameter.append(pt_diameter)
+        
+        pt_plane_diameter_max.append(pt_diameter_max)
+        
+        pt_plane_diameter_min.append(pt_diameter_min)
+        
+        pt_plane_diameter_avg.append(pt_diameter_avg)
+        
+        #filter_plane_bushiness.append(pt_volume/pt_ob_volume)
+        
+        # filter sliced models using sphere with radius and compute parameters
+        ################################################################
+        # copy current sliced model
+        pt_sel_filter = copy.deepcopy(pcd_Z_mask)
+        
+        # get 3d points
+        points = np.asarray(pt_sel_filter.points)
+
+        # Sphere center and radius
+        radius = pt_diameter_avg*0.5
+        
+        print("radius =  {} \n".format(radius))
+
+        # Calculate distances to center, set new points
+        distances = np.linalg.norm(points - model_center, axis=1)
+        
+        pt_sel_filter.points = o3d.utility.Vector3dVector(points[distances <= radius])
+        
+        # filter sliced model
+        (filter_diameter_max, filter_diameter_min, filter_diameter, filter_length, filter_volume, filter_density) = get_pt_parameter(pcd_Z_mask, 0)
+        
+        
+        filter_plane_center.append(pt_sel_filter.get_center())
+        
+        filter_plane_volume.append(filter_volume)
+                
+        #########################################################################
+        # compute eccentricity using oriented bounding box axis
+        
+        # get OrientedBoundingBox
+        obb = pt_sel_filter.get_oriented_bounding_box()
+
+        # assign color for OrientedBoundingBox
+        obb.color = (0, 0, 1)
+
+        # get the eight points that define the bounding box.
+        pcd_coord = obb.get_box_points()
+
+        #print(obb.get_box_points())
+
+        #pcd_coord.color = (1, 0, 0)
+
+        # From Open3D to numpy array
+        np_points = np.asarray(pcd_coord)
+
+        # create Open3D format for points 
+        #pcd_coord = o3d.geometry.PointCloud()
+        #pcd_coord.points = o3d.utility.Vector3dVector(np_points)
+    
+        # check the length of the joint 3 vector in the bounding box to estimate the orientation of model
+        list_dis = [np.linalg.norm(np_points[0] - np_points[1]), np.linalg.norm(np_points[0] - np_points[2]), np.linalg.norm(np_points[0] - np_points[3])]
+        
+        #print("list_dis =  {} \n".format(list_dis))
+        
+        filter_plane_eccentricity.append(min(list_dis[0],list_dis[1])/max(list_dis[0],list_dis[1]))
+        
+
+        ################################################################
+        
+        #pt_plane_volume.append(pt_volume)
+        
+
+    return pt_plane, pt_plane_center, pt_plane_diameter_max, pt_plane_diameter_min, pt_plane_diameter_avg, filter_plane_center, filter_plane_volume, filter_plane_eccentricity
+    
+
 
 
 def get_pt_sel(Data_array_pt):
@@ -261,19 +412,19 @@ def get_pt_sel(Data_array_pt):
     
 
 # compute dimensions of point cloud and nearest neighbors by KDTree
-def get_pt_parameter(Data_array_pt, n_paths):
+def get_pt_parameter(pcd, n_paths):
     
     
     ####################################################################
-    pcd = o3d.geometry.PointCloud()
+    #pcd = o3d.geometry.PointCloud()
     
-    pcd.points = o3d.utility.Vector3dVector(Data_array_pt)
+    #pcd.points = o3d.utility.Vector3dVector(Data_array_pt)
     
     #pcd.paint_uniform_color([0.5, 0.5, 0.5])
     
    
     # get convex hull of a point cloud is the smallest convex set that contains all points.
-    #hull, _ = pcd.compute_convex_hull()
+    hull, _ = pcd.compute_convex_hull()
     #hull_ls = o3d.geometry.LineSet.create_from_triangle_mesh(hull)
     #hull_ls.paint_uniform_color((1, 0, 0))
     
@@ -293,24 +444,25 @@ def get_pt_parameter(Data_array_pt, n_paths):
 
     #visualize the convex hull as a red LineSet
     #o3d.visualization.draw_geometries([pcd, aabb, obb, hull_ls])
-    pt_diameter_max = max(aabb_extent[0], aabb_extent[1])
+    #pt_diameter_max = max(aabb_extent[0], aabb_extent[1])
+    
+    pt_diameter_max = math.sqrt(pow(aabb_extent[0],2) + pow(aabb_extent[1],2))
 
     pt_diameter_min = min(aabb_extent_half[0], aabb_extent_half[1])
-
+    
+    pt_diameter_avg = (pt_diameter_max + pt_diameter_min)*0.5
 
     pt_length = (aabb_extent[2])
 
 
-    pt_volume = np.pi * ((pt_diameter_max + pt_diameter_min)*0.5) ** 2 * pt_length
-
+    #pt_volume = np.pi * ((pt_diameter_max + pt_diameter_min)*0.5) ** 2 * pt_length
+    
+    pt_volume = hull.get_volume()
 
     pt_density = n_paths/(pt_diameter_max)**2
+
     
-        
-    pt_diameter = (pt_diameter_max + pt_diameter_min)*0.5
-    
-    
-    return pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume, pt_density
+    return pt_diameter_max, pt_diameter_min, pt_diameter_avg, pt_length, pt_volume, pt_density
     
     
     
@@ -521,6 +673,7 @@ def write_ply(path, data_numpy_array):
 
 # compute diameter from area
 def area_radius(area_of_circle):
+    
     radius = ((area_of_circle/ math.pi)** 0.5)
     
     #note: return diameter instead of radius
@@ -986,7 +1139,7 @@ def crosssection_scan(imgList, result_path):
         List_N_seg = List_N_seg[0: np.argmax(List_N_seg)]
     
     ###################################################################
-    #span = 3
+    span = 3
   
     List_N_seg_smooth = smooth_data_convolve_average(np.array(List_N_seg), span)
     
@@ -1083,7 +1236,7 @@ def crosssection_scan(imgList, result_path):
         
         N_count[1] = N_count[1] if  N_count[1] > 10 else (N_count[1] + N_count[0])
     
-
+    
     if len(N_count) > 3:
     
         N_1 = int(N_count[1])
@@ -1115,7 +1268,7 @@ def crosssection_scan(imgList, result_path):
     n_whorl = int(len(N_count)/2)
     
 
-    
+    '''
     if N_2 > 40 and N_1 > 22:
             N_1*= 0.57
             
@@ -1125,18 +1278,13 @@ def crosssection_scan(imgList, result_path):
     print("R_1 = {}, R_2 = {}\n".format(R_1,R_2))
     
     
-    if min_distance_value == 34:
-        
-        m = N_2
-        N_1 = m
-        #N_2 = m
-    
-    
     if R_1 > 0.19:
         R_1 = interp(R_1,[0.19,1],[0.0,0.19])
     if R_2 > 0.19:
         R_2 = interp(R_2,[0.19,1],[0.0,0.19])
-
+    '''
+    
+    
     return int(N_1), int(N_2), R_1, R_2, n_whorl
 
 
@@ -1535,9 +1683,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
         length_level.append(length_loc)
         angle_level.append(angle_loc)
         projection_level.append(projection_loc)
-    
-    
-    
+
     
     ###################################################################
     
@@ -1546,29 +1692,26 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
         print("sub_branch_level[{}] = {}\n".format(idx, len(sub_branch_level[idx])))
     
 
-    
-
     #compute paramters
 
     #N_1 = int((len(indices_level[2]) + len(indices_level[1]) + len(indices_level[0]))*0.5)
     avg_first_length = np.mean(length_level[1])
-    avg_first_angle = np.mean(angle_level[0])*1.12
-    avg_first_diameter = np.mean(radius_level[1])*2
+    avg_first_angle = np.mean(angle_level[0])
+    avg_first_diameter = np.mean(radius_level[1])
     avg_first_projection = np.mean(projection_level[1])
     
 
     
     #N_2 = int((len(indices_level[2]) + len(indices_level[1]) + len(indices_level[0]))*0.5)
     avg_second_length = np.mean(length_level[2])
-    avg_second_angle = np.mean(angle_level[1])*0.88
-    avg_second_diameter = np.mean(radius_level[2])*2
+    avg_second_angle = np.mean(angle_level[1])
+    avg_second_diameter = np.mean(radius_level[2])
     avg_second_projection = np.mean(projection_level[2])
     
     avg_third_diameter = np.mean(radius_level[3])
 
 
   
-
     ####################################################################
     n_paths = 0
     
@@ -1626,7 +1769,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
 
 
         #compute dimensions of point cloud data
-        (pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume, pt_density) = get_pt_parameter(Data_array_pcloud, 1)
+        (pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume, pt_density) = get_pt_parameter(pcd, 1)
         
         s_diameter_max = pt_diameter_max
         s_diameter_min = pt_diameter_min
@@ -1647,22 +1790,48 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
         
         #print("W1 = {}, W2 = {}\n".format(wdis_1, wdis_2))
         
-        ###############################################
+
+       
+         ########################################################################################################
+        # slicing models using n_plane
+        #n_plane  =10
         
-        pt_stem = get_pt_sel(Data_array_pcloud)
-        
-        (stem_diameter_max, stem_diameter_min, stem_diameter, stem_length, stem_volume, stem_density) = get_pt_parameter(pt_stem, 0)
-        
-        #print("setm_diameter = {} stem_length = {} \n".format(stem_diameter, stem_length))
-        
-        if stem_diameter >  pt_diameter*0.5:
-            stem_diameter*=0.3
-        
-        avg_radius_stem = stem_diameter
+        print("Using {} planes to scan the model along Z axis...".format(n_plane))
+
+         
+        (pt_plane, pt_plane_center, pt_plane_diameter_max, pt_plane_diameter_min, pt_plane_diameter_avg, filter_plane_center, filter_plane_volume, filter_plane_eccentricity) = get_pt_sel_parameter(Data_array_pcloud, n_plane)
+
+
+        print("pt_plane_diameter_max = {}\n".format(pt_plane_diameter_max))
+
+        print("pt_plane_diameter_min = {}\n".format(pt_plane_diameter_min))
+
+        print("pt_plane_diameter_avg = {}\n".format(pt_plane_diameter_avg))
+
+
+        #o3d.visualization.draw_geometries(pt_plane)
+
+        stem_diameter = min(pt_plane_diameter_avg) 
+
+        RC_diameter_min = min(pt_plane_diameter_min)
+
+        RC_diameter_max = max(pt_plane_diameter_max)
+
+        RC_diameter_avg = np.mean(pt_plane_diameter_max)
+
+        RC_length = pt_length
+
+        # Sum of all volume for each sliced model 
+        RC_volume = sum(filter_plane_volume)
+
+
+        print("stem_diameter = {} RC_diameter_max = {} RC_diameter_min = {} RC_diameter = {} RC_length = {} RC_volume = {}\n".format(stem_diameter, RC_diameter_max, RC_diameter_min, RC_diameter_avg, RC_length, RC_volume))
+            
+
         
         ##############################################
 
-                
+        avg_radius_stem = stem_diameter
         radius_arr = np.array([avg_radius_stem, avg_first_diameter, avg_second_diameter, avg_third_diameter]) 
         radius_arr = np.sort(radius_arr, axis = None) 
         
@@ -1819,12 +1988,66 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
         
         mlab.show()
     
-
-    return s_diameter_max, s_diameter_min, s_diameter, avg_radius_stem, \
+    '''
+    return s_diameter_max, s_diameter_min, s_diameter, avg_radius_stem, RC_length\
+        N_1, avg_first_angle, avg_first_diameter, \
+        N_2, avg_second_angle, avg_second_diameter, \
+        wdis_1, wdis_2
+    '''
+    return RC_diameter_max, RC_diameter_min, RC_diameter_avg, avg_radius_stem, RC_length, \
         N_1, avg_first_angle, avg_first_diameter, \
         N_2, avg_second_angle, avg_second_diameter, \
         wdis_1, wdis_2
 
+
+# save results as excel file
+def write_output(trait_file, trait_sum):
+    
+    if os.path.isfile(trait_file):
+        # update values
+        
+        
+        #Open an xlsx for reading
+        wb = openpyxl.load_workbook(trait_file)
+
+        #Get the current Active Sheet
+        sheet = wb.active
+        
+        sheet.delete_rows(2, sheet.max_row+1) # for entire sheet
+        
+    else:
+        # Keep presets
+        wb = openpyxl.Workbook()
+        sheet = wb.active
+        
+        sheet.cell(row = 1, column = 1).value = 'root system diameter max'
+        sheet.cell(row = 1, column = 2).value = 'root system diameter min'
+        sheet.cell(row = 1, column = 3).value = 'root system diameter'
+        sheet.cell(row = 1, column = 4).value = 'stem diameter'
+        sheet.cell(row = 1, column = 5).value = 'root system length'
+        #sheet.cell(row = 1, column = 5).value = 'number of youngest nodal root'
+        #sheet.cell(row = 1, column = 6).value = 'youngest nodal root angle'
+        #sheet.cell(row = 1, column = 7).value = 'youngest nodal root diameter'
+        #sheet.cell(row = 1, column = 8).value = 'number of 2nd youngest nodal root'
+        #sheet.cell(row = 1, column = 9).value = '2nd youngest nodal root angle'
+        #sheet.cell(row = 1, column = 10).value = '2nd youngest nodal root diameter'
+        #sheet.cell(row = 1, column = 11).value = 'youngest - 2nd youngest whorl distance'
+        #sheet.cell(row = 1, column = 12).value = '2nd youngest - 3rd youngest whorl distance'
+        
+
+        
+    for row in trait_sum:
+        sheet.append(row)
+   
+   
+    #save the csv file
+    wb.save(trait_file)
+    
+    if os.path.exists(trait_file):
+        
+        print("Result file was saved at {}\n".format(trait_file))
+    else:
+        print("Error in saving Result file\n")
 
 
 
@@ -1841,6 +2064,7 @@ if __name__ == '__main__':
     ap.add_argument("-m3", "--slice_path", dest = "slice_path", type = str, required = False,  help = "Cross section/slices image folder path in png format")
     ap.add_argument("-o", "--output_path", dest = "output_path", type = str, required = False, help = "result path")
     ap.add_argument("-md", "--min_dis", required = False, type = int, default = 35,   help = "min distance for watershed segmentation")
+    ap.add_argument("-np","--n_plane", type = int, required = False, default = 10,  help = "Number of planes to segment the 3d model along Z direction")
     ap.add_argument("-dr", "--dis_tracking_ratio", required = False, type = float, default = 0.71,   help = "ratio for tracking")
     ap.add_argument("-dm", "--distance_tracking_max", required = False, type = float, default = 1.12,   help = "max distance for tracking segs")
     ap.add_argument("-di", "--distance_tracking_min", required = False, type = float, default = 0.50,   help = "min distance for tracking segs")
@@ -1862,6 +2086,9 @@ if __name__ == '__main__':
     #current_path = os.path.join(current_path, '')
     
     folder_name = os.path.basename(os.path.dirname(current_path))
+    
+    
+
     
     ###################################################################
     # check file name input and default file name
@@ -1899,7 +2126,12 @@ if __name__ == '__main__':
     
     
     ####################################################################
-   
+    
+    n_plane = args['n_plane']
+    
+    min_distance_value = args['min_dis']
+    
+    
     
     # output path
     #result_path = args["output_path"] if args["output_path"] is not None else os.getcwd()
@@ -1940,7 +2172,7 @@ if __name__ == '__main__':
 
     #############################################################################################
     
-    (s_diameter_max, s_diameter_min, s_diameter, avg_radius_stem, \
+    (s_diameter_max, s_diameter_min, s_diameter, avg_radius_stem, RC_length, \
         N_1, avg_first_angle, avg_first_diameter, \
         N_2, avg_second_angle, avg_second_diameter, \
         wdis_1, wdis_2) = analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
@@ -1948,12 +2180,14 @@ if __name__ == '__main__':
 
     trait_sum = []
     
-    
+    '''
     trait_sum.append([s_diameter_max, s_diameter_min, s_diameter, avg_radius_stem, \
         N_1, avg_first_angle, avg_first_diameter, \
         N_2, avg_second_angle, avg_second_diameter, \
         wdis_1, wdis_2])
+    '''
     
+    trait_sum.append([s_diameter_max, s_diameter_min, s_diameter, avg_radius_stem, RC_length])
 
     #save reuslt file
     ####################################################################
@@ -1973,52 +2207,7 @@ if __name__ == '__main__':
     
     #trait_file_csv = (current_path + 'trait.csv')
     
-    
-    if os.path.isfile(trait_file):
-        # update values
-        
-        
-        #Open an xlsx for reading
-        wb = openpyxl.load_workbook(trait_file)
-
-        #Get the current Active Sheet
-        sheet = wb.active
-        
-        sheet.delete_rows(2, sheet.max_row+1) # for entire sheet
-        
-    else:
-        # Keep presets
-        wb = openpyxl.Workbook()
-        sheet = wb.active
-        
-        sheet.cell(row = 1, column = 1).value = 'root system diameter max'
-        sheet.cell(row = 1, column = 2).value = 'root system diameter min'
-        sheet.cell(row = 1, column = 3).value = 'root system diameter'
-        sheet.cell(row = 1, column = 4).value = 'stem diameter'
-        sheet.cell(row = 1, column = 5).value = 'number of youngest nodal root'
-        sheet.cell(row = 1, column = 6).value = 'youngest nodal root angle'
-        sheet.cell(row = 1, column = 7).value = 'youngest nodal root diameter'
-        sheet.cell(row = 1, column = 8).value = 'number of 2nd youngest nodal root'
-        sheet.cell(row = 1, column = 9).value = '2nd youngest nodal root angle'
-        sheet.cell(row = 1, column = 10).value = '2nd youngest nodal root diameter'
-        sheet.cell(row = 1, column = 11).value = 'youngest - 2nd youngest whorl distance'
-        sheet.cell(row = 1, column = 12).value = '2nd youngest - 3rd youngest whorl distance'
-        
-
-        
-    for row in trait_sum:
-        sheet.append(row)
-   
-   
-    #save the csv file
-    wb.save(trait_file)
-    
-    if os.path.exists(trait_file):
-        
-        print("Result file was saved at {}\n".format(trait_file))
-    else:
-        print("Error in saving Result file\n")
-
+    write_output(trait_file, trait_sum)
 
     
 
