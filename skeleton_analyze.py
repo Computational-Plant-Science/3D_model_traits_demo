@@ -444,13 +444,16 @@ def get_pt_parameter(pcd, n_paths):
 
     #visualize the convex hull as a red LineSet
     #o3d.visualization.draw_geometries([pcd, aabb, obb, hull_ls])
-    #pt_diameter_max = max(aabb_extent[0], aabb_extent[1])
+    #pt_diameter_max_aabb = max(aabb_extent[0], aabb_extent[1])
     
-    pt_diameter_max = math.sqrt(pow(aabb_extent[0],2) + pow(aabb_extent[1],2))
-
+    #pt_diameter_max = math.sqrt(pow(aabb_extent[0],2) + pow(aabb_extent[1],2))
+    
+    pt_diameter_max = (math.sqrt(pow(aabb_extent[0],2) + pow(aabb_extent[1],2)) + max(aabb_extent[0], aabb_extent[1])) / 2.0
+    
+    
     pt_diameter_min = min(aabb_extent_half[0], aabb_extent_half[1])
     
-    pt_diameter_avg = (pt_diameter_max + pt_diameter_min)*0.5
+    pt_diameter_avg = (min(aabb_extent[0], aabb_extent[1]) + pt_diameter_min)*0.5
 
     pt_length = (aabb_extent[2])
 
@@ -1139,7 +1142,7 @@ def crosssection_scan(imgList, result_path):
         List_N_seg = List_N_seg[0: np.argmax(List_N_seg)]
     
     ###################################################################
-    span = 3
+    #span = 3
   
     List_N_seg_smooth = smooth_data_convolve_average(np.array(List_N_seg), span)
     
@@ -1268,7 +1271,7 @@ def crosssection_scan(imgList, result_path):
     n_whorl = int(len(N_count)/2)
     
 
-    '''
+    
     if N_2 > 40 and N_1 > 22:
             N_1*= 0.57
             
@@ -1282,7 +1285,7 @@ def crosssection_scan(imgList, result_path):
         R_1 = interp(R_1,[0.19,1],[0.0,0.19])
     if R_2 > 0.19:
         R_2 = interp(R_2,[0.19,1],[0.0,0.19])
-    '''
+   
     
     
     return int(N_1), int(N_2), R_1, R_2, n_whorl
@@ -1770,12 +1773,12 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
 
         #compute dimensions of point cloud data
         (pt_diameter_max, pt_diameter_min, pt_diameter, pt_length, pt_volume, pt_density) = get_pt_parameter(pcd, 1)
-        
+        '''
         s_diameter_max = pt_diameter_max
         s_diameter_min = pt_diameter_min
         s_diameter = pt_diameter
         s_length = pt_length
-        
+        '''
         avg_density = pt_density
         
         pt_eccentricity = (pt_diameter_min/pt_diameter_max)
@@ -1794,8 +1797,39 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
        
          ########################################################################################################
         # slicing models using n_plane
-        #n_plane  =10
+        #n_plane = args['n_plane']
         
+        
+        # adjust plane number parameter based on volume size, adjust parameter for different volume
+        # only working in Python3.10 above
+        '''
+        match pt_volume:
+            
+            case pt_volume if 0 <= pt_volume <  1.5:
+                n_plane = 10
+            case pt_volume if 1.5 <= pt_volume < 2.3:
+                n_plane = 20
+            case pt_volume if 2.3 <= pt_volume < 2.5:
+                n_plane = 50
+            case pt_volume if 2.5 <= pt_volume < 3:
+                n_plane = 20
+            case pt_volume if 3 <= pt_volume < 4:
+                n_plane = 25
+        '''
+        
+        if 0 <= pt_volume < 1.5:
+            n_plane = 10
+        elif 1.5 <= pt_volume < 2.3:
+            n_plane = 20
+        elif 2.3 <= pt_volume < 2.5:
+            n_plane = 50
+        elif 2.5 <= pt_volume < 3:
+            n_plane = 20
+        elif 3 <= pt_volume < 4:
+            n_plane = 25
+        else:
+            n_plane = 10
+            
         print("Using {} planes to scan the model along Z axis...".format(n_plane))
 
          
@@ -1811,8 +1845,18 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
 
         #o3d.visualization.draw_geometries(pt_plane)
 
-        stem_diameter = min(pt_plane_diameter_avg) 
-
+        #stem_diameter = (pt_plane_diameter_max[0]+pt_plane_diameter_max[1]+pt_plane_diameter_max[2])/3
+        
+        #stem_diameter = math.sqrt(pow(min(pt_plane_diameter_min),2) + pow(min(pt_plane_diameter_min),2))*0.85
+        '''
+        if pt_plane_diameter_avg[0] > pt_plane_diameter_min[0]*1.4:
+            
+            stem_diameter = min(pt_plane_diameter_avg[0], pt_plane_diameter_min[0])
+        else:
+            stem_diameter = min(pt_plane_diameter_avg)
+        '''
+        stem_diameter = min(pt_plane_diameter_avg)
+        
         RC_diameter_min = min(pt_plane_diameter_min)
 
         RC_diameter_max = max(pt_plane_diameter_max)
@@ -1994,7 +2038,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
         N_2, avg_second_angle, avg_second_diameter, \
         wdis_1, wdis_2
     '''
-    return RC_diameter_max, RC_diameter_min, RC_diameter_avg, avg_radius_stem, RC_length, \
+    return RC_diameter_max, RC_diameter_min, RC_diameter_avg, avg_radius_stem, RC_length, RC_volume, pt_volume, \
         N_1, avg_first_angle, avg_first_diameter, \
         N_2, avg_second_angle, avg_second_diameter, \
         wdis_1, wdis_2
@@ -2025,6 +2069,9 @@ def write_output(trait_file, trait_sum):
         sheet.cell(row = 1, column = 3).value = 'root system diameter'
         sheet.cell(row = 1, column = 4).value = 'stem diameter'
         sheet.cell(row = 1, column = 5).value = 'root system length'
+        sheet.cell(row = 1, column = 6).value = 'root system volume'
+        #sheet.cell(row = 1, column = 7).value = 'root system ch_volume'
+        
         #sheet.cell(row = 1, column = 5).value = 'number of youngest nodal root'
         #sheet.cell(row = 1, column = 6).value = 'youngest nodal root angle'
         #sheet.cell(row = 1, column = 7).value = 'youngest nodal root diameter'
@@ -2079,8 +2126,6 @@ if __name__ == '__main__':
     args = vars(ap.parse_args())
 
 
-
-    
     # setting input path to model file 
     current_path = args["path"]
     #current_path = os.path.join(current_path, '')
@@ -2131,7 +2176,7 @@ if __name__ == '__main__':
     
     min_distance_value = args['min_dis']
     
-    
+    span = args['span']
     
     # output path
     #result_path = args["output_path"] if args["output_path"] is not None else os.getcwd()
@@ -2172,7 +2217,7 @@ if __name__ == '__main__':
 
     #############################################################################################
     
-    (s_diameter_max, s_diameter_min, s_diameter, avg_radius_stem, RC_length, \
+    (s_diameter_max, s_diameter_min, s_diameter, avg_radius_stem, RC_length, RC_volume, pt_volume, \
         N_1, avg_first_angle, avg_first_diameter, \
         N_2, avg_second_angle, avg_second_diameter, \
         wdis_1, wdis_2) = analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
@@ -2187,7 +2232,7 @@ if __name__ == '__main__':
         wdis_1, wdis_2])
     '''
     
-    trait_sum.append([s_diameter_max, s_diameter_min, s_diameter, avg_radius_stem, RC_length])
+    trait_sum.append([s_diameter_max, s_diameter_min, s_diameter, avg_radius_stem, RC_length, RC_volume])
 
     #save reuslt file
     ####################################################################
