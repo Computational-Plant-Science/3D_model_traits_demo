@@ -10,7 +10,7 @@ Author-email: suxingliu@gmail.com
 USAGE:
 
 
-    python3 /opt/code/pipeline.py -i /srv/test/test.ply -o /srv/test/result/ -md 35 -n 1000
+    python3 /opt/code/pipeline.py -i /srv/test/test.ply -o /srv/test/result/ -md 35 -n 1000  -np 10
     
 
 Arguments:
@@ -97,10 +97,10 @@ def model_analysis_pipeline(file_path, filename, basename, result_path):
     execute_script(cross_section_scan)
     
     
-    # step 4 python3 /opt/code/skeleton_analyze.py -p ~/example/result/ -m1 test_skeleton.ply -m2 test_aligned.ply -o ~/example/result/ -md 12 -v 0
+    # step 4 python3 /opt/code/skeleton_analyze.py -p ~/example/result/ -m1 test_skeleton.ply -m2 test_aligned.ply -o ~/example/result/ -md 12 -np 10 -v 0
     print("Compute all the traits...\n")
 
-    traits_computation = "python3 /opt/code/skeleton_analyze.py -p " + result_path + " -m1 " + basename + "_skeleton.ply " + " -m2 " + basename + "_aligned.ply " + " -o " + result_path + " -md " + str(min_dis) + " -v " + str(visualize_model)
+    traits_computation = "python3 /opt/code/skeleton_analyze.py -p " + result_path + " -m1 " + basename + "_skeleton.ply " + " -m2 " + basename + "_aligned.ply " + " -o " + result_path + " -md " + str(min_dis) + " -np " + str(n_plane) + " -v " + str(visualize_model)
     
     print(traits_computation)
     
@@ -196,6 +196,7 @@ if __name__ == '__main__':
     #ap.add_argument("-ft", "--filetype", dest = "filetype", type = str, required = False, default = 'ply', help = "3D model file filetype, default *.ply")
     ap.add_argument("-o", "--output_path", dest = "output_path", required = False, type = str, help = "result path")
     ap.add_argument("-md", "--min_dis", dest = "min_dis", required = False, type = int, default = 35,   help = "min distance for watershed segmentation")
+    ap.add_argument("-np","--n_plane", type = int, required = False, default = 10,  help = "Number of planes to segment the 3d model along Z direction")
     ap.add_argument("-n", "--n_slices", dest = "n_slices", required = False, type = int, default = 1000 , help = 'Number of slices for 3d model.')
     ap.add_argument("-v", "--visualize_model", dest = "visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult as no due to headless display in cluster")
     
@@ -253,6 +254,8 @@ if __name__ == '__main__':
         n_slices = args["n_slices"]
         
         min_dis = args["min_dis"]
+        
+        n_plane = args["n_plane"]
         
         visualize_model = args["visualize_model"]
 

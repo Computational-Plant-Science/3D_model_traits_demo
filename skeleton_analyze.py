@@ -424,7 +424,7 @@ def get_pt_parameter(pcd, n_paths):
     
    
     # get convex hull of a point cloud is the smallest convex set that contains all points.
-    hull, _ = pcd.compute_convex_hull()
+    #hull, _ = pcd.compute_convex_hull()
     #hull_ls = o3d.geometry.LineSet.create_from_triangle_mesh(hull)
     #hull_ls.paint_uniform_color((1, 0, 0))
     
@@ -450,7 +450,6 @@ def get_pt_parameter(pcd, n_paths):
     
     pt_diameter_max = (math.sqrt(pow(aabb_extent[0],2) + pow(aabb_extent[1],2)) + max(aabb_extent[0], aabb_extent[1])) / 2.0
     
-    
     pt_diameter_min = min(aabb_extent_half[0], aabb_extent_half[1])
     
     pt_diameter_avg = (min(aabb_extent[0], aabb_extent[1]) + pt_diameter_min)*0.5
@@ -458,9 +457,10 @@ def get_pt_parameter(pcd, n_paths):
     pt_length = (aabb_extent[2])
 
 
-    #pt_volume = np.pi * ((pt_diameter_max + pt_diameter_min)*0.5) ** 2 * pt_length
+    pt_volume = np.pi * ((pt_diameter_avg)*0.5) ** 2 * pt_length
     
-    pt_volume = hull.get_volume()
+    # open3d version 13.0 and 18.0 results was not he same, so use estimation above
+    #pt_volume = hull.get_volume()
 
     pt_density = n_paths/(pt_diameter_max)**2
 
@@ -1355,6 +1355,14 @@ def optimal_number_of_clusters(wcss):
 
 
 
+# sum of list, sum fucntion in Python has issue with Docker
+def sumOfList(list, size):
+    if (size == 0):
+        return 0
+    else:
+        return list[size - 1] + sumOfList(list, size - 1)
+        
+        
 
 
 # Skeleton analysis
@@ -1799,7 +1807,6 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
         # slicing models using n_plane
         #n_plane = args['n_plane']
         
-        
         # adjust plane number parameter based on volume size, adjust parameter for different volume
         # only working in Python3.10 above
         '''
@@ -1819,19 +1826,21 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
         
         if 0 <= pt_volume < 1.5:
             n_plane = 10
-        elif 1.5 <= pt_volume < 2.3:
+        elif 1.5 <= pt_volume < 2.7:
             n_plane = 20
-        elif 2.3 <= pt_volume < 2.5:
+        elif 2.7 <= pt_volume < 2.8:
             n_plane = 50
-        elif 2.5 <= pt_volume < 3:
+        elif 2.8 <= pt_volume < 3.4:
             n_plane = 20
-        elif 3 <= pt_volume < 4:
+        elif 3.4 <= pt_volume < 3.7:
             n_plane = 25
+        elif 3.7 <= pt_volume < 4.5:
+            n_plane = 20
         else:
             n_plane = 10
-            
-        print("Using {} planes to scan the model along Z axis...".format(n_plane))
-
+        
+        
+        print("n_plane = {}\n".format(n_plane))
          
         (pt_plane, pt_plane_center, pt_plane_diameter_max, pt_plane_diameter_min, pt_plane_diameter_avg, filter_plane_center, filter_plane_volume, filter_plane_eccentricity) = get_pt_sel_parameter(Data_array_pcloud, n_plane)
 
@@ -1841,6 +1850,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
         print("pt_plane_diameter_min = {}\n".format(pt_plane_diameter_min))
 
         print("pt_plane_diameter_avg = {}\n".format(pt_plane_diameter_avg))
+        
+        print("pt_volume = {}\n".format(pt_volume))
 
 
         #o3d.visualization.draw_geometries(pt_plane)
@@ -1866,7 +1877,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_ptcloud, imgList)
         RC_length = pt_length
 
         # Sum of all volume for each sliced model 
-        RC_volume = sum(filter_plane_volume)
+        #RC_volume = sum(filter_plane_volume)
+        
+        #RC_volume = sumOfList(filter_plane_volume, len(filter_plane_volume))
+        
+        RC_volume = pt_volume
 
 
         print("stem_diameter = {} RC_diameter_max = {} RC_diameter_min = {} RC_diameter = {} RC_length = {} RC_volume = {}\n".format(stem_diameter, RC_diameter_max, RC_diameter_min, RC_diameter_avg, RC_length, RC_volume))
