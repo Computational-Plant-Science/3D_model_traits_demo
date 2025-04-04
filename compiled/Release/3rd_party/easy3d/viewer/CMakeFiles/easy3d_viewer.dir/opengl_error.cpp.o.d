@@ -155,7 +155,7 @@
  /usr/include/c++/11/bits/istream.tcc \
  /home/suxing/AdTree/3rd_party/easy3d/viewer/opengl.h \
  /home/suxing/AdTree/3rd_party/glew/include/GL/glew.h \
- /usr/include/GL/glu.h /usr/include/GL/gl.h \
+ /usr/include/c++/11/cstddef \
  /home/suxing/AdTree/3rd_party/easy3d/viewer/opengl_info.h \
  /usr/include/c++/11/unordered_map \
  /usr/include/c++/11/ext/aligned_buffer.h \

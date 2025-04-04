@@ -13,7 +13,7 @@ Created: 2018-04-29
 
 USAGE:
 
-python3 extract_slice.py -p ~/path/ -f model.obj -n 10
+python3 extract_slice.py -p ~/path/ -f model.obj -n 1000
 
 
 '''
@@ -299,7 +299,7 @@ if __name__ == '__main__':
     ap.add_argument("-p", "--path", dest = "path", required = True, type = str, help = "path to stl file")
     ap.add_argument("-f", "--filename", dest = "filename", required = True,  type = str, help = "model file name, in obj format")
     ap.add_argument("-o", "--output_path", dest = "output_path", type = str, required = False, help = "result path")
-    ap.add_argument('-n', '--num_slices', dest = "num_slices", required = False, type = int, default = 100,  help = 'Number of slices')
+    ap.add_argument('-n', '--num_slices', dest = "num_slices", required = False, type = int, default = 1000,  help = 'Number of slices')
  
     args = vars(ap.parse_args())
     

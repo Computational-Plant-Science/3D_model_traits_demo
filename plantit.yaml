@@ -12,27 +12,27 @@ input:
   path:
   filetypes:
     - ply
-   
+    
 output:
   path:
   include:
     patterns:
       - xyz
+      - png
       - ply
-      - stl
-      - obj
-      - gz
       - xlsx
       
+   
 logo: media/DIRTX-3D.png
+
 
 env:
   - LC_ALL=C.UTF-8
   - LANG=C.UTF-8
-
+  
 
 jobqueue:
   walltime: "04:00:00"
-  memory: "40GB"
+  memory: "36GB"
   processes: 1
   cores: 1

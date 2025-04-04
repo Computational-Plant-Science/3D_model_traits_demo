@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.1)
 get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(${PROJECT_NAME})
 
+if (POLICY CMP0074)
+    cmake_policy(SET CMP0074 NEW)
+endif ()
 
 set(${PROJECT_NAME}_SOURCES
         main.cpp
@@ -62,7 +65,7 @@ if (APPLE)
 elseif (WIN32 OR MSVC)
 	set(${PROJECT_NAME}_RESOURCES ${ADTREE_ROOT}/resources/AdTree.rc)
     add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_RESOURCES}) # you can add "WIN32" to disable the console window
-    message(STATUS "Creating the wxWidgets viewer with a console window")
+    message(STATUS "creating the viewer with a console window")
 else ()
     add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
 endif ()
@@ -77,12 +80,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${ADTREE_kd_tree_INCLUDE_DIR}
 target_include_directories(${PROJECT_NAME} PRIVATE ${ADTREE_lm_INCLUDE_DIR})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_STATIC)
-
-#set (OpenGL_GL_PREFERENCE GLVND)
-find_package(OpenGL REQUIRED)
-message(STATUS "OpenGL libraries: ${OPENGL_LIBRARIES}")
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} 3rd_imgui easy3d_algo easy3d_viewer 3rd_tetgen 3rd_kd_tree 3rd_cminpack 3rd_optimizer_lm)
-
+target_link_libraries(${PROJECT_NAME} PRIVATE easy3d_algo easy3d_viewer 3rd_imgui 3rd_tetgen 3rd_kd_tree 3rd_cminpack 3rd_optimizer_lm)
 
 find_package(Boost REQUIRED) # It's "Boost", not "BOOST" or "boost". Case matters.
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})

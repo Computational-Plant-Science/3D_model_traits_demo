@@ -242,8 +242,9 @@
  /usr/include/x86_64-linux-gnu/bits/signal_ext.h \
  /home/suxing/AdTree/3rd_party/easy3d/viewer/opengl.h \
  /home/suxing/AdTree/3rd_party/glew/include/GL/glew.h \
- /usr/include/GL/glu.h /usr/include/GL/gl.h \
+ /usr/include/c++/11/cstddef \
  /home/suxing/AdTree/3rd_party/glfw/include/GLFW/glfw3.h \
+ /usr/include/GL/gl.h \
  /home/suxing/AdTree/3rd_party/easy3d/core/surface_mesh.h \
  /home/suxing/AdTree/3rd_party/easy3d/viewer/model.h \
  /home/suxing/AdTree/3rd_party/easy3d/core/properties.h \

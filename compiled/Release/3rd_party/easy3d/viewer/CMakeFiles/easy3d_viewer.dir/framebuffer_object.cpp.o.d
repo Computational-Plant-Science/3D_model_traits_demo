@@ -138,7 +138,7 @@
  /usr/include/c++/11/bits/vector.tcc \
  /home/suxing/AdTree/3rd_party/easy3d/viewer/opengl.h \
  /home/suxing/AdTree/3rd_party/glew/include/GL/glew.h \
- /usr/include/GL/glu.h /usr/include/GL/gl.h /usr/include/c++/11/algorithm \
+ /usr/include/c++/11/cstddef /usr/include/c++/11/algorithm \
  /usr/include/c++/11/utility /usr/include/c++/11/bits/stl_relops.h \
  /usr/include/c++/11/bits/stl_algo.h \
  /usr/include/c++/11/bits/algorithmfwd.h \

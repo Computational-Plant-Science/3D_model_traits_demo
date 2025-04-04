@@ -40,4 +40,8 @@
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /home/suxing/AdTree/3rd_party/glew/include/GL/glew.h \
- /usr/include/GL/glu.h /usr/include/GL/gl.h
+ /usr/include/c++/11/cstddef \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/cpu_defines.h \
+ /usr/include/c++/11/cstdint

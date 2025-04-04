@@ -216,6 +216,7 @@ bool Skeleton::smooth_skeleton()
         std::vector<vec3> interpolatedPoints;
         std::vector<double> interpolatedRadii;
         static int numOfSlices = 20;
+        //static int numOfSlices = 2000;
         std::vector<int> numOfSlicesCurrent;
         // retrieve the current path and its vertices
         for (std::size_t n_node = 0; n_node < currentPath.size() - 1; ++n_node)
@@ -792,6 +793,8 @@ std::vector<Vector3D> Skeleton::centralize_main_points(PointCloud* cloud)
 		Count++;
 	}
 	KDtree_ = new KdTree(Points_, nPt, 16);
+	
+
 
 	//compute the density of each point 
 	std::vector<double> densityList;
@@ -1009,8 +1012,8 @@ void Skeleton::fit_trunk()
     //Cylinder currentC = Cylinder(pSource, pTarget, simplified_skeleton_[trunkE].nRadius);
 
 	//initialize the mean, the point cloud matrix
-	Vector3D pTop(0.0, 0.0, -DBL_MAX);
-	Vector3D pBottom(0.0, 0.0, DBL_MAX);
+	Vector3D pTop(0.0, 0.0, -FLT_MAX);
+	Vector3D pBottom(0.0, 0.0, FLT_MAX);
 
 	PrincipalAxes<3, double> pca;
 	pca.begin();
@@ -1140,6 +1143,9 @@ void Skeleton::generate_leaves(SGraphVertexDescriptor i_LeafVertex, double leafs
 {
 	//generate a random density number
     int density = ceil(random_float() * 10);
+    
+    //int density = ceil(random_float() * 10*0.00000000001);
+    
     double radius = 0.2 / log((float)num_edges(simplified_skeleton_));
 	//get the position of the current leaf vertex and its parent
     vec3 pCurrent = simplified_skeleton_[i_LeafVertex].cVert;
@@ -1466,6 +1472,7 @@ bool Skeleton::extract_branch_surfaces(SurfaceMesh* result)
         return false;
 
     static const int slices = 10;
+
     for (const auto& branch : branches)
         add_generalized_cylinder_to_model(result, branch, slices);
 

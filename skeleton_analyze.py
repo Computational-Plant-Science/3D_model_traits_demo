@@ -1156,10 +1156,13 @@ def crosssection_scan(imgList, result_path):
     
     # Initialize
     fp = findpeaks(method='peakdetect', lookahead = 1)
+    #fp = findpeaks(method='peakdetect', interpolate=10)
     
     # return dictionary object
     results = fp.fit(X)
 
+
+    
     # Plot
     fp.plot()
     
@@ -1168,9 +1171,10 @@ def crosssection_scan(imgList, result_path):
     plt.savefig(result_file)
     
     plt.close()
+
     #####################################################################
 
-    # parse the dictionary object and ge the pd.DataFrame
+    # parse the dictionary object and get the pd.DataFrame
     df = results.get("df")
  
     # print df names

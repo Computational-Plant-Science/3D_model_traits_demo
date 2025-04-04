@@ -10,7 +10,7 @@ Author-email: suxingliu@gmail.com
 USAGE:
 
 
-    python3 /opt/code/pipeline.py -i /srv/test/test.ply -o /srv/test/result/ -md 35 -n 1000  -np 10
+    python3 /opt/code/pipeline.py -i /srv/test/test.ply -o /srv/test/result/ --n_plane 5 --slicing_ratio 0.1 --adjustment 0 --n_slices 200 --slicing_factor 0.3
     
 
 Arguments:
@@ -64,50 +64,27 @@ def execute_script(cmd_line):
 # execute pipeline scripts in order
 def model_analysis_pipeline(file_path, filename, basename, result_path):
 
-    
-    # step 1  python3 /opt/code/model_alignment.py -p ~/example/ -m test.ply  -o ~/example/result/
-    print("Transform point cloud model to its rotation center and align its upright orientation with Z direction...\n")
+    # step 1  python3 /opt/code/model_preprocess.py -i ~/example/pt_cloud/B101-2/B101-2.ply -o ~/example/pt_cloud/B101-2/ --n_plane 5 --slicing_ratio 0.1 --adjustment 0
+    print("Statistical outlier removal and Transform point cloud model to its rotation center and align its upright orientation with Z direction...\n")
 
-    format_convert = "python3 /opt/code/model_alignment.py -p " + file_path + " -m " + filename + " -o " + result_path
+    format_convert = "python3 /opt/code/model_preprocess.py " +  " -i " + os.path.join(file_path, '') + filename + " -o " + result_path + " --n_plane " + str(n_plane) + " --slicing_ratio " + str(slicing_ratio) + " --adjustment " + str(adjustment)
     
     print(format_convert)
     
     execute_script(format_convert)
-    
-    
-    # step 2 ./opt/code/compiled/Release/bin/AdTree ~/example/result/test.xyz ~/example/result/ -s  
-    print("Compute structure and skeleton from point cloud model ...\n")
-    
-    #skeleton_graph = "./compiled/Release/bin/AdTree " + result_path + basename + ".xyz " + result_path + " -s"
-    
-    skeleton_graph = "/opt/code/compiled/Release/bin/AdTree " + result_path + basename + ".xyz " + result_path + " -s"
-    
-    print(skeleton_graph)
-    
-    execute_script(skeleton_graph)
-    
-    
-    # step 3  python3 /opt/code/extract_slice.py -p ~/example/result/ -f test_branches.obj -o ~/example/result/ -n 1000 
-    print("Generate cross section sequence ...\n")
-   
-    cross_section_scan = "python3 /opt/code/extract_slice.py -p " + result_path + " -f " + basename + "_branches.obj " + " -o " + result_path + " -n " + str(n_slices)
-    
-    print(cross_section_scan)
-    
-    execute_script(cross_section_scan)
-    
-    
-    # step 4 python3 /opt/code/skeleton_analyze.py -p ~/example/result/ -m1 test_skeleton.ply -m2 test_aligned.ply -o ~/example/result/ -md 12 -np 10 -v 0
+
+
+    # step 2 python3 /opt/code/python3 model_measure.py -i ~/example/pt_cloud/B101-2/B101-2_aligned.ply  -o ~/example/pt_cloud/B101-2/ --n_slices 200 --slicing_factor 0.3
     print("Compute all the traits...\n")
 
-    traits_computation = "python3 /opt/code/skeleton_analyze.py -p " + result_path + " -m1 " + basename + "_skeleton.ply " + " -m2 " + basename + "_aligned.ply " + " -o " + result_path + " -md " + str(min_dis) + " -np " + str(n_plane) + " -v " + str(visualize_model)
+    traits_computation = "python3 /opt/code/model_measure.py -i " + os.path.join(result_path, '') + basename + "_aligned.ply " + " -o " + result_path + " --n_slices " + str(n_slices) + " --slicing_factor " + str(slicing_factor) 
     
     print(traits_computation)
     
     execute_script(traits_computation)
     
     
-    # step 5 grants read and write access to all result folders
+    # step 3 grants read and write access to all result folders
     print("Compute all the traits...")
 
     access_grant = "chmod 777 -R " + result_path 
@@ -195,10 +172,17 @@ if __name__ == '__main__':
     #ap.add_argument("-p", "--path", dest = "path", required = True, type = str, help = "path to 3D model file")
     #ap.add_argument("-ft", "--filetype", dest = "filetype", type = str, required = False, default = 'ply', help = "3D model file filetype, default *.ply")
     ap.add_argument("-o", "--output_path", dest = "output_path", required = False, type = str, help = "result path")
-    ap.add_argument("-md", "--min_dis", dest = "min_dis", required = False, type = int, default = 35,   help = "min distance for watershed segmentation")
-    ap.add_argument("-np","--n_plane", type = int, required = False, default = 10,  help = "Number of planes to segment the 3d model along Z direction")
-    ap.add_argument("-n", "--n_slices", dest = "n_slices", required = False, type = int, default = 1000 , help = 'Number of slices for 3d model.')
-    ap.add_argument("-v", "--visualize_model", dest = "visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult as no due to headless display in cluster")
+    
+    ap.add_argument("--nb_neighbors", required = False, type = int, default = 20, help = "nb_neighbors")
+    ap.add_argument("--std_ratio", required = False, type = float, default = 5.0, help = "outlier remove ratio, small number = aggresive")
+    ap.add_argument("--black_filter", required = False, type = int, default = 0, help = "Apply black points removal filter or not, 0 = not, 1 = Apply")
+    ap.add_argument("--black_threshold", required = False, type = float, default = 0.2, help = "threshold for black points removal")
+    ap.add_argument("--n_plane", dest = "n_plane", type = int, required = False, default = 5,  help = "Number of planes to segment the 3d model along Z direction")
+    ap.add_argument( "--slicing_ratio", dest = "slicing_ratio", type = float, required = False, default = 0.10, help = "ratio of slicing the model from the bottom")
+    ap.add_argument( "--adjustment", dest = "adjustment", type = float, required = False, default = 0, help = "model adjustment, 0: no adjustment, 1: rotate np.pi/2, -1: rotate -np.pi/2")
+
+    ap.add_argument("--n_slices", dest = "n_slices", type = int, required = False, default = 200,  help = "Number of planes to segment the 3d model along Z direction")
+    ap.add_argument("--slicing_factor", dest = "slicing_factor", type = float, required = False, default = 0.7,  help = "Slicing adjust factor")
     
     args = vars(ap.parse_args())
     
@@ -249,15 +233,29 @@ if __name__ == '__main__':
 
         # print out result path
         print ("results_folder: {}\n".format(result_path))
+        
+        
+        # parameters for cleaning
+        nb_neighbors = args["nb_neighbors"]
 
-        # number of slices for cross section 
-        n_slices = args["n_slices"]
+        std_ratio = args["std_ratio"]
         
-        min_dis = args["min_dis"]
+        black_filter = args["black_filter"]
+    
+        black_threshold = args["black_threshold"]
         
-        n_plane = args["n_plane"]
         
-        visualize_model = args["visualize_model"]
+        # number of planes for model alignment
+        n_plane = args['n_plane']
+        
+        slicing_ratio = args["slicing_ratio"]
+
+        adjustment = args["adjustment"]
+        
+        # number of slices for cross section scan
+        n_slices = args['n_slices']
+        
+        slicing_factor = args["slicing_factor"] 
 
 
         # start pipeline

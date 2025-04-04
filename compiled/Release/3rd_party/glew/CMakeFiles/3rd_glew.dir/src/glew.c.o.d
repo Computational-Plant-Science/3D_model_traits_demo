@@ -16,8 +16,7 @@
  /usr/include/x86_64-linux-gnu/bits/time64.h \
  /usr/include/x86_64-linux-gnu/bits/wchar.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h /usr/include/GL/glu.h \
- /usr/include/GL/gl.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /home/suxing/AdTree/3rd_party/glew/include/GL/glxew.h \
  /usr/include/X11/Xlib.h /usr/include/x86_64-linux-gnu/sys/types.h \
  /usr/include/x86_64-linux-gnu/bits/types/clock_t.h \

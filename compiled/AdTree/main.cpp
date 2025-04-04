@@ -121,7 +121,10 @@ int batch_reconstruct(std::vector<std::string>& point_cloud_files, const std::st
                 box.add_point(points[v]);
 
             // remove duplicated points
-            const float threshold = box.diagonal() * 0.001f;
+            //const float threshold = box.diagonal() * 0.001f;
+            
+            const float threshold = box.diagonal() * 0.001f * 30.0;
+            
             const auto &points_to_remove = RemoveDuplication::apply(cloud, threshold);
             for (auto v : points_to_remove)
                 cloud->delete_vertex(v);
@@ -133,33 +136,72 @@ int batch_reconstruct(std::vector<std::string>& point_cloud_files, const std::st
             continue;
         }
 
-        // reconstruct branches
-        SurfaceMesh *mesh = new SurfaceMesh;
-        const std::string &branch_filename = file_system::base_name(cloud->name()) + "_branches.obj";
-        mesh->set_name(branch_filename);
+        // --------------------------------------------------------------------------------------------
 
         Skeleton *skeleton = new Skeleton();
-        bool status = skeleton->reconstruct_branches(cloud, mesh);
-        if (!status) {
-            std::cerr << "failed in reconstructing branches" << std::endl;
-            delete cloud;
-            delete mesh;
-            delete skeleton;
-            continue;
+
+        // reconstruct branches
+        {
+            SurfaceMesh *mesh_branches = new SurfaceMesh;
+            const std::string &branch_filename = file_system::base_name(cloud->name()) + "_branches.obj";
+            mesh_branches->set_name(branch_filename);
+            bool status = skeleton->reconstruct_branches(cloud, mesh_branches);
+            if (!status) {
+                std::cerr << "failed in reconstructing branches" << std::endl;
+                delete cloud;
+                delete mesh_branches;
+                delete skeleton;
+                continue;
+            }
+            
+            /*
+            // copy translation property from point_cloud to the branches model
+            SurfaceMesh::ModelProperty<dvec3> prop = mesh_branches->add_model_property<dvec3>("translation");
+            prop[0] = cloud->get_model_property<dvec3>("translation")[0];
+            
+
+            // save branches model
+            const std::string branch_file = output_folder + "/" + branch_filename;
+            if (SurfaceMeshIO::save(branch_file, mesh_branches)) {
+                std::cout << "model of branches saved to: " << branch_file << std::endl;
+                ++count;
+            } else
+                std::cerr << "failed to save the model of branches" << std::endl;
+            delete mesh_branches;
+            
+            */
         }
 
-        // copy translation property from point_cloud to surface_mesh
-        SurfaceMesh::ModelProperty<dvec3> prop = mesh->add_model_property<dvec3>("translation");
-        prop[0] = cloud->get_model_property<dvec3>("translation")[0];
-
-        // save branches model
-        const std::string branch_file = output_folder + "/" + branch_filename;
-        if (SurfaceMeshIO::save(branch_file, mesh)) {
-            std::cout << "model of branches saved to: " << branch_file << std::endl;
-            ++count;
+        // reconstruct leaves
+        {
+            SurfaceMesh *mesh_leaves = new SurfaceMesh;
+            const std::string &leaves_filename = file_system::base_name(cloud->name()) + "_leaves.obj";
+            mesh_leaves->set_name(leaves_filename);
+            bool status = skeleton->reconstruct_leaves(mesh_leaves);
+            if (!status) {
+                std::cerr << "failed in reconstructing leaves" << std::endl;
+                delete cloud;
+                delete mesh_leaves;
+                delete skeleton;
+                continue;
+            }
+            
+            /*
+            // copy translation property from point_cloud to the leaves model
+            SurfaceMesh::ModelProperty<dvec3> prop = mesh_leaves->add_model_property<dvec3>("translation");
+            prop[0] = cloud->get_model_property<dvec3>("translation")[0];
+            // save leaves model
+            const std::string leaves_file = output_folder + "/" + leaves_filename;
+            if (SurfaceMeshIO::save(leaves_file, mesh_leaves)) {
+                std::cout << "model of leaves saved to: " << leaves_file << std::endl;
+                ++count;
+            } else
+                std::cerr << "failed to save the model of leaves" << std::endl;
+            delete mesh_leaves;
+            */
         }
-        else
-            std::cerr << "failed to save the model of branches" << std::endl;
+
+        // --------------------------------------------------------------------------------------------
 
         if (export_skeleton) {
             const std::string& skeleton_file = output_folder + "/" + file_system::base_name(cloud->name()) + "_skeleton.ply";
@@ -167,7 +209,6 @@ int batch_reconstruct(std::vector<std::string>& point_cloud_files, const std::st
         }
 
         delete cloud;
-        delete mesh;
         delete skeleton;
     }
 
@@ -176,9 +217,12 @@ int batch_reconstruct(std::vector<std::string>& point_cloud_files, const std::st
 
 
 int main(int argc, char *argv[]) {
-//    argc = 2;
-//    argv[1] = "/Users/lnan/Projects/adtree/data";
-//    argv[2] = "/Users/lnan/Projects/adtree/data-results";
+#if 0
+    argc = 4;
+    argv[1] = "/Users/lnan/Documents/Projects/AdTree/data";
+    argv[2] = "/Users/lnan/Documents/Projects/AdTree/data-results";
+    argv[3] = "-s";
+#endif
 
     if (argc == 1) {
         TreeViewer viewer;
@@ -195,7 +239,7 @@ int main(int argc, char *argv[]) {
 
         if (export_skeleton) {
             std::cout << "You have requested to save the reconstructed tree skeleton(s) in PLY format into the output directory." << std::endl;
-            std::cout << "The skeleton file(s) can be visualized using Easy3D: https://github.com/LiangliangNan/Easy3D" << std::endl;
+            //std::cout << "The skeleton file(s) can be visualized using Easy3D: https://github.com/LiangliangNan/Easy3D" << std::endl;
         }
         else
             std::cout << "Tree skeleton(s) will not be saved (append '-s' or '-skeleton' in commandline to enable it)" << std::endl;
