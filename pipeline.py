@@ -67,7 +67,7 @@ def model_analysis_pipeline(file_path, filename, basename, result_path):
     # step 1  python3 /opt/code/model_preprocess.py -i ~/example/pt_cloud/B101-2/B101-2.ply -o ~/example/pt_cloud/B101-2/ --n_plane 5 --slicing_ratio 0.1 --adjustment 0
     print("Statistical outlier removal and Transform point cloud model to its rotation center and align its upright orientation with Z direction...\n")
 
-    format_convert = "python3 /opt/code/model_preprocess.py " +  " -i " + os.path.join(file_path, '') + filename + " -o " + result_path + " --n_plane " + str(n_plane) + " --slicing_ratio " + str(slicing_ratio) + " --adjustment " + str(adjustment)
+    format_convert = "python3 model_preprocess.py " +  " -i " + os.path.join(file_path, '') + filename + " -o " + result_path + " --n_plane " + str(n_plane) + " --slicing_ratio " + str(slicing_ratio) + " --adjustment " + str(adjustment)
     
     print(format_convert)
     
@@ -77,13 +77,13 @@ def model_analysis_pipeline(file_path, filename, basename, result_path):
     # step 2 python3 /opt/code/python3 model_measure.py -i ~/example/pt_cloud/B101-2/B101-2_aligned.ply  -o ~/example/pt_cloud/B101-2/ --n_slices 200 --slicing_factor 0.3
     print("Compute all the traits...\n")
 
-    traits_computation = "python3 /opt/code/model_measure.py -i " + os.path.join(result_path, '') + basename + "_aligned.ply " + " -o " + result_path + " --n_slices " + str(n_slices) + " --slicing_factor " + str(slicing_factor) 
+    traits_computation = "python3 model_measure.py -i " + os.path.join(result_path, '') + basename + "_aligned.ply " + " -o " + result_path + " --n_slices " + str(n_slices) + " --slicing_factor " + str(slicing_factor) 
     
     print(traits_computation)
     
     execute_script(traits_computation)
     
-    
+    '''
     # step 3 grants read and write access to all result folders
     print("Compute all the traits...")
 
@@ -92,7 +92,7 @@ def model_analysis_pipeline(file_path, filename, basename, result_path):
     print(access_grant + '\n')
     
     execute_script(access_grant)
-    
+    '''
     
 
 
