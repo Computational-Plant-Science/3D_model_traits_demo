@@ -5,11 +5,11 @@ Function: Compute 3D root traits from 3D root model for field-grown maize roots
 
 
 
-![Optional Text](../main/media/image1.png)
+![Optional Text](../master/media/image1.png)
 
 Example of computed root structure v.s. 3D root point cloud model
 
-![Optional Text](../main/media/image2_1.gif)
+![Optional Text](../master/media/image2_1.gif)
 
 
 
@@ -107,7 +107,7 @@ Suxing Liu (suxingliu@gmail.com), Wesley Paul Bonelli(wbonelli@uga.edu), Alexand
 
 ## Other contributions
 
-Docker container was maintained and deployed to [PlantIT](https://portnoy.cyverse.org) by Wes Bonelli (wbonelli@uga.edu).
+Docker container was mastertained and deployed to [PlantIT](https://portnoy.cyverse.org) by Wes Bonelli (wbonelli@uga.edu).
 
 
 # License
