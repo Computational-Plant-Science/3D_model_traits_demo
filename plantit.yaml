@@ -1,6 +1,6 @@
-name: DIRT\3D Traits
+name: DIRT_3D_traits_release
 author: Suxing Liu
-image: docker://computationalplantscience/dirt3d-traits
+image: docker://computationalplantscience/3d-model-traits
 public: True
 commands: /opt/code/shim.sh
 doi:

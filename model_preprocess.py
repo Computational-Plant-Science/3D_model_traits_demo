@@ -590,9 +590,11 @@ def model_alignment(pcd, adjustment):
         
         # rotate along x for  np.pi/2 * adjustment value
         
-        R_adjust = pcd_r.get_rotation_matrix_from_xyz((adjustment*np.pi/2, 0, 0))
+        #R_adjust = pcd_r.get_rotation_matrix_from_xyz((adjustment*np.pi/2, 0, 0))
         
-        #R_adjust = pcd_r.get_rotation_matrix_from_xyz((0, adjustment*np.pi/2, 0))
+        R_adjust = pcd_r.get_rotation_matrix_from_xyz((0, adjustment*np.pi/2, 0))
+        
+        #R_adjust = pcd_r.get_rotation_matrix_from_xyz((0, 0.5*np.pi/2, 0))
         
         pcd_r.rotate(R_adjust, center = (0,0,0))
         

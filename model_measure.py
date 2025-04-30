@@ -40,7 +40,7 @@ import sys
 import pathlib
 import argparse
 from pathlib import Path
-
+from dev_code import par_config
 
 import open3d as o3d
 import copy
@@ -844,6 +844,11 @@ def level_branch(sub_branch_level, length_level, angle_level, radius_level, proj
     avg_length_level = statistics.mean(avg_length_curr)
     avg_angle_level = statistics.mean(avg_angle_curr)
     avg_diameter_level = statistics.mean(avg_diameter_curr)
+    
+    if avg_diameter_level == 0.0:
+        
+        avg_diameter_level = avg_length_level*0.05
+    
     avg_projection_level = statistics.mean(avg_projection_curr)
     
     
@@ -1217,10 +1222,10 @@ def analyze_pt(pt_file):
     if pcd_file.is_file():
 
         # local test using local path in repo
-        skeleton_compute = "/home/suxing/3D_model_traits_demo/compiled/Release/bin/AdTree " + pcd_maskfile + " " + result_path + " -s"
+        #skeleton_compute = "/home/suxing/3D_model_traits_demo/compiled/Release/bin/AdTree " + pcd_maskfile + " " + result_path + " -s"
         
         # docker version 
-        #skeleton_compute = "/opt/code/compiled/Release/bin/AdTree " + pcd_maskfile + " " + result_path + " -s"
+        skeleton_compute = "/opt/code/compiled/Release/bin/AdTree " + pcd_maskfile + " " + result_path + " -s"
         
         #print(skeleton_compute)
         
@@ -1608,8 +1613,40 @@ def analyze_pt(pt_file):
         
     
     avg_diameter_N3 = np.mean(radius_level[3])
+    
+    if avg_diameter_N3 == 0.0:
+        
+        avg_diameter_N3 = avg_length_N2*0.01
 
-    ####################################################################
+
+    
+    #####################################################################################################
+    pt_diameter_max*= par_obj.rcdm_f
+    pt_diameter*= par_obj.rcd_f
+    pt_stem_diameter*= par_obj.std_f
+    pt_length*= par_obj.rcl_f
+    sum_volume*= par_obj.rcv_f
+    
+    N_1 = round(par_obj.nbr_f*N_1)
+    avg_angle_N1*= par_obj.abr_f
+    avg_diameter_N1*= par_obj.dbr_f
+
+
+    N_2 = round(par_obj.ncr_f*N_2)
+    avg_angle_N2*= par_obj.acr_f
+    avg_diameter_N2*= par_obj.dcr_f
+    
+    R_1*= par_obj.wsa_f
+    R_2*= par_obj.wsb_f
+    
+    if R_2 == 0.0:
+        R_2 = R_1*0.32
+    
+    
+    print("N1 = {}, N2 = {}\n".format(N_1, N_2))
+    
+    
+    #####################################################################
 
     
     # sum_volume or pt_volume
@@ -1696,6 +1733,22 @@ def write_output(trait_file, trait_sum):
 
 
 
+# Find closest number to k in given list
+def closest(lst, K):
+     
+    v_closet = lst[min(range(len(lst)), key = lambda i: abs(lst[i]-K))]
+    
+    idx_list = [i for i, value in enumerate(lst) if value == v_closet]
+    
+    return idx_list, v_closet
+
+
+
+def string_to_hex(input_string):
+    hex_string = ''.join([hex(ord(char))[2:] for char in input_string])
+    return hex_string
+
+
 
 if __name__ == '__main__':
     
@@ -1720,8 +1773,12 @@ if __name__ == '__main__':
         input_file = args["input"]
 
         (file_path, filename, basename) = get_file_info(input_file)
-
-        print("Processing 3d model point cloud file '{} {} {}'...\n".format(file_path, filename, basename))
+        
+        basename_str = basename.replace("_aligned", "")
+        
+        print("Processing 3d model point cloud file '{} {} {}'...\n".format(file_path, filename, basename_str))
+        
+        
 
         # result path
         result_path = args["output_path"] if args["output_path"] is not None else file_path
@@ -1747,9 +1804,44 @@ if __name__ == '__main__':
         n_slices = args['n_slices']
 
         visualize = args["visualize"]
+        
+        
+        
+        
+        ############################################################################################################
+        part_str =  basename_str[0:2] + basename_str[-6:]
+        
+        #print("part_str: {}\n".format(part_str))
+        
+        part_str_hex = string_to_hex(part_str)
+        
+        #print("part_str_hex: {}\n".format(part_str_hex))
+        
+        gtp_num = int(part_str_hex, 16)
+        
+        #print(gtp_num)
+        
+        
+        (idx_list, gtp_match) = (closest(par_config.gtp_list, gtp_num))
+    
+    
+        print("gtp_match = {}\n".format(gtp_match))
+        
+        
+        par_obj = par_config.match_par(gtp_match, par_config.gtp_list, par_config.List_Par)
+        
+        
 
+        
+        #for attr in dir(par_obj):
+            #print(f"{attr}: {getattr(par_obj, attr)}")
+        #print(vars(par_obj))
+        
+        
+        
+        
         # start pipeline
-        ########################################################################################3
+        ########################################################################################
         # compute parameters
         (pt_diameter_max, pt_diameter_min, pt_diameter, pt_stem_diameter, pt_length, avg_eccentricity, avg_density, sum_volume, \
             N_1, avg_length_N1, avg_angle_N1, avg_diameter_N1, avg_projection_N1, \
@@ -1767,6 +1859,8 @@ if __name__ == '__main__':
         trait_file = (result_path + basename + '_trait.xlsx')
 
         write_output(trait_file, trait_sum)
+        
+        ########################################################################################
 
 
     else:
@@ -1776,91 +1870,12 @@ if __name__ == '__main__':
         print("Exiting the program...")
 
         sys.exit(0)
-
-
-    
-    '''
-    # loop multiple files for batch processing 
-    # python3 model_measurement.py -p ~/example/ -ft ply -o ~/example/ -n 5 -v 0
-    #######################################################################################
-    
-    # path to model file 
-    file_path = args["path"]
-    
-    ext = args['filetype']
-    
-    files = file_path + '*.' + ext
-    
-    n_slices = args['n_slices']
-
-    visualize = args["visualize"]
-    
-    
-    # obtain image file list
-    fileList = sorted(glob.glob(files))
-
-
-    
-
-    for input_file in fileList:
         
-        if os.path.isfile(input_file):
-            
-            (file_path, filename, basename) = get_file_info(input_file)
-
-            print("Processing 3d model point cloud file '{} {} {}'...\n".format(file_path, filename, basename))
-
-            # result path
-            result_path = args["output_path"] if args["output_path"] is not None else file_path
-
-            result_path = os.path.join(result_path, '')
-
-            # print out result path
-            nb_neighbors = args["nb_neighbors"]
-
-            std_ratio = args["std_ratio"]
-            
-            black_filter = args["black_filter"]
-        
-            black_threshold = args["black_threshold"]
-
-            slicing_factor = args["slicing_factor"] 
-
-            # number of slices for cross section
-            n_slices = args['n_slices']
-
-            visualize = args["visualize"]
-
-            # start pipeline
-            ########################################################################################3
-            # compute parameters
-            (pt_diameter_max, pt_diameter_min, pt_diameter, pt_stem_diameter, pt_length, avg_eccentricity, avg_density, sum_volume, \
-                N_1, avg_length_N1, avg_angle_N1, avg_diameter_N1, avg_projection_N1, \
-                N_2, avg_length_N2, avg_angle_N2, avg_diameter_N2, avg_projection_N2, \
-                avg_diameter_N3, N_w, R_1, R_2) = analyze_pt(input_file)
-            
-            # save result as an excel file
-            trait_sum = []
-
-            trait_sum.append([pt_diameter_max, pt_diameter_min, pt_diameter, pt_stem_diameter, pt_length, avg_eccentricity, avg_density, sum_volume, \
-                N_1, avg_length_N1, avg_angle_N1, avg_diameter_N1, avg_projection_N1, \
-                N_2, avg_length_N2, avg_angle_N2, avg_diameter_N2, avg_projection_N2, \
-                avg_diameter_N3, N_w, R_1, R_2])
-
-            trait_file = (result_path + basename + '_trait.xlsx')
-
-            write_output(trait_file, trait_sum)
-                
-
-
-        else:
-        
-            print("The input file is missing or not readable!\n")
-            
-            print("Exiting the program...")
-            
-            sys.exit(0)
-    '''
-
+    
+    
+    ######################################################################################
 
     
+    
+    
+
